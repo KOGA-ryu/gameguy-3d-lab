@@ -1,0 +1,29 @@
+{
+  "term_id": "shared_endpoint",
+  "category": "connector",
+  "plain_name": "Shared Endpoint",
+  "description": "A point that two or more generated parts must reference exactly to prevent cracks or holes.",
+  "required_params": {
+    "point_id": "string",
+    "position": "vec3",
+    "owner_refs": "string[]"
+  },
+  "outputs": {
+    "type": "point_connection_contract"
+  },
+  "constraints": {
+    "owner_refs_not_empty": true,
+    "all_owner_positions_match_within_tolerance": true
+  },
+  "common_uses": [
+    "wall to terrain adapter",
+    "arch springline to column cap",
+    "vault rib to pier",
+    "panel corner join"
+  ],
+  "blender_method": "reuse the same coordinate for generated mesh/curve endpoints",
+  "validation": [
+    "shared_endpoint_distance_below_tolerance",
+    "all_references_exist"
+  ]
+}

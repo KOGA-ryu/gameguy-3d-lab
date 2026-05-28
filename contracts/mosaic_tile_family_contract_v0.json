@@ -1,0 +1,91 @@
+{
+  "contract_name": "mosaic_tile_family_contract_v0",
+  "version": "0.2.0",
+  "purpose": "Define a reusable family of related dungeon tiles derived from one verified mosaic source and one base tile.",
+  "required_fields": [
+    "family_id",
+    "source_card_path",
+    "source_asset_id",
+    "source_title",
+    "source_url",
+    "source_license",
+    "palette_id",
+    "allowed_palette",
+    "base_tile_size_px",
+    "derived_assets",
+    "required_family_outputs",
+    "review_status",
+    "notes"
+  ],
+  "derived_asset_required_fields": [
+    "asset_id",
+    "tile_category",
+    "motif_type",
+    "target_tile_size_px",
+    "output_png_path",
+    "output_json_path",
+    "parent_asset_id",
+    "variation_method",
+    "seamless_required",
+    "review_status",
+    "notes"
+  ],
+  "allowed_variation_methods": [
+    "base_clean",
+    "crack_overlay",
+    "shifted_tesserae",
+    "missing_tesserae",
+    "stain_overlay",
+    "symbol_overlay",
+    "moss_overlay",
+    "loose_stone_overlay",
+    "vine_root_overlay",
+    "glow_particle_overlay",
+    "border_fragment",
+    "manual_authoring"
+  ],
+  "allowed_tile_categories": [
+    "floor_clean",
+    "floor_cracked",
+    "floor_shifted",
+    "floor_missing_tesserae",
+    "floor_stained",
+    "floor_symbol_marked",
+    "deco_moss",
+    "deco_loose_stone",
+    "deco_vine_root",
+    "deco_gold_chip",
+    "deco_glow_particle",
+    "border_fragment",
+    "center_symbol"
+  ],
+  "allowed_review_statuses": [
+    "planned",
+    "source_verified",
+    "trace_started",
+    "trace_ready_for_review",
+    "approved",
+    "rejected",
+    "exported"
+  ],
+  "target_tile_sizes_px": [
+    "16x16",
+    "32x32",
+    "64x64",
+    "128x128",
+    "256x256",
+    "512x512",
+    "1024x1024",
+    "2048x2048",
+    "4096x4096"
+  ],
+  "output_existence_rules": {
+    "planned": "PNG and JSON outputs may be absent.",
+    "source_verified": "PNG and JSON outputs may be absent.",
+    "trace_started": "PNG and JSON outputs may be absent.",
+    "trace_ready_for_review": "PNG and JSON outputs may be absent.",
+    "approved": "PNG and JSON outputs must be present.",
+    "rejected": "PNG and JSON outputs may be absent.",
+    "exported": "PNG and JSON outputs must be present."
+  }
+}

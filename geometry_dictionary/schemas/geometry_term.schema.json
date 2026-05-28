@@ -1,0 +1,30 @@
+{
+  "schema_id": "geometry_term_schema_v0",
+  "required_fields": [
+    "term_id",
+    "category",
+    "plain_name",
+    "description",
+    "outputs",
+    "validation"
+  ],
+  "allowed_categories": [
+    "profile_primitive",
+    "solid_primitive",
+    "measurement",
+    "transform",
+    "mesh_operation",
+    "composition_operation",
+    "connector",
+    "topology_term",
+    "semantic_geometry",
+    "validation_term"
+  ],
+  "rules": {
+    "term_id_format": "lower_snake_case",
+    "term_id_must_be_unique": true,
+    "entries_are_machine_readable": true,
+    "no_vague_terms": true,
+    "recipe_references_must_exist": true
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "asset_id": "example_verified_floor_fill_16x16",
+  "source_image_path": "sources/test_verified_public_domain_mosaic.png",
+  "source_title": "TEST_VERIFIED_PUBLIC_DOMAIN_MOSAIC",
+  "source_author_or_culture": "TEST_CULTURE",
+  "source_date_or_period": "TEST_PERIOD",
+  "source_url": "https://example.invalid/test-public-domain-mosaic",
+  "source_license": "CC0",
+  "source_license_url": "https://example.invalid/cc0",
+  "source_institution": "TEST_INSTITUTION",
+  "motif_type": "floor_fill",
+  "target_tile_size_px": "16x16",
+  "tile_category": "floor",
+  "palette_id": "muted_stone_glass_placeholder_v0",
+  "allowed_palette": [
+    "#1f1f22",
+    "#3b3832",
+    "#5a5348",
+    "#7a7163",
+    "#a09683",
+    "#c6bba3",
+    "#49615a",
+    "#8b3f32"
+  ],
+  "required_layers": [
+    "reference",
+    "crop_grid",
+    "rough_trace",
+    "clean_tesserae",
+    "palette_blocks",
+    "grout_lines",
+    "damage_overlay",
+    "seam_test",
+    "export"
+  ],
+  "animation_tags_or_export_tags": [
+    "floor_clean",
+    "floor_cracked",
+    "floor_overgrown",
+    "border_straight",
+    "border_corner",
+    "threshold",
+    "centerpiece"
+  ],
+  "seamless_required": true,
+  "border_padding_px": 0,
+  "export_targets": [
+    {
+      "kind": "png",
+      "path": "exports/example_verified_floor_fill_16x16.png"
+    },
+    {
+      "kind": "json",
+      "path": "exports/example_verified_floor_fill_16x16.json"
+    }
+  ],
+  "review_status": "source_verified",
+  "notes": "Validator fixture only. This is not a real source card, does not identify a real artwork, and must not be used for art production."
+}

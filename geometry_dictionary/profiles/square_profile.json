@@ -1,0 +1,13 @@
+{
+  "term_id": "square",
+  "category": "profile_primitive",
+  "plain_name": "Square Profile",
+  "description": "A closed four-sided 2D profile with equal width and depth.",
+  "required_params": { "size": "float" },
+  "units": "meters",
+  "outputs": { "type": "closed_2d_profile", "coordinate_space": "local_xy", "must_be_closed": true },
+  "constraints": { "size": "> 0", "vertex_count": 4 },
+  "common_uses": ["post", "plinth", "pedestal", "pier"],
+  "blender_method": "generate four equal local XY vertices, create face, extrude along axis",
+  "validation": ["closed_profile", "nonzero_area", "vertex_order_is_clockwise_or_declared"]
+}

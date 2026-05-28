@@ -1,0 +1,12 @@
+{
+  "term_id": "west",
+  "category": "connector",
+  "plain_name": "West Face Connector",
+  "description": "Connector generated at the negative local X face of bounds.",
+  "required_params": { "bounds": "bounds" },
+  "outputs": { "type": "face_connector", "direction": [-1, 0, 0] },
+  "constraints": { "bounds_required": true },
+  "common_uses": ["module adjacency", "wall neighbor", "rail repeat"],
+  "blender_method": "derive marker from local bounds min X",
+  "validation": ["bounds_min_less_than_max", "socket_position_inside_or_on_bounds"]
+}

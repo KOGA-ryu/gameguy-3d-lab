@@ -1,0 +1,12 @@
+{
+  "schema_id": "measurement_term_schema_v0",
+  "category": "measurement",
+  "required_fields": [
+    "term_id",
+    "category",
+    "required_inputs",
+    "outputs",
+    "used_by",
+    "validation"
+  ]
+}

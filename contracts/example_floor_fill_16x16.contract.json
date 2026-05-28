@@ -1,0 +1,59 @@
+{
+  "asset_id": "example_floor_fill_16x16",
+  "source_image_path": "sources/pending_verified_open_access_mosaic_reference.png",
+  "source_title": "PENDING_VERIFIED_OPEN_ACCESS_MOSAIC_TITLE",
+  "source_author_or_culture": "PENDING_VERIFIED_AUTHOR_OR_CULTURE",
+  "source_date_or_period": "PENDING_VERIFIED_DATE_OR_PERIOD",
+  "source_url": "PENDING_VERIFIED_SOURCE_RECORD_URL",
+  "source_license": "PENDING_HUMAN_VERIFICATION_CC0_OR_PUBLIC_DOMAIN",
+  "source_license_url": "PENDING_VERIFIED_LICENSE_OR_OPEN_ACCESS_URL",
+  "source_institution": "PENDING_VERIFIED_INSTITUTION",
+  "motif_type": "floor_fill",
+  "target_tile_size_px": "16x16",
+  "tile_category": "floor",
+  "palette_id": "muted_stone_glass_placeholder_v0",
+  "allowed_palette": [
+    "#1f1f22",
+    "#3b3832",
+    "#5a5348",
+    "#7a7163",
+    "#a09683",
+    "#c6bba3",
+    "#49615a",
+    "#8b3f32"
+  ],
+  "required_layers": [
+    "reference",
+    "crop_grid",
+    "rough_trace",
+    "clean_tesserae",
+    "palette_blocks",
+    "grout_lines",
+    "damage_overlay",
+    "seam_test",
+    "export"
+  ],
+  "animation_tags_or_export_tags": [
+    "floor_clean",
+    "floor_cracked",
+    "floor_overgrown",
+    "border_straight",
+    "border_corner",
+    "threshold",
+    "centerpiece"
+  ],
+  "seamless_required": true,
+  "border_padding_px": 0,
+  "export_targets": [
+    {
+      "kind": "png",
+      "path": "exports/example_floor_fill_16x16.png"
+    },
+    {
+      "kind": "json",
+      "path": "exports/example_floor_fill_16x16.json"
+    }
+  ],
+  "review_status": "source_pending",
+  "notes": "Structurally valid example only. Replace pending source fields with verified open-access metadata before art production."
+}

@@ -1,0 +1,13 @@
+{
+  "term_id": "circle",
+  "category": "profile_primitive",
+  "plain_name": "Circle Profile",
+  "description": "A closed 2D profile approximating a circle with a declared segment count.",
+  "required_params": { "radius": "float", "segments": "int" },
+  "units": "meters",
+  "outputs": { "type": "closed_2d_profile", "coordinate_space": "local_xy", "must_be_closed": true },
+  "constraints": { "radius": "> 0", "segments": ">= 8" },
+  "common_uses": ["round post", "cylinder", "pipe core", "peg"],
+  "blender_method": "generate radial vertices around origin, create face, extrude along axis",
+  "validation": ["closed_profile", "nonzero_area", "matching_vertex_count_if_lofted"]
+}

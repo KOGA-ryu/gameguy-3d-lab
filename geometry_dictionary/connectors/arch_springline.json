@@ -1,0 +1,31 @@
+{
+  "term_id": "arch_springline",
+  "category": "connector",
+  "plain_name": "Arch Springline",
+  "description": "The left or right point where an arch curve begins rising from its support.",
+  "required_params": {
+    "side": "left | right",
+    "position": "vec3",
+    "support_ref": "string",
+    "arch_ref": "string"
+  },
+  "outputs": {
+    "type": "arch_support_connection"
+  },
+  "constraints": {
+    "position_matches_support_connector": true,
+    "position_matches_arch_endpoint": true
+  },
+  "common_uses": [
+    "pointed arch bay",
+    "round arch bay",
+    "vault rib",
+    "window lancet"
+  ],
+  "blender_method": "place arch curve endpoint at the same coordinate as the support cap connector",
+  "validation": [
+    "arch_endpoint_matches_springline",
+    "support_connector_exists",
+    "springline_height_above_floor"
+  ]
+}

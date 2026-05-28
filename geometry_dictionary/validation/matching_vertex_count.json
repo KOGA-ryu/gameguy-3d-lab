@@ -1,0 +1,10 @@
+{
+  "term_id": "matching_vertex_count",
+  "category": "validation_term",
+  "plain_name": "Matching Vertex Count",
+  "description": "All profile sections in a loft have the same vertex count.",
+  "required_inputs": { "sections": "profile_section[]" },
+  "outputs": { "valid": "bool", "vertex_count": "int | mixed" },
+  "constraints": { "min_sections": 2 },
+  "validation": ["sections_exist", "all_vertex_counts_equal"]
+}

@@ -1,0 +1,10 @@
+{
+  "term_id": "aspect_ratio",
+  "category": "measurement",
+  "plain_name": "Aspect Ratio",
+  "description": "Ratio between width and height or width and depth.",
+  "required_inputs": { "numerator_extent": "float", "denominator_extent": "float" },
+  "outputs": { "aspect_ratio": "float" },
+  "used_by": ["profile_matching", "reference_measurement", "scale_profile"],
+  "validation": ["finite_value", "denominator_nonzero"]
+}

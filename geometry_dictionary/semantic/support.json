@@ -1,0 +1,12 @@
+{
+  "term_id": "support",
+  "category": "semantic_geometry",
+  "plain_name": "Support",
+  "description": "Geometry visually or mechanically serving as a support member.",
+  "required_inputs": { "asset_ref": "solid_definition", "connector_refs": "connector[]" },
+  "outputs": { "type": "support_hint" },
+  "constraints": { "floor_or_parent_connector_exists": true },
+  "common_uses": ["post", "column", "beam", "brace", "buttress"],
+  "blender_method": "tag object as support; no structural safety claim implied",
+  "validation": ["connector_refs_resolve", "nonzero_volume"]
+}

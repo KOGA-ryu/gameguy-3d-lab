@@ -1,0 +1,11 @@
+{
+  "term_id": "cap_ends",
+  "category": "mesh_operation",
+  "plain_name": "Cap Ends",
+  "description": "Closes the open start and end faces of an extrusion or loft.",
+  "required_inputs": { "open_profile_rings": "profile_section[]" },
+  "outputs": { "type": "closed_mesh_future | closed_solid_definition" },
+  "constraints": { "profile_rings_must_be_closed": true },
+  "blender_method": "fill profile rings with faces and verify normals",
+  "validation": ["manifold_mesh", "outward_normals", "nonzero_volume"]
+}

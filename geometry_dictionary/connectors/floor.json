@@ -1,0 +1,12 @@
+{
+  "term_id": "floor",
+  "category": "connector",
+  "plain_name": "Floor Connector",
+  "description": "Connector generated at the negative local Z face of bounds.",
+  "required_params": { "bounds": "bounds" },
+  "outputs": { "type": "face_connector", "direction": [0, 0, -1] },
+  "constraints": { "bounds_required": true },
+  "common_uses": ["floor attachment", "support base", "placement on surface"],
+  "blender_method": "derive marker from local bounds min Z",
+  "validation": ["bounds_min_less_than_max", "socket_position_inside_or_on_bounds"]
+}

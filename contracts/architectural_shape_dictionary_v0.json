@@ -1,0 +1,37 @@
+{
+  "schema_id": "architectural_shape_dictionary_v0",
+  "purpose": "Machine-readable construction grammar terms that map measured shape, bend law, connectors, operation chains, and validation rules into reusable architectural modules.",
+  "required_term_fields": [
+    "shape_id",
+    "shape_family",
+    "base_face",
+    "role",
+    "measurement_fields",
+    "bend_law",
+    "connector_logic",
+    "operation_chain",
+    "validation"
+  ],
+  "allowed_base_faces": [
+    "point",
+    "line",
+    "triangle",
+    "quad",
+    "pentagon",
+    "hexagon",
+    "octagon",
+    "polygon",
+    "arc_curve"
+  ],
+  "rules": {
+    "shape_ids_are_lower_snake_case": true,
+    "measurement_fields_are_explicit": true,
+    "bend_law_must_be_named": true,
+    "connector_logic_must_define_shared_points": true,
+    "operation_chain_must_reference_geometry_dictionary_terms": true,
+    "validation_must_include_connection_checks": true,
+    "no_structural_safety_claims": true,
+    "no_fabrication_claims": true,
+    "no_production_approval": true
+  }
+}

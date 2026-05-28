@@ -1,0 +1,61 @@
+{
+  "schema": "hex_terrain_fold_recipe_v0",
+  "site_id": "round_hill_fold_site_v0",
+  "map_cube_ref": "standard_32m_cube_v0",
+  "units": "abstract_meter",
+  "summary": "A smooth round hill generated over the standard 32x32x8 cube, with small fold seams that create believable drainage/ridge logic.",
+  "hex_grid": {
+    "layout": "pointy_top",
+    "radius": 1.0,
+    "vertical_step": 0.25,
+    "bounds_source": "map_cube_coordinate_range"
+  },
+  "heightfield": {
+    "type": "round_hill",
+    "center": [0.0, 0.0],
+    "radius": 10.0,
+    "base_height": 0.25,
+    "peak_height": 4.0,
+    "falloff": "smoothstep",
+    "quantize_to_vertical_step": true,
+    "surface_type": "grass_stone"
+  },
+  "folds": [
+    {
+      "fold_id": "soft_drainage_valley",
+      "type": "valley",
+      "line": {
+        "start": [-7.5, 2.4],
+        "end": [7.5, -2.4]
+      },
+      "magnitude": 0.35,
+      "falloff_radius": 1.65,
+      "affects": ["visual_mesh", "topology_classification"]
+    },
+    {
+      "fold_id": "subtle_ridge_spine",
+      "type": "mountain",
+      "line": {
+        "start": [-6.0, -4.0],
+        "end": [5.5, 5.0]
+      },
+      "magnitude": 0.22,
+      "falloff_radius": 1.15,
+      "affects": ["visual_mesh"]
+    }
+  ],
+  "classification_rules": {
+    "flat_delta_max": 0.15,
+    "step_delta_max": 0.5,
+    "ledge_delta_max": 1.0,
+    "cliff_delta_min": 1.0,
+    "buildable_slope_delta_max": 0.25,
+    "walkable_delta_max": 0.5
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false
+  }
+}

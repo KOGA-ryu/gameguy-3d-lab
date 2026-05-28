@@ -1,0 +1,10 @@
+{
+  "term_id": "length",
+  "category": "measurement",
+  "plain_name": "Length",
+  "description": "Distance between two points along any declared axis or segment.",
+  "required_inputs": { "point_a": "vec2 | vec3", "point_b": "vec2 | vec3" },
+  "outputs": { "length": "float" },
+  "used_by": ["line_segment", "beam", "rail_bar", "capsule"],
+  "validation": ["finite_value", "value_is_nonnegative"]
+}

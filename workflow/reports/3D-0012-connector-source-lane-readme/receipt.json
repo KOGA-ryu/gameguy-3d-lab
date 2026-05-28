@@ -1,0 +1,29 @@
+{
+  "schema": "workflow_report_receipt_v0",
+  "packet_id": "3D-0012",
+  "created_at_utc": "2026-05-28T23:26:21+00:00",
+  "status": "complete",
+  "documented_connector_source_lane": true,
+  "files_changed": [
+    "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/README.md",
+    "goal/workflow/reports/3D-0012-connector-source-lane-readme/report.md",
+    "goal/workflow/reports/3D-0012-connector-source-lane-readme/receipt.json"
+  ],
+  "non_goals_respected": {
+    "pattern_lab_2d_touched_by_this_task": false,
+    "gitignore_touched_by_this_task": false,
+    "blender_run": false,
+    "meshes_or_renders_created": false,
+    "archive_delete_stage_commit_performed": false
+  },
+  "validation_commands": [
+    "python3 -m json.tool mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_manifest_v0.json >/dev/null",
+    "python3 -m json.tool mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_placement_policy_v0.json >/dev/null",
+    "find mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0 -name '*.json' -print0 | xargs -0 -n 1 python3 -m json.tool >/dev/null",
+    "python3 -m py_compile mosaic_dungeon_floor_v0/scripts/compile_connector_asset_placement_v0.py",
+    "git diff -- mosaic_dungeon_floor_v0/pattern_lab_2d mosaic_dungeon_floor_v0/.gitignore"
+  ],
+  "validation_status": "pass",
+  "known_pre_existing_protected_diff": ".gitignore contains pattern_lab_2d/outputs/batches/* from before this task.",
+  "next_recommended_worker_task": "Use the connector source-lane README as the entry point for future connector recipe or placement policy changes."
+}

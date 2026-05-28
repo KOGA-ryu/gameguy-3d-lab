@@ -1,0 +1,15 @@
+{
+  "schema_id": "profile_term_schema_v0",
+  "category": "profile_primitive",
+  "required_fields": [
+    "term_id",
+    "category",
+    "required_params",
+    "outputs",
+    "constraints",
+    "blender_method",
+    "validation"
+  ],
+  "required_output_type": "closed_2d_profile_or_declared_open_profile",
+  "coordinate_space": "local_xy"
+}

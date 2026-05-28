@@ -1,0 +1,120 @@
+{
+  "schema": "measurement_parts_taxonomy_v0",
+  "purpose": "Defines source-measurement parts that Research Dex should extract before any Pattern Lab or 3D recipe work.",
+  "landing_zone": "data/architecture/taxonomy/source_measurements/",
+  "proof_report_zones": [
+    "docs/research/architectural_measurements/",
+    "goal/receipts/"
+  ],
+  "downstream_only_zones": [
+    "pattern_lab/",
+    "pattern_lab_3d/",
+    "factory/artifacts/",
+    "zoo/"
+  ],
+  "clean_flow": [
+    "Research Dex lands data in data/architecture/taxonomy/source_measurements/",
+    "Factory measurement lane validates it.",
+    "Measurement/proportion compiler derives usable ranges.",
+    "Pattern/3D lanes consume the derived ranges.",
+    "Curator marks outputs after visual proof."
+  ],
+  "priority_object_classes": [
+    "pointed_arch_bay",
+    "round_arch_bay",
+    "horseshoe_arch_bay",
+    "ogee_arch_bay",
+    "column_base_shaft_capital",
+    "pier_bundle",
+    "buttress_profile",
+    "vault_rib_cell",
+    "dome_on_octagon",
+    "octagonal_plan_core",
+    "stair_tower",
+    "portal_frame",
+    "window_tracery_bay",
+    "blind_arcade",
+    "cloister_bay"
+  ],
+  "normalized_measurements_to_extract": [
+    "overall_width",
+    "overall_height",
+    "depth",
+    "springline_height",
+    "arch_radius",
+    "arch_peak_height",
+    "opening_width",
+    "opening_height",
+    "frame_thickness",
+    "border_band_width",
+    "column_diameter",
+    "column_height",
+    "capital_height",
+    "base_height",
+    "bay_spacing",
+    "rib_thickness",
+    "dome_radius",
+    "dome_rise",
+    "wall_thickness",
+    "pier_width",
+    "buttress_projection",
+    "stair_radius",
+    "step_rise",
+    "step_run"
+  ],
+  "parts_by_object_class": {
+    "pointed_arch_bay": ["base", "springline", "arch_curve", "apex", "spandrel", "opening", "border_band"],
+    "round_arch_bay": ["base", "springline", "arch_curve", "keystone", "spandrel", "opening", "border_band"],
+    "horseshoe_arch_bay": ["base", "springline", "return_curve", "arch_curve", "necking", "opening", "border_band"],
+    "ogee_arch_bay": ["base", "springline", "concave_curve", "convex_curve", "apex", "opening", "border_band"],
+    "column_base_shaft_capital": ["base", "plinth", "shaft", "necking", "capital", "abacus"],
+    "pier_bundle": ["core_pier", "attached_shaft", "respond", "capital_band", "base_band"],
+    "buttress_profile": ["wall_face", "buttress_projection", "setback", "cap", "base"],
+    "vault_rib_cell": ["bay_boundary", "diagonal_rib", "transverse_rib", "boss", "web"],
+    "dome_on_octagon": ["octagonal_drum", "squinch_or_pendentive", "dome_shell", "oculus_or_crown", "support_bay"],
+    "octagonal_plan_core": ["octagon_side", "corner_vertex", "radial_axis", "central_void", "connector_bay"],
+    "stair_tower": ["outer_wall", "inner_newel", "stair_radius", "step_rise", "step_run", "landing"],
+    "portal_frame": ["jamb", "lintel_or_arch", "tympanum", "threshold", "opening", "border_band"],
+    "window_tracery_bay": ["jamb", "mullion", "tracery_head", "lancet", "sill", "opening"],
+    "blind_arcade": ["bay_spacing", "attached_column", "arch_curve", "recess_panel", "spandrel"],
+    "cloister_bay": ["column", "capital", "arch_curve", "bay_spacing", "walk_depth", "wall_face"]
+  },
+  "research_dex_output_shape": {
+    "source_id": "loc_habs_example_v0",
+    "source_url": "...",
+    "source_title": "...",
+    "source_type": "measured_drawing",
+    "rights_note": "public domain / source-specific note / unknown",
+    "object_class": "pointed_arch_bay",
+    "measurements": [
+      {
+        "measurement_id": "pointed_arch_springline_ratio_v0",
+        "name": "springline_height_ratio",
+        "value": 0.58,
+        "unit": "normalized_ratio",
+        "basis": "springline_height / overall_height",
+        "confidence": "medium",
+        "uncertainty": "estimated from drawing scale",
+        "used_for": ["arch_profile", "wall_bay", "portal_frame"]
+      }
+    ],
+    "parts_taxonomy": ["base", "shaft", "capital", "springline", "arch_curve", "keystone", "spandrel", "border_band", "opening"],
+    "geometry_terms": ["arch_profile", "rectangle_profile", "circle_profile", "extrude", "bevel_edges", "socket"],
+    "semantic_roles": ["opening", "support", "panel_socket", "line_of_sight_frame", "decorative_only"],
+    "ready_for_recipe": true
+  },
+  "most_valuable_first_fetch": {
+    "measured_arch_bays": 10,
+    "octagonal_dome_plans": 5,
+    "column_pier_systems": 5,
+    "vault_rib_cells": 5,
+    "portal_window_frames": 5
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "cultural_authenticity_claim": false,
+    "artwork_reused": false
+  }
+}

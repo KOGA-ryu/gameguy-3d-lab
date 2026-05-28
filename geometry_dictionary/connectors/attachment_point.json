@@ -1,0 +1,12 @@
+{
+  "term_id": "attachment_point",
+  "category": "connector",
+  "plain_name": "Attachment Point",
+  "description": "A generic point where a component may be attached, repeated, or aligned.",
+  "required_params": { "id": "string", "position": "vec3", "normal": "vec3" },
+  "outputs": { "type": "attachment_contract" },
+  "constraints": { "normal_is_normalized": true },
+  "common_uses": ["component join", "trim attach", "child placement"],
+  "blender_method": "store as custom property, empty, or vertex marker",
+  "validation": ["position_is_finite", "direction_is_normalized"]
+}

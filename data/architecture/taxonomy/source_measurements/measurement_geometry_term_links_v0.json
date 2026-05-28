@@ -1,0 +1,106 @@
+{
+  "schema": "measurement_geometry_term_links_v0",
+  "purpose": "Maps measured architectural primitive classes to geometry dictionary terms without creating assets.",
+  "source_measurement_files": [
+    "data/architecture/taxonomy/source_measurements/measurement_sources_v0.json",
+    "data/architecture/taxonomy/source_measurements/extracted_measurements_v0.json",
+    "data/architecture/taxonomy/source_measurements/measurement_parts_taxonomy_v0.json"
+  ],
+  "links": [
+    {
+      "object_class": "pointed_arch_bay",
+      "geometry_terms": ["arch_profile", "pointed_curve", "rectangle_profile", "extrude", "socket"],
+      "ratio_inputs": ["overall_width", "overall_height", "springline_height", "arch_peak_height", "opening_width", "frame_thickness"],
+      "status": "partially_supported_v0"
+    },
+    {
+      "object_class": "round_arch_bay",
+      "geometry_terms": ["arch_profile", "circle_profile", "rectangle_profile", "extrude", "socket"],
+      "ratio_inputs": ["overall_width", "overall_height", "springline_height", "arch_radius", "opening_width", "frame_thickness"],
+      "status": "partially_supported_v0"
+    },
+    {
+      "object_class": "horseshoe_arch_bay",
+      "geometry_terms": ["arch_profile", "circle_profile", "offset_curve", "extrude", "socket"],
+      "ratio_inputs": ["overall_width", "overall_height", "springline_height", "arch_radius", "opening_width", "frame_thickness"],
+      "status": "fetch_needed"
+    },
+    {
+      "object_class": "ogee_arch_bay",
+      "geometry_terms": ["arch_profile", "compound_curve", "spline_profile", "extrude", "socket"],
+      "ratio_inputs": ["overall_width", "overall_height", "springline_height", "arch_peak_height", "opening_width", "frame_thickness"],
+      "status": "fetch_needed"
+    },
+    {
+      "object_class": "column_base_shaft_capital",
+      "geometry_terms": ["circle_profile", "cylinder", "stacked_profile", "bevel_edges"],
+      "ratio_inputs": ["column_diameter", "column_height", "capital_height", "base_height"],
+      "status": "partially_supported_v0"
+    },
+    {
+      "object_class": "pier_bundle",
+      "geometry_terms": ["rectangle_profile", "circle_profile", "union", "extrude", "bevel_edges"],
+      "ratio_inputs": ["pier_width", "overall_height", "column_diameter", "bay_spacing"],
+      "status": "weak_v0"
+    },
+    {
+      "object_class": "buttress_profile",
+      "geometry_terms": ["stepped_profile", "extrude", "bevel_edges", "wall_socket"],
+      "ratio_inputs": ["overall_height", "depth", "wall_thickness", "buttress_projection"],
+      "status": "fetch_needed"
+    },
+    {
+      "object_class": "vault_rib_cell",
+      "geometry_terms": ["rib_curve", "arc_profile", "sweep", "grid_cell"],
+      "ratio_inputs": ["overall_width", "overall_height", "bay_spacing", "rib_thickness"],
+      "status": "weak_v0"
+    },
+    {
+      "object_class": "dome_on_octagon",
+      "geometry_terms": ["octagon_profile", "dome_profile", "radial_array", "squinch_transition"],
+      "ratio_inputs": ["overall_width", "overall_height", "dome_radius", "dome_rise", "wall_thickness"],
+      "status": "partially_supported_v0"
+    },
+    {
+      "object_class": "octagonal_plan_core",
+      "geometry_terms": ["octagon_profile", "radial_axis", "connector_socket", "plan_profile"],
+      "ratio_inputs": ["overall_width", "depth", "bay_spacing", "wall_thickness"],
+      "status": "partially_supported_v0"
+    },
+    {
+      "object_class": "stair_tower",
+      "geometry_terms": ["circle_profile", "helix", "step_array", "extrude"],
+      "ratio_inputs": ["stair_radius", "step_rise", "step_run", "wall_thickness"],
+      "status": "fetch_needed"
+    },
+    {
+      "object_class": "portal_frame",
+      "geometry_terms": ["arch_profile", "rectangle_profile", "frame_profile", "socket"],
+      "ratio_inputs": ["overall_width", "overall_height", "opening_width", "opening_height", "frame_thickness", "border_band_width"],
+      "status": "fetch_needed"
+    },
+    {
+      "object_class": "window_tracery_bay",
+      "geometry_terms": ["arch_profile", "line_lattice", "mullion_profile", "socket"],
+      "ratio_inputs": ["overall_width", "overall_height", "opening_width", "opening_height", "border_band_width"],
+      "status": "fetch_needed"
+    },
+    {
+      "object_class": "blind_arcade",
+      "geometry_terms": ["arch_profile", "repetition", "panel_recess", "wall_bay"],
+      "ratio_inputs": ["bay_spacing", "overall_width", "overall_height", "frame_thickness"],
+      "status": "fetch_needed"
+    },
+    {
+      "object_class": "cloister_bay",
+      "geometry_terms": ["arch_profile", "column_profile", "repetition", "walkway_depth"],
+      "ratio_inputs": ["bay_spacing", "overall_width", "overall_height", "depth", "column_diameter"],
+      "status": "fetch_needed"
+    }
+  ],
+  "rules": {
+    "measurement_records_are_inputs_only": true,
+    "do_not_generate_assets_from_raw_sources": true,
+    "only_compiled_ranges_feed_pattern_or_3d_lanes": true
+  }
+}

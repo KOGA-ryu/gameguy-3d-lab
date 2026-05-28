@@ -1,0 +1,38 @@
+{
+  "term_id": "pointed_arch_profile",
+  "category": "profile_primitive",
+  "plain_name": "Pointed Arch Profile",
+  "description": "A symmetric arch profile whose two curved halves meet at an apex above the springline.",
+  "required_params": {
+    "span": "float",
+    "springline_height": "float",
+    "curve_radius": "float",
+    "segments_per_side": "int",
+    "thickness": "float"
+  },
+  "units": "meters",
+  "outputs": {
+    "type": "open_or_closed_2d_profile",
+    "coordinate_space": "local_xz",
+    "must_declare_open_or_closed": true
+  },
+  "constraints": {
+    "span": "> 0",
+    "springline_height": ">= 0",
+    "curve_radius": ">= span / 2",
+    "segments_per_side": ">= 4",
+    "thickness": "> 0"
+  },
+  "common_uses": [
+    "gothic arch bay",
+    "window lancet",
+    "vault rib",
+    "portal opening"
+  ],
+  "blender_method": "sample two curve halves in local XZ, then convert to bevelled curve or profile mesh",
+  "validation": [
+    "arch_endpoints_match_springline_connectors",
+    "apex_above_springline",
+    "curve_samples_are_ordered"
+  ]
+}

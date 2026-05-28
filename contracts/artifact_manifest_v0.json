@@ -1,0 +1,32 @@
+{
+  "schema": "artifact_manifest_contract_v0",
+  "purpose": "Define a shared record for factory-produced artifacts regardless of lane.",
+  "required_fields": [
+    "schema",
+    "artifact_id",
+    "job_id",
+    "lane",
+    "artifact_kind",
+    "source_inputs",
+    "outputs",
+    "validation_status",
+    "review_outputs",
+    "receipt",
+    "curation_status",
+    "created_at_utc"
+  ],
+  "validation_status_values": [
+    "pass",
+    "fail",
+    "blocked",
+    "awaiting_external_fetch"
+  ],
+  "curation_status_values": [
+    "unreviewed",
+    "keep",
+    "revise",
+    "reject",
+    "defer",
+    "blocked"
+  ]
+}

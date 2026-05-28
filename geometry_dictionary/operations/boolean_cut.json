@@ -1,0 +1,11 @@
+{
+  "term_id": "boolean_cut",
+  "category": "mesh_operation",
+  "plain_name": "Boolean Cut",
+  "description": "Subtracts a cutter solid from a target solid to create an opening or void.",
+  "required_inputs": { "target": "solid_ref", "cutter": "solid_ref" },
+  "outputs": { "type": "solid_definition | mesh_future" },
+  "constraints": { "target_exists": true, "cutter_exists": true },
+  "blender_method": "apply boolean difference with cutter object, then validate mesh",
+  "validation": ["nonzero_volume", "manifold_mesh", "outward_normals"]
+}

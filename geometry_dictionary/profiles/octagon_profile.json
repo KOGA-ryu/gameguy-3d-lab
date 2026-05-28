@@ -1,0 +1,13 @@
+{
+  "term_id": "octagon",
+  "category": "profile_primitive",
+  "plain_name": "Octagon Profile",
+  "description": "A closed eight-sided regular polygon profile.",
+  "required_params": { "radius": "float" },
+  "units": "meters",
+  "outputs": { "type": "closed_2d_profile", "coordinate_space": "local_xy", "must_be_closed": true },
+  "constraints": { "radius": "> 0", "vertex_count": 8 },
+  "common_uses": ["octagonal column", "fantasy pillar", "bolt", "faceted post"],
+  "blender_method": "generate eight radial vertices around origin, create face, extrude",
+  "validation": ["closed_profile", "nonzero_area", "matching_vertex_count_if_lofted"]
+}

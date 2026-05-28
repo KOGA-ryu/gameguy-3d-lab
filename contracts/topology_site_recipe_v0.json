@@ -1,0 +1,57 @@
+{
+  "schema": "topology_site_recipe_contract_v0",
+  "purpose": "Machine-readable topology site recipes that connect terrain shape requirements to existing building assemblies.",
+  "coordinate_model": {
+    "unit": "abstract_meter",
+    "axes": {
+      "x": "east-west",
+      "y": "south-north",
+      "z": "height"
+    },
+    "domain": "site-local coordinates; topology origin is arbitrary"
+  },
+  "required_fields": [
+    "schema",
+    "site_id",
+    "units",
+    "topology_terms",
+    "terrain_primitives",
+    "building_placement",
+    "foundation_adapter",
+    "routes",
+    "affordance_facts",
+    "no_claims"
+  ],
+  "terrain_primitive_fields": [
+    "terrain_id",
+    "topology_type",
+    "shape",
+    "center",
+    "size",
+    "elevation",
+    "semantic_tags"
+  ],
+  "building_placement_fields": [
+    "source_assembly_id",
+    "site_type",
+    "origin",
+    "rotation_degrees",
+    "elevation",
+    "connection_requirements"
+  ],
+  "foundation_adapter_fields": [
+    "adapter_type",
+    "asset_instances",
+    "blend_rules"
+  ],
+  "rules": {
+    "topology_terms_must_exist_in_topology_dictionary": true,
+    "source_assembly_must_exist": true,
+    "foundation_assets_must_exist_in_asset_mill": true,
+    "terrain_primitives_must_emit_affordance_facts": true,
+    "no_mesh_output": true,
+    "no_blender_output": true,
+    "no_structural_claims": true,
+    "no_fabrication_claims": true
+  }
+}

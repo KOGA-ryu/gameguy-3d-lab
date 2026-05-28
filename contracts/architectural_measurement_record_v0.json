@@ -1,0 +1,81 @@
+{
+  "schema_id": "architectural_measurement_record_v0",
+  "purpose": "Defines extracted architectural measurement records that compile into proportion ranges for procedural grammar.",
+  "required_fields": [
+    "measurement_id",
+    "source_id",
+    "architectural_term_candidate",
+    "raw_measurements",
+    "derived_ratios",
+    "extraction_method",
+    "confidence",
+    "unit_notes",
+    "do_not_copy_geometry",
+    "notes"
+  ],
+  "allowed_term_candidates": [
+    "pointed_arch_bay",
+    "round_arch_bay",
+    "octagonal_plan",
+    "radial_plan",
+    "column",
+    "pier",
+    "column_or_pier",
+    "dome",
+    "vault",
+    "vault_rib",
+    "dome_or_vault",
+    "wall_bay",
+    "window_lancet",
+    "placeholder"
+  ],
+  "allowed_extraction_methods": [
+    "explicit_source_dimension",
+    "scaled_from_measured_drawing",
+    "treatise_rule",
+    "derived_from_two_values",
+    "placeholder"
+  ],
+  "allowed_confidence": [
+    "high",
+    "medium",
+    "low",
+    "placeholder"
+  ],
+  "raw_measurement_fields": [
+    "span_m",
+    "springline_height_m",
+    "apex_height_m",
+    "rise_m",
+    "bay_width_m",
+    "bay_depth_m",
+    "wall_thickness_m",
+    "column_radius_m",
+    "column_height_m",
+    "pier_width_m",
+    "plan_diameter_m",
+    "dome_diameter_m",
+    "vault_rib_thickness_m"
+  ],
+  "derived_ratio_fields": [
+    "rise_to_span",
+    "springline_to_span",
+    "pier_to_span",
+    "wall_thickness_to_span",
+    "column_radius_to_span",
+    "column_height_to_span",
+    "dome_to_plan_diameter",
+    "rib_to_span"
+  ],
+  "rules": {
+    "measurement_id_format": "lower_snake_case",
+    "source_id_must_exist": true,
+    "values_are_metric_or_null": true,
+    "ratios_are_unitless_or_null": true,
+    "null_is_allowed_for_unknown_values": true,
+    "do_not_copy_geometry_must_be_true": true,
+    "no_structural_safety_claims": true,
+    "no_fabrication_claims": true,
+    "no_production_approval": true
+  }
+}

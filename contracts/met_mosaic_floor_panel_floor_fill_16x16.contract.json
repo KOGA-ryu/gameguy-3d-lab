@@ -1,0 +1,59 @@
+{
+  "asset_id": "met_mosaic_floor_panel_floor_fill_16x16",
+  "source_image_path": "sources/met_mosaic_floor_panel_38_11_12_reference_not_downloaded.txt",
+  "source_title": "Mosaic floor panel",
+  "source_author_or_culture": "Roman",
+  "source_date_or_period": "2nd century CE",
+  "source_url": "https://www.metmuseum.org/art/collection/search/253565",
+  "source_license": "CC0",
+  "source_license_url": "https://www.metmuseum.org/hubs/open-access",
+  "source_institution": "The Metropolitan Museum of Art",
+  "motif_type": "floor_fill",
+  "target_tile_size_px": "16x16",
+  "tile_category": "floor",
+  "palette_id": "roman_stone_glass_floor_v0",
+  "allowed_palette": [
+    "#23211d",
+    "#3a342c",
+    "#5b5143",
+    "#7d705c",
+    "#a4967b",
+    "#c8bda1",
+    "#6d2f29",
+    "#2f5b55"
+  ],
+  "required_layers": [
+    "reference",
+    "crop_grid",
+    "rough_trace",
+    "clean_tesserae",
+    "palette_blocks",
+    "grout_lines",
+    "damage_overlay",
+    "seam_test",
+    "export"
+  ],
+  "animation_tags_or_export_tags": [
+    "floor_clean",
+    "floor_cracked",
+    "floor_overgrown",
+    "border_straight",
+    "border_corner",
+    "threshold",
+    "centerpiece"
+  ],
+  "seamless_required": true,
+  "border_padding_px": 0,
+  "export_targets": [
+    {
+      "kind": "png",
+      "path": "exports/met_mosaic_floor_panel_floor_fill_16x16.png"
+    },
+    {
+      "kind": "json",
+      "path": "exports/met_mosaic_floor_panel_floor_fill_16x16.json"
+    }
+  ],
+  "review_status": "exported",
+  "notes": "First pilot tile only: a manually authored 16x16 floor-fill study tied to a verified Met Open Access source record. No museum source image was downloaded or traced."
+}

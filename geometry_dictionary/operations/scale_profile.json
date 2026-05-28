@@ -1,0 +1,11 @@
+{
+  "term_id": "scale_profile",
+  "category": "transform",
+  "plain_name": "Scale Profile",
+  "description": "Scales a profile uniformly or per-axis before an operation.",
+  "required_inputs": { "profile": "profile_primitive", "scale": "float | vec2" },
+  "outputs": { "type": "profile_primitive_instance" },
+  "constraints": { "scale_components": "> 0" },
+  "blender_method": "multiply profile vertices by scale before mesh creation",
+  "validation": ["scale_within_bounds", "nonzero_area"]
+}

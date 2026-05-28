@@ -1,0 +1,38 @@
+{
+  "schema": "measurement_semantic_role_links_v1",
+  "purpose": "Semantic role targets for Research Dex v1 measurement records.",
+  "links": {
+    "pointed_arch_bay": ["opening", "support", "panel_socket", "line_of_sight_frame"],
+    "round_arch_bay": ["opening", "support", "panel_socket", "line_of_sight_frame"],
+    "horseshoe_arch_bay": ["opening", "decorative_only", "portal_frame"],
+    "ogee_arch_bay": ["opening", "decorative_only", "portal_frame"],
+    "portal_frame": ["opening", "transition_marker", "line_of_sight_frame"],
+    "window_tracery_bay": ["line_of_sight_frame", "decorative_only", "wall_bay"],
+    "blind_arcade": ["decorative_only", "wall_articulation", "rhythm_marker"],
+    "column_base_shaft_capital": ["support", "rhythm_marker", "decorative_only"],
+    "pier_bundle": ["support", "connector", "occlusion"],
+    "buttress_profile": ["support_expression", "wall_articulation", "cover_edge"],
+    "flying_buttress": ["support_expression", "span_marker", "wall_articulation"],
+    "vault_rib_cell": ["ceiling_grid", "directional_axis", "decorative_only"],
+    "groin_vault_cell": ["ceiling_grid", "bay_marker", "directional_axis"],
+    "barrel_vault": ["ceiling_span", "route_cover", "directional_axis"],
+    "dome_on_octagon": ["ceiling_landmark", "radial_focus", "connector"],
+    "octagonal_plan_core": ["radial_room", "hub", "connector"],
+    "central_plan_chapel": ["radial_room", "ritual_axis", "hub"],
+    "stair_tower": ["vertical_connector", "route_constraint", "occlusion"],
+    "cloister_bay": ["connector", "covered_walk", "rhythm_marker", "line_of_sight_frame"],
+    "facade_bay": ["wall_articulation", "rhythm_marker", "opening"],
+    "wall_panel": ["panel_socket", "wall_articulation", "decorative_only"],
+    "ceiling_coffer": ["ceiling_grid", "decorative_only", "scale_marker"],
+    "dome_rib_pattern": ["ceiling_landmark", "radial_focus", "decorative_only"],
+    "muqarnas_tier": ["transition", "decorative_only", "ceiling_landmark"],
+    "jali_screen_bay": ["screen", "line_of_sight_filter", "decorative_only"],
+    "floor_plan_octagon": ["radial_room", "hub", "circulation_node"]
+  },
+  "rules": {
+    "semantic_roles_are_handoff_metadata_only": true,
+    "ready_for_recipe_requires_compiled_ranges": true,
+    "no_structural_safety_claims": true,
+    "no_cultural_authenticity_claims": true
+  }
+}

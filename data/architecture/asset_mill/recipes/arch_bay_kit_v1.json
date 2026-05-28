@@ -1,0 +1,62 @@
+{
+  "schema": "architectural_asset_kit_recipe_v1",
+  "kit_id": "arch_bay_kit_v1",
+  "purpose": "A focused doorway/window language kit: arch bays with clearer openings, side supports, trim, voussoirs, and panel roles.",
+  "units": "abstract_meter",
+  "assets": [
+    {
+      "asset_id": "pointed_arch_doorway_v1",
+      "builder_kind": "pointed_arch_doorway",
+      "architectural_role": "doorway_arch_bay",
+      "semantic_tags": ["blocked", "support", "route_threshold", "landmark"]
+    },
+    {
+      "asset_id": "round_arch_doorway_v1",
+      "builder_kind": "round_arch_doorway",
+      "architectural_role": "round_doorway_arch_bay",
+      "semantic_tags": ["blocked", "support", "route_threshold"]
+    },
+    {
+      "asset_id": "narrow_lancet_window_v1",
+      "builder_kind": "narrow_lancet_window",
+      "architectural_role": "window_arch_bay",
+      "semantic_tags": ["blocked", "line_of_sight_filter", "decorative_only"]
+    },
+    {
+      "asset_id": "double_arcade_bay_v1",
+      "builder_kind": "double_arcade_bay",
+      "architectural_role": "arcade_wall_bay",
+      "semantic_tags": ["blocked", "support", "cover", "rhythm_module"]
+    },
+    {
+      "asset_id": "columned_arch_portal_v1",
+      "builder_kind": "columned_arch_portal",
+      "architectural_role": "portal_arch_bay",
+      "semantic_tags": ["support", "route_threshold", "landmark"]
+    },
+    {
+      "asset_id": "broken_arch_bay_v1",
+      "builder_kind": "broken_arch_bay",
+      "architectural_role": "damaged_arch_bay",
+      "semantic_tags": ["blocked", "cover", "ruin", "landmark"]
+    },
+    {
+      "asset_id": "recessed_arch_panel_v1",
+      "builder_kind": "recessed_arch_panel",
+      "architectural_role": "ornamental_wall_bay",
+      "semantic_tags": ["blocked", "panel_socket", "decorative_only"]
+    },
+    {
+      "asset_id": "oculus_arch_bay_v1",
+      "builder_kind": "oculus_arch_bay",
+      "architectural_role": "upper_wall_oculus_bay",
+      "semantic_tags": ["blocked", "line_of_sight_filter", "decorative_only"]
+    }
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false
+  }
+}

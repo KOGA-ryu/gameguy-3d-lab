@@ -1,0 +1,13 @@
+{
+  "term_id": "trapezoid",
+  "category": "profile_primitive",
+  "plain_name": "Trapezoid Profile",
+  "description": "A closed four-sided profile with different top and bottom widths.",
+  "required_params": { "bottom_width": "float", "top_width": "float", "depth": "float" },
+  "units": "meters",
+  "outputs": { "type": "closed_2d_profile", "coordinate_space": "local_xy", "must_be_closed": true },
+  "constraints": { "bottom_width": "> 0", "top_width": "> 0", "depth": "> 0" },
+  "common_uses": ["ramp", "taper block", "support foot", "buttress seed"],
+  "blender_method": "generate bottom and top edge widths in local XY, create face, extrude",
+  "validation": ["closed_profile", "nonzero_area", "vertex_order_is_clockwise_or_declared"]
+}

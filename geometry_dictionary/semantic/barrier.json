@@ -1,0 +1,12 @@
+{
+  "term_id": "barrier",
+  "category": "semantic_geometry",
+  "plain_name": "Barrier",
+  "description": "Geometry that discourages or blocks traversal across an edge.",
+  "required_inputs": { "asset_ref": "solid_definition", "edge_ref": "bounds_edge | connector" },
+  "outputs": { "type": "barrier_hint" },
+  "constraints": { "edge_or_bounds_ref_exists": true },
+  "common_uses": ["railing", "fence", "low wall", "bridge edge"],
+  "blender_method": "tag object as barrier and optional cover",
+  "validation": ["nonzero_volume", "edge_ref_exists"]
+}

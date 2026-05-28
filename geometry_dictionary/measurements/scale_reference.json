@@ -1,0 +1,10 @@
+{
+  "term_id": "scale_reference",
+  "category": "measurement",
+  "plain_name": "Scale Reference",
+  "description": "Known real or chosen measurement used to convert image pixels or normalized units into project units.",
+  "required_inputs": { "reference_label": "string", "measured_value": "float", "target_units": "string" },
+  "outputs": { "scale_factor": "float", "unit": "string" },
+  "used_by": ["reference_measurement_bench", "asset_mill", "blender_export_future"],
+  "validation": ["finite_value", "value_is_positive", "unit_declared"]
+}

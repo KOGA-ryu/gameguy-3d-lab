@@ -1,0 +1,85 @@
+{
+  "schema": "architectural_measurement_sources_fetch_packet_v1",
+  "version": "v1",
+  "purpose": "Primary source fetch list for Research Dex architectural measurement extraction.",
+  "landing_zone": "data/architecture/taxonomy/source_measurements/",
+  "proof_report_zones": [
+    "docs/research/architectural_measurements/",
+    "goal/receipts/"
+  ],
+  "downstream_only_zones": [
+    "pattern_lab/",
+    "pattern_lab_3d/",
+    "factory/artifacts/",
+    "zoo/"
+  ],
+  "source_policy": {
+    "prefer_measured_drawings_over_photos": true,
+    "prefer_plan_elevation_section_over_prose": true,
+    "if_no_dimensions": "mark_morphology_reference_only",
+    "extract": "ratios_and_taxonomy_not_art",
+    "do_not_download_or_reuse_protected_images": true,
+    "no_structural_safety_claims": true,
+    "no_cultural_authenticity_claims": true,
+    "no_fabrication_claims": true
+  },
+  "primary_source_websites": [
+    {
+      "source_id": "loc_habs_haer_hals_v1",
+      "source_title": "Library of Congress HABS/HAER/HALS Collection",
+      "source_url": "https://www.loc.gov/pictures/collection/hh/",
+      "source_type": "measured_drawing_archive",
+      "use_for": ["measured_drawings", "plans", "elevations", "sections", "historic_structures"],
+      "note": "Best source. LOC describes the collection as architectural, engineering, and landscape documentation with photos, written histories, and measured drawings."
+    },
+    {
+      "source_id": "historic_england_archive_v1",
+      "source_title": "Historic England Archive",
+      "source_url": "https://historicengland.org.uk/images-books/photos/",
+      "source_type": "measured_drawing_archive",
+      "use_for": ["measured_drawings", "historic_plans", "architectural_details", "uk_gothic_medieval_references"],
+      "note": "Rights vary. Extract measurements only and record uncertainty."
+    },
+    {
+      "source_id": "vitruvius_project_gutenberg_v1",
+      "source_title": "Vitruvius, The Ten Books on Architecture",
+      "source_url": "https://www.gutenberg.org/ebooks/20239",
+      "source_type": "public_domain_treatise",
+      "use_for": ["classical_proportions", "terms", "orders", "principles"],
+      "note": "Public-domain text. Use for proportion vocabulary, not direct visual copying."
+    },
+    {
+      "source_id": "palladio_smithsonian_v1",
+      "source_title": "Palladio, Smithsonian Digital Library",
+      "source_url": "https://library.si.edu/digital-library/book/architecturepal00pall",
+      "source_type": "public_domain_treatise",
+      "use_for": ["classical_plans", "elevations", "column_order_proportions", "plan_section_ratios"],
+      "note": "Use for measured classical grammar and plan/section ratios."
+    },
+    {
+      "source_id": "ely_cathedral_octagon_v1",
+      "source_title": "Ely Cathedral Octagon",
+      "source_url": "https://www.elycathedral.org/history-heritage/the-octagon",
+      "source_type": "building_dimension_page",
+      "use_for": ["octagonal_tower", "dome_lantern_reference", "octagon_width", "internal_height"],
+      "note": "Strong target: Ely gives key octagon dimensions, including width and internal height."
+    },
+    {
+      "source_id": "castel_del_monte_architecture_v1",
+      "source_title": "Castel del Monte Architecture",
+      "source_url": "https://www.casteldelmonte.beniculturali.it/en/architecture/",
+      "source_type": "building_dimension_page",
+      "use_for": ["octagonal_fortress_plan", "towers", "radial_symmetry", "floor_plan_octagon"],
+      "note": "Use for octagonal plan grammar. If dimensions are missing, mark as morphology reference only."
+    }
+  ],
+  "source_record_output_requirements": {
+    "source_id": "lower_snake_case_versioned_id",
+    "source_url": "source URL",
+    "source_title": "source title",
+    "source_type": "measured_drawing | treatise | building_dimension_page | archive_record | academic_pdf | morphology_reference_only",
+    "rights_note": "public domain / source-specific note / unknown",
+    "confidence": "high | medium | low",
+    "notes": "Only measurement-relevant notes."
+  }
+}

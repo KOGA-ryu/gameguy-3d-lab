@@ -1,0 +1,29 @@
+{
+  "term_id": "offset_profile",
+  "category": "mesh_operation",
+  "plain_name": "Offset Profile",
+  "description": "Creates an inset or outset copy of a 2D profile by a measured distance.",
+  "required_inputs": {
+    "profile": "profile_primitive",
+    "offset": "float",
+    "join_style": "miter | round | bevel"
+  },
+  "outputs": {
+    "type": "derived_profile"
+  },
+  "constraints": {
+    "offset": "nonzero",
+    "source_profile_must_be_ordered": true
+  },
+  "common_uses": [
+    "arch thickness",
+    "wall inset",
+    "panel border",
+    "trapezoid adapter inset"
+  ],
+  "blender_method": "generate or approximate offset profile before extrusion",
+  "validation": [
+    "derived_profile_has_no_self_intersections",
+    "profile_is_closed_if_source_is_closed"
+  ]
+}

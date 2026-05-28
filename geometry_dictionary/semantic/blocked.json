@@ -1,0 +1,12 @@
+{
+  "term_id": "blocked",
+  "category": "semantic_geometry",
+  "plain_name": "Blocked",
+  "description": "Geometry that should obstruct movement.",
+  "required_inputs": { "bounds_or_collision_ref": "bounds | mesh_ref" },
+  "outputs": { "type": "movement_obstruction_hint" },
+  "constraints": { "collision_proxy_required": true },
+  "common_uses": ["wall", "post", "pillar", "rock"],
+  "blender_method": "tag object or bounds as collision blocker",
+  "validation": ["nonzero_volume", "collision_proxy_exists"]
+}

@@ -1,0 +1,11 @@
+{
+  "term_id": "mirror_axis",
+  "category": "transform",
+  "plain_name": "Mirror Axis",
+  "description": "Mirrors a profile, solid, or placement across a declared local axis.",
+  "required_inputs": { "input_ref": "profile | solid | component", "axis": "x | y | z" },
+  "outputs": { "type": "mirrored_instance" },
+  "constraints": { "axis_must_be_declared": true },
+  "blender_method": "multiply selected coordinate by -1 or apply mirror modifier",
+  "validation": ["bounds_update_is_valid", "vertex_order_is_clockwise_or_declared"]
+}

@@ -1,0 +1,12 @@
+{
+  "term_id": "origin",
+  "category": "connector",
+  "plain_name": "Origin",
+  "description": "The local coordinate reference point for a generated asset.",
+  "required_params": { "position": "vec3", "orientation": "basis3 | euler | quaternion" },
+  "outputs": { "type": "local_coordinate_frame" },
+  "constraints": { "position_is_finite": true, "orientation_is_valid": true },
+  "common_uses": ["asset placement", "grid placement", "rotation pivot", "scale pivot"],
+  "blender_method": "set object origin or collection root transform",
+  "validation": ["position_is_finite", "orientation_is_valid"]
+}

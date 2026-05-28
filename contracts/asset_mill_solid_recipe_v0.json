@@ -1,0 +1,98 @@
+{
+  "schema": "asset_mill_solid_recipe_contract_v0",
+  "purpose": "Define measured 2D profiles and simple operations that can become reusable solid architectural assets.",
+  "coordinate_model": {
+    "unit": "abstract_meter",
+    "axes": {
+      "x": "width / left-right",
+      "y": "depth / front-back",
+      "z": "height / up-down"
+    },
+    "origin_rule": "asset local origin is centered on the footprint unless a recipe says otherwise"
+  },
+  "profile_types": {
+    "rectangle": {
+      "required_params": ["width", "depth"],
+      "use": ["block", "brick", "beam", "slab", "trim"]
+    },
+    "square": {
+      "required_params": ["size"],
+      "use": ["post", "plinth", "pedestal"]
+    },
+    "circle": {
+      "required_params": ["radius", "segments"],
+      "use": ["cylinder", "peg", "pipe_core", "round_post"]
+    },
+    "triangle": {
+      "required_params": ["width", "depth"],
+      "use": ["wedge", "roof_prism", "brace"]
+    },
+    "trapezoid": {
+      "required_params": ["bottom_width", "top_width", "depth"],
+      "use": ["ramp", "taper_block", "support_foot"]
+    },
+    "regular_polygon": {
+      "required_params": ["sides", "radius"],
+      "use": ["octagon_column", "bolt", "fantasy_pillar"]
+    },
+    "capsule": {
+      "required_params": ["length", "radius", "segments"],
+      "use": ["rounded_rail", "soft_beam", "sci_fi_panel"]
+    }
+  },
+  "operations": {
+    "extrude": {
+      "required_fields": ["profile", "height"],
+      "output": "one profile solidified along one axis"
+    },
+    "loft_sections": {
+      "required_fields": ["sections"],
+      "output": "two or more profiles connected along one axis"
+    },
+    "compound": {
+      "required_fields": ["components"],
+      "output": "assembly of already compiled asset definitions"
+    }
+  },
+  "required_asset_fields": [
+    "asset_id",
+    "asset_kind",
+    "operation",
+    "architectural_role",
+    "generation_use",
+    "semantic_tags",
+    "connectors",
+    "child_slots",
+    "no_claims"
+  ],
+  "required_no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false
+  },
+  "compiler_outputs": {
+    "geometry_outputs": [
+      "profile_points_2d",
+      "sections",
+      "bounds",
+      "connector_points",
+      "component_refs"
+    ],
+    "semantic_outputs": [
+      "walkable",
+      "blocked",
+      "cover",
+      "support",
+      "trim",
+      "climbable",
+      "slot",
+      "assembly_anchor"
+    ]
+  },
+  "notes": [
+    "This contract does not imply structural validity.",
+    "This contract does not create render art or mesh files.",
+    "The first compiler target is measured JSON for future Blender/engine realization."
+  ]
+}

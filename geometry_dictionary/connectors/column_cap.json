@@ -1,0 +1,30 @@
+{
+  "term_id": "column_cap",
+  "category": "connector",
+  "plain_name": "Column Cap",
+  "description": "A connector on top of a column or pier where arches, beams, or vault ribs may attach.",
+  "required_params": {
+    "position": "vec3",
+    "normal": "vec3",
+    "compatible_tags": "string[]"
+  },
+  "outputs": {
+    "type": "support_top_connector"
+  },
+  "constraints": {
+    "normal_points_up_or_declared_direction": true,
+    "compatible_tags_not_empty": true
+  },
+  "common_uses": [
+    "arch springline support",
+    "vault rib support",
+    "beam support",
+    "capital ornament socket"
+  ],
+  "blender_method": "create empty or named vertex marker at support top",
+  "validation": [
+    "column_cap_position_matches_support_height",
+    "direction_is_normalized",
+    "compatible_tags_not_empty"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "term_id": "capsule",
+  "category": "profile_primitive",
+  "plain_name": "Capsule Profile",
+  "description": "A rectangle-like profile with semicircular ends.",
+  "required_params": { "length": "float", "radius": "float", "segments": "int" },
+  "units": "meters",
+  "outputs": { "type": "closed_2d_profile", "coordinate_space": "local_xy", "must_be_closed": true },
+  "constraints": { "length": "> radius * 2", "radius": "> 0", "segments": ">= 6" },
+  "common_uses": ["rounded rail", "pipe rail", "soft beam", "sci-fi panel"],
+  "blender_method": "generate two semicircle arcs connected by straight sides, create face, extrude",
+  "validation": ["closed_profile", "nonzero_area", "vertex_order_is_clockwise_or_declared"]
+}

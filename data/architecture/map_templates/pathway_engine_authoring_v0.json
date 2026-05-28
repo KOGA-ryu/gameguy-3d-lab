@@ -1,0 +1,355 @@
+{
+  "schema": "map_authoring_map_v0",
+  "map_id": "pathway_engine_authoring_v0",
+  "source_scene_family": "pathway_engine_testbed_v0",
+  "description": "Stable authoring description for the flat Pathway Engine plug/path testbed before Blender rendering.",
+  "size": {
+    "width_cells": 32,
+    "height_cells": 32,
+    "hex_radius_m": 0.55,
+    "vertical_step_m": 1.0,
+    "layout": "pointy_top_odd_row_hex",
+    "height_range_m": [
+      2.0,
+      2.0
+    ]
+  },
+  "elevation_bands": [
+    {
+      "band_id": "flat_testbed_base",
+      "height_m": 2.0,
+      "role": "mostly_flat_pathway_logic_testbed"
+    }
+  ],
+  "terrain_features": [
+    {
+      "feature_id": "central_yard",
+      "feature_type": "yard",
+      "geometry": {
+        "kind": "rect",
+        "x": 10.0,
+        "y": 12.0,
+        "width": 12.0,
+        "height": 8.0
+      },
+      "surface_type": "yard"
+    },
+    {
+      "feature_id": "yard_road_surface",
+      "feature_type": "road_surface",
+      "geometry": {
+        "kind": "rect",
+        "x": 3.0,
+        "y": 22.0,
+        "width": 26.0,
+        "height": 2.0
+      },
+      "surface_type": "road"
+    }
+  ],
+  "roads": [
+    {
+      "road_id": "yard_road",
+      "points_map": [
+        [
+          3.0,
+          22.75
+        ],
+        [
+          29.0,
+          22.75
+        ]
+      ],
+      "width_m": 2.2,
+      "movement_tag": "route",
+      "surface_type": "road"
+    }
+  ],
+  "building_plots": [
+    {
+      "plot_id": "workshop_plot",
+      "geometry": {
+        "kind": "rect",
+        "x": 5.8,
+        "y": 14.1,
+        "width": 4.4,
+        "height": 3.4
+      },
+      "plot_role": "left_service_building",
+      "building_id": "workshop",
+      "building_dimensions_m": {
+        "width": 4.4,
+        "depth": 3.4,
+        "height": 2.2
+      }
+    },
+    {
+      "plot_id": "central_hall_plot",
+      "geometry": {
+        "kind": "rect",
+        "x": 13.3,
+        "y": 13.8,
+        "width": 5.4,
+        "height": 4.0
+      },
+      "plot_role": "pathway_hub_building",
+      "building_id": "central_hall",
+      "building_dimensions_m": {
+        "width": 5.4,
+        "depth": 4.0,
+        "height": 2.6
+      }
+    },
+    {
+      "plot_id": "storehouse_plot",
+      "geometry": {
+        "kind": "rect",
+        "x": 21.8,
+        "y": 14.1,
+        "width": 4.4,
+        "height": 3.4
+      },
+      "plot_role": "right_storage_building",
+      "building_id": "storehouse",
+      "building_dimensions_m": {
+        "width": 4.4,
+        "depth": 3.4,
+        "height": 2.2
+      }
+    }
+  ],
+  "hazards": [],
+  "asset_sockets": [],
+  "plugs": [
+    {
+      "plug_id": "workshop.main_entry",
+      "owner_id": "workshop",
+      "owner_type": "building",
+      "plug_type": "entrance",
+      "position_map": [
+        10.2,
+        15.8
+      ],
+      "direction_map": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "width_m": 1.45,
+      "clearance_m": 2.2,
+      "allowed_connection_types": [
+        "flat_pathway",
+        "road_threshold"
+      ],
+      "priority": "primary"
+    },
+    {
+      "plug_id": "central_hall.west_entry",
+      "owner_id": "central_hall",
+      "owner_type": "building",
+      "plug_type": "entrance",
+      "position_map": [
+        13.3,
+        15.8
+      ],
+      "direction_map": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "width_m": 1.45,
+      "clearance_m": 2.2,
+      "allowed_connection_types": [
+        "flat_pathway",
+        "road_threshold"
+      ],
+      "priority": "primary"
+    },
+    {
+      "plug_id": "central_hall.east_entry",
+      "owner_id": "central_hall",
+      "owner_type": "building",
+      "plug_type": "entrance",
+      "position_map": [
+        18.7,
+        15.8
+      ],
+      "direction_map": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "width_m": 1.45,
+      "clearance_m": 2.2,
+      "allowed_connection_types": [
+        "flat_pathway",
+        "road_threshold"
+      ],
+      "priority": "primary"
+    },
+    {
+      "plug_id": "central_hall.south_entry",
+      "owner_id": "central_hall",
+      "owner_type": "building",
+      "plug_type": "entrance",
+      "position_map": [
+        16.0,
+        17.8
+      ],
+      "direction_map": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "width_m": 1.45,
+      "clearance_m": 2.2,
+      "allowed_connection_types": [
+        "flat_pathway",
+        "road_threshold"
+      ],
+      "priority": "secondary"
+    },
+    {
+      "plug_id": "storehouse.main_entry",
+      "owner_id": "storehouse",
+      "owner_type": "building",
+      "plug_type": "entrance",
+      "position_map": [
+        21.8,
+        15.8
+      ],
+      "direction_map": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "width_m": 1.45,
+      "clearance_m": 2.2,
+      "allowed_connection_types": [
+        "flat_pathway",
+        "road_threshold"
+      ],
+      "priority": "primary"
+    },
+    {
+      "plug_id": "yard_road.north_plug",
+      "owner_id": "yard_road",
+      "owner_type": "road",
+      "plug_type": "road",
+      "position_map": [
+        16.0,
+        21.5
+      ],
+      "direction_map": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "width_m": 2.2,
+      "clearance_m": 99.0,
+      "allowed_connection_types": [
+        "road_threshold",
+        "flat_pathway"
+      ],
+      "priority": "primary"
+    }
+  ],
+  "declared_connections": [
+    {
+      "connection_id": "central_to_workshop_path",
+      "from_plug": "central_hall.west_entry",
+      "to_plug": "workshop.main_entry",
+      "connection_type": "flat_pathway",
+      "width_m": 1.45,
+      "max_slope": 0.08,
+      "min_clearance_m": 2.0,
+      "turn_radius_m": 1.0,
+      "deterministic_route_policy": "declared_gentle_bend_v0",
+      "route_points_map": [
+        [
+          13.3,
+          15.8
+        ],
+        [
+          12.0,
+          14.8
+        ],
+        [
+          10.2,
+          15.8
+        ]
+      ]
+    },
+    {
+      "connection_id": "central_to_storehouse_path",
+      "from_plug": "central_hall.east_entry",
+      "to_plug": "storehouse.main_entry",
+      "connection_type": "flat_pathway",
+      "width_m": 1.45,
+      "max_slope": 0.08,
+      "min_clearance_m": 2.0,
+      "turn_radius_m": 1.0,
+      "deterministic_route_policy": "declared_gentle_bend_v0",
+      "route_points_map": [
+        [
+          18.7,
+          15.8
+        ],
+        [
+          20.0,
+          14.8
+        ],
+        [
+          21.8,
+          15.8
+        ]
+      ]
+    },
+    {
+      "connection_id": "central_to_yard_road_threshold",
+      "from_plug": "central_hall.south_entry",
+      "to_plug": "yard_road.north_plug",
+      "connection_type": "road_threshold",
+      "width_m": 1.8,
+      "max_slope": 0.08,
+      "min_clearance_m": 2.0,
+      "turn_radius_m": 1.0,
+      "deterministic_route_policy": "short_threshold_to_road_v0",
+      "route_points_map": [
+        [
+          16.0,
+          17.8
+        ],
+        [
+          16.0,
+          19.3
+        ],
+        [
+          16.0,
+          21.5
+        ]
+      ]
+    }
+  ],
+  "template_flags": {
+    "do_not_rewrite": false,
+    "mutable_working_copy": true,
+    "protected_template": false
+  },
+  "provenance": {
+    "source_template": "data/architecture/map_templates/pathway_engine_v0.json",
+    "relationship_to_hillwatch_ravine": "lower settlement / approach yard before hill climb",
+    "new_map_not_derived_from_previous_templates": true,
+    "blender_hardcoded_generation_required": false,
+    "movement_simulation_included": false,
+    "asset_geometry_changed": false,
+    "silent_asset_scaling": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false
+  }
+}

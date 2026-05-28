@@ -1,0 +1,32 @@
+{
+  "term_id": "array_radial",
+  "category": "composition_operation",
+  "plain_name": "Radial Array",
+  "description": "Repeats an item around a center point at equal angular intervals.",
+  "required_inputs": {
+    "item": "asset_or_profile_ref",
+    "center": "vec3",
+    "count": "int",
+    "radius": "float",
+    "start_angle_degrees": "float"
+  },
+  "outputs": {
+    "type": "placed_instance_list"
+  },
+  "constraints": {
+    "count": ">= 2",
+    "radius": ">= 0"
+  },
+  "common_uses": [
+    "octagonal room bays",
+    "columns around a nave",
+    "dome ribs",
+    "radial ornament"
+  ],
+  "blender_method": "place instances with rotation around a shared center",
+  "validation": [
+    "instance_count_matches_array_count",
+    "angles_are_evenly_spaced",
+    "instances_reference_valid_source"
+  ]
+}

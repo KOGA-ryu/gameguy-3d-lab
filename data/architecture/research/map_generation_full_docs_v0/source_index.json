@@ -1,0 +1,287 @@
+{
+  "schema": "map_generation_full_docs_source_index_v0",
+  "created_utc": "2026-05-27T00:00:00Z",
+  "purpose": "Source index for map, terrain, building generation technical documentation packet.",
+  "rules": {
+    "no_images_downloaded": true,
+    "no_raw_html_dumps": true,
+    "no_mesh_files": true,
+    "no_scraped_assets": true,
+    "documentation_only": true
+  },
+  "sources": [
+    {
+      "source_id": "redblob_hex_grids",
+      "title": "Red Blob Games Hexagonal Grids",
+      "url": "https://www.redblobgames.com/grids/hexagons/",
+      "source_group": "redblob_hex",
+      "use_for": ["axial_coordinates", "cube_coordinates", "offset_coordinates", "neighbors", "distance", "ranges", "rings", "line_drawing", "hex_to_pixel", "pixel_to_hex", "map_storage"]
+    },
+    {
+      "source_id": "redblob_hex_implementation",
+      "title": "Red Blob Games Implementation of Hex Grids",
+      "url": "https://www.redblobgames.com/grids/hexagons/implementation.html",
+      "source_group": "redblob_hex",
+      "use_for": ["data_structures", "layout_class", "offset_conversion", "map_shapes", "storage_recommendations"]
+    },
+    {
+      "source_id": "redblob_hex_parts",
+      "title": "Red Blob Games Hexagon Parts",
+      "url": "https://www.redblobgames.com/grids/hexagons/parts/",
+      "source_group": "redblob_hex",
+      "use_for": ["corners", "edges", "vertices", "hex_part_vocabulary"]
+    },
+    {
+      "source_id": "tiled_json_map_format",
+      "title": "Tiled JSON Map Format",
+      "url": "https://doc.mapeditor.org/en/stable/reference/json-map-format/",
+      "source_group": "tiled",
+      "use_for": ["json_map_schema", "layers", "chunks", "objects", "tilesets", "properties", "terrain", "wangsets"]
+    },
+    {
+      "source_id": "tiled_tmx_map_format",
+      "title": "Tiled TMX Map Format",
+      "url": "https://doc.mapeditor.org/en/stable/reference/tmx-map-format/",
+      "source_group": "tiled",
+      "use_for": ["tmx_field_parity", "terminology", "xml_counterpart"]
+    },
+    {
+      "source_id": "tiled_custom_properties",
+      "title": "Tiled Custom Properties",
+      "url": "https://doc.mapeditor.org/en/stable/manual/custom-properties/",
+      "source_group": "tiled",
+      "use_for": ["custom_properties", "typed_metadata", "semantic_tags"]
+    },
+    {
+      "source_id": "tiled_objects",
+      "title": "Tiled Working with Objects",
+      "url": "https://doc.mapeditor.org/en/stable/manual/objects/",
+      "source_group": "tiled",
+      "use_for": ["object_layers", "rectangles", "points", "polygons", "polylines", "paths", "collision_regions"]
+    },
+    {
+      "source_id": "ldtk_json",
+      "title": "LDtk JSON Documentation",
+      "url": "https://ldtk.io/json/",
+      "source_group": "ldtk",
+      "use_for": ["json_version", "schema_links", "project_json"]
+    },
+    {
+      "source_id": "ldtk_docs",
+      "title": "LDtk Documentation",
+      "url": "https://ldtk.io/docs/",
+      "source_group": "ldtk",
+      "use_for": ["documentation_entry", "interface_docs", "game_dev_docs"]
+    },
+    {
+      "source_id": "ldtk_json_overview",
+      "title": "LDtk JSON Overview",
+      "url": "https://ldtk.io/docs/game-dev/json-overview/",
+      "source_group": "ldtk",
+      "use_for": ["root_structure", "defs", "levels", "layer_instances", "entity_fields"]
+    },
+    {
+      "source_id": "ldtk_optional_separate_levels",
+      "title": "LDtk Optional Separate Levels",
+      "url": "https://ldtk.io/docs/game-dev/json-overview/optional-separate-levels/",
+      "source_group": "ldtk",
+      "use_for": ["external_levels", "ldtkl_files"]
+    },
+    {
+      "source_id": "ldtk_json_schema",
+      "title": "LDtk JSON Schema",
+      "url": "https://ldtk.io/files/JSON_SCHEMA.json",
+      "source_group": "ldtk",
+      "use_for": ["field_names", "root_schema", "level_schema", "entity_instance_schema", "tile_schema"]
+    },
+    {
+      "source_id": "ldtk_minimal_json_schema",
+      "title": "LDtk Minimal JSON Schema",
+      "url": "https://ldtk.io/files/MINIMAL_JSON_SCHEMA.json",
+      "source_group": "ldtk",
+      "use_for": ["minimal_import_shape", "schema_reference"]
+    },
+    {
+      "source_id": "ghx_proc_gen_repo",
+      "title": "ghx_proc_gen Repository",
+      "url": "https://github.com/Henauxg/ghx_proc_gen",
+      "source_group": "wfc_model_synthesis",
+      "use_for": ["model_synthesis", "sockets", "rules_builder", "2d_3d_generation", "contradiction_handling"]
+    },
+    {
+      "source_id": "ghx_proc_gen_docs",
+      "title": "ghx_proc_gen docs.rs",
+      "url": "https://docs.rs/ghx_proc_gen/latest/ghx_proc_gen/",
+      "source_group": "wfc_model_synthesis",
+      "use_for": ["crate_items", "generator_module", "node_index", "error_types"]
+    },
+    {
+      "source_id": "mxgmn_wave_function_collapse",
+      "title": "WaveFunctionCollapse Repository",
+      "url": "https://github.com/mxgmn/WaveFunctionCollapse",
+      "source_group": "wfc_model_synthesis",
+      "use_for": ["wfc_algorithm", "adjacency_constraints", "symmetry", "higher_dimensions", "constrained_synthesis", "entropy_heuristic"]
+    },
+    {
+      "source_id": "ttg_repo",
+      "title": "Terraced Terrain Generator Repository",
+      "url": "https://github.com/lazysquirrellabs/TTG",
+      "source_group": "terraced_terrain",
+      "use_for": ["terrace_heights", "planar_terrain", "seeded_generation", "sculpt_settings", "height_distribution"]
+    },
+    {
+      "source_id": "blender_mesh",
+      "title": "Blender bpy.types.Mesh",
+      "url": "https://docs.blender.org/api/current/bpy.types.Mesh.html",
+      "source_group": "blender",
+      "use_for": ["mesh_from_pydata", "mesh_validate", "mesh_update", "normals", "materials"]
+    },
+    {
+      "source_id": "blender_bmesh",
+      "title": "Blender bmesh module",
+      "url": "https://docs.blender.org/api/current/bmesh.html",
+      "source_group": "blender",
+      "use_for": ["editable_mesh", "bmesh_from_mesh", "bmesh_to_mesh"]
+    },
+    {
+      "source_id": "blender_bmesh_ops",
+      "title": "Blender bmesh.ops",
+      "url": "https://docs.blender.org/api/current/bmesh.ops.html",
+      "source_group": "blender",
+      "use_for": ["bmesh_create_cube", "bmesh_extrude", "bmesh_recalc_normals", "bmesh_triangulate"]
+    },
+    {
+      "source_id": "blender_curve",
+      "title": "Blender bpy.types.Curve",
+      "url": "https://docs.blender.org/api/current/bpy.types.Curve.html",
+      "source_group": "blender",
+      "use_for": ["curve_splines", "curve_bevel_depth", "curve_extrude", "road_curves"]
+    },
+    {
+      "source_id": "blender_object_ops",
+      "title": "Blender object operators",
+      "url": "https://docs.blender.org/api/current/bpy.ops.object.html",
+      "source_group": "blender",
+      "use_for": ["object_join", "origin_set", "modifier_apply", "selection"]
+    },
+    {
+      "source_id": "blender_mesh_ops",
+      "title": "Blender mesh operators",
+      "url": "https://docs.blender.org/api/current/bpy.ops.mesh.html",
+      "source_group": "blender",
+      "use_for": ["primitive_add", "extrude_region", "bevel", "normals_make_consistent", "triangulate"]
+    },
+    {
+      "source_id": "sverchok_root",
+      "title": "Sverchok Documentation",
+      "url": "https://sverchok.readthedocs.io/",
+      "source_group": "sverchok",
+      "use_for": ["procedural_geometry_concepts", "node_system"]
+    },
+    {
+      "source_id": "sverchok_geometry",
+      "title": "Sverchok Introduction to Geometry",
+      "url": "https://sverchok.readthedocs.io/en/latest/geometry.html",
+      "source_group": "sverchok",
+      "use_for": ["vertices_edges_faces_lists", "mesh_data_flow"]
+    },
+    {
+      "source_id": "sverchok_nodes",
+      "title": "Sverchok Nodes",
+      "url": "https://sverchok.readthedocs.io/en/latest/nodes.html",
+      "source_group": "sverchok",
+      "use_for": ["node_categories", "generator_modifier_analyzer_flow"]
+    },
+    {
+      "source_id": "sverchok_extrude_edges",
+      "title": "Sverchok Extrude Edges",
+      "url": "https://sverchok.readthedocs.io/en/stable/nodes/modifier_change/extrude_edges.html",
+      "source_group": "sverchok",
+      "use_for": ["extrude_edges", "new_vertices", "new_edges", "new_faces"]
+    },
+    {
+      "source_id": "sverchok_triangulate",
+      "title": "Sverchok Triangulate Mesh",
+      "url": "https://sverchok.readthedocs.io/en/latest/nodes/modifier_change/triangulate.html",
+      "source_group": "sverchok",
+      "use_for": ["triangulation", "quad_ngon_modes"]
+    },
+    {
+      "source_id": "sverchok_mesh_select",
+      "title": "Sverchok Select Mesh Elements",
+      "url": "https://sverchok.readthedocs.io/en/latest/nodes/analyzers/mesh_select.html",
+      "source_group": "sverchok",
+      "use_for": ["selection_masks", "vertices_mask", "edges_mask", "faces_mask"]
+    },
+    {
+      "source_id": "cadquery_root",
+      "title": "CadQuery Documentation",
+      "url": "https://cadquery.readthedocs.io/",
+      "source_group": "cadquery",
+      "use_for": ["cadquery_overview", "parametric_cad", "export_formats"]
+    },
+    {
+      "source_id": "cadquery_workplane",
+      "title": "CadQuery Workplane",
+      "url": "https://cadquery.readthedocs.io/en/latest/workplane.html",
+      "source_group": "cadquery",
+      "use_for": ["workplane", "profiles", "selectors", "context_solid", "chaining"]
+    },
+    {
+      "source_id": "cadquery_sketch",
+      "title": "CadQuery Sketch",
+      "url": "https://cadquery.readthedocs.io/en/latest/sketch.html",
+      "source_group": "cadquery",
+      "use_for": ["sketches", "profiles"]
+    },
+    {
+      "source_id": "cadquery_import_export",
+      "title": "CadQuery Importing and Exporting Files",
+      "url": "https://cadquery.readthedocs.io/en/latest/importexport.html",
+      "source_group": "cadquery",
+      "use_for": ["step_export", "stl_export", "3mf_export", "svg_export", "gltf_assemblies"]
+    },
+    {
+      "source_id": "cadquery_class_reference",
+      "title": "CadQuery Class Summary",
+      "url": "https://cadquery.readthedocs.io/en/latest/classreference.html",
+      "source_group": "cadquery",
+      "use_for": ["extrude", "loft", "sweep", "revolve", "union", "cut", "intersect"]
+    },
+    {
+      "source_id": "manifold_repo",
+      "title": "Manifold Repository",
+      "url": "https://github.com/elalish/manifold",
+      "source_group": "manifold",
+      "use_for": ["robust_booleans", "manifold_meshes", "bindings", "build_flags"]
+    },
+    {
+      "source_id": "manifold_wiki",
+      "title": "Manifold Library Wiki",
+      "url": "https://github.com/elalish/manifold/wiki/Manifold-Library",
+      "source_group": "manifold",
+      "use_for": ["manifoldness", "topology_vs_geometry", "boolean_theory"]
+    },
+    {
+      "source_id": "manifold_cpp_docs",
+      "title": "Manifold C++ Documentation",
+      "url": "https://manifoldcad.org/docs/html/",
+      "source_group": "manifold",
+      "use_for": ["cpp_api", "build", "python_binding"]
+    },
+    {
+      "source_id": "manifold_class_cpp",
+      "title": "Manifold C++ Class Reference",
+      "url": "https://manifoldcad.org/docs/html/classmanifold_1_1_manifold.html",
+      "source_group": "manifold",
+      "use_for": ["boolean_api", "transforms", "measurements", "status"]
+    },
+    {
+      "source_id": "manifold_js_user_class",
+      "title": "Manifold JS User Guide Class",
+      "url": "https://manifoldcad.org/docs/jsuser/classes/Manifold.html",
+      "source_group": "manifold",
+      "use_for": ["js_boolean_api", "constructors", "mesh_properties"]
+    }
+  ]
+}

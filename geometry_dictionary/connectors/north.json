@@ -1,0 +1,12 @@
+{
+  "term_id": "north",
+  "category": "connector",
+  "plain_name": "North Face Connector",
+  "description": "Connector generated at the positive local Y face of bounds.",
+  "required_params": { "bounds": "bounds" },
+  "outputs": { "type": "face_connector", "direction": [0, 1, 0] },
+  "constraints": { "bounds_required": true },
+  "common_uses": ["module adjacency", "wall neighbor", "path connection"],
+  "blender_method": "derive marker from local bounds max Y",
+  "validation": ["bounds_min_less_than_max", "socket_position_inside_or_on_bounds"]
+}

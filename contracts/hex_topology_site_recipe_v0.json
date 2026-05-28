@@ -1,0 +1,41 @@
+{
+  "schema": "hex_topology_site_recipe_contract_v0",
+  "purpose": "Hex-surface topology recipes inside a standard map cube, with elevation-derived traversal and affordance facts.",
+  "required_fields": [
+    "schema",
+    "site_id",
+    "map_cube_ref",
+    "units",
+    "hex_grid",
+    "elevation_model",
+    "building_placement",
+    "foundation_adapter",
+    "classification_rules",
+    "no_claims"
+  ],
+  "hex_grid_fields": [
+    "layout",
+    "radius",
+    "vertical_step",
+    "bounds_source"
+  ],
+  "classification_rules": {
+    "walkable_delta_max": "float",
+    "slope_delta_max": "float",
+    "fall_edge_delta_min": "float",
+    "buildable_max_elevation_variance": "float"
+  },
+  "rules": {
+    "map_cube_ref_must_exist": true,
+    "hex_radius_must_be_positive": true,
+    "elevations_must_fit_inside_map_cube_z": true,
+    "source_assembly_must_exist": true,
+    "foundation_assets_must_exist": true,
+    "compiler_emits_hex_cells": true,
+    "compiler_emits_neighbor_edges": true,
+    "compiler_emits_affordance_facts": true,
+    "no_mesh_output": true,
+    "no_blender_output": true,
+    "no_structural_claims": true
+  }
+}

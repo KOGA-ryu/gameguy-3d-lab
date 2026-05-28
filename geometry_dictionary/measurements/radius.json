@@ -1,0 +1,10 @@
+{
+  "term_id": "radius",
+  "category": "measurement",
+  "plain_name": "Radius",
+  "description": "Distance from a center point to points on a circle, arc, rounded corner, or radial profile.",
+  "required_inputs": { "center": "vec2 | vec3", "edge_point_or_arc_points": "vec2 | vec3 | vec2[]" },
+  "outputs": { "radius": "float" },
+  "used_by": ["circle", "octagon", "rounded_rectangle", "arch_profile", "bevel_edges"],
+  "validation": ["finite_value", "value_is_positive"]
+}

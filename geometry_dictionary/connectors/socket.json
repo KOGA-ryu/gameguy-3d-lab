@@ -1,0 +1,12 @@
+{
+  "term_id": "socket",
+  "category": "connector",
+  "plain_name": "Socket",
+  "description": "A named attachment point where another asset, module, panel, or detail may connect.",
+  "required_params": { "id": "string", "position": "vec3", "direction": "vec3", "compatible_tags": "string[]" },
+  "outputs": { "type": "attachment_contract" },
+  "constraints": { "direction_is_normalized": true, "compatible_tags_not_empty": true },
+  "common_uses": ["panel socket", "rail socket", "cap socket", "ornament socket"],
+  "blender_method": "create empty or named marker at position with orientation",
+  "validation": ["socket_position_inside_or_on_bounds", "direction_is_normalized", "compatible_tags_not_empty"]
+}

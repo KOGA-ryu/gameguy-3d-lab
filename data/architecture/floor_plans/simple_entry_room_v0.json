@@ -1,0 +1,43 @@
+{
+  "schema": "floor_plan_v0",
+  "plan_id": "simple_entry_room_v0",
+  "units": "abstract_meter",
+  "summary": "One rectangular room with a doorway gap, four walls, and two entry posts.",
+  "asset_defaults": {
+    "floor": "rectangular_slab_v0",
+    "wall": "wall_block_v0",
+    "post": "square_post_v0",
+    "railing": "railing_unit_v0",
+    "stair": "stair_unit_v0"
+  },
+  "plots": [
+    {
+      "plot_id": "entry_room",
+      "space_role": "entry_choke_room",
+      "origin": [0.0, 0.0, 0.0],
+      "size": { "width": 6.0, "depth": 4.0, "height": 3.0 },
+      "floor": { "asset_ref": "rectangular_slab_v0", "thickness": 0.18 },
+      "edges": [
+        {
+          "side": "north",
+          "boundary": "wall",
+          "asset_ref": "wall_block_v0",
+          "thickness": 0.28,
+          "height": 3.0,
+          "openings": [
+            { "opening_id": "north_door", "type": "door_gap", "width": 1.25, "height": 2.15, "center_offset": 0.0 }
+          ]
+        },
+        { "side": "south", "boundary": "wall", "asset_ref": "wall_block_v0", "thickness": 0.28, "height": 3.0, "openings": [] },
+        { "side": "east", "boundary": "wall", "asset_ref": "wall_block_v0", "thickness": 0.28, "height": 3.0, "openings": [] },
+        { "side": "west", "boundary": "wall", "asset_ref": "wall_block_v0", "thickness": 0.28, "height": 3.0, "openings": [] }
+      ],
+      "features": [
+        { "feature_id": "entry_left_post", "type": "post", "asset_ref": "square_post_v0", "position": [-0.82, 2.0, 0.18], "height": 2.4 },
+        { "feature_id": "entry_right_post", "type": "post", "asset_ref": "square_post_v0", "position": [0.82, 2.0, 0.18], "height": 2.4 }
+      ],
+      "semantic_tags": ["walkable", "blocked", "cover", "line_of_sight_blocker"]
+    }
+  ],
+  "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+}

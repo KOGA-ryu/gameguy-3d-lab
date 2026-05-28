@@ -1,0 +1,10 @@
+{
+  "term_id": "height",
+  "category": "measurement",
+  "plain_name": "Height",
+  "description": "Vertical Z-axis extent of a solid or XZ profile.",
+  "required_inputs": { "bounds_or_points": "bounds | vec2[] | vec3[]" },
+  "outputs": { "height": "float" },
+  "used_by": ["extrude", "arch_profile", "post", "wall_block"],
+  "validation": ["finite_value", "value_is_positive"]
+}

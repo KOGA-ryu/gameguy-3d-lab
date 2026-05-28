@@ -1,0 +1,10 @@
+{
+  "term_id": "angle",
+  "category": "measurement",
+  "plain_name": "Angle",
+  "description": "Angular relationship between two vectors or segments.",
+  "required_inputs": { "vector_a": "vec2 | vec3", "vector_b": "vec2 | vec3", "unit": "degrees | radians" },
+  "outputs": { "angle": "float" },
+  "used_by": ["triangle", "trapezoid", "mirror_axis", "array_radial_future", "slope"],
+  "validation": ["finite_value", "unit_declared"]
+}

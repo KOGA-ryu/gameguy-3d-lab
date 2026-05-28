@@ -1,0 +1,102 @@
+{
+  "schema": "measurement_semantic_role_links_v0",
+  "purpose": "Maps measured primitive classes to gameplay/architecture semantic roles for later compiled-range consumers.",
+  "links": [
+    {
+      "object_class": "pointed_arch_bay",
+      "semantic_roles": ["opening", "line_of_sight_frame", "portal_frame", "wall_bay"],
+      "ready_for_recipe": false,
+      "reason": "v0 has useful rise/span and nave envelope ranges but still needs measured springline/frame thickness examples."
+    },
+    {
+      "object_class": "round_arch_bay",
+      "semantic_roles": ["opening", "line_of_sight_frame", "portal_frame", "wall_bay"],
+      "ready_for_recipe": false,
+      "reason": "v0 has canonical curve rule and spans but weak springline/frame thickness evidence."
+    },
+    {
+      "object_class": "horseshoe_arch_bay",
+      "semantic_roles": ["opening", "decorative_only", "portal_frame"],
+      "ready_for_recipe": false,
+      "reason": "fetch needed."
+    },
+    {
+      "object_class": "ogee_arch_bay",
+      "semantic_roles": ["opening", "decorative_only", "portal_frame"],
+      "ready_for_recipe": false,
+      "reason": "fetch needed."
+    },
+    {
+      "object_class": "column_base_shaft_capital",
+      "semantic_roles": ["support", "rhythm_marker", "decorative_only"],
+      "ready_for_recipe": false,
+      "reason": "v0 has column ratios but not enough measured base/capital subdivision data."
+    },
+    {
+      "object_class": "pier_bundle",
+      "semantic_roles": ["support", "connector", "occlusion"],
+      "ready_for_recipe": false,
+      "reason": "pier-to-span evidence is weak."
+    },
+    {
+      "object_class": "buttress_profile",
+      "semantic_roles": ["support_expression", "wall_articulation", "cover_edge"],
+      "ready_for_recipe": false,
+      "reason": "fetch needed."
+    },
+    {
+      "object_class": "vault_rib_cell",
+      "semantic_roles": ["ceiling_grid", "directional_axis", "decorative_only"],
+      "ready_for_recipe": false,
+      "reason": "v0 has envelope examples but not rib thickness/radius records."
+    },
+    {
+      "object_class": "dome_on_octagon",
+      "semantic_roles": ["ceiling_landmark", "radial_focus", "connector"],
+      "ready_for_recipe": false,
+      "reason": "v0 has dome/octagon ratios but needs transition measurements."
+    },
+    {
+      "object_class": "octagonal_plan_core",
+      "semantic_roles": ["radial_room", "hub", "connector"],
+      "ready_for_recipe": false,
+      "reason": "v0 has plan relationships but wall thickness and connector bay evidence is weak."
+    },
+    {
+      "object_class": "stair_tower",
+      "semantic_roles": ["vertical_connector", "route_constraint", "occlusion"],
+      "ready_for_recipe": false,
+      "reason": "fetch needed."
+    },
+    {
+      "object_class": "portal_frame",
+      "semantic_roles": ["opening", "transition_marker", "line_of_sight_frame"],
+      "ready_for_recipe": false,
+      "reason": "fetch needed."
+    },
+    {
+      "object_class": "window_tracery_bay",
+      "semantic_roles": ["line_of_sight_frame", "decorative_only", "wall_bay"],
+      "ready_for_recipe": false,
+      "reason": "fetch needed."
+    },
+    {
+      "object_class": "blind_arcade",
+      "semantic_roles": ["decorative_only", "wall_articulation", "rhythm_marker"],
+      "ready_for_recipe": false,
+      "reason": "fetch needed."
+    },
+    {
+      "object_class": "cloister_bay",
+      "semantic_roles": ["connector", "covered_walk", "rhythm_marker", "line_of_sight_frame"],
+      "ready_for_recipe": false,
+      "reason": "fetch needed."
+    }
+  ],
+  "rules": {
+    "semantic_links_do_not_approve_assets": true,
+    "ready_for_recipe_requires_compiled_ranges_and_visual_proof": true,
+    "no_structural_safety_claims": true,
+    "no_fabrication_claims": true
+  }
+}

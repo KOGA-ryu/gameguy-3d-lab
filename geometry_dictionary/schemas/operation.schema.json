@@ -1,0 +1,17 @@
+{
+  "schema_id": "operation_term_schema_v0",
+  "allowed_categories": [
+    "mesh_operation",
+    "composition_operation",
+    "transform"
+  ],
+  "required_fields": [
+    "term_id",
+    "category",
+    "required_inputs",
+    "outputs",
+    "constraints",
+    "blender_method",
+    "validation"
+  ]
+}

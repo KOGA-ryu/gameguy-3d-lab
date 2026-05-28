@@ -1,0 +1,12 @@
+{
+  "term_id": "anchor",
+  "category": "connector",
+  "plain_name": "Anchor",
+  "description": "A stable placement point used to align one object to another.",
+  "required_params": { "id": "string", "position": "vec3", "role": "string" },
+  "outputs": { "type": "placement_reference" },
+  "constraints": { "position_is_finite": true },
+  "common_uses": ["support anchor", "object origin", "wall mount", "floor attach"],
+  "blender_method": "create named empty or vertex group marker",
+  "validation": ["anchor_position_inside_or_on_bounds", "position_is_finite"]
+}

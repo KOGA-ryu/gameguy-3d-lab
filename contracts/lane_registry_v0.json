@@ -1,0 +1,30 @@
+{
+  "schema": "lane_registry_contract_v0",
+  "purpose": "Define factory lanes so specialized Dex jobs can run narrow scopes without needing project lore.",
+  "required_lane_fields": [
+    "lane_id",
+    "purpose",
+    "owner_scope",
+    "job_root",
+    "artifact_root",
+    "curation_root",
+    "allowed_commands",
+    "required_outputs",
+    "handoff_targets"
+  ],
+  "required_lane_ids_v0": [
+    "research",
+    "measurement",
+    "pattern_lab_2d",
+    "pattern_lab_3d",
+    "terrain",
+    "validation",
+    "curator",
+    "game_graph"
+  ],
+  "rules": {
+    "lanes_are_orchestration_metadata": true,
+    "lanes_do_not_replace_labs": true,
+    "lane_jobs_must_be_validated_before_running": true
+  }
+}

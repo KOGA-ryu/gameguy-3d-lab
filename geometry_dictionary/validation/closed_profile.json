@@ -1,0 +1,10 @@
+{
+  "term_id": "closed_profile",
+  "category": "validation_term",
+  "plain_name": "Closed Profile",
+  "description": "A profile whose final edge connects back to its first point and can form a face.",
+  "required_inputs": { "points": "vec2[]" },
+  "outputs": { "valid": "bool", "errors": "string[]" },
+  "constraints": { "min_points": 3 },
+  "validation": ["point_count_minimum", "first_last_connection_exists"]
+}

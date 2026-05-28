@@ -1,0 +1,59 @@
+{
+  "schema": "connector_placement_policy_comparison_v0",
+  "packet_id": "3D-0010",
+  "source_policy": "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_placement_policy_v0.json",
+  "compiler": "mosaic_dungeon_floor_v0/scripts/compile_connector_asset_placement_v0.py",
+  "result": {
+    "placement_policy_loaded_from_source": true,
+    "hardcoded_connection_type_asset_mapping_removed": true,
+    "expected_connection_type_count": 5,
+    "all_supported_connection_types_have_policy": true,
+    "connector_asset_instance_count": 58,
+    "fit_status_counts": {
+      "pass": 4,
+      "warn": 4,
+      "fail": 0
+    }
+  },
+  "policy_rules": {
+    "road_threshold": {
+      "mode": "single",
+      "asset_id": "measured_threshold_landing_v1",
+      "role": "threshold_landing"
+    },
+    "flat_pathway": {
+      "mode": "repeat",
+      "asset_id": "measured_pathway_slab_unit_v1",
+      "role": "pathway_slab_unit"
+    },
+    "ramp_pathway": {
+      "mode": "repeat",
+      "asset_id": "measured_ramp_pathway_unit_v1",
+      "role": "ramp_pathway_unit"
+    },
+    "stepped_pathway": {
+      "mode": "repeat",
+      "asset_id": "measured_stepped_pathway_unit_v1",
+      "role": "stepped_pathway_unit"
+    },
+    "bridge_link": {
+      "mode": "bridge_assembly",
+      "deck_asset_id": "measured_bridge_deck_unit_v1",
+      "rail_asset_id": "measured_bridge_rail_unit_v1",
+      "abutment_asset_id": "measured_bridge_abutment_v1"
+    }
+  },
+  "intentional_generated_metadata_changes": [
+    "connector_asset_placement_v0.json now records connector_placement_policy.",
+    "connector_asset_placement_v0.json validation now records connection_type_policy_count.",
+    "connector_asset_placement_v0.json validation now records all_supported_connection_types_have_policy.",
+    "timestamps update when compiler runs."
+  ],
+  "non_goals_respected": {
+    "pattern_lab_2d_touched_by_this_task": false,
+    "gitignore_touched_by_this_task": false,
+    "blender_run": false,
+    "meshes_or_renders_created": false,
+    "archive_delete_stage_commit_performed": false
+  }
+}

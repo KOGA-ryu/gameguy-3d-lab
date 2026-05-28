@@ -1,0 +1,70 @@
+{
+  "schema": "connector_placement_policy_v0",
+  "version": "0.1.0",
+  "purpose": "Source policy mapping pathway connection types to connector asset recipes and placement roles.",
+  "source_manifest": "data/architecture/assets/connectors/connector_asset_manifest_v0.json",
+  "expected_connection_types": [
+    "road_threshold",
+    "flat_pathway",
+    "ramp_pathway",
+    "stepped_pathway",
+    "bridge_link"
+  ],
+  "connection_type_rules": {
+    "road_threshold": {
+      "mode": "single",
+      "asset_id": "measured_threshold_landing_v1",
+      "role": "threshold_landing",
+      "position_t": 0.5,
+      "fit_reason": "single_threshold_landing"
+    },
+    "flat_pathway": {
+      "mode": "repeat",
+      "asset_id": "measured_pathway_slab_unit_v1",
+      "role": "pathway_slab_unit"
+    },
+    "ramp_pathway": {
+      "mode": "repeat",
+      "asset_id": "measured_ramp_pathway_unit_v1",
+      "role": "ramp_pathway_unit"
+    },
+    "stepped_pathway": {
+      "mode": "repeat",
+      "asset_id": "measured_stepped_pathway_unit_v1",
+      "role": "stepped_pathway_unit"
+    },
+    "bridge_link": {
+      "mode": "bridge_assembly",
+      "deck": {
+        "asset_id": "measured_bridge_deck_unit_v1",
+        "role": "bridge_deck_unit"
+      },
+      "rail": {
+        "asset_id": "measured_bridge_rail_unit_v1",
+        "left_role": "bridge_rail_left",
+        "right_role": "bridge_rail_right",
+        "side_offset_margin_m": 0.14
+      },
+      "abutment": {
+        "asset_id": "measured_bridge_abutment_v1",
+        "start_role": "bridge_abutment_start",
+        "end_role": "bridge_abutment_end",
+        "fit_reason": "bridge_abutments_at_both_end_plugs"
+      }
+    }
+  },
+  "rules": {
+    "no_silent_scaling": true,
+    "repeat_units_to_cover_length": true,
+    "leftover_gaps_reported": true,
+    "bridge_links_require_deck_rails_abutments": true,
+    "gameplay_movement_logic_changed": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false
+  }
+}

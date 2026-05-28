@@ -1,0 +1,13 @@
+{
+  "term_id": "rounded_rectangle",
+  "category": "profile_primitive",
+  "plain_name": "Rounded Rectangle Profile",
+  "description": "A rectangle profile with rounded corners.",
+  "required_params": { "width": "float", "depth": "float", "corner_radius": "float", "segments_per_corner": "int" },
+  "units": "meters",
+  "outputs": { "type": "closed_2d_profile", "coordinate_space": "local_xy", "must_be_closed": true },
+  "constraints": { "corner_radius_max": "min(width, depth) / 2", "segments_per_corner": ">= 2" },
+  "common_uses": ["soft panel", "column base", "rail cap", "sci-fi plate"],
+  "blender_method": "generate rounded corner arcs and straight spans, create face, extrude",
+  "validation": ["closed_profile", "nonzero_area", "profile_has_no_self_intersections"]
+}

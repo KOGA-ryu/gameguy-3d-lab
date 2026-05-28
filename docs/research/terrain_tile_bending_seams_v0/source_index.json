@@ -1,0 +1,133 @@
+{
+  "schema": "terrain_tile_bending_seams_source_index_v0",
+  "purpose": "Source index for terrain tile bending, seam stitching, and crack-free heightfield mesh generation research.",
+  "sources": [
+    {
+      "source_id": "redblob_hex_grids_v0",
+      "title": "Hexagonal Grids",
+      "url": "https://www.redblobgames.com/grids/hexagons/",
+      "institution_or_author": "Red Blob Games / Amit Patel",
+      "source_type": "technical_reference",
+      "used_for": ["hex coordinates", "neighbors", "hex distance", "hex-to-pixel", "pixel-to-hex", "map storage"],
+      "access_note": "Public web documentation; used for technical formulas and coordinate rules only."
+    },
+    {
+      "source_id": "redblob_hex_implementation_v0",
+      "title": "Implementation of Hex Grids",
+      "url": "https://www.redblobgames.com/grids/hexagons/implementation.html",
+      "institution_or_author": "Red Blob Games / Amit Patel",
+      "source_type": "technical_reference",
+      "used_for": ["corner offsets", "polygon corner generation", "layout orientation", "hex-to-pixel implementation"],
+      "access_note": "Public web documentation; used for technical formulas and API-style examples only."
+    },
+    {
+      "source_id": "redblob_grid_parts_v0",
+      "title": "Grid Parts and Relationships",
+      "url": "https://www.redblobgames.com/grids/parts/",
+      "institution_or_author": "Red Blob Games / Amit Patel",
+      "source_type": "technical_reference",
+      "used_for": ["faces", "edges", "vertices", "hex borders", "hex corners", "shared edge/corner topology"],
+      "access_note": "Public web documentation; used for topology relationships only."
+    },
+    {
+      "source_id": "khronos_opengl_primitive_v0",
+      "title": "OpenGL Primitive",
+      "url": "https://wikis.khronos.org/opengl/Primitive",
+      "institution_or_author": "Khronos OpenGL Wiki",
+      "source_type": "api_reference",
+      "used_for": ["triangle fan", "triangle strip", "triangle primitive interpretation", "winding implications"],
+      "access_note": "Public API reference."
+    },
+    {
+      "source_id": "unity_mesh_anatomy_v0",
+      "title": "Unity Manual: Anatomy of a Mesh",
+      "url": "https://docs.unity.cn/550/Documentation/Manual/AnatomyofaMesh.html",
+      "institution_or_author": "Unity Technologies",
+      "source_type": "engine_documentation",
+      "used_for": ["vertex arrays", "triangle index arrays", "shared vertices", "normals", "duplicated vertices for hard edges"],
+      "access_note": "Unity documentation; used as general indexed mesh reference."
+    },
+    {
+      "source_id": "catlike_shared_grid_v0",
+      "title": "Modified Grid",
+      "url": "https://catlikecoding.com/unity/tutorials/procedural-meshes/modified-grid/",
+      "institution_or_author": "Catlike Coding / Jasper Flick",
+      "source_type": "technical_article",
+      "used_for": ["vertex-primary grid generation", "shared vertices", "shared triangle indices", "terrain-like grid deformation"],
+      "access_note": "Public tutorial; used conceptually, not copied as implementation."
+    },
+    {
+      "source_id": "blender_mesh_api_v0",
+      "title": "Mesh(ID) - Blender Python API",
+      "url": "https://docs.blender.org/api/current/bpy.types.Mesh.html",
+      "institution_or_author": "Blender Foundation",
+      "source_type": "api_reference",
+      "used_for": ["Mesh vertices", "Mesh edges", "Mesh polygons", "Mesh.from_pydata", "Mesh.validate", "Mesh.update"],
+      "access_note": "Official Blender API documentation; used for future proof-render integration notes."
+    },
+    {
+      "source_id": "gpu_gems_geometry_clipmaps_v0",
+      "title": "GPU Gems 2 Chapter 2: Terrain Rendering Using GPU-Based Geometry Clipmaps",
+      "url": "https://developer.nvidia.com/gpugems/gpugems2/part-i-geometric-complexity/chapter-2-terrain-rendering-using-gpu-based-geometry",
+      "institution_or_author": "NVIDIA Developer / Arul Asirvatham and Hugues Hoppe",
+      "source_type": "technical_book_chapter",
+      "used_for": ["terrain LOD", "nested grids", "elevation samples", "watertight mesh concern", "transition regions", "geomorphing"],
+      "access_note": "NVIDIA-hosted GPU Gems chapter; used for terrain seam concepts only."
+    },
+    {
+      "source_id": "transvoxel_v0",
+      "title": "The Transvoxel Algorithm",
+      "url": "https://transvoxel.org/",
+      "institution_or_author": "Eric Lengyel / Terathon Software",
+      "source_type": "technical_reference",
+      "used_for": ["multiresolution terrain cracks", "transition cells", "voxel terrain stitching", "deferred LOD complexity"],
+      "access_note": "Public technical reference; used for conceptual deferred guidance."
+    },
+    {
+      "source_id": "chunked_lod_ulrich_v0",
+      "title": "Chunked LOD",
+      "url": "https://tulrich.com/geekstuff/chunklod.html",
+      "institution_or_author": "Thatcher Ulrich",
+      "source_type": "technical_article",
+      "used_for": ["chunked terrain LOD", "geomorphs", "screen-space error", "batched terrain chunks"],
+      "access_note": "Public project page; used for conceptual LOD seam context only."
+    },
+    {
+      "source_id": "unity_terrain_set_height_v0",
+      "title": "Unity Manual: Set Height",
+      "url": "https://docs.unity.cn/2020.3/Documentation/Manual/terrain-SetHeight.html",
+      "institution_or_author": "Unity Technologies",
+      "source_type": "engine_documentation",
+      "used_for": ["height flattening", "plateaus", "roads", "platforms", "steps", "heightmap editing concept"],
+      "access_note": "Unity documentation; used as conceptual terrain editing reference."
+    },
+    {
+      "source_id": "fold_format_v0",
+      "title": "FOLD: Flexible Origami List Datastructure",
+      "url": "https://edemaine.github.io/fold/",
+      "institution_or_author": "Erik Demaine, Jason Ku, Robert Lang and contributors",
+      "source_type": "format_reference",
+      "used_for": ["crease topology", "vertices", "edges", "faces", "mountain-valley assignments", "folded states"],
+      "access_note": "Public format documentation; used conceptually for crease graph vocabulary."
+    },
+    {
+      "source_id": "manifold_library_wiki_v0",
+      "title": "Manifold Library Wiki",
+      "url": "https://github.com/elalish/manifold/wiki/Manifold-Library",
+      "institution_or_author": "Manifold contributors / Emmett Lalish",
+      "source_type": "technical_reference",
+      "used_for": ["manifoldness", "edge pairing", "triangle winding", "degenerate removal", "topological robustness"],
+      "access_note": "Public wiki; used for topology validation concepts."
+    },
+    {
+      "source_id": "manifold_docs_v0",
+      "title": "Manifold Library Documentation",
+      "url": "https://manifoldcad.org/docs/html/",
+      "institution_or_author": "Manifold contributors",
+      "source_type": "api_reference",
+      "used_for": ["manifold mesh requirement", "guaranteed manifold output", "deferred robust boolean context"],
+      "access_note": "Public documentation; used for future/deferred robustness notes."
+    }
+  ]
+}
+

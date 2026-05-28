@@ -1,0 +1,12 @@
+{
+  "term_id": "walkable",
+  "category": "semantic_geometry",
+  "plain_name": "Walkable",
+  "description": "A surface or asset region intended to support traversal.",
+  "required_inputs": { "surface_ref_or_bounds": "mesh_face | bounds | solid_definition", "slope_limit": "float" },
+  "outputs": { "type": "navigation_surface_hint" },
+  "constraints": { "surface_has_upward_component": true },
+  "common_uses": ["floor slab", "stairs", "platform", "ramp"],
+  "blender_method": "tag face set or generated object custom property",
+  "validation": ["surface_exists", "slope_within_walkable_range"]
+}

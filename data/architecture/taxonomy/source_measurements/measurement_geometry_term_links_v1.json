@@ -1,0 +1,38 @@
+{
+  "schema": "measurement_geometry_term_links_v1",
+  "purpose": "Geometry term targets for Research Dex v1 records. These links are metadata only, not asset generation.",
+  "default_geometry_terms": ["rectangle_profile", "circle_profile", "arch_profile", "extrude", "bevel_edges", "socket"],
+  "links": {
+    "pointed_arch_bay": ["arch_profile", "pointed_curve", "rectangle_profile", "extrude", "socket"],
+    "round_arch_bay": ["arch_profile", "circle_profile", "rectangle_profile", "extrude", "socket"],
+    "horseshoe_arch_bay": ["arch_profile", "circle_profile", "offset_curve", "extrude", "socket"],
+    "ogee_arch_bay": ["arch_profile", "compound_curve", "spline_profile", "extrude", "socket"],
+    "portal_frame": ["frame_profile", "arch_profile", "rectangle_profile", "socket"],
+    "window_tracery_bay": ["arch_profile", "line_lattice", "mullion_profile", "circle_profile", "socket"],
+    "blind_arcade": ["arch_profile", "repetition", "panel_recess", "wall_bay"],
+    "column_base_shaft_capital": ["circle_profile", "cylinder", "stacked_profile", "bevel_edges"],
+    "pier_bundle": ["rectangle_profile", "circle_profile", "union", "extrude", "bevel_edges"],
+    "buttress_profile": ["stepped_profile", "extrude", "bevel_edges", "wall_socket"],
+    "flying_buttress": ["arch_profile", "arc_profile", "support_contact", "span_profile"],
+    "vault_rib_cell": ["rib_curve", "arc_profile", "sweep", "grid_cell"],
+    "groin_vault_cell": ["intersecting_barrel_profiles", "groin_curve", "bay_grid"],
+    "barrel_vault": ["arc_profile", "extrude", "support_wall"],
+    "dome_on_octagon": ["octagon_profile", "dome_profile", "radial_array", "squinch_transition"],
+    "octagonal_plan_core": ["octagon_profile", "radial_axis", "connector_socket", "plan_profile"],
+    "central_plan_chapel": ["radial_array", "plan_profile", "connector_socket"],
+    "stair_tower": ["circle_profile", "helix", "step_array", "extrude"],
+    "cloister_bay": ["arch_profile", "column_profile", "repetition", "walkway_depth"],
+    "facade_bay": ["grid_profile", "rectangle_profile", "string_course", "repetition"],
+    "wall_panel": ["rectangle_profile", "panel_recess", "trim_profile", "socket"],
+    "ceiling_coffer": ["grid_cell", "recess_profile", "border_profile"],
+    "dome_rib_pattern": ["radial_array", "rib_curve", "ring_profile", "dome_profile"],
+    "muqarnas_tier": ["tier_stack", "cell_subdivision", "stepped_depth"],
+    "jali_screen_bay": ["line_lattice", "frame_profile", "opening_density"],
+    "floor_plan_octagon": ["octagon_profile", "radial_axis", "room_cell", "circulation_node"]
+  },
+  "rules": {
+    "links_are_for_taxonomy_only": true,
+    "do_not_generate_geometry_from_source_drawings": true,
+    "compiled_ranges_required_before_recipe_generation": true
+  }
+}

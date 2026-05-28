@@ -1,0 +1,47 @@
+{
+  "schema": "map_cube_grid_v0",
+  "map_cube_id": "standard_32m_cube_v0",
+  "cell_size_m": 1.0,
+  "dimensions": {
+    "x": 32,
+    "y": 32,
+    "z": 8
+  },
+  "origin": "centered_xy_floor_z",
+  "coordinate_range": {
+    "x": [-16.0, 16.0],
+    "y": [-16.0, 16.0],
+    "z": [0.0, 8.0]
+  },
+  "connector_faces": {
+    "north": "chunk_stitch_candidate",
+    "south": "chunk_stitch_candidate",
+    "east": "chunk_stitch_candidate",
+    "west": "chunk_stitch_candidate",
+    "upper": "vertical_stack_candidate",
+    "lower": "vertical_stack_candidate"
+  },
+  "layer_stack": [
+    "ai_affordance_graph",
+    "route_connectivity_graph",
+    "topology_elevation_graph",
+    "building_site_layer",
+    "asset_placement_layer",
+    "visual_mesh_layer"
+  ],
+  "recommended_defaults": {
+    "hex_radius": 1.0,
+    "vertical_step": 0.5,
+    "path_width_m": 2.0,
+    "choke_width_m": 1.0,
+    "fall_threshold_m": 1.0,
+    "walkable_delta_max_m": 0.5,
+    "slope_delta_max_m": 1.0
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false
+  }
+}

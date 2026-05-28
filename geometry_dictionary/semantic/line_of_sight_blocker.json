@@ -1,0 +1,12 @@
+{
+  "term_id": "line_of_sight_blocker",
+  "category": "semantic_geometry",
+  "plain_name": "Line Of Sight Blocker",
+  "description": "Geometry intended to block or reduce visibility through an area.",
+  "required_inputs": { "bounds_or_mesh": "bounds | mesh_ref", "height_range": "min_max_float" },
+  "outputs": { "type": "visibility_blocker_hint" },
+  "constraints": { "height_range_declared": true },
+  "common_uses": ["wall", "pillar", "boulder", "door"],
+  "blender_method": "tag object as visibility/collision contributor",
+  "validation": ["nonzero_volume", "height_range_declared"]
+}

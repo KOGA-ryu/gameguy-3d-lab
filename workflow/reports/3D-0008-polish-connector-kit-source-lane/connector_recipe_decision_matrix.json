@@ -1,0 +1,319 @@
+{
+  "schema": "connector_recipe_decision_matrix_v0",
+  "packet_id": "3D-0008",
+  "created_at_utc": "2026-05-28T22:52:35.659626+00:00",
+  "decision_buckets_allowed": [
+    "FIX_POLISH",
+    "PROMOTE_SOURCE",
+    "DELETE_GENERATED",
+    "LEAVE_PROTECTED",
+    "DEFER"
+  ],
+  "source_lane_target": "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/",
+  "generated_folder_left_untouched": true,
+  "summary": {
+    "PROMOTE_SOURCE": 9,
+    "FIX_POLISH": 0,
+    "DELETE_GENERATED": 0,
+    "DEFER": 0
+  },
+  "recipes": [
+    {
+      "asset_id": "measured_pathway_slab_unit_v1",
+      "source_recipe_path": "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_pathway_slab_unit_v1.json",
+      "generated_recipe_path": "mosaic_dungeon_floor_v0/goal/architecture/connector_asset_kit_v0/recipes/measured_pathway_slab_unit_v1.json",
+      "decision": "PROMOTE_SOURCE",
+      "reason": "Useful deterministic connector source recipe with explicit dimensions, sockets, proof primitive, no silent scaling, and no-claim fields.",
+      "schema": "connector_asset_component_recipe_v0",
+      "dimensions_m": {
+        "width": 1.4,
+        "depth": 1.2,
+        "height": 0.18
+      },
+      "semantic_roles": [
+        "walkable",
+        "connector",
+        "flat_pathway"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "nonzero_bounds": true,
+      "has_no_silent_scaling_expectation": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "notes": [
+        "Promoted by source-lane copy; generated goal folder intentionally left untouched.",
+        "No dimensions changed during promotion."
+      ]
+    },
+    {
+      "asset_id": "measured_threshold_landing_v1",
+      "source_recipe_path": "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_threshold_landing_v1.json",
+      "generated_recipe_path": "mosaic_dungeon_floor_v0/goal/architecture/connector_asset_kit_v0/recipes/measured_threshold_landing_v1.json",
+      "decision": "PROMOTE_SOURCE",
+      "reason": "Useful deterministic connector source recipe with explicit dimensions, sockets, proof primitive, no silent scaling, and no-claim fields.",
+      "schema": "connector_asset_component_recipe_v0",
+      "dimensions_m": {
+        "width": 2.2,
+        "depth": 1.1,
+        "height": 0.2
+      },
+      "semantic_roles": [
+        "walkable",
+        "connector",
+        "road_threshold"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "nonzero_bounds": true,
+      "has_no_silent_scaling_expectation": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "notes": [
+        "Promoted by source-lane copy; generated goal folder intentionally left untouched.",
+        "No dimensions changed during promotion."
+      ]
+    },
+    {
+      "asset_id": "measured_ramp_pathway_unit_v1",
+      "source_recipe_path": "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_ramp_pathway_unit_v1.json",
+      "generated_recipe_path": "mosaic_dungeon_floor_v0/goal/architecture/connector_asset_kit_v0/recipes/measured_ramp_pathway_unit_v1.json",
+      "decision": "PROMOTE_SOURCE",
+      "reason": "Useful deterministic connector source recipe with explicit dimensions, sockets, proof primitive, no silent scaling, and no-claim fields.",
+      "schema": "connector_asset_component_recipe_v0",
+      "dimensions_m": {
+        "width": 1.4,
+        "depth": 1.2,
+        "height": 0.18
+      },
+      "semantic_roles": [
+        "walkable",
+        "connector",
+        "ramp_pathway"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "nonzero_bounds": true,
+      "has_no_silent_scaling_expectation": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "notes": [
+        "Promoted by source-lane copy; generated goal folder intentionally left untouched.",
+        "No dimensions changed during promotion."
+      ]
+    },
+    {
+      "asset_id": "measured_stepped_pathway_unit_v1",
+      "source_recipe_path": "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_stepped_pathway_unit_v1.json",
+      "generated_recipe_path": "mosaic_dungeon_floor_v0/goal/architecture/connector_asset_kit_v0/recipes/measured_stepped_pathway_unit_v1.json",
+      "decision": "PROMOTE_SOURCE",
+      "reason": "Useful deterministic connector source recipe with explicit dimensions, sockets, proof primitive, no silent scaling, and no-claim fields.",
+      "schema": "connector_asset_component_recipe_v0",
+      "dimensions_m": {
+        "width": 1.4,
+        "depth": 1.0,
+        "height": 0.32
+      },
+      "semantic_roles": [
+        "walkable",
+        "connector",
+        "stepped_pathway"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "nonzero_bounds": true,
+      "has_no_silent_scaling_expectation": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "notes": [
+        "Promoted by source-lane copy; generated goal folder intentionally left untouched.",
+        "No dimensions changed during promotion."
+      ]
+    },
+    {
+      "asset_id": "measured_bridge_deck_unit_v1",
+      "source_recipe_path": "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_bridge_deck_unit_v1.json",
+      "generated_recipe_path": "mosaic_dungeon_floor_v0/goal/architecture/connector_asset_kit_v0/recipes/measured_bridge_deck_unit_v1.json",
+      "decision": "PROMOTE_SOURCE",
+      "reason": "Useful deterministic connector source recipe with explicit dimensions, sockets, proof primitive, no silent scaling, and no-claim fields.",
+      "schema": "connector_asset_component_recipe_v0",
+      "dimensions_m": {
+        "width": 2.4,
+        "depth": 1.2,
+        "height": 0.24
+      },
+      "semantic_roles": [
+        "walkable",
+        "connector",
+        "bridge_link"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "nonzero_bounds": true,
+      "has_no_silent_scaling_expectation": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "notes": [
+        "Promoted by source-lane copy; generated goal folder intentionally left untouched.",
+        "No dimensions changed during promotion."
+      ]
+    },
+    {
+      "asset_id": "measured_bridge_abutment_v1",
+      "source_recipe_path": "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_bridge_abutment_v1.json",
+      "generated_recipe_path": "mosaic_dungeon_floor_v0/goal/architecture/connector_asset_kit_v0/recipes/measured_bridge_abutment_v1.json",
+      "decision": "PROMOTE_SOURCE",
+      "reason": "Useful deterministic connector source recipe with explicit dimensions, sockets, proof primitive, no silent scaling, and no-claim fields.",
+      "schema": "connector_asset_component_recipe_v0",
+      "dimensions_m": {
+        "width": 2.8,
+        "depth": 0.5,
+        "height": 0.7
+      },
+      "semantic_roles": [
+        "support",
+        "connector",
+        "bridge_link"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "nonzero_bounds": true,
+      "has_no_silent_scaling_expectation": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "notes": [
+        "Promoted by source-lane copy; generated goal folder intentionally left untouched.",
+        "No dimensions changed during promotion."
+      ]
+    },
+    {
+      "asset_id": "measured_bridge_rail_unit_v1",
+      "source_recipe_path": "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_bridge_rail_unit_v1.json",
+      "generated_recipe_path": "mosaic_dungeon_floor_v0/goal/architecture/connector_asset_kit_v0/recipes/measured_bridge_rail_unit_v1.json",
+      "decision": "PROMOTE_SOURCE",
+      "reason": "Useful deterministic connector source recipe with explicit dimensions, sockets, proof primitive, no silent scaling, and no-claim fields.",
+      "schema": "connector_asset_component_recipe_v0",
+      "dimensions_m": {
+        "width": 0.16,
+        "depth": 1.2,
+        "height": 0.72
+      },
+      "semantic_roles": [
+        "rail",
+        "connector",
+        "bridge_link"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "nonzero_bounds": true,
+      "has_no_silent_scaling_expectation": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "notes": [
+        "Promoted by source-lane copy; generated goal folder intentionally left untouched.",
+        "No dimensions changed during promotion."
+      ]
+    },
+    {
+      "asset_id": "measured_retaining_wall_unit_v1",
+      "source_recipe_path": "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_retaining_wall_unit_v1.json",
+      "generated_recipe_path": "mosaic_dungeon_floor_v0/goal/architecture/connector_asset_kit_v0/recipes/measured_retaining_wall_unit_v1.json",
+      "decision": "PROMOTE_SOURCE",
+      "reason": "Useful deterministic connector source recipe with explicit dimensions, sockets, proof primitive, no silent scaling, and no-claim fields.",
+      "schema": "connector_asset_component_recipe_v0",
+      "dimensions_m": {
+        "width": 1.2,
+        "depth": 0.28,
+        "height": 0.75
+      },
+      "semantic_roles": [
+        "support",
+        "connector",
+        "retaining_edge"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "nonzero_bounds": true,
+      "has_no_silent_scaling_expectation": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "notes": [
+        "Promoted by source-lane copy; generated goal folder intentionally left untouched.",
+        "No dimensions changed during promotion."
+      ]
+    },
+    {
+      "asset_id": "measured_curb_edge_unit_v1",
+      "source_recipe_path": "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_curb_edge_unit_v1.json",
+      "generated_recipe_path": "mosaic_dungeon_floor_v0/goal/architecture/connector_asset_kit_v0/recipes/measured_curb_edge_unit_v1.json",
+      "decision": "PROMOTE_SOURCE",
+      "reason": "Useful deterministic connector source recipe with explicit dimensions, sockets, proof primitive, no silent scaling, and no-claim fields.",
+      "schema": "connector_asset_component_recipe_v0",
+      "dimensions_m": {
+        "width": 0.18,
+        "depth": 1.2,
+        "height": 0.16
+      },
+      "semantic_roles": [
+        "connector",
+        "curb_edge",
+        "walkable_edge"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "nonzero_bounds": true,
+      "has_no_silent_scaling_expectation": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "notes": [
+        "Promoted by source-lane copy; generated goal folder intentionally left untouched.",
+        "No dimensions changed during promotion."
+      ]
+    }
+  ]
+}

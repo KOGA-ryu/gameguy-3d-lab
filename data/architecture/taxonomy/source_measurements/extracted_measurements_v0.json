@@ -1,0 +1,746 @@
+{
+  "schema_version": "extracted_measurements_v0",
+  "created_utc": "2026-05-26T00:00:00Z",
+  "purpose": "Source-backed architectural measurements and proportion constraints for procedural grammar only.",
+  "global_use_limit": "measurement_reference_only",
+  "measurements": [
+    {
+      "measurement_id": "pointed_arch_equilateral_rule_v0",
+      "source_id": "catholic_encyclopedia_arch_1907",
+      "architectural_term_candidate": "pointed_arch_bay",
+      "raw_measurements": {
+        "span_m": null,
+        "springline_height_m": null,
+        "apex_height_m": null,
+        "rise_m": null,
+        "bay_width_m": null,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": 0.866,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_ratios": {
+        "construction_basis": "equilateral pointed arch: two equal-radius arcs with centers at the springing points; rise/span = sqrt(3)/2"
+      },
+      "extraction_method": "treatise_rule",
+      "confidence": "high",
+      "unit_notes": "Proportional rule only; metric fields are null.",
+      "do_not_copy_geometry": true,
+      "notes": "Exact ratio derived from the named equilateral arch construction, not from a copied drawing."
+    },
+    {
+      "measurement_id": "pointed_arch_lancet_constraint_v0",
+      "source_id": "rickman_english_architecture_7th_ed",
+      "architectural_term_candidate": "pointed_arch_bay",
+      "raw_measurements": {
+        "span_m": null,
+        "springline_height_m": null,
+        "apex_height_m": null,
+        "rise_m": null,
+        "bay_width_m": null,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_ratios": {
+        "rise_to_span_constraint": ">0.866 relative to equilateral pointed arch"
+      },
+      "extraction_method": "treatise_rule",
+      "confidence": "medium",
+      "unit_notes": "Proportional class constraint only; no metric value extracted.",
+      "do_not_copy_geometry": true,
+      "notes": "Lancet arch is useful as a grammar parameter guard: choose a taller-than-equilateral pointed profile unless another measured source supplies exact dimensions."
+    },
+    {
+      "measurement_id": "pointed_arch_drop_constraint_v0",
+      "source_id": "rickman_english_architecture_7th_ed",
+      "architectural_term_candidate": "pointed_arch_bay",
+      "raw_measurements": {
+        "span_m": null,
+        "springline_height_m": null,
+        "apex_height_m": null,
+        "rise_m": null,
+        "bay_width_m": null,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_ratios": {
+        "rise_to_span_constraint": "<0.866 relative to equilateral pointed arch"
+      },
+      "extraction_method": "treatise_rule",
+      "confidence": "medium",
+      "unit_notes": "Proportional class constraint only; no metric value extracted.",
+      "do_not_copy_geometry": true,
+      "notes": "Drop or obtuse pointed arch is kept as a lower pointed profile class without assigning fake precision."
+    },
+    {
+      "measurement_id": "amiens_gothic_nave_span_height_v0",
+      "source_id": "amiens_cathedral_britannica",
+      "architectural_term_candidate": "pointed_arch_bay",
+      "raw_measurements": {
+        "span_m": 14.6,
+        "springline_height_m": null,
+        "apex_height_m": 42.3,
+        "rise_m": null,
+        "bay_width_m": 14.6,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_ratios": {
+        "vault_height_to_nave_span": 2.897
+      },
+      "extraction_method": "derived_from_two_values",
+      "confidence": "medium",
+      "unit_notes": "Source gives nave width and vault height in meters.",
+      "do_not_copy_geometry": true,
+      "notes": "This is a full Gothic nave/vault bay proportion, not an intrados arch-curve measurement."
+    },
+    {
+      "measurement_id": "chartres_gothic_nave_span_height_v0",
+      "source_id": "chartres_cathedral_dimensions",
+      "architectural_term_candidate": "pointed_arch_bay",
+      "raw_measurements": {
+        "span_m": 16.4,
+        "springline_height_m": null,
+        "apex_height_m": 37.5,
+        "rise_m": null,
+        "bay_width_m": 16.4,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_ratios": {
+        "vault_height_to_nave_span": 2.287
+      },
+      "extraction_method": "derived_from_two_values",
+      "confidence": "medium",
+      "unit_notes": "Source gives nave width and vault height in meters.",
+      "do_not_copy_geometry": true,
+      "notes": "Use as a Gothic verticality envelope for grammar, not as an exact arch drawing."
+    },
+    {
+      "measurement_id": "reims_gothic_nave_span_height_v0",
+      "source_id": "reims_cathedral_dimensions",
+      "architectural_term_candidate": "pointed_arch_bay",
+      "raw_measurements": {
+        "span_m": 14.65,
+        "springline_height_m": null,
+        "apex_height_m": 38.0,
+        "rise_m": null,
+        "bay_width_m": 14.65,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_ratios": {
+        "vault_height_to_nave_span": 2.594
+      },
+      "extraction_method": "derived_from_two_values",
+      "confidence": "medium",
+      "unit_notes": "Source gives nave width and vault height in meters.",
+      "do_not_copy_geometry": true,
+      "notes": "Use as another Gothic nave/vault proportion sample."
+    },
+    {
+      "measurement_id": "round_arch_semicircular_rule_v0",
+      "source_id": "catholic_encyclopedia_arch_1907",
+      "architectural_term_candidate": "round_arch_bay",
+      "raw_measurements": {
+        "span_m": null,
+        "springline_height_m": null,
+        "apex_height_m": null,
+        "rise_m": null,
+        "bay_width_m": null,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": 0.5,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_ratios": {
+        "construction_basis": "semicircular arch: rise equals half the span"
+      },
+      "extraction_method": "treatise_rule",
+      "confidence": "high",
+      "unit_notes": "Proportional rule only; metric fields are null.",
+      "do_not_copy_geometry": true,
+      "notes": "Canonical round arch baseline for grammar."
+    },
+    {
+      "measurement_id": "round_arch_segmental_constraint_v0",
+      "source_id": "catholic_encyclopedia_arch_1907",
+      "architectural_term_candidate": "round_arch_bay",
+      "raw_measurements": {
+        "span_m": null,
+        "springline_height_m": null,
+        "apex_height_m": null,
+        "rise_m": null,
+        "bay_width_m": null,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_ratios": {
+        "rise_to_span_constraint": "<0.5 for a segmental circular arch"
+      },
+      "extraction_method": "treatise_rule",
+      "confidence": "medium",
+      "unit_notes": "Proportional class constraint only; no metric value extracted.",
+      "do_not_copy_geometry": true,
+      "notes": "Use as a low round-arch grammar class; no exact rise assigned."
+    },
+    {
+      "measurement_id": "pont_du_gard_lower_arcade_span_v0",
+      "source_id": "pont_du_gard_britannica",
+      "architectural_term_candidate": "round_arch_bay",
+      "raw_measurements": {
+        "span_m": 24.0,
+        "springline_height_m": null,
+        "apex_height_m": null,
+        "rise_m": null,
+        "bay_width_m": 24.0,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "extraction_method": "explicit_source_dimension",
+      "confidence": "medium",
+      "unit_notes": "Source gives lower-tier arch span range in meters; largest span recorded here.",
+      "do_not_copy_geometry": true,
+      "notes": "Span-only Roman round-arch arcade sample. No rise extracted because the source page did not give an intrados rise."
+    },
+    {
+      "measurement_id": "pont_du_gard_upper_arcade_span_v0",
+      "source_id": "pont_du_gard_britannica",
+      "architectural_term_candidate": "round_arch_bay",
+      "raw_measurements": {
+        "span_m": 4.6,
+        "springline_height_m": null,
+        "apex_height_m": null,
+        "rise_m": null,
+        "bay_width_m": 4.6,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "extraction_method": "explicit_source_dimension",
+      "confidence": "medium",
+      "unit_notes": "Source gives upper-tier arch span in meters.",
+      "do_not_copy_geometry": true,
+      "notes": "Span-only small Roman arcade sample."
+    },
+    {
+      "measurement_id": "habs_tn181_round_recess_window_dimensions_v0",
+      "source_id": "habs_first_baptist_church_tn181",
+      "architectural_term_candidate": "round_arch_bay",
+      "raw_measurements": {
+        "span_m": 4.572,
+        "springline_height_m": null,
+        "apex_height_m": null,
+        "rise_m": null,
+        "bay_width_m": 4.572,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": 4.572,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_measurements_m": {
+        "window_width_m": 1.118,
+        "splayed_opening_width_m": 1.372
+      },
+      "extraction_method": "explicit_source_dimension",
+      "confidence": "medium",
+      "unit_notes": "Converted from explicit imperial source dimensions: 15 ft diameter, 3 ft 8 in window width, 4 ft 6 in splayed opening.",
+      "do_not_copy_geometry": true,
+      "notes": "Recorded as an explicit HABS dimensional relationship; not treated as a complete arch profile."
+    },
+    {
+      "measurement_id": "ely_octagon_width_height_v0",
+      "source_id": "ely_cathedral_octagon",
+      "architectural_term_candidate": "octagonal_plan",
+      "raw_measurements": {
+        "span_m": null,
+        "springline_height_m": null,
+        "apex_height_m": 43.0,
+        "rise_m": null,
+        "bay_width_m": null,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": 23.0,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_ratios": {
+        "height_to_octagon_width": 1.87
+      },
+      "extraction_method": "derived_from_two_values",
+      "confidence": "high",
+      "unit_notes": "Source gives octagon width and height in meters.",
+      "do_not_copy_geometry": true,
+      "notes": "Central octagonal crossing/lantern proportion sample."
+    },
+    {
+      "measurement_id": "castel_del_monte_octagon_side_courtyard_v0",
+      "source_id": "castel_del_monte_architettura",
+      "architectural_term_candidate": "octagonal_plan",
+      "raw_measurements": {
+        "span_m": null,
+        "springline_height_m": null,
+        "apex_height_m": null,
+        "rise_m": null,
+        "bay_width_m": 10.3,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_measurements_m": {
+        "external_octagon_side_m": 10.3,
+        "tower_diameter_m": 7.9,
+        "courtyard_side_min_m": 6.89,
+        "courtyard_side_max_m": 7.83
+      },
+      "additional_ratios": {
+        "tower_diameter_to_external_side": 0.767,
+        "courtyard_side_to_external_side_min": 0.669,
+        "courtyard_side_to_external_side_max": 0.76,
+        "regular_octagon_across_flats_estimate_from_side": 24.87,
+        "regular_octagon_across_vertices_estimate_from_side": 26.92
+      },
+      "extraction_method": "derived_from_two_values",
+      "confidence": "high",
+      "unit_notes": "Source gives side and tower dimensions in meters; octagon diameters are geometric estimates derived from the stated side length.",
+      "do_not_copy_geometry": true,
+      "notes": "Useful for octagonal/radial plan grammar; estimates assume a regular external octagon."
+    },
+    {
+      "measurement_id": "pantheon_rotunda_dome_diameter_v0",
+      "source_id": "pantheon_britannica",
+      "architectural_term_candidate": "dome",
+      "raw_measurements": {
+        "span_m": 43.3,
+        "springline_height_m": null,
+        "apex_height_m": 43.3,
+        "rise_m": 21.65,
+        "bay_width_m": null,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": 43.3,
+        "dome_diameter_m": 43.3,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": 0.5,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": 1.0,
+        "rib_to_span": null
+      },
+      "extraction_method": "derived_from_two_values",
+      "confidence": "medium",
+      "unit_notes": "Source gives rotunda/dome diameter and height in meters; dome rise is half of the stated diameter for the hemispherical grammar reference.",
+      "do_not_copy_geometry": true,
+      "notes": "Canonical dome-to-rotunda diameter relationship. The derived rise is a grammar simplification from the stated hemispherical diameter."
+    },
+    {
+      "measurement_id": "hagia_sophia_dome_diameter_height_v0",
+      "source_id": "hagia_sophia_asce",
+      "architectural_term_candidate": "dome",
+      "raw_measurements": {
+        "span_m": 31.0,
+        "springline_height_m": null,
+        "apex_height_m": 48.5,
+        "rise_m": null,
+        "bay_width_m": null,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": 31.0,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_ratios": {
+        "apex_height_to_dome_diameter": 1.565
+      },
+      "extraction_method": "derived_from_two_values",
+      "confidence": "medium",
+      "unit_notes": "Source gives central dome diameter and height above floor in meters.",
+      "do_not_copy_geometry": true,
+      "notes": "Useful for dome/vault vertical envelope. Not a structural model."
+    },
+    {
+      "measurement_id": "ely_octagon_vault_envelope_v0",
+      "source_id": "ely_cathedral_octagon",
+      "architectural_term_candidate": "vault_rib",
+      "raw_measurements": {
+        "span_m": 23.0,
+        "springline_height_m": null,
+        "apex_height_m": 43.0,
+        "rise_m": null,
+        "bay_width_m": 23.0,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": 23.0,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_ratios": {
+        "vault_envelope_height_to_span": 1.87
+      },
+      "extraction_method": "derived_from_two_values",
+      "confidence": "high",
+      "unit_notes": "Source gives octagon width and height in meters.",
+      "do_not_copy_geometry": true,
+      "notes": "Central octagonal vault/lantern envelope sample; rib layout was not copied."
+    },
+    {
+      "measurement_id": "vitruvius_doric_column_ratio_v0",
+      "source_id": "vitruvius_ten_books_gutenberg",
+      "architectural_term_candidate": "column",
+      "raw_measurements": {
+        "span_m": null,
+        "springline_height_m": null,
+        "apex_height_m": null,
+        "rise_m": null,
+        "bay_width_m": null,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_ratios": {
+        "column_height_to_diameter": 7.0,
+        "column_radius_to_height": 0.071
+      },
+      "extraction_method": "treatise_rule",
+      "confidence": "high",
+      "unit_notes": "Proportional order rule only; metric fields are null.",
+      "do_not_copy_geometry": true,
+      "notes": "Use as a compact/heavy column support ratio."
+    },
+    {
+      "measurement_id": "palladio_corinthian_column_ratio_v0",
+      "source_id": "palladio_four_books_smithsonian",
+      "architectural_term_candidate": "column",
+      "raw_measurements": {
+        "span_m": null,
+        "springline_height_m": null,
+        "apex_height_m": null,
+        "rise_m": null,
+        "bay_width_m": null,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_ratios": {
+        "column_height_to_diameter": 9.0,
+        "column_radius_to_height": 0.056
+      },
+      "extraction_method": "treatise_rule",
+      "confidence": "high",
+      "unit_notes": "Proportional order rule only; metric fields are null.",
+      "do_not_copy_geometry": true,
+      "notes": "Use as a slimmer column support ratio."
+    },
+    {
+      "measurement_id": "habs_tn181_splayed_support_opening_ratio_v0",
+      "source_id": "habs_first_baptist_church_tn181",
+      "architectural_term_candidate": "pier",
+      "raw_measurements": {
+        "span_m": 1.372,
+        "springline_height_m": null,
+        "apex_height_m": null,
+        "rise_m": null,
+        "bay_width_m": 1.372,
+        "bay_depth_m": null,
+        "wall_thickness_m": null,
+        "column_radius_m": null,
+        "column_height_m": null,
+        "pier_width_m": null,
+        "plan_diameter_m": null,
+        "dome_diameter_m": null,
+        "vault_rib_thickness_m": null
+      },
+      "derived_ratios": {
+        "rise_to_span": null,
+        "springline_to_span": null,
+        "pier_to_span": null,
+        "wall_thickness_to_span": null,
+        "column_radius_to_span": null,
+        "column_height_to_span": null,
+        "dome_to_plan_diameter": null,
+        "rib_to_span": null
+      },
+      "additional_measurements_m": {
+        "window_width_m": 1.118,
+        "splay_added_width_m": 0.254
+      },
+      "additional_ratios": {
+        "window_width_to_splayed_opening_width": 0.815
+      },
+      "extraction_method": "derived_from_two_values",
+      "confidence": "medium",
+      "unit_notes": "Converted from explicit imperial source dimensions: 3 ft 8 in and 4 ft 6 in.",
+      "do_not_copy_geometry": true,
+      "notes": "Support/opening thickness relation proxy; true pier width was not provided and remains null."
+    }
+  ],
+  "schema": "architectural_extracted_measurements_v0",
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "artwork_reused": false
+  }
+}

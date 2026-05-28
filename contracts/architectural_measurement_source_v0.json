@@ -1,0 +1,37 @@
+{
+  "schema_id": "architectural_measurement_source_v0",
+  "purpose": "Defines archive/source records used only as measurement and proportion references for procedural architectural grammar.",
+  "required_fields": [
+    "source_id",
+    "source_title",
+    "source_url",
+    "source_type",
+    "institution",
+    "license_or_access_note",
+    "use_allowed_for",
+    "confidence",
+    "notes"
+  ],
+  "allowed_source_types": [
+    "measured_drawing",
+    "treatise",
+    "building_dimension_page",
+    "archive_record",
+    "placeholder"
+  ],
+  "allowed_confidence": [
+    "high",
+    "medium",
+    "low",
+    "placeholder"
+  ],
+  "rules": {
+    "source_id_format": "lower_snake_case",
+    "measurement_reference_only": true,
+    "do_not_copy_geometry": true,
+    "do_not_reuse_artwork": true,
+    "no_structural_safety_claims": true,
+    "no_fabrication_claims": true,
+    "no_production_approval": true
+  }
+}

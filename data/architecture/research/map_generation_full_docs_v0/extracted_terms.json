@@ -1,0 +1,65 @@
+{
+  "schema": "map_generation_full_docs_extracted_terms_v0",
+  "terms": [
+    {
+      "term_id": "hex_axial_cube_coordinates",
+      "concepts": ["q_r_axial", "q_r_s_cube", "s_equals_negative_q_minus_r", "neighbor_directions", "distance", "range", "ring", "line"],
+      "source_urls": ["https://www.redblobgames.com/grids/hexagons/", "https://www.redblobgames.com/grids/hexagons/implementation.html"],
+      "engine_use": ["hex/elevation cells", "terrain mesh compiler", "road/path layer", "future AI affordance graph"]
+    },
+    {
+      "term_id": "hex_pixel_layout",
+      "concepts": ["pointy_top", "flat_top", "hex_to_pixel", "pixel_to_hex", "corner_generation", "origin", "size"],
+      "source_urls": ["https://www.redblobgames.com/grids/hexagons/", "https://www.redblobgames.com/grids/hexagons/parts/"],
+      "engine_use": ["Blender proof renderer", "visible face meshing", "asset placement layer"]
+    },
+    {
+      "term_id": "tiled_json_layers_objects_properties",
+      "concepts": ["map_root", "tilelayer", "objectgroup", "group_layer", "custom_properties", "objects", "polygons", "polylines"],
+      "source_urls": ["https://doc.mapeditor.org/en/stable/reference/json-map-format/", "https://doc.mapeditor.org/en/stable/manual/custom-properties/", "https://doc.mapeditor.org/en/stable/manual/objects/"],
+      "engine_use": ["road/path layer", "building plot layer", "asset placement layer"]
+    },
+    {
+      "term_id": "ldtk_project_level_layer_entity",
+      "concepts": ["defs", "levels", "layerInstances", "entityInstances", "fieldInstances", "externalLevels", "ldtkl"],
+      "source_urls": ["https://ldtk.io/docs/game-dev/json-overview/", "https://ldtk.io/docs/game-dev/json-overview/optional-separate-levels/", "https://ldtk.io/files/JSON_SCHEMA.json"],
+      "engine_use": ["building plot layer", "asset placement layer", "future map templates"]
+    },
+    {
+      "term_id": "wfc_socket_constraints",
+      "concepts": ["models", "sockets", "socket_connections", "rules_builder", "generator", "contradiction", "symmetry", "higher_dimensions"],
+      "source_urls": ["https://github.com/Henauxg/ghx_proc_gen", "https://docs.rs/ghx_proc_gen/latest/ghx_proc_gen/", "https://github.com/mxgmn/WaveFunctionCollapse"],
+      "engine_use": ["seam/fold grammar", "building plot layer", "asset placement layer", "future AI affordance graph"]
+    },
+    {
+      "term_id": "terraced_terrain_parameters",
+      "concepts": ["relative_terrace_heights", "seed", "fragmentation_depth", "maximum_height", "sculpt_settings", "height_distribution"],
+      "source_urls": ["https://github.com/lazysquirrellabs/TTG"],
+      "engine_use": ["hex/elevation cells", "terrain mesh compiler", "visible face meshing", "seam/fold grammar"]
+    },
+    {
+      "term_id": "blender_mesh_creation",
+      "concepts": ["Mesh.from_pydata", "Mesh.validate", "Mesh.update", "vertices", "edges", "faces", "materials", "curve_bevel_depth"],
+      "source_urls": ["https://docs.blender.org/api/current/bpy.types.Mesh.html", "https://docs.blender.org/api/current/bpy.types.Curve.html", "https://docs.blender.org/api/current/bpy.ops.object.html"],
+      "engine_use": ["Blender proof renderer", "terrain mesh compiler", "visible face meshing"]
+    },
+    {
+      "term_id": "sverchok_mesh_list_flow",
+      "concepts": ["vertices_edges_faces_lists", "selection_masks", "extrude_edges", "triangulate", "node_pipeline"],
+      "source_urls": ["https://sverchok.readthedocs.io/en/latest/geometry.html", "https://sverchok.readthedocs.io/en/latest/nodes/analyzers/mesh_select.html", "https://sverchok.readthedocs.io/en/stable/nodes/modifier_change/extrude_edges.html"],
+      "engine_use": ["terrain mesh compiler", "visible face meshing", "asset placement layer"]
+    },
+    {
+      "term_id": "cadquery_parametric_solids",
+      "concepts": ["workplane", "profile", "extrude", "loft", "sweep", "revolve", "booleans", "export_formats"],
+      "source_urls": ["https://cadquery.readthedocs.io/", "https://cadquery.readthedocs.io/en/latest/workplane.html", "https://cadquery.readthedocs.io/en/latest/classreference.html", "https://cadquery.readthedocs.io/en/latest/importexport.html"],
+      "engine_use": ["future robust asset generation", "building plot layer"]
+    },
+    {
+      "term_id": "manifold_robust_booleans",
+      "concepts": ["manifold_mesh", "topology_vs_geometry", "union", "difference", "intersection", "split", "trim_by_plane", "status"],
+      "source_urls": ["https://github.com/elalish/manifold", "https://github.com/elalish/manifold/wiki/Manifold-Library", "https://manifoldcad.org/docs/html/classmanifold_1_1_manifold.html", "https://manifoldcad.org/docs/jsuser/classes/Manifold.html"],
+      "engine_use": ["future robust booleans", "future asset generation"]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "term_id": "outward_normals",
+  "category": "validation_term",
+  "plain_name": "Outward Normals",
+  "description": "Face normals point outward from the generated solid.",
+  "required_inputs": { "mesh_or_sections": "mesh_ref | solid_definition" },
+  "outputs": { "valid": "bool", "flipped_faces": "face_ref[]" },
+  "constraints": { "reference_volume_available": true },
+  "validation": ["normals_face_outward", "winding_is_consistent"]
+}

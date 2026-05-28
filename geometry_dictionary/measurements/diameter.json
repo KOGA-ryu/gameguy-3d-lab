@@ -1,0 +1,10 @@
+{
+  "term_id": "diameter",
+  "category": "measurement",
+  "plain_name": "Diameter",
+  "description": "Full width across a circular or radial profile through its center.",
+  "required_inputs": { "radius": "float" },
+  "outputs": { "diameter": "float" },
+  "used_by": ["circle", "round_post", "pipe_core"],
+  "validation": ["finite_value", "value_is_positive"]
+}

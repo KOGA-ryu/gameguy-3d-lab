@@ -1,0 +1,82 @@
+{
+  "contract_name": "plot_shape_taxonomy_v0",
+  "version": "0.1.0",
+  "purpose": "Define reusable plot-shape families that cube recipes can reference instead of privately owning math families.",
+  "required_taxonomy_fields": [
+    "taxonomy_id",
+    "version",
+    "expected_shape_count",
+    "geometry_output_categories",
+    "semantic_output_categories",
+    "allowed_categories",
+    "required_non_claim_flags",
+    "shape_families"
+  ],
+  "required_shape_fields": [
+    "shape_id",
+    "category",
+    "parameter_fields",
+    "geometry_outputs",
+    "semantic_outputs",
+    "generation_uses",
+    "tileability",
+    "connector_relevance",
+    "animation_relevance",
+    "non_claims",
+    "notes"
+  ],
+  "allowed_categories": [
+    "path_plot",
+    "region_plot",
+    "volume_plot",
+    "field_plot",
+    "architecture_plot",
+    "motion_plot"
+  ],
+  "geometry_output_categories": [
+    "sampled_points",
+    "edges",
+    "occupied_cells",
+    "void_cells",
+    "surface_cells",
+    "regions",
+    "masks",
+    "fields"
+  ],
+  "semantic_output_categories": [
+    "path_cells",
+    "wall_cells",
+    "panel_sockets",
+    "traversal_hints",
+    "obstruction_zones",
+    "ornament_anchors",
+    "future_ai_affordance_zones"
+  ],
+  "required_generation_use_fields": [
+    "building_generation_uses",
+    "object_generation_uses",
+    "ornament_generation_uses",
+    "ai_affordance_uses",
+    "animation_or_motion_uses"
+  ],
+  "required_non_claim_flags": [
+    "no_structural_validity",
+    "no_fabrication_readiness",
+    "no_ai_behavior_correctness",
+    "no_gym_approval",
+    "no_museum_approval",
+    "no_production_approval"
+  ],
+  "field_contract": {
+    "shape_id": "Stable reusable plot shape id.",
+    "category": "One of allowed_categories.",
+    "parameter_fields": "Named inputs needed to instantiate the shape family.",
+    "geometry_outputs": "Geometry output categories the shape can produce.",
+    "semantic_outputs": "Semantic output categories the shape can support after role mapping.",
+    "generation_uses": "Building, object, ornament, AI-affordance, and motion use cases.",
+    "tileability": "Whether the shape can repeat, tile, wrap, or remain local.",
+    "connector_relevance": "How this shape can connect to cube faces, sockets, paths, or regions.",
+    "animation_relevance": "How this shape may later support motion or deformation.",
+    "non_claims": "Explicit non-claims preventing production, fabrication, structural, AI correctness, Gym, or Museum approval."
+  }
+}

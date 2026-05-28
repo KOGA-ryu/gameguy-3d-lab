@@ -1,0 +1,240 @@
+{
+  "schema": "pathway_engine_testbed_template_v0",
+  "scene_id": "pathway_engine_v0",
+  "source_scene_family": "pathway_engine_testbed_v0",
+  "do_not_rewrite": false,
+  "mutable_working_copy": true,
+  "created_at_utc": "2026-05-27T20:36:48.793100+00:00",
+  "map": {
+    "width": 32,
+    "height": 32,
+    "hex_radius_m": 0.55,
+    "base_height_m": 2.0,
+    "terrain_policy": "mostly_flat_pathway_logic_testbed"
+  },
+  "buildings": [
+    {
+      "building_id": "workshop",
+      "role": "left_service_building",
+      "center_map": [
+        8.0,
+        15.8
+      ],
+      "dimensions_m": {
+        "width": 4.4,
+        "depth": 3.4,
+        "height": 2.2
+      },
+      "entrance_plugs": [
+        {
+          "plug_id": "workshop.main_entry",
+          "local_edge": "east",
+          "position_map": [
+            10.2,
+            15.8
+          ],
+          "direction_map": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "priority": "primary"
+        }
+      ]
+    },
+    {
+      "building_id": "central_hall",
+      "role": "pathway_hub_building",
+      "center_map": [
+        16.0,
+        15.8
+      ],
+      "dimensions_m": {
+        "width": 5.4,
+        "depth": 4.0,
+        "height": 2.6
+      },
+      "entrance_plugs": [
+        {
+          "plug_id": "central_hall.west_entry",
+          "local_edge": "west",
+          "position_map": [
+            13.3,
+            15.8
+          ],
+          "direction_map": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "priority": "primary"
+        },
+        {
+          "plug_id": "central_hall.east_entry",
+          "local_edge": "east",
+          "position_map": [
+            18.7,
+            15.8
+          ],
+          "direction_map": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "priority": "primary"
+        },
+        {
+          "plug_id": "central_hall.south_entry",
+          "local_edge": "south",
+          "position_map": [
+            16.0,
+            17.8
+          ],
+          "direction_map": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "priority": "secondary"
+        }
+      ]
+    },
+    {
+      "building_id": "storehouse",
+      "role": "right_storage_building",
+      "center_map": [
+        24.0,
+        15.8
+      ],
+      "dimensions_m": {
+        "width": 4.4,
+        "depth": 3.4,
+        "height": 2.2
+      },
+      "entrance_plugs": [
+        {
+          "plug_id": "storehouse.main_entry",
+          "local_edge": "west",
+          "position_map": [
+            21.8,
+            15.8
+          ],
+          "direction_map": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "priority": "primary"
+        }
+      ]
+    }
+  ],
+  "road_plugs": [
+    {
+      "plug_id": "yard_road.north_plug",
+      "owner_id": "yard_road",
+      "plug_type": "road",
+      "position_map": [
+        16.0,
+        21.5
+      ],
+      "direction_map": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "width_m": 2.2,
+      "clearance_m": 99.0,
+      "allowed_connection_types": [
+        "road_threshold",
+        "flat_pathway"
+      ],
+      "priority": "primary"
+    }
+  ],
+  "connections": [
+    {
+      "connection_id": "central_to_workshop_path",
+      "from_plug": "central_hall.west_entry",
+      "to_plug": "workshop.main_entry",
+      "connection_type": "flat_pathway",
+      "width_m": 1.45,
+      "max_slope": 0.08,
+      "min_clearance_m": 2.0,
+      "turn_radius_m": 1.0,
+      "deterministic_route_policy": "declared_gentle_bend_v0",
+      "route_points_map": [
+        [
+          13.3,
+          15.8
+        ],
+        [
+          12.0,
+          14.8
+        ],
+        [
+          10.2,
+          15.8
+        ]
+      ]
+    },
+    {
+      "connection_id": "central_to_storehouse_path",
+      "from_plug": "central_hall.east_entry",
+      "to_plug": "storehouse.main_entry",
+      "connection_type": "flat_pathway",
+      "width_m": 1.45,
+      "max_slope": 0.08,
+      "min_clearance_m": 2.0,
+      "turn_radius_m": 1.0,
+      "deterministic_route_policy": "declared_gentle_bend_v0",
+      "route_points_map": [
+        [
+          18.7,
+          15.8
+        ],
+        [
+          20.0,
+          14.8
+        ],
+        [
+          21.8,
+          15.8
+        ]
+      ]
+    },
+    {
+      "connection_id": "central_to_yard_road_threshold",
+      "from_plug": "central_hall.south_entry",
+      "to_plug": "yard_road.north_plug",
+      "connection_type": "road_threshold",
+      "width_m": 1.8,
+      "max_slope": 0.08,
+      "min_clearance_m": 2.0,
+      "turn_radius_m": 1.0,
+      "deterministic_route_policy": "short_threshold_to_road_v0",
+      "route_points_map": [
+        [
+          16.0,
+          17.8
+        ],
+        [
+          16.0,
+          19.3
+        ],
+        [
+          16.0,
+          21.5
+        ]
+      ]
+    }
+  ],
+  "relationship_to_hillwatch_ravine": "lower settlement / approach yard before hill climb",
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false
+  }
+}

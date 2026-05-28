@@ -1,0 +1,191 @@
+{
+  "schema_version": "measurement_sources_v0",
+  "created_utc": "2026-05-26T00:00:00Z",
+  "purpose": "Source registry for architectural measurement and proportion records used only as procedural grammar reference.",
+  "extraction_policy": {
+    "use_allowed_for": "measurement_reference_only",
+    "hard_rule": "If a source has beautiful drawings but no usable dimensions or scalable proportions, record it as inspiration-only and do not extract measurements from it.",
+    "disallowed": [
+      "production approval",
+      "structural safety claims",
+      "fabrication claims",
+      "copying protected artwork",
+      "visual-only asset reuse"
+    ]
+  },
+  "sources": [
+    {
+      "source_id": "catholic_encyclopedia_arch_1907",
+      "source_title": "The Catholic Encyclopedia: Arch",
+      "source_url": "https://www.newadvent.org/cathen/01690a.htm",
+      "source_type": "treatise",
+      "institution": "New Advent / Robert Appleton Company 1907 text",
+      "license_or_access_note": "Online transcription of early twentieth-century reference text; use here is limited to factual proportional reference.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "medium",
+      "notes": "Used for named arch categories and qualitative geometry constraints such as semicircular, segmental, horseshoe, lancet, equilateral, drop, and four-centered arches."
+    },
+    {
+      "source_id": "rickman_english_architecture_7th_ed",
+      "source_title": "An Attempt to Discriminate the Styles of Architecture in England, 7th edition",
+      "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/An_Attempt_to_Discriminate_the_Styles_of_Architecture_in_England_%28IA_gri_33125000150237%29.pdf",
+      "source_type": "treatise",
+      "institution": "Internet Archive scan via Wikimedia Commons",
+      "license_or_access_note": "Public-domain historical treatise scan; used only for named English pointed arch form distinctions.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "medium",
+      "notes": "Useful for pointed arch class distinctions. No drawing artwork or plate geometry was copied."
+    },
+    {
+      "source_id": "vitruvius_ten_books_gutenberg",
+      "source_title": "Vitruvius: The Ten Books on Architecture",
+      "source_url": "https://www.gutenberg.org/ebooks/20239",
+      "source_type": "treatise",
+      "institution": "Project Gutenberg",
+      "license_or_access_note": "Public-domain translation distributed by Project Gutenberg; used for column-order proportional rules only.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "high",
+      "notes": "Used for order-based column height-to-diameter ratios."
+    },
+    {
+      "source_id": "palladio_four_books_smithsonian",
+      "source_title": "The Architecture of A. Palladio; in Four Books",
+      "source_url": "https://library.si.edu/digital-library/book/architectureofap00pall",
+      "source_type": "treatise",
+      "institution": "Smithsonian Libraries and Archives",
+      "license_or_access_note": "Digitized historic architectural treatise; used for proportional order rules only.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "high",
+      "notes": "Used for normalized column-order proportions. No plates copied."
+    },
+    {
+      "source_id": "amiens_cathedral_britannica",
+      "source_title": "Amiens Cathedral",
+      "source_url": "https://www.britannica.com/topic/Amiens-Cathedral",
+      "source_type": "building_dimension_page",
+      "institution": "Encyclopaedia Britannica",
+      "license_or_access_note": "Building-specific public web page with concrete dimensions; facts used as measurement reference only.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "medium",
+      "notes": "Used for Gothic nave span and vault-height proportions, not as a drawable design source."
+    },
+    {
+      "source_id": "chartres_cathedral_dimensions",
+      "source_title": "Chartres Cathedral building dimensions",
+      "source_url": "https://www.chartres-csm.org/en/chartres-cathedral/key-figures/",
+      "source_type": "building_dimension_page",
+      "institution": "Chartres Sanctuaire du Monde",
+      "license_or_access_note": "Building-specific dimensions page; values used only as measurement reference.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "medium",
+      "notes": "Used for Gothic nave width and vault-height proportions."
+    },
+    {
+      "source_id": "reims_cathedral_dimensions",
+      "source_title": "Reims Cathedral dimensions",
+      "source_url": "https://www.cathedrale-reims.com/en/history-and-architecture",
+      "source_type": "building_dimension_page",
+      "institution": "Cathedrale Notre-Dame de Reims",
+      "license_or_access_note": "Building-specific public page with concrete dimensions; values used only as measurement reference.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "medium",
+      "notes": "Used for Gothic nave width and vault-height proportions."
+    },
+    {
+      "source_id": "pont_du_gard_britannica",
+      "source_title": "Pont du Gard",
+      "source_url": "https://www.britannica.com/topic/Pont-du-Gard",
+      "source_type": "building_dimension_page",
+      "institution": "Encyclopaedia Britannica",
+      "license_or_access_note": "Building-specific page with concrete arch span ranges; values used only as measurement reference.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "medium",
+      "notes": "Used for Roman round-arch arcade span examples. Rise was not extracted where the source did not provide it."
+    },
+    {
+      "source_id": "ely_cathedral_octagon",
+      "source_title": "Ely Cathedral: The Octagon",
+      "source_url": "https://www.elycathedral.org/history-heritage/the-octagon",
+      "source_type": "building_dimension_page",
+      "institution": "Ely Cathedral",
+      "license_or_access_note": "Building-specific official page with concrete octagon dimensions; values used only as measurement reference.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "high",
+      "notes": "Used for central octagon width and height relationship."
+    },
+    {
+      "source_id": "castel_del_monte_architettura",
+      "source_title": "Castel del Monte: Architecture",
+      "source_url": "https://www.casteldelmonte.beniculturali.it/en/architecture/",
+      "source_type": "building_dimension_page",
+      "institution": "Ministero della Cultura / Castel del Monte",
+      "license_or_access_note": "Official building page with concrete octagonal side dimensions; values used only as measurement reference.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "high",
+      "notes": "Used for regular octagon side length, tower diameter, and courtyard-side relationships."
+    },
+    {
+      "source_id": "pantheon_britannica",
+      "source_title": "Pantheon",
+      "source_url": "https://www.britannica.com/topic/Pantheon-building-Rome-Italy",
+      "source_type": "building_dimension_page",
+      "institution": "Encyclopaedia Britannica",
+      "license_or_access_note": "Building-specific dimensions page; values used only as measurement reference.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "medium",
+      "notes": "Used for rotunda and dome diameter relationship."
+    },
+    {
+      "source_id": "hagia_sophia_asce",
+      "source_title": "Hagia Sophia",
+      "source_url": "https://www.asce.org/about-civil-engineering/history-and-heritage/historic-landmarks/hagia-sophia",
+      "source_type": "building_dimension_page",
+      "institution": "American Society of Civil Engineers",
+      "license_or_access_note": "Engineering landmark page with concrete dome dimensions; values used only as measurement reference.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "medium",
+      "notes": "Used for central dome diameter and height-above-floor relationship."
+    },
+    {
+      "source_id": "habs_first_baptist_church_tn181",
+      "source_title": "HABS TN-181: First Baptist Church, Knoxville, Tennessee",
+      "source_url": "https://lcweb2.loc.gov/master/pnp/habshaer/tn/tn0100/tn0181/data/tn0181data.pdf",
+      "source_type": "archive_record",
+      "institution": "Library of Congress HABS/HAER/HALS",
+      "license_or_access_note": "Library of Congress HABS documentation PDF; used only for factual dimensional notes where explicit dimensions appear in the written data.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "medium",
+      "notes": "Used for explicit window/recess dimensions in imperial units converted to meters. No image assets downloaded or reused."
+    },
+    {
+      "source_id": "historic_england_kenilworth_archway",
+      "source_title": "Kenilworth Castle: measured drawing of archway",
+      "source_url": "https://historicengland.org.uk/images-books/photos/item/MD93/03252",
+      "source_type": "measured_drawing",
+      "institution": "Historic England Archive",
+      "license_or_access_note": "Historic England archive record; no extraction made because the accessible record did not provide usable dimensions in the page text.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "low",
+      "notes": "Recorded as inspiration-only/no-extraction per hard rule."
+    },
+    {
+      "source_id": "loc_habs_collection",
+      "source_title": "Historic American Buildings Survey / Historic American Engineering Record / Historic American Landscapes Survey Collection",
+      "source_url": "https://www.loc.gov/pictures/collection/hh/",
+      "source_type": "archive_record",
+      "institution": "Library of Congress",
+      "license_or_access_note": "Collection landing page; individual drawings require source-by-source dimension checks before extraction.",
+      "use_allowed_for": "measurement_reference_only",
+      "confidence": "high",
+      "notes": "Registry source only. No measurements extracted without a specific dimensional source."
+    }
+  ],
+  "schema": "architectural_measurement_sources_v0",
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "artwork_reused": false
+  }
+}

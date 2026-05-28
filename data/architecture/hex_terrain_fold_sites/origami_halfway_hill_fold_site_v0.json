@@ -1,0 +1,68 @@
+{
+  "schema": "hex_terrain_fold_recipe_v0",
+  "site_id": "origami_halfway_hill_fold_site_v0",
+  "map_cube_ref": "standard_32m_cube_v0",
+  "units": "abstract_meter",
+  "summary": "A compact round hill that turns eligible hard-step seams into origami-style halfway folds instead of vertical risers.",
+  "hex_grid": {
+    "layout": "pointy_top",
+    "radius": 1.0,
+    "vertical_step": 0.25,
+    "bounds_source": "map_cube_coordinate_range"
+  },
+  "heightfield": {
+    "type": "round_hill",
+    "center": [1.5, -1.0],
+    "radius": 6.5,
+    "base_height": 0.25,
+    "peak_height": 2.5,
+    "falloff": "smoothstep",
+    "quantize_to_vertical_step": true,
+    "surface_type": "grass_stone"
+  },
+  "folds": [
+    {
+      "fold_id": "origami_halfway_valley_cut",
+      "type": "valley",
+      "line": {
+        "start": [-4.5, 2.5],
+        "end": [5.25, -3.0]
+      },
+      "magnitude": 0.34,
+      "falloff_radius": 1.35,
+      "affects": ["visual_mesh", "topology_classification"]
+    },
+    {
+      "fold_id": "origami_halfway_ridge_back",
+      "type": "mountain",
+      "line": {
+        "start": [-3.5, -3.25],
+        "end": [4.5, 2.75]
+      },
+      "magnitude": 0.28,
+      "falloff_radius": 1.05,
+      "affects": ["visual_mesh"]
+    }
+  ],
+  "edge_fold_policy": {
+    "hard_step": "fold_meet_halfway",
+    "fold_bias": 0.5,
+    "max_delta": 1.0,
+    "applies_to": ["visual_mesh", "topology_classification"],
+    "description": "For hard-step neighbor deltas up to max_delta, split vertices but render two sloped fold flaps that meet at the midpoint height."
+  },
+  "classification_rules": {
+    "flat_delta_max": 0.15,
+    "step_delta_max": 0.5,
+    "ledge_delta_max": 1.0,
+    "cliff_delta_min": 1.0,
+    "buildable_slope_delta_max": 0.25,
+    "walkable_delta_max": 0.5
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false
+  }
+}

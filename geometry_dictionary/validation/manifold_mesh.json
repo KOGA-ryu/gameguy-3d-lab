@@ -1,0 +1,10 @@
+{
+  "term_id": "manifold_mesh",
+  "category": "validation_term",
+  "plain_name": "Manifold Mesh",
+  "description": "A future mesh where edges and faces form a valid closed or declared-open surface.",
+  "required_inputs": { "mesh": "mesh_ref" },
+  "outputs": { "valid": "bool", "non_manifold_edges": "edge_ref[]" },
+  "constraints": { "mesh_exists": true },
+  "validation": ["edges_have_valid_face_counts", "no_degenerate_faces"]
+}

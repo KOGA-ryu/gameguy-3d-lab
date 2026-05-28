@@ -1,0 +1,50 @@
+{
+  "schema": "job_contract_contract_v0",
+  "purpose": "Define the minimum executable unit of factory work.",
+  "required_fields": [
+    "schema",
+    "job_id",
+    "lane",
+    "description",
+    "inputs",
+    "commands",
+    "outputs",
+    "validation",
+    "review_outputs",
+    "receipt",
+    "handoff",
+    "no_claims"
+  ],
+  "input_fields": [
+    "path",
+    "kind",
+    "required"
+  ],
+  "command_fields": [
+    "label",
+    "cmd",
+    "cwd"
+  ],
+  "output_fields": [
+    "path",
+    "kind",
+    "required"
+  ],
+  "validation_fields": [
+    "label",
+    "cmd",
+    "cwd"
+  ],
+  "rules": {
+    "commands_are_run_in_repo_root_by_default": true,
+    "jobs_fail_if_required_inputs_are_missing": true,
+    "jobs_fail_if_required_outputs_are_missing": true,
+    "jobs_fail_if_validation_commands_fail": true,
+    "jobs_must_emit_a_factory_receipt": true
+  },
+  "required_no_claims": {
+    "production_approval": false,
+    "gym_museum_approval": false,
+    "final_asset_claim": false
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "schema": "architectural_shape_terms_v0",
+  "dictionary_id": "architectural_shape_dictionary_v0",
+  "units": "abstract_meter",
+  "summary": "Starter construction grammar for multi-face architectural generation: octagonal plans, radial bays, columns, pointed arches, wall bays, and adapter faces.",
+  "terms": [
+    {
+      "shape_id": "octagonal_plan",
+      "shape_family": "radial_plan",
+      "base_face": "octagon",
+      "role": "central_room_plan",
+      "measurement_fields": {
+        "radius": "float",
+        "bay_count": "int",
+        "rotation_degrees": "float"
+      },
+      "bend_law": {
+        "law_id": "none_planar_polygon",
+        "description": "A flat regular octagon with ordered perimeter points."
+      },
+      "connector_logic": {
+        "connectors": ["radial", "edge_join", "shared_endpoint"],
+        "rule": "each bay owns one ordered perimeter edge and shares endpoints with neighboring bays"
+      },
+      "operation_chain": ["array_radial", "edge_join"],
+      "validation": ["eight_ordered_vertices", "closed_profile", "shared_endpoint_distance_below_tolerance"]
+    },
+    {
+      "shape_id": "radial_bay",
+      "shape_family": "bay",
+      "base_face": "quad",
+      "role": "wall_or_arch_segment_between_radial_supports",
+      "measurement_fields": {
+        "left_point": "vec3",
+        "right_point": "vec3",
+        "springline_height": "float",
+        "bay_depth": "float"
+      },
+      "bend_law": {
+        "law_id": "straight_edge_with_vertical_face",
+        "description": "A bay is framed by a straight edge at floor level and vertical support plane."
+      },
+      "connector_logic": {
+        "connectors": ["edge_join", "arch_springline", "column_cap"],
+        "rule": "bay endpoints must equal the adjacent support endpoints and springline connectors"
+      },
+      "operation_chain": ["extrude", "cap_ends"],
+      "validation": ["edge_length_positive", "arch_endpoint_matches_springline", "support_connector_exists"]
+    },
+    {
+      "shape_id": "pointed_arch_bay",
+      "shape_family": "arch",
+      "base_face": "arc_curve",
+      "role": "gothic_opening_or_vault_rib",
+      "measurement_fields": {
+        "span": "float",
+        "springline_height": "float",
+        "curve_radius": "float",
+        "segments_per_side": "int",
+        "rib_radius": "float"
+      },
+      "bend_law": {
+        "law_id": "two_center_equal_radius_pointed_arch",
+        "description": "Two circular arcs meet at an apex. Each arc center is the opposite springline endpoint."
+      },
+      "connector_logic": {
+        "connectors": ["arch_springline", "column_cap", "shared_endpoint"],
+        "rule": "left and right curve endpoints must share exact coordinates with bay support springline points"
+      },
+      "operation_chain": ["pointed_arch_profile", "offset_profile", "extrude"],
+      "validation": ["arch_endpoints_match_springline_connectors", "apex_above_springline", "curve_samples_are_ordered"]
+    },
+    {
+      "shape_id": "octagonal_column_stack",
+      "shape_family": "support",
+      "base_face": "octagon",
+      "role": "radial_support_pier",
+      "measurement_fields": {
+        "radius": "float",
+        "height": "float",
+        "base_height": "float",
+        "cap_height": "float"
+      },
+      "bend_law": {
+        "law_id": "straight_vertical_extrusion",
+        "description": "A vertical octagonal support with base, shaft, and cap connectors."
+      },
+      "connector_logic": {
+        "connectors": ["floor", "column_cap", "radial", "shared_endpoint"],
+        "rule": "column cap point is the arch springline support point for adjacent bays"
+      },
+      "operation_chain": ["extrude", "cap_ends"],
+      "validation": ["nonzero_volume", "column_cap_position_matches_support_height", "outward_normals"]
+    },
+    {
+      "shape_id": "quad_wall_bay",
+      "shape_family": "wall",
+      "base_face": "quad",
+      "role": "constructed_wall_panel",
+      "measurement_fields": {
+        "width": "float",
+        "height": "float",
+        "thickness": "float",
+        "bottom_z": "float"
+      },
+      "bend_law": {
+        "law_id": "straight_planar_wall",
+        "description": "A flat wall panel between ordered support endpoints."
+      },
+      "connector_logic": {
+        "connectors": ["edge_join", "panel_socket", "shared_endpoint"],
+        "rule": "wall lower and upper edge points must align to bay boundary points"
+      },
+      "operation_chain": ["rectangle", "extrude", "cap_ends"],
+      "validation": ["closed_profile", "nonzero_volume", "shared_endpoint_distance_below_tolerance"]
+    },
+    {
+      "shape_id": "trapezoid_adapter_face",
+      "shape_family": "adapter",
+      "base_face": "quad",
+      "role": "terrain_to_wall_transition_patch",
+      "measurement_fields": {
+        "inner_left": "vec3",
+        "inner_right": "vec3",
+        "outer_left": "vec3",
+        "outer_right": "vec3"
+      },
+      "bend_law": {
+        "law_id": "convex_quad_adapter",
+        "description": "A convex quadrilateral patch that reconciles a plot boundary with a straight construction edge."
+      },
+      "connector_logic": {
+        "connectors": ["edge_join", "shared_endpoint"],
+        "rule": "outer points lock to the construction edge while inner points lock to the terrain or plot edge"
+      },
+      "operation_chain": ["loft_sections", "cap_ends"],
+      "validation": ["convex_patch", "shared_endpoint_distance_below_tolerance", "manifold_mesh"]
+    }
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false
+  }
+}

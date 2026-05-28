@@ -1,0 +1,11 @@
+{
+  "term_id": "extrude",
+  "category": "mesh_operation",
+  "plain_name": "Extrude",
+  "description": "Turns one 2D profile into a solid by extending it along an axis.",
+  "required_inputs": { "profile": "profile_primitive", "axis": "x | y | z", "height": "float" },
+  "outputs": { "type": "solid_definition | mesh_future" },
+  "constraints": { "height": "> 0", "profile_must_be_closed": true },
+  "blender_method": "create profile face, extrude along axis by height, cap ends",
+  "validation": ["closed_profile", "nonzero_volume", "outward_normals"]
+}

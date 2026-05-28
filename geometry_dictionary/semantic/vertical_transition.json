@@ -1,0 +1,12 @@
+{
+  "term_id": "vertical_transition",
+  "category": "semantic_geometry",
+  "plain_name": "Vertical Transition",
+  "description": "Geometry that changes traversal height, such as stairs or ramps.",
+  "required_inputs": { "asset_ref": "solid_definition", "height_delta": "float" },
+  "outputs": { "type": "navigation_height_change_hint" },
+  "constraints": { "height_delta_nonzero": true },
+  "common_uses": ["stairs", "ramps", "stepped terrain"],
+  "blender_method": "tag object as navigation height transition",
+  "validation": ["walkable_surface_exists", "height_delta_declared"]
+}

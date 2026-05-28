@@ -1,0 +1,162 @@
+{
+  "schema": "measurement_parts_taxonomy_v1",
+  "purpose": "Object classes, source priorities, parts, and measurements for Research Dex v1 extraction.",
+  "object_classes": [
+    {
+      "object_class": "pointed_arch_bay",
+      "source_priority": ["LOC", "Historic England"],
+      "extract": ["overall_width", "overall_height", "springline_ratio", "arch_rise", "opening_width", "frame_thickness", "pier_width"],
+      "parts": ["springline", "arch_curve", "opening", "frame", "pier", "spandrel"]
+    },
+    {
+      "object_class": "round_arch_bay",
+      "source_priority": ["LOC", "Palladio", "Vitruvius"],
+      "extract": ["radius", "springline", "opening_ratio", "voussoir_or_border_thickness"],
+      "parts": ["springline", "arch_curve", "opening", "border_band", "voussoir"]
+    },
+    {
+      "object_class": "horseshoe_arch_bay",
+      "source_priority": ["LOC", "Historic England if available"],
+      "extract": ["opening_ratio", "curve_center", "springline", "over_curve_depth"],
+      "parts": ["springline", "return_curve", "over_curve", "opening", "frame"]
+    },
+    {
+      "object_class": "ogee_arch_bay",
+      "source_priority": ["Historic England", "LOC"],
+      "extract": ["inflection_points", "peak_height", "width_height_ratio"],
+      "parts": ["springline", "concave_curve", "convex_curve", "inflection", "peak", "opening"]
+    },
+    {
+      "object_class": "portal_frame",
+      "source_priority": ["LOC", "Palladio", "Historic England"],
+      "extract": ["outer_frame", "inner_opening", "jamb_thickness", "lintel_arch_ratio"],
+      "parts": ["jamb", "lintel_or_arch", "threshold", "opening", "border_band"]
+    },
+    {
+      "object_class": "window_tracery_bay",
+      "source_priority": ["Historic England", "LOC"],
+      "extract": ["bay_count", "mullion_thickness", "arch_subdivision", "circle_foil_ratios"],
+      "parts": ["jamb", "mullion", "tracery_head", "lancet", "foil", "sill"]
+    },
+    {
+      "object_class": "blind_arcade",
+      "source_priority": ["Historic England", "LOC"],
+      "extract": ["repeat_spacing", "bay_width", "column_width", "arch_radius"],
+      "parts": ["bay", "attached_column", "arch_curve", "recess_panel", "spandrel"]
+    },
+    {
+      "object_class": "column_base_shaft_capital",
+      "source_priority": ["Palladio", "Vitruvius", "LOC"],
+      "extract": ["base_height", "shaft_height", "capital_height", "diameter_ratio"],
+      "parts": ["base", "shaft", "capital", "abacus", "plinth"]
+    },
+    {
+      "object_class": "pier_bundle",
+      "source_priority": ["LOC", "Historic England"],
+      "extract": ["pier_width", "attached_shaft_count", "bundle_spacing", "capital_zone"],
+      "parts": ["core_pier", "attached_shaft", "respond", "capital_zone", "base_zone"]
+    },
+    {
+      "object_class": "buttress_profile",
+      "source_priority": ["Historic England", "LOC"],
+      "extract": ["projection", "height", "taper", "cap_angle", "wall_relationship"],
+      "parts": ["wall_face", "projection", "setback", "cap", "base"]
+    },
+    {
+      "object_class": "flying_buttress",
+      "source_priority": ["Historic England", "LOC"],
+      "extract": ["span", "arch_radius", "springline", "pier_contact_point"],
+      "parts": ["flyer_arch", "outer_pier", "wall_contact", "springline", "cap"]
+    },
+    {
+      "object_class": "vault_rib_cell",
+      "source_priority": ["Historic England", "LOC"],
+      "extract": ["rib_span", "rib_thickness", "boss_node_positions", "bay_grid"],
+      "parts": ["diagonal_rib", "transverse_rib", "boss", "web", "bay_boundary"]
+    },
+    {
+      "object_class": "groin_vault_cell",
+      "source_priority": ["LOC", "Palladio"],
+      "extract": ["bay_width", "bay_depth", "vault_rise", "intersecting_curve_ratios"],
+      "parts": ["barrel_axis_a", "barrel_axis_b", "groin_line", "bay_boundary"]
+    },
+    {
+      "object_class": "barrel_vault",
+      "source_priority": ["Palladio", "Vitruvius", "LOC"],
+      "extract": ["span", "rise", "wall_thickness", "bay_length"],
+      "parts": ["vault_curve", "springline", "support_wall", "bay_length"]
+    },
+    {
+      "object_class": "dome_on_octagon",
+      "source_priority": ["Ely", "LOC", "Palladio"],
+      "extract": ["octagon_width", "dome_rise", "drum_height", "support_transition"],
+      "parts": ["octagonal_drum", "squinch_or_pendentive", "dome_shell", "crown", "support_bay"]
+    },
+    {
+      "object_class": "octagonal_plan_core",
+      "source_priority": ["Ely", "Castel del Monte", "LOC"],
+      "extract": ["side_length", "diameter_across_flats", "tower_node_positions"],
+      "parts": ["octagon_side", "corner_node", "radial_axis", "central_core", "connector_bay"]
+    },
+    {
+      "object_class": "central_plan_chapel",
+      "source_priority": ["Palladio", "LOC"],
+      "extract": ["plan_symmetry", "bay_count", "radial_axes"],
+      "parts": ["central_core", "radial_bay", "axis", "chapel_cell"]
+    },
+    {
+      "object_class": "stair_tower",
+      "source_priority": ["LOC", "Historic England"],
+      "extract": ["radius", "wall_thickness", "stair_width", "step_rise", "step_run"],
+      "parts": ["outer_wall", "inner_newel", "stair_run", "landing", "step"]
+    },
+    {
+      "object_class": "cloister_bay",
+      "source_priority": ["LOC", "Historic England"],
+      "extract": ["bay_spacing", "arcade_rhythm", "column_arch_proportion"],
+      "parts": ["column", "capital", "arch_curve", "walk_depth", "bay"]
+    },
+    {
+      "object_class": "facade_bay",
+      "source_priority": ["Palladio", "LOC"],
+      "extract": ["bay_grid", "window_spacing", "cornice_string_course_positions"],
+      "parts": ["bay_grid", "window", "cornice", "string_course", "wall_panel"]
+    },
+    {
+      "object_class": "wall_panel",
+      "source_priority": ["LOC", "Historic England", "Palladio"],
+      "extract": ["panel_bounds", "trim_width", "socket_positions"],
+      "parts": ["panel_field", "trim", "socket", "border"]
+    },
+    {
+      "object_class": "ceiling_coffer",
+      "source_priority": ["Palladio", "Vitruvius"],
+      "extract": ["coffer_grid", "recess_depth_ratio", "border_width"],
+      "parts": ["coffer_cell", "recess", "border", "grid_axis"]
+    },
+    {
+      "object_class": "dome_rib_pattern",
+      "source_priority": ["Ely", "LOC"],
+      "extract": ["rib_count", "radial_spacing", "ring_levels"],
+      "parts": ["radial_rib", "ring", "crown", "drum"]
+    },
+    {
+      "object_class": "muqarnas_tier",
+      "source_priority": ["LOC if available"],
+      "extract": ["tier_count", "cell_subdivision", "depth_steps", "transition_logic"],
+      "parts": ["tier", "cell", "step", "transition"]
+    },
+    {
+      "object_class": "jali_screen_bay",
+      "source_priority": ["LOC if available"],
+      "extract": ["frame_ratio", "lattice_spacing", "opening_density"],
+      "parts": ["frame", "lattice", "opening", "bay"]
+    },
+    {
+      "object_class": "floor_plan_octagon",
+      "source_priority": ["Castel del Monte", "Ely", "LOC"],
+      "extract": ["room_arrangement", "radial_axes", "wall_thickness", "circulation_nodes"],
+      "parts": ["octagon_side", "room_cell", "radial_axis", "wall", "circulation_node"]
+    }
+  ]
+}

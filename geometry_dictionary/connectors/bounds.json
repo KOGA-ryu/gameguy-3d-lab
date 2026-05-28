@@ -1,0 +1,12 @@
+{
+  "term_id": "bounds",
+  "category": "connector",
+  "plain_name": "Bounds",
+  "description": "The min/max extents of an object used for placement, collision, validation, and sockets.",
+  "required_params": { "min": "vec3", "max": "vec3" },
+  "outputs": { "type": "bounds_contract" },
+  "constraints": { "min_less_than_max": true },
+  "common_uses": ["collision proxy", "placement box", "scale validation", "connector generation"],
+  "blender_method": "derive from object bounding box or generated vertices",
+  "validation": ["bounds_min_less_than_max", "finite_values"]
+}

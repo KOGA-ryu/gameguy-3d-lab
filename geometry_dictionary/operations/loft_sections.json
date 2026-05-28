@@ -1,0 +1,11 @@
+{
+  "term_id": "loft_sections",
+  "category": "mesh_operation",
+  "plain_name": "Loft Sections",
+  "description": "Connects two or more profile rings into a continuous solid or mesh.",
+  "required_inputs": { "sections": "profile_section[]", "axis": "x | y | z" },
+  "outputs": { "type": "solid_definition | mesh_future" },
+  "constraints": { "min_sections": 2, "profiles_must_have_matching_vertex_count": true },
+  "blender_method": "create profile rings at section positions, bridge matching vertices, cap if requested",
+  "validation": ["matching_vertex_count", "manifold_mesh", "outward_normals"]
+}

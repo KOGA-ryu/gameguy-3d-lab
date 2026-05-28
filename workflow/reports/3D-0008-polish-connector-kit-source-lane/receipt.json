@@ -1,0 +1,43 @@
+{
+  "schema": "workflow_report_receipt_v0",
+  "packet_id": "3D-0008",
+  "created_at_utc": "2026-05-28T22:52:35.659861+00:00",
+  "status": "complete",
+  "source_promotion_implemented": true,
+  "files_created": [
+    "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_manifest_v0.json",
+    "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_pathway_slab_unit_v1.json",
+    "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_threshold_landing_v1.json",
+    "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_ramp_pathway_unit_v1.json",
+    "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_stepped_pathway_unit_v1.json",
+    "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_bridge_deck_unit_v1.json",
+    "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_bridge_abutment_v1.json",
+    "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_bridge_rail_unit_v1.json",
+    "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_retaining_wall_unit_v1.json",
+    "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0/measured_curb_edge_unit_v1.json",
+    "goal/workflow/reports/3D-0008-polish-connector-kit-source-lane/report.md",
+    "goal/workflow/reports/3D-0008-polish-connector-kit-source-lane/connector_recipe_decision_matrix.json",
+    "goal/workflow/reports/3D-0008-polish-connector-kit-source-lane/receipt.json"
+  ],
+  "generated_folder_left_untouched": true,
+  "no_2d_files_touched": true,
+  "gitignore_touched": false,
+  "blender_render_created": false,
+  "mesh_created": false,
+  "archive_delete_stage_commit_performed": false,
+  "validation_commands": [
+    "find mosaic_dungeon_floor_v0/goal/architecture/connector_asset_kit_v0 -name '*.json' -print0 | xargs -0 -n 1 python3 -m json.tool >/dev/null",
+    "python3 -m py_compile mosaic_dungeon_floor_v0/scripts/compile_connector_asset_placement_v0.py",
+    "python3 -m json.tool mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_manifest_v0.json >/dev/null",
+    "find mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0 -name '*.json' -print0 | xargs -0 -n 1 python3 -m json.tool >/dev/null",
+    "python3 -m json.tool goal/workflow/reports/3D-0008-polish-connector-kit-source-lane/receipt.json >/dev/null",
+    "python3 -m json.tool goal/workflow/reports/3D-0008-polish-connector-kit-source-lane/connector_recipe_decision_matrix.json >/dev/null"
+  ],
+  "validation_status": "pass",
+  "remaining_risks": [
+    "Compiler still embeds connector recipe definitions instead of reading promoted manifest.",
+    "Promoted recipes still reference the measured v1 generated index as a local asset catalog.",
+    "Connector-domain semantic roles are preserved but not geometry dictionary terms."
+  ],
+  "next_recommended_worker_task": "Refactor compile_connector_asset_placement_v0.py to load connector recipes from the promoted source manifest while preserving current placement outputs."
+}

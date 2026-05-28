@@ -1,0 +1,10 @@
+{
+  "term_id": "bounding_box",
+  "category": "measurement",
+  "plain_name": "Bounding Box",
+  "description": "Minimum and maximum extents of a profile, solid, or assembly.",
+  "required_inputs": { "points_or_component_bounds": "vec2[] | vec3[] | bounds[]" },
+  "outputs": { "bounds": { "min": "vec3", "max": "vec3" } },
+  "used_by": ["asset_mill", "connector_points", "scale_within_bounds", "collision_proxy"],
+  "validation": ["bounds_min_less_than_max", "finite_values"]
+}

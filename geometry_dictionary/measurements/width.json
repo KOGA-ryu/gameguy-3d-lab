@@ -1,0 +1,10 @@
+{
+  "term_id": "width",
+  "category": "measurement",
+  "plain_name": "Width",
+  "description": "Horizontal X-axis extent of a profile, asset, or measured silhouette.",
+  "required_inputs": { "bounds_or_points": "bounds | vec2[] | vec3[]" },
+  "outputs": { "width": "float" },
+  "used_by": ["rectangle", "arch_profile", "wall_block", "floor_slab"],
+  "validation": ["finite_value", "value_is_positive"]
+}

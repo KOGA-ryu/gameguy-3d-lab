@@ -1,0 +1,82 @@
+{
+  "schema": "floor_plan_v0",
+  "plan_id": "courtyard_ring_v0",
+  "units": "abstract_meter",
+  "summary": "Four perimeter plots around an open courtyard with rail/edge treatment.",
+  "asset_defaults": {
+    "floor": "rectangular_slab_v0",
+    "wall": "wall_block_v0",
+    "post": "square_post_v0",
+    "railing": "railing_unit_v0",
+    "pillar": "pillar_stack_v0"
+  },
+  "plots": [
+    {
+      "plot_id": "north_gallery",
+      "space_role": "gallery_walkway",
+      "origin": [0.0, 3.25, 0.0],
+      "size": { "width": 8.0, "depth": 1.5, "height": 3.0 },
+      "floor": { "asset_ref": "rectangular_slab_v0", "thickness": 0.18 },
+      "edges": [
+        { "side": "north", "boundary": "wall", "asset_ref": "wall_block_v0", "thickness": 0.28, "height": 3.0, "openings": [] },
+        { "side": "south", "boundary": "railing", "asset_ref": "railing_unit_v0", "height": 1.2, "openings": [] },
+        { "side": "east", "boundary": "open", "openings": [] },
+        { "side": "west", "boundary": "open", "openings": [] }
+      ],
+      "features": [
+        { "feature_id": "north_left_pillar", "type": "pillar", "asset_ref": "pillar_stack_v0", "position": [-3.6, 2.55, 0.18] },
+        { "feature_id": "north_right_pillar", "type": "pillar", "asset_ref": "pillar_stack_v0", "position": [3.6, 2.55, 0.18] }
+      ],
+      "semantic_tags": ["walkable", "barrier", "cover"]
+    },
+    {
+      "plot_id": "south_gallery",
+      "space_role": "gallery_walkway",
+      "origin": [0.0, -3.25, 0.0],
+      "size": { "width": 8.0, "depth": 1.5, "height": 3.0 },
+      "floor": { "asset_ref": "rectangular_slab_v0", "thickness": 0.18 },
+      "edges": [
+        { "side": "south", "boundary": "wall", "asset_ref": "wall_block_v0", "thickness": 0.28, "height": 3.0, "openings": [] },
+        { "side": "north", "boundary": "railing", "asset_ref": "railing_unit_v0", "height": 1.2, "openings": [] },
+        { "side": "east", "boundary": "open", "openings": [] },
+        { "side": "west", "boundary": "open", "openings": [] }
+      ],
+      "features": [],
+      "semantic_tags": ["walkable", "barrier", "cover"]
+    },
+    {
+      "plot_id": "east_gallery",
+      "space_role": "side_walkway",
+      "origin": [4.75, 0.0, 0.0],
+      "size": { "width": 1.5, "depth": 5.0, "height": 3.0 },
+      "floor": { "asset_ref": "rectangular_slab_v0", "thickness": 0.18 },
+      "edges": [
+        { "side": "east", "boundary": "wall", "asset_ref": "wall_block_v0", "thickness": 0.28, "height": 3.0, "openings": [] },
+        { "side": "west", "boundary": "railing", "asset_ref": "railing_unit_v0", "height": 1.2, "openings": [] },
+        { "side": "north", "boundary": "open", "openings": [] },
+        { "side": "south", "boundary": "open", "openings": [] }
+      ],
+      "features": [],
+      "semantic_tags": ["walkable", "barrier", "cover"]
+    },
+    {
+      "plot_id": "west_gallery",
+      "space_role": "side_walkway",
+      "origin": [-4.75, 0.0, 0.0],
+      "size": { "width": 1.5, "depth": 5.0, "height": 3.0 },
+      "floor": { "asset_ref": "rectangular_slab_v0", "thickness": 0.18 },
+      "edges": [
+        { "side": "west", "boundary": "wall", "asset_ref": "wall_block_v0", "thickness": 0.28, "height": 3.0, "openings": [] },
+        { "side": "east", "boundary": "railing", "asset_ref": "railing_unit_v0", "height": 1.2, "openings": [] },
+        { "side": "north", "boundary": "open", "openings": [] },
+        { "side": "south", "boundary": "open", "openings": [] }
+      ],
+      "features": [],
+      "semantic_tags": ["walkable", "barrier", "cover"]
+    }
+  ],
+  "voids": [
+    { "void_id": "central_courtyard_void", "origin": [0.0, 0.0, 0.0], "size": { "width": 6.0, "depth": 5.0 }, "semantic_tags": ["walkable"] }
+  ],
+  "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+}

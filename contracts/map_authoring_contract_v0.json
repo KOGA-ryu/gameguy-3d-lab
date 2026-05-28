@@ -1,0 +1,201 @@
+{
+  "schema": "map_authoring_contract_v0",
+  "contract_id": "map_authoring_contract_v0",
+  "version": "0.1.0",
+  "purpose": "Stable authored map data format for terrain-rich maps and plug/pathway testbeds before any compiler, renderer, or Blender proof script runs.",
+  "map_document_schema": "map_authoring_map_v0",
+  "required_top_level_fields": [
+    "schema",
+    "map_id",
+    "size",
+    "elevation_bands",
+    "terrain_features",
+    "roads",
+    "building_plots",
+    "hazards",
+    "plugs",
+    "declared_connections",
+    "template_flags",
+    "no_claims"
+  ],
+  "canonical_fields": {
+    "map_id": {
+      "type": "string",
+      "description": "Stable authored map identifier. This is not a compiled graph id or render id."
+    },
+    "size": {
+      "type": "object",
+      "required": [
+        "width_cells",
+        "height_cells",
+        "hex_radius_m",
+        "layout",
+        "height_range_m"
+      ],
+      "description": "Grid dimensions and coarse world-space layout metadata used before compilation."
+    },
+    "elevation_bands": {
+      "type": "array",
+      "item_required": [
+        "band_id",
+        "height_m",
+        "role"
+      ],
+      "description": "Named semantic height bands such as ravine floor, road approach, plateau, ridge, or flat testbed base."
+    },
+    "terrain_features": {
+      "type": "array",
+      "item_required": [
+        "feature_id",
+        "feature_type",
+        "geometry"
+      ],
+      "description": "High-level terrain intent: hills, ridges, ravines, yards, plateaus, roads corridors, or proof-only target features. These are authoring primitives, not mesh output."
+    },
+    "roads": {
+      "type": "array",
+      "item_required": [
+        "road_id",
+        "points_map",
+        "width_m",
+        "movement_tag",
+        "surface_type"
+      ],
+      "description": "Authored road/path polylines in map coordinates. Compilers convert them to world-space route overlays."
+    },
+    "building_plots": {
+      "type": "array",
+      "item_required": [
+        "plot_id",
+        "geometry",
+        "plot_role"
+      ],
+      "description": "Authored building plot footprints. Rectangles and polygons are both allowed."
+    },
+    "hazards": {
+      "type": "array",
+      "item_required": [
+        "hazard_id",
+        "hazard_type",
+        "severity",
+        "geometry"
+      ],
+      "description": "Authored ravines, fall edges, blocked cuts, or other non-walkable terrain hazards."
+    },
+    "asset_sockets": {
+      "type": "array",
+      "item_required": [
+        "socket_id",
+        "position_map",
+        "socket_type",
+        "anchor_kind",
+        "anchor_ref"
+      ],
+      "description": "Optional authored asset anchor requests. The map editor records sockets, but Asset Dex owns asset expansion."
+    },
+    "plugs": {
+      "type": "array",
+      "item_required": [
+        "plug_id",
+        "owner_id",
+        "owner_type",
+        "plug_type",
+        "position_map",
+        "direction_map",
+        "width_m",
+        "clearance_m",
+        "allowed_connection_types",
+        "priority"
+      ],
+      "description": "Named connection endpoints for buildings, roads, plots, and pathways."
+    },
+    "declared_connections": {
+      "type": "array",
+      "item_required": [
+        "connection_id",
+        "from_plug",
+        "to_plug",
+        "connection_type",
+        "width_m",
+        "max_slope",
+        "min_clearance_m",
+        "deterministic_route_policy"
+      ],
+      "description": "Developer/authored plug-to-plug connections. Compilers validate these declarations and must not guess missing routes silently."
+    },
+    "template_flags": {
+      "type": "object",
+      "required": [
+        "do_not_rewrite",
+        "mutable_working_copy",
+        "protected_template"
+      ],
+      "description": "Explicit edit-safety flags. Protected source copies use do_not_rewrite=true and protected_template=true."
+    },
+    "no_claims": {
+      "type": "object",
+      "required_false_flags": [
+        "production_approval",
+        "structural_safety",
+        "fabrication_ready",
+        "gym_museum_approval",
+        "historical_accuracy"
+      ],
+      "description": "All listed claim flags must be present and false."
+    }
+  },
+  "geometry_contract": {
+    "allowed_kinds": [
+      "point",
+      "polyline",
+      "rect",
+      "polygon"
+    ],
+    "point_fields": [
+      "kind",
+      "point"
+    ],
+    "polyline_fields": [
+      "kind",
+      "points"
+    ],
+    "rect_fields": [
+      "kind",
+      "x",
+      "y",
+      "width",
+      "height"
+    ],
+    "polygon_fields": [
+      "kind",
+      "points"
+    ],
+    "coordinate_space": "map_cells_odd_row_pointy_hex_authoring_space"
+  },
+  "supported_connection_types": [
+    "road_threshold",
+    "flat_pathway",
+    "ramp_pathway",
+    "stepped_pathway",
+    "bridge_link"
+  ],
+  "compiler_intent": {
+    "must_compile_without_blender_hardcoding": true,
+    "must_preserve_shared_midpoint_terrain_pipeline": true,
+    "must_preserve_profile_law_pipeline": true,
+    "must_not_create_movement_simulation": true,
+    "must_not_add_assets": true,
+    "asset_expansion_owner": "Asset Dex"
+  },
+  "canonical_next_adapters": [
+    "map_authoring_contract_v0_to_tiled_style_template_v0",
+    "map_authoring_contract_v0_to_pathway_testbed_template_v0"
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false
+  }
+}

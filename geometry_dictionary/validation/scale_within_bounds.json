@@ -1,0 +1,10 @@
+{
+  "term_id": "scale_within_bounds",
+  "category": "validation_term",
+  "plain_name": "Scale Within Bounds",
+  "description": "A profile or asset remains within declared min/max size limits after scaling.",
+  "required_inputs": { "bounds": "bounds", "limits": "bounds | min_max_float" },
+  "outputs": { "valid": "bool", "violations": "string[]" },
+  "constraints": { "limits_declared": true },
+  "validation": ["finite_values", "bounds_min_less_than_max"]
+}

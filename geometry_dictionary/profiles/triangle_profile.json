@@ -1,0 +1,13 @@
+{
+  "term_id": "triangle",
+  "category": "profile_primitive",
+  "plain_name": "Triangle Profile",
+  "description": "A closed three-sided profile for wedges, roof prisms, and braces.",
+  "required_params": { "width": "float", "depth": "float" },
+  "units": "meters",
+  "outputs": { "type": "closed_2d_profile", "coordinate_space": "local_xy", "must_be_closed": true },
+  "constraints": { "width": "> 0", "depth": "> 0", "vertex_count": 3 },
+  "common_uses": ["wedge", "roof prism", "brace", "arrow marker"],
+  "blender_method": "generate base edge and apex in local XY, create face, extrude",
+  "validation": ["closed_profile", "nonzero_area", "vertex_order_is_clockwise_or_declared"]
+}

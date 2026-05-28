@@ -1,0 +1,13 @@
+{
+  "term_id": "custom_polygon",
+  "category": "profile_primitive",
+  "plain_name": "Custom Polygon Profile",
+  "description": "A declared closed polygon profile with explicit point list.",
+  "required_params": { "points": "vec2[]", "winding": "clockwise | counter_clockwise" },
+  "units": "meters",
+  "outputs": { "type": "closed_2d_profile", "coordinate_space": "declared", "must_be_closed": true },
+  "constraints": { "min_points": 3, "self_intersections": false },
+  "common_uses": ["measured silhouette", "broken slab", "irregular support", "reference-derived profile"],
+  "blender_method": "create vertices from measured points, create face, validate winding, extrude or loft",
+  "validation": ["closed_profile", "profile_has_no_self_intersections", "vertex_order_is_clockwise_or_declared"]
+}

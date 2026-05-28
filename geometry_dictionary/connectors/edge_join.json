@@ -1,0 +1,31 @@
+{
+  "term_id": "edge_join",
+  "category": "connector",
+  "plain_name": "Edge Join",
+  "description": "A measured connection between two ordered edge endpoints.",
+  "required_params": {
+    "edge_id": "string",
+    "point_a": "vec3",
+    "point_b": "vec3",
+    "compatible_tags": "string[]"
+  },
+  "outputs": {
+    "type": "edge_connection_contract"
+  },
+  "constraints": {
+    "point_a_not_equal_point_b": true,
+    "compatible_tags_not_empty": true
+  },
+  "common_uses": [
+    "wall bay edge",
+    "floor slab boundary",
+    "terrain adapter boundary",
+    "vault web edge"
+  ],
+  "blender_method": "construct mesh face or curve from ordered endpoint pair",
+  "validation": [
+    "edge_length_positive",
+    "edge_points_are_ordered",
+    "compatible_tags_not_empty"
+  ]
+}

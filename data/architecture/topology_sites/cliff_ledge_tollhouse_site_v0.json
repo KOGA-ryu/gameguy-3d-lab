@@ -1,0 +1,163 @@
+{
+  "schema": "topology_site_recipe_v0",
+  "site_id": "cliff_ledge_tollhouse_site_v0",
+  "units": "abstract_meter",
+  "summary": "A high plateau and ledge above a lower basin, with a road approach and a small building planted near the cliff edge.",
+  "topology_terms": [
+    "plateau",
+    "cliff",
+    "ledge",
+    "road",
+    "cliff_edge_building_site",
+    "stepped_plinth",
+    "retaining_wall",
+    "fall_edge",
+    "height_advantage",
+    "restricted_route"
+  ],
+  "terrain_primitives": [
+    {
+      "terrain_id": "upper_plateau",
+      "topology_type": "plateau",
+      "shape": "box",
+      "center": [0.0, 0.0, 1.5],
+      "size": [14.0, 10.0, 0.3],
+      "elevation": 1.5,
+      "semantic_tags": ["walkable", "height_advantage", "buildable_site"]
+    },
+    {
+      "terrain_id": "lower_basin",
+      "topology_type": "ravine",
+      "shape": "box",
+      "center": [0.0, -8.0, 0.0],
+      "size": [14.0, 6.0, 0.3],
+      "elevation": 0.0,
+      "semantic_tags": ["walkable", "low_ground", "route_pressure"]
+    },
+    {
+      "terrain_id": "cliff_wall",
+      "topology_type": "cliff",
+      "shape": "box",
+      "center": [0.0, -5.0, 0.75],
+      "size": [14.0, 0.35, 1.5],
+      "elevation": 0.75,
+      "semantic_tags": ["blocked", "line_of_sight_blocker", "fall_edge"]
+    },
+    {
+      "terrain_id": "narrow_ledge",
+      "topology_type": "ledge",
+      "shape": "box",
+      "center": [0.0, -4.25, 1.55],
+      "size": [8.0, 0.9, 0.12],
+      "elevation": 1.55,
+      "semantic_tags": ["walkable", "fall_edge", "restricted_route"]
+    },
+    {
+      "terrain_id": "road_approach",
+      "topology_type": "road",
+      "shape": "box",
+      "center": [0.0, 4.0, 1.56],
+      "size": [2.0, 5.0, 0.08],
+      "elevation": 1.56,
+      "semantic_tags": ["walkable", "route", "approach_vector"]
+    }
+  ],
+  "building_placement": {
+    "source_assembly_id": "simple_entry_room_v0_assembly",
+    "site_type": "cliff_edge_building_site",
+    "origin": [0.0, -1.0, 1.62],
+    "rotation_degrees": [0.0, 0.0, 0.0],
+    "elevation": 1.62,
+    "connection_requirements": ["road_connection", "ledge_connection", "cliff_edge_awareness"]
+  },
+  "foundation_adapter": {
+    "adapter_type": "stepped_plinth",
+    "blend_rules": ["cut_fill", "retaining_wall", "terrain_skirt"],
+    "asset_instances": [
+      {
+        "instance_id": "main_foundation_slab",
+        "asset_ref": "rectangular_slab_v0",
+        "role": "foundation",
+        "translation": [0.0, -1.0, 1.48],
+        "rotation_degrees": [0.0, 0.0, 0.0],
+        "target_dimensions": [6.4, 4.4, 0.28],
+        "semantic_tags": ["support", "collision_proxy"]
+      },
+      {
+        "instance_id": "cliff_retaining_wall",
+        "asset_ref": "wall_block_v0",
+        "role": "retaining_wall",
+        "translation": [0.0, -3.35, 0.85],
+        "rotation_degrees": [0.0, 0.0, 0.0],
+        "target_dimensions": [6.8, 0.35, 1.5],
+        "semantic_tags": ["blocked", "cover", "line_of_sight_blocker", "support"]
+      },
+      {
+        "instance_id": "road_threshold_slab",
+        "asset_ref": "rectangular_slab_v0",
+        "role": "threshold",
+        "translation": [0.0, 1.35, 1.62],
+        "rotation_degrees": [0.0, 0.0, 0.0],
+        "target_dimensions": [2.2, 1.0, 0.08],
+        "semantic_tags": ["walkable", "route"]
+      }
+    ]
+  },
+  "routes": [
+    {
+      "route_id": "road_to_entry",
+      "from": "road_approach",
+      "to": "simple_entry_room_v0_assembly",
+      "width": 2.0,
+      "elevation_delta": 0.06,
+      "route_cost": 1.05,
+      "semantic_tags": ["route", "approach_vector"]
+    },
+    {
+      "route_id": "ledge_escape_route",
+      "from": "simple_entry_room_v0_assembly",
+      "to": "narrow_ledge",
+      "width": 0.9,
+      "elevation_delta": -0.07,
+      "route_cost": 1.45,
+      "semantic_tags": ["restricted_route", "fall_edge"]
+    }
+  ],
+  "affordance_facts": [
+    {
+      "fact_id": "cliff_drop_fall_edge",
+      "affordance": "fall_edge",
+      "source_topology": "cliff_wall",
+      "drop_height": 1.5,
+      "risk": 0.8
+    },
+    {
+      "fact_id": "plateau_overlook_height_advantage",
+      "affordance": "height_advantage",
+      "source_topology": "upper_plateau",
+      "target_topology": "lower_basin",
+      "elevation_delta": 1.5,
+      "pressure": 0.65
+    },
+    {
+      "fact_id": "ledge_route_restricted",
+      "affordance": "restricted_route",
+      "source_topology": "narrow_ledge",
+      "route_width": 0.9,
+      "pressure": 0.7
+    },
+    {
+      "fact_id": "building_is_cliff_edge_site",
+      "affordance": "cliff_edge_building_site",
+      "source_topology": "upper_plateau",
+      "building": "simple_entry_room_v0_assembly",
+      "pressure": 0.6
+    }
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false
+  }
+}

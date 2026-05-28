@@ -1,0 +1,39 @@
+{
+  "schema": "workflow_report_receipt_v0",
+  "packet_id": "3D-0010",
+  "created_at_utc": "2026-05-28T23:30:00+00:00",
+  "status": "complete",
+  "source_policy_created": true,
+  "compiler_loads_connector_placement_policy": true,
+  "hardcoded_connection_type_asset_mapping_removed": true,
+  "connector_asset_instance_count": 58,
+  "fit_status_counts": {
+    "pass": 4,
+    "warn": 4,
+    "fail": 0
+  },
+  "validation_status": "pass",
+  "files_changed": [
+    "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_placement_policy_v0.json",
+    "mosaic_dungeon_floor_v0/scripts/compile_connector_asset_placement_v0.py",
+    "mosaic_dungeon_floor_v0/goal/architecture/integrated_map_scene_v0/connector_asset_placement_v0/connector_asset_placement_v0.json",
+    "mosaic_dungeon_floor_v0/goal/architecture/integrated_map_scene_v0/connector_asset_placement_v0/connector_asset_placement_v0_report.md",
+    "mosaic_dungeon_floor_v0/goal/receipts/connector_asset_placement_v0.receipt.json",
+    "goal/workflow/reports/3D-0010-connector-placement-policy-source-lane/report.md",
+    "goal/workflow/reports/3D-0010-connector-placement-policy-source-lane/connector_placement_policy_comparison.json",
+    "goal/workflow/reports/3D-0010-connector-placement-policy-source-lane/receipt.json"
+  ],
+  "non_goals_respected": {
+    "pattern_lab_2d_touched_by_this_task": false,
+    "gitignore_touched_by_this_task": false,
+    "blender_run": false,
+    "meshes_or_renders_created": false,
+    "archive_delete_stage_commit_performed": false
+  },
+  "risks_remaining": [
+    "Compiler can regenerate integrated-map proof outputs when dependency output is absent.",
+    "Promoted connector recipes still reference the measured v1 generated index.",
+    "Expected connector asset IDs and connection types remain compiler validation guardrails."
+  ],
+  "next_recommended_worker_task": "Review compile_connector_asset_placement_v0.py for output-root configurability so validation can run without dirtying generated proof folders unless explicitly requested."
+}

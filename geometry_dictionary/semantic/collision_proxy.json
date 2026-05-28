@@ -1,0 +1,12 @@
+{
+  "term_id": "collision_proxy",
+  "category": "semantic_geometry",
+  "plain_name": "Collision Proxy",
+  "description": "Simplified geometry or bounds used for physical/gameplay collision.",
+  "required_inputs": { "bounds_or_mesh": "bounds | mesh_ref" },
+  "outputs": { "type": "collision_proxy_hint" },
+  "constraints": { "proxy_has_nonzero_volume": true },
+  "common_uses": ["wall", "post", "floor", "stairs", "low cover"],
+  "blender_method": "create simplified collision object or custom metadata",
+  "validation": ["nonzero_volume", "bounds_min_less_than_max"]
+}

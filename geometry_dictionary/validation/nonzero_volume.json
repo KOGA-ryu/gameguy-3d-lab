@@ -1,0 +1,10 @@
+{
+  "term_id": "nonzero_volume",
+  "category": "validation_term",
+  "plain_name": "Nonzero Volume",
+  "description": "A solid has measurable positive width, depth, and height.",
+  "required_inputs": { "bounds_or_mesh": "bounds | mesh_ref | solid_definition" },
+  "outputs": { "valid": "bool", "volume": "float | approximate" },
+  "constraints": { "volume": "> 0" },
+  "validation": ["bounds_min_less_than_max", "finite_values"]
+}

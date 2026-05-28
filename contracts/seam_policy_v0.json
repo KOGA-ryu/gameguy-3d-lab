@@ -1,0 +1,76 @@
+{
+  "schema": "seam_policy_contract_v0",
+  "purpose": "Defines explicit mesh and affordance behavior for terrain seams between hex plots.",
+  "coordinate_model": "hex_plot_vertex_graph_v0",
+  "non_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false
+  },
+  "seam_policies": [
+    {
+      "seam_policy": "shared_surface",
+      "edge_profiles": ["flat_join", "smooth_slope"],
+      "mesh_behavior": "share_corner_vertices_and_do_not_emit_vertical_seam_mesh",
+      "affordance_outputs": ["walkable_surface", "continuous_route"],
+      "validation": ["no_duplicate_edge_wall", "corner_vertices_shared"]
+    },
+    {
+      "seam_policy": "split_riser",
+      "edge_profiles": ["hard_step"],
+      "mesh_behavior": "emit_vertical_riser_between_height_levels",
+      "affordance_outputs": ["step_connector", "minor_obstruction", "cover_candidate"],
+      "validation": ["riser_height_positive", "edge_has_two_corner_vertices"]
+    },
+    {
+      "seam_policy": "fold_meet_halfway",
+      "edge_profiles": ["hard_step"],
+      "mesh_behavior": "emit_two_sloped_fold_faces_meeting_at_mid_edge",
+      "affordance_outputs": ["folded_slope", "walkable_transition_candidate"],
+      "validation": ["mid_height_between_low_and_high", "edge_has_two_corner_vertices", "source_and_neighbor_vertices_split_same_xy"]
+    },
+    {
+      "seam_policy": "split_cliff",
+      "edge_profiles": ["cliff_drop"],
+      "mesh_behavior": "emit_vertical_cliff_wall_between_height_levels",
+      "affordance_outputs": ["fall_edge", "line_of_sight_break", "blocked_without_connector"],
+      "validation": ["cliff_height_positive", "edge_has_two_corner_vertices"]
+    },
+    {
+      "seam_policy": "chunk_skirt",
+      "edge_profiles": ["chunk_boundary"],
+      "mesh_behavior": "emit_outer_boundary_skirt_to_base_plane",
+      "affordance_outputs": ["map_boundary", "chunk_edge"],
+      "validation": ["boundary_edge_has_no_neighbor", "edge_has_two_corner_vertices"]
+    },
+    {
+      "seam_policy": "foundation_snap",
+      "edge_profiles": ["structure_edge"],
+      "mesh_behavior": "reserve seam for building foundation adapter",
+      "affordance_outputs": ["building_socket", "foundation_adapter"],
+      "validation": ["structure_socket_exists"]
+    },
+    {
+      "seam_policy": "road_blend",
+      "edge_profiles": ["ramp_candidate", "road_edge"],
+      "mesh_behavior": "reserve seam for route smoothing or ramp blend",
+      "affordance_outputs": ["route_smoothing", "walkable_transition"],
+      "validation": ["route_tags_exist"]
+    },
+    {
+      "seam_policy": "blocked_wall",
+      "edge_profiles": ["wall_blocked"],
+      "mesh_behavior": "emit or reserve blocking wall geometry",
+      "affordance_outputs": ["blocked", "line_of_sight_blocker"],
+      "validation": ["blocked_tag_exists"]
+    }
+  ],
+  "rules": {
+    "every_edge_must_have_seam_policy": true,
+    "mesh_behavior_must_be_explicit": true,
+    "affordance_outputs_must_be_explicit": true,
+    "shared_surface_edges_do_not_emit_seam_facts": true,
+    "split_or_boundary_edges_emit_seam_facts": true
+  }
+}

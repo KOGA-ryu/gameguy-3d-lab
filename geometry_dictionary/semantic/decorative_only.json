@@ -1,0 +1,12 @@
+{
+  "term_id": "decorative_only",
+  "category": "semantic_geometry",
+  "plain_name": "Decorative Only",
+  "description": "Geometry that should not drive collision, navigation, or tactical reasoning by itself.",
+  "required_inputs": { "asset_ref": "solid_definition" },
+  "outputs": { "type": "non_gameplay_detail_hint" },
+  "constraints": { "must_not_be_required_for_navigation": true },
+  "common_uses": ["trim", "ornament", "surface band", "visual cap"],
+  "blender_method": "tag as non-collision decorative detail",
+  "validation": ["not_used_as_navigation_cut", "not_primary_collision"]
+}

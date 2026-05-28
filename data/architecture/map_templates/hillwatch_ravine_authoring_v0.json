@@ -1,0 +1,609 @@
+{
+  "schema": "map_authoring_map_v0",
+  "map_id": "hillwatch_ravine_authoring_v0",
+  "source_scene_family": "hillwatch_ravine_v0",
+  "description": "Stable authoring description for the Hillwatch Ravine map target before terrain compilation or Blender rendering.",
+  "size": {
+    "width_cells": 32,
+    "height_cells": 32,
+    "hex_radius_m": 0.55,
+    "vertical_step_m": 1.0,
+    "layout": "pointy_top_odd_row_hex",
+    "height_range_m": [
+      0.0,
+      8.0
+    ]
+  },
+  "elevation_bands": [
+    {
+      "band_id": "ravine_floor",
+      "height_m": 0.0,
+      "role": "ravine_floor"
+    },
+    {
+      "band_id": "ravine_banks",
+      "height_m": 1.0,
+      "role": "ravine_bank"
+    },
+    {
+      "band_id": "lower_road_approach",
+      "height_m": 2.0,
+      "role": "lower_road"
+    },
+    {
+      "band_id": "mid_hill_slope_low",
+      "height_m": 3.0,
+      "role": "mid_hill_slope"
+    },
+    {
+      "band_id": "mid_hill_slope_high",
+      "height_m": 5.0,
+      "role": "mid_hill_slope"
+    },
+    {
+      "band_id": "watchhouse_plateau",
+      "height_m": 6.0,
+      "role": "building_plateau"
+    },
+    {
+      "band_id": "highest_ridge",
+      "height_m": 8.0,
+      "role": "ridge_detail"
+    }
+  ],
+  "terrain_features": [
+    {
+      "feature_id": "hillwatch_main_hill",
+      "feature_type": "hill",
+      "geometry": {
+        "kind": "point",
+        "point": [
+          25.0,
+          8.0
+        ]
+      },
+      "elevation_rule": {
+        "kind": "radial_falloff",
+        "radius_cells": 12.0,
+        "base_band": "lower_road_approach",
+        "peak_band": "watchhouse_plateau"
+      }
+    },
+    {
+      "feature_id": "hillwatch_ridge",
+      "feature_type": "ridge",
+      "geometry": {
+        "kind": "polyline",
+        "points": [
+          [
+            21.0,
+            3.5
+          ],
+          [
+            31.0,
+            8.0
+          ]
+        ]
+      },
+      "elevation_rule": {
+        "kind": "distance_to_segment_boost",
+        "max_band": "highest_ridge"
+      }
+    },
+    {
+      "feature_id": "hillwatch_ravine_river_cut",
+      "feature_type": "ravine",
+      "geometry": {
+        "kind": "polyline",
+        "points": [
+          [
+            2.0,
+            25.0
+          ],
+          [
+            8.0,
+            23.0
+          ],
+          [
+            14.0,
+            22.2
+          ],
+          [
+            20.0,
+            25.0
+          ],
+          [
+            30.0,
+            27.8
+          ]
+        ]
+      },
+      "elevation_rule": {
+        "kind": "ravine_cut",
+        "floor_band": "ravine_floor",
+        "bank_bands": [
+          "ravine_banks",
+          "lower_road_approach"
+        ]
+      }
+    },
+    {
+      "feature_id": "watchhouse_plateau_flatten",
+      "feature_type": "plateau",
+      "geometry": {
+        "kind": "rect",
+        "x": 20.0,
+        "y": 5.0,
+        "width": 9.0,
+        "height": 6.0
+      },
+      "elevation_rule": {
+        "kind": "force_height_band",
+        "band_id": "watchhouse_plateau"
+      }
+    }
+  ],
+  "roads": [
+    {
+      "road_id": "main_measured_road",
+      "points_map": [
+        [
+          1.0,
+          9.6
+        ],
+        [
+          6.6,
+          9.3
+        ],
+        [
+          12.8,
+          8.5
+        ],
+        [
+          18.8,
+          6.5
+        ],
+        [
+          25.0,
+          4.6
+        ],
+        [
+          31.0,
+          5.0
+        ]
+      ],
+      "width_m": 2.5,
+      "movement_tag": "route",
+      "surface_type": "stone_road"
+    },
+    {
+      "road_id": "shrine_spur_road",
+      "points_map": [
+        [
+          12.8,
+          8.5
+        ],
+        [
+          15.8,
+          13.2
+        ],
+        [
+          18.6,
+          17.2
+        ],
+        [
+          21.7,
+          22.0
+        ],
+        [
+          24.0,
+          24.2
+        ]
+      ],
+      "width_m": 1.8,
+      "movement_tag": "route",
+      "surface_type": "stone_road"
+    }
+  ],
+  "building_plots": [
+    {
+      "plot_id": "measured_gatehouse_plot",
+      "geometry": {
+        "kind": "rect",
+        "x": 3.0,
+        "y": 10.0,
+        "width": 7.0,
+        "height": 6.0
+      },
+      "floor_plan_ref": "hillwatch_gatehouse_plot_v0",
+      "plot_role": "threshold_building",
+      "recommended_asset_kit": "asset_mill_measured_v1",
+      "target_elevation_band": "lower_road_approach"
+    },
+    {
+      "plot_id": "measured_watch_plot",
+      "geometry": {
+        "kind": "rect",
+        "x": 21.0,
+        "y": 5.0,
+        "width": 8.0,
+        "height": 6.0
+      },
+      "floor_plan_ref": "hillwatch_plateau_watch_plot_v0",
+      "plot_role": "high_ground_watch",
+      "recommended_asset_kit": "asset_mill_measured_v1",
+      "target_elevation_band": "watchhouse_plateau"
+    },
+    {
+      "plot_id": "measured_octagon_shrine_plot",
+      "geometry": {
+        "kind": "polygon",
+        "points": [
+          [
+            19.0,
+            20.0
+          ],
+          [
+            21.4,
+            18.9
+          ],
+          [
+            24.2,
+            20.1
+          ],
+          [
+            25.1,
+            22.7
+          ],
+          [
+            23.2,
+            25.0
+          ],
+          [
+            20.1,
+            24.6
+          ],
+          [
+            18.6,
+            22.4
+          ]
+        ]
+      },
+      "floor_plan_ref": "hillwatch_ravine_shrine_plot_v0",
+      "plot_role": "ravine_edge_shrine",
+      "recommended_asset_kit": "asset_mill_measured_v1",
+      "target_elevation_band": "mid_hill_slope_low"
+    }
+  ],
+  "hazards": [
+    {
+      "hazard_id": "hillwatch_ravine_river_cut",
+      "hazard_type": "fall_edge",
+      "severity": "high",
+      "movement_tag": "avoid",
+      "geometry": {
+        "kind": "polyline",
+        "points": [
+          [
+            2.0,
+            25.0
+          ],
+          [
+            8.0,
+            23.0
+          ],
+          [
+            14.0,
+            22.2
+          ],
+          [
+            20.0,
+            25.0
+          ],
+          [
+            30.0,
+            27.8
+          ]
+        ]
+      }
+    }
+  ],
+  "asset_sockets": [
+    {
+      "socket_id": "gatehouse_hillwatch_portal_socket",
+      "position_map": [
+        6.5,
+        9.85
+      ],
+      "asset_ref": "pointed_arch_doorway_v1",
+      "socket_type": "portal",
+      "anchor_kind": "plot_edge",
+      "anchor_ref": "measured_gatehouse_plot",
+      "orientation_degrees": 0.0,
+      "footprint_source": "measured_asset_bounds_plus_clearance_v1"
+    },
+    {
+      "socket_id": "watch_hillwatch_arch_socket",
+      "position_map": [
+        25.0,
+        4.95
+      ],
+      "asset_ref": "columned_arch_portal_v1",
+      "socket_type": "portal",
+      "anchor_kind": "plot_edge",
+      "anchor_ref": "measured_watch_plot",
+      "orientation_degrees": 0.0,
+      "footprint_source": "measured_asset_bounds_plus_clearance_v1"
+    },
+    {
+      "socket_id": "ravine_hillwatch_bridge_socket",
+      "position_map": [
+        17.0,
+        23.5
+      ],
+      "asset_ref": "bridge_segment_asset_v0",
+      "socket_type": "route_bridge",
+      "anchor_kind": "bridge_span",
+      "anchor_ref": "hillwatch_ravine_river_cut",
+      "orientation_degrees": 60.0,
+      "footprint_source": "measured_asset_bounds_plus_clearance_v1"
+    }
+  ],
+  "plugs": [
+    {
+      "plug_id": "gatehouse.main_entry",
+      "owner_id": "measured_gatehouse_plot",
+      "owner_type": "building_plot",
+      "plug_type": "entrance",
+      "position_map": [
+        6.5,
+        9.85
+      ],
+      "direction_map": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "width_m": 1.2,
+      "clearance_m": 2.2,
+      "allowed_connection_types": [
+        "road_threshold",
+        "flat_pathway",
+        "ramp_pathway",
+        "bridge_link"
+      ],
+      "priority": "primary"
+    },
+    {
+      "plug_id": "watch.main_entry",
+      "owner_id": "measured_watch_plot",
+      "owner_type": "building_plot",
+      "plug_type": "entrance",
+      "position_map": [
+        25.0,
+        4.95
+      ],
+      "direction_map": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "width_m": 1.2,
+      "clearance_m": 2.2,
+      "allowed_connection_types": [
+        "road_threshold",
+        "flat_pathway",
+        "ramp_pathway",
+        "bridge_link"
+      ],
+      "priority": "primary"
+    },
+    {
+      "plug_id": "shrine.main_entry",
+      "owner_id": "measured_octagon_shrine_plot",
+      "owner_type": "building_plot",
+      "plug_type": "entrance",
+      "position_map": [
+        22.0,
+        24.9
+      ],
+      "direction_map": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "width_m": 1.2,
+      "clearance_m": 2.2,
+      "allowed_connection_types": [
+        "road_threshold",
+        "flat_pathway",
+        "ramp_pathway",
+        "bridge_link"
+      ],
+      "priority": "primary"
+    },
+    {
+      "plug_id": "courtyard_path.west_plug",
+      "owner_id": "courtyard_path",
+      "owner_type": "pathway",
+      "plug_type": "pathway",
+      "position_map": [
+        12.8,
+        8.5
+      ],
+      "direction_map": [
+        0.54,
+        0.84,
+        0.0
+      ],
+      "width_m": 1.4,
+      "clearance_m": 99.0,
+      "allowed_connection_types": [
+        "flat_pathway",
+        "ramp_pathway",
+        "stepped_pathway",
+        "bridge_link"
+      ],
+      "priority": "primary"
+    },
+    {
+      "plug_id": "courtyard_path.east_plug",
+      "owner_id": "courtyard_path",
+      "owner_type": "pathway",
+      "plug_type": "pathway",
+      "position_map": [
+        15.8,
+        13.2
+      ],
+      "direction_map": [
+        -0.54,
+        -0.84,
+        0.0
+      ],
+      "width_m": 1.4,
+      "clearance_m": 99.0,
+      "allowed_connection_types": [
+        "flat_pathway",
+        "ramp_pathway",
+        "stepped_pathway",
+        "bridge_link"
+      ],
+      "priority": "primary"
+    },
+    {
+      "plug_id": "main_measured_road.gatehouse_threshold",
+      "owner_id": "main_measured_road",
+      "owner_type": "road",
+      "plug_type": "road_threshold",
+      "position_map": [
+        6.6,
+        9.3
+      ],
+      "direction_map": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "width_m": 2.5,
+      "clearance_m": 99.0,
+      "allowed_connection_types": [
+        "road_threshold",
+        "flat_pathway",
+        "ramp_pathway",
+        "bridge_link"
+      ],
+      "priority": "candidate"
+    },
+    {
+      "plug_id": "main_measured_road.watch_threshold",
+      "owner_id": "main_measured_road",
+      "owner_type": "road",
+      "plug_type": "road_threshold",
+      "position_map": [
+        25.0,
+        4.6
+      ],
+      "direction_map": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "width_m": 2.5,
+      "clearance_m": 99.0,
+      "allowed_connection_types": [
+        "road_threshold",
+        "flat_pathway",
+        "ramp_pathway",
+        "bridge_link"
+      ],
+      "priority": "candidate"
+    },
+    {
+      "plug_id": "shrine_spur_road.shrine_threshold",
+      "owner_id": "shrine_spur_road",
+      "owner_type": "road",
+      "plug_type": "road_threshold",
+      "position_map": [
+        24.0,
+        24.2
+      ],
+      "direction_map": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "width_m": 1.8,
+      "clearance_m": 99.0,
+      "allowed_connection_types": [
+        "road_threshold",
+        "flat_pathway",
+        "ramp_pathway",
+        "bridge_link"
+      ],
+      "priority": "candidate"
+    }
+  ],
+  "declared_connections": [
+    {
+      "connection_id": "gatehouse_main_entry_to_main_road",
+      "from_plug": "gatehouse.main_entry",
+      "to_plug": "main_measured_road.gatehouse_threshold",
+      "connection_type": "road_threshold",
+      "width_m": 1.2,
+      "max_slope": 0.18,
+      "min_clearance_m": 2.0,
+      "deterministic_route_policy": "shortest_safe_with_grade_limit"
+    },
+    {
+      "connection_id": "watch_main_entry_to_main_road",
+      "from_plug": "watch.main_entry",
+      "to_plug": "main_measured_road.watch_threshold",
+      "connection_type": "road_threshold",
+      "width_m": 1.2,
+      "max_slope": 0.18,
+      "min_clearance_m": 2.0,
+      "deterministic_route_policy": "shortest_safe_with_grade_limit"
+    },
+    {
+      "connection_id": "shrine_west_entry_to_spur_road",
+      "from_plug": "shrine.main_entry",
+      "to_plug": "shrine_spur_road.shrine_threshold",
+      "connection_type": "road_threshold",
+      "width_m": 1.2,
+      "max_slope": 0.18,
+      "min_clearance_m": 2.0,
+      "deterministic_route_policy": "shortest_safe_with_grade_limit"
+    },
+    {
+      "connection_id": "courtyard_path_west_to_east_ramp",
+      "from_plug": "courtyard_path.west_plug",
+      "to_plug": "courtyard_path.east_plug",
+      "connection_type": "ramp_pathway",
+      "width_m": 1.4,
+      "max_slope": 0.35,
+      "min_clearance_m": 2.0,
+      "deterministic_route_policy": "declared_plug_pair_straight_grade_limited_v0"
+    }
+  ],
+  "template_flags": {
+    "do_not_rewrite": false,
+    "mutable_working_copy": true,
+    "protected_template": false
+  },
+  "provenance": {
+    "source_visual_target": "goal/architecture/hillwatch_ravine_v0/hillwatch_ravine_v0_design.json",
+    "source_compilable_template": "data/architecture/map_templates/integrated_map_scene_v0.json",
+    "new_map_not_derived_from_previous_templates": true,
+    "blender_hardcoded_generation_required": false,
+    "movement_simulation_included": false,
+    "asset_geometry_changed": false,
+    "silent_asset_scaling": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false
+  }
+}

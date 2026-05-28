@@ -1,0 +1,65 @@
+{
+  "schema": "map_generation_full_docs_implementation_crosswalk_v0",
+  "recommendations": [
+    {
+      "engine_piece": "32x32x8 map cube",
+      "recommendation": "Keep repo map_cube_grid_v0 as the bounded container. Use Red Blob only for horizontal hex addressing and TTG only for terrace-height concepts.",
+      "source_urls": ["https://www.redblobgames.com/grids/hexagons/", "https://github.com/lazysquirrellabs/TTG"]
+    },
+    {
+      "engine_piece": "hex/elevation cells",
+      "recommendation": "Store q and r as primary axial fields, store or derive s=-q-r, and keep vertical z/final_height separate from cube-coordinate s.",
+      "source_urls": ["https://www.redblobgames.com/grids/hexagons/", "https://www.redblobgames.com/grids/hexagons/implementation.html"]
+    },
+    {
+      "engine_piece": "terrain mesh compiler",
+      "recommendation": "Generate final vertex/face arrays from internal terrain cells and feed Blender Mesh.from_pydata; validate and update each mesh.",
+      "source_urls": ["https://www.redblobgames.com/grids/hexagons/parts/", "https://docs.blender.org/api/current/bpy.types.Mesh.html"]
+    },
+    {
+      "engine_piece": "visible face meshing",
+      "recommendation": "Emit top hex faces and side/riser faces only when neighbor absence or height delta exposes a face; use mesh-list selection/mask concepts for helper design.",
+      "source_urls": ["https://www.redblobgames.com/grids/hexagons/", "https://sverchok.readthedocs.io/en/latest/geometry.html", "https://sverchok.readthedocs.io/en/latest/nodes/analyzers/mesh_select.html"]
+    },
+    {
+      "engine_piece": "seam/fold grammar",
+      "recommendation": "Classify all six Red Blob neighbor directions using fold/terrace height deltas into flat, step, ledge, cliff, boundary, and structure edge roles.",
+      "source_urls": ["https://www.redblobgames.com/grids/hexagons/", "https://github.com/lazysquirrellabs/TTG"]
+    },
+    {
+      "engine_piece": "road/path layer",
+      "recommendation": "Use Red Blob line/range/ring algorithms for route generation and accept Tiled polylines as optional authored input.",
+      "source_urls": ["https://www.redblobgames.com/grids/hexagons/", "https://doc.mapeditor.org/en/stable/manual/objects/", "https://doc.mapeditor.org/en/stable/reference/json-map-format/"]
+    },
+    {
+      "engine_piece": "building plot layer",
+      "recommendation": "Use Tiled rectangles/polygons as v0 plot templates; keep LDtk entities as a deferred alternative for authored templates.",
+      "source_urls": ["https://doc.mapeditor.org/en/stable/manual/objects/", "https://doc.mapeditor.org/en/stable/reference/json-map-format/", "https://ldtk.io/docs/game-dev/json-overview/"]
+    },
+    {
+      "engine_piece": "asset placement layer",
+      "recommendation": "Represent sockets as Tiled points/rectangles or future LDtk entities with typed properties for socket_type, orientation, asset_ref, and semantic tags.",
+      "source_urls": ["https://doc.mapeditor.org/en/stable/manual/custom-properties/", "https://doc.mapeditor.org/en/stable/manual/objects/", "https://ldtk.io/files/JSON_SCHEMA.json"]
+    },
+    {
+      "engine_piece": "Blender proof renderer",
+      "recommendation": "Use direct mesh data APIs and optional curve splines; avoid context-sensitive edit-mode operators and booleans for v0 proof renders.",
+      "source_urls": ["https://docs.blender.org/api/current/bpy.types.Mesh.html", "https://docs.blender.org/api/current/bpy.types.Curve.html", "https://docs.blender.org/api/current/bpy.ops.mesh.html"]
+    },
+    {
+      "engine_piece": "future AI affordance graph",
+      "recommendation": "Build graph nodes from hex cells and graph edges from six neighbor directions; attach movement, hazard, cover, connector, line-of-sight, and plot tags from map layers.",
+      "source_urls": ["https://www.redblobgames.com/grids/hexagons/", "https://doc.mapeditor.org/en/stable/manual/custom-properties/", "https://ldtk.io/docs/game-dev/json-overview/"]
+    },
+    {
+      "engine_piece": "future socket/model synthesis",
+      "recommendation": "Do not implement full WFC in v0; define socket compatibility records first and later map models/sockets/rules to ghx_proc_gen or another solver if needed.",
+      "source_urls": ["https://github.com/Henauxg/ghx_proc_gen", "https://docs.rs/ghx_proc_gen/latest/ghx_proc_gen/", "https://github.com/mxgmn/WaveFunctionCollapse"]
+    },
+    {
+      "engine_piece": "future robust asset solids",
+      "recommendation": "Keep CadQuery and Manifold deferred; consider them only if parametric CAD export or robust booleans become necessary after Blender proof pipeline stabilizes.",
+      "source_urls": ["https://cadquery.readthedocs.io/en/latest/workplane.html", "https://github.com/elalish/manifold", "https://manifoldcad.org/docs/html/classmanifold_1_1_manifold.html"]
+    }
+  ]
+}

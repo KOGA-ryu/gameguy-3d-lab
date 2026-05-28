@@ -1,0 +1,158 @@
+{
+  "schema": "pathway_connection_contract_v0",
+  "description": "Contract for normalized pathway plugs, declared plug-to-plug pathway connections, generated path records, deterministic validation, and structured failure reasons.",
+  "version": "0.1.0",
+  "required_top_level_fields": [
+    "schema",
+    "created_at_utc",
+    "source_templates",
+    "map",
+    "cells",
+    "buildings",
+    "plugs",
+    "connections",
+    "validation",
+    "no_claims"
+  ],
+  "normalized_plug_record": {
+    "required": [
+      "plug_id",
+      "owner_id",
+      "owner_type",
+      "plug_type",
+      "position_map",
+      "position",
+      "direction",
+      "width_m",
+      "clearance_m",
+      "allowed_connection_types",
+      "priority"
+    ],
+    "owner_type_values": [
+      "building",
+      "road",
+      "pathway"
+    ],
+    "position": "World-space [x, y, z] in meters.",
+    "position_map": "Map-space [x, y] source coordinate.",
+    "allowed_connection_types": [
+      "road_threshold",
+      "flat_pathway",
+      "ramp_pathway",
+      "stepped_pathway",
+      "bridge_link"
+    ]
+  },
+  "declared_connection_record": {
+    "required": [
+      "connection_id",
+      "from_plug",
+      "to_plug",
+      "connection_type",
+      "width_m",
+      "max_slope",
+      "min_clearance_m",
+      "turn_radius_m",
+      "deterministic_route_policy",
+      "route_points_map"
+    ],
+    "connection_type_values": [
+      "road_threshold",
+      "flat_pathway",
+      "ramp_pathway",
+      "stepped_pathway",
+      "bridge_link"
+    ]
+  },
+  "compiled_connection_record": {
+    "required": [
+      "connection_id",
+      "from_plug",
+      "to_plug",
+      "connection_type",
+      "status",
+      "fail_reasons",
+      "from_plug_record",
+      "to_plug_record",
+      "route_points_world",
+      "length_m",
+      "slope_validation",
+      "clearance_validation",
+      "width_validation",
+      "endpoint_alignment_validation",
+      "allowed_connection_type_validation",
+      "connector_unit_plan",
+      "validation",
+      "generated_path"
+    ],
+    "status_values": [
+      "pass",
+      "fail"
+    ],
+    "generated_path": "Object when status is pass; null when status is fail."
+  },
+  "generated_path_record": {
+    "required": [
+      "path_id",
+      "route_policy",
+      "route_points",
+      "route_points_map",
+      "surface",
+      "width_m",
+      "horizontal_length_m",
+      "elevation_gap_m",
+      "slope",
+      "vertical_envelope_m",
+      "vertical_overbuild_margin_m",
+      "dimension_source",
+      "sample_semantics",
+      "connector_geometry"
+    ]
+  },
+  "validation_required_per_connection": [
+    "plug_resolution_ok",
+    "connection_type_supported",
+    "connection_type_allowed",
+    "endpoint_alignment_ok",
+    "route_shape_ok",
+    "route_bounds_ok",
+    "width_ok",
+    "slope_ok",
+    "clearance_ok",
+    "turn_radius_ok",
+    "leftover_gap_explicit"
+  ],
+  "known_fail_reasons": [
+    "unsupported_connection_type",
+    "missing_from_plug",
+    "missing_to_plug",
+    "connection_type_not_allowed_by_from_plug",
+    "connection_type_not_allowed_by_to_plug",
+    "route_has_fewer_than_two_points",
+    "route_start_not_at_from_plug",
+    "route_end_not_at_to_plug",
+    "route_point_out_of_bounds",
+    "route_segment_too_short",
+    "turn_radius_below_minimum",
+    "width_below_minimum",
+    "plug_width_below_connection_width",
+    "clearance_below_min_clearance",
+    "slope_exceeds_max",
+    "unsupported_deterministic_route_policy"
+  ],
+  "connector_fit_policy": {
+    "no_silent_scaling": true,
+    "flat_pathway_unit_length_m": 1.2,
+    "ramp_pathway_unit_length_m": 1.2,
+    "stepped_pathway_unit_length_m": 1.0,
+    "road_threshold_uses_single_landing": true,
+    "leftover_gaps_reported": true
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false
+  }
+}

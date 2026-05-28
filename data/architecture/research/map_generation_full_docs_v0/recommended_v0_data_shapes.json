@@ -1,0 +1,110 @@
+{
+  "schema": "map_generation_full_docs_recommended_v0_data_shapes",
+  "hex_cell": {
+    "source_urls": ["https://www.redblobgames.com/grids/hexagons/", "https://www.redblobgames.com/grids/hexagons/implementation.html"],
+    "shape": {
+      "cell_id": "string",
+      "q": "int",
+      "r": "int",
+      "s": "int = -q-r",
+      "world_x": "float",
+      "world_y": "float",
+      "base_height": "float",
+      "fold_offset": "float",
+      "final_height": "float",
+      "surface_type": "string",
+      "topology_role": "string",
+      "buildable": "bool",
+      "edge_profiles": ["dir0", "dir1", "dir2", "dir3", "dir4", "dir5"],
+      "movement_tags": ["string"],
+      "structure_socket_tags": ["string"]
+    }
+  },
+  "minimal_tiled_style_map": {
+    "source_urls": ["https://doc.mapeditor.org/en/stable/reference/json-map-format/", "https://doc.mapeditor.org/en/stable/manual/custom-properties/", "https://doc.mapeditor.org/en/stable/manual/objects/"],
+    "shape": {
+      "type": "map",
+      "orientation": "orthogonal",
+      "width": 32,
+      "height": 32,
+      "tilewidth": 1,
+      "tileheight": 1,
+      "layers": [
+        {"name": "terrain_height", "type": "tilelayer", "data": "int[]"},
+        {"name": "terrain_surface", "type": "tilelayer", "data": "int[]"},
+        {"name": "roads_paths", "type": "objectgroup", "objects": "polyline[]"},
+        {"name": "building_plots", "type": "objectgroup", "objects": "rectangle_or_polygon[]"},
+        {"name": "asset_sockets", "type": "objectgroup", "objects": "point_or_rectangle[]"}
+      ],
+      "properties": [
+        {"name": "cell_size_m", "type": "float", "value": 1.0},
+        {"name": "z_levels", "type": "int", "value": 8}
+      ]
+    }
+  },
+  "terrain_mesh_arrays": {
+    "source_urls": ["https://docs.blender.org/api/current/bpy.types.Mesh.html", "https://sverchok.readthedocs.io/en/latest/geometry.html"],
+    "shape": {
+      "vertices": [["x", "y", "z"]],
+      "edges": [["vertex_index_a", "vertex_index_b"]],
+      "faces": [["vertex_index_0", "vertex_index_1", "vertex_index_2_or_more"]],
+      "face_tags": ["top|cliff|ledge|road|plot|hazard"],
+      "material_slots": ["string"],
+      "bounds": {"min": ["x", "y", "z"], "max": ["x", "y", "z"]}
+    }
+  },
+  "socket_compatibility_record": {
+    "source_urls": ["https://github.com/Henauxg/ghx_proc_gen", "https://github.com/mxgmn/WaveFunctionCollapse"],
+    "shape": {
+      "module_id": "string",
+      "weight": "float",
+      "sockets": {
+        "dir0": "socket_id",
+        "dir1": "socket_id",
+        "dir2": "socket_id",
+        "dir3": "socket_id",
+        "dir4": "socket_id",
+        "dir5": "socket_id",
+        "upper": "socket_id",
+        "lower": "socket_id"
+      },
+      "compatible_sockets": {
+        "socket_id": ["socket_id"]
+      },
+      "rotation_policy": "none|six_way|custom",
+      "semantic_tags": ["string"]
+    }
+  },
+  "terrace_model": {
+    "source_urls": ["https://github.com/lazysquirrellabs/TTG"],
+    "shape": {
+      "seed": "int",
+      "relative_heights": ["float in [0,1], ascending"],
+      "max_height_m": "float",
+      "height_distribution": "linear|named_curve|sampled_curve",
+      "classification_thresholds": {
+        "flat_delta_max": "float",
+        "step_delta_max": "float",
+        "ledge_delta_min": "float",
+        "cliff_delta_min": "float"
+      }
+    }
+  },
+  "deferred_ldtk_minimal_adoption": {
+    "source_urls": ["https://ldtk.io/docs/game-dev/json-overview/", "https://ldtk.io/files/JSON_SCHEMA.json", "https://ldtk.io/docs/game-dev/json-overview/optional-separate-levels/"],
+    "shape": {
+      "root_fields": ["jsonVersion", "iid", "defaultGridSize", "externalLevels", "defs", "levels"],
+      "level_fields": ["identifier", "iid", "worldX", "worldY", "pxWid", "pxHei", "fieldInstances", "layerInstances", "externalRelPath"],
+      "layer_fields": ["__identifier", "__type", "__cWid", "__cHei", "__gridSize", "intGridCsv", "gridTiles", "entityInstances"],
+      "entity_fields": ["__identifier", "__grid", "px", "width", "height", "fieldInstances", "__tags"]
+    }
+  },
+  "deferred_cad_backend": {
+    "source_urls": ["https://cadquery.readthedocs.io/en/latest/workplane.html", "https://cadquery.readthedocs.io/en/latest/classreference.html", "https://github.com/elalish/manifold", "https://manifoldcad.org/docs/html/classmanifold_1_1_manifold.html"],
+    "shape": {
+      "boolean_backend": "none_v0",
+      "future_options": ["cadquery", "manifold", "blender_boolean"],
+      "v0_policy": "generate_clean_mesh_arrays_without_booleans"
+    }
+  }
+}

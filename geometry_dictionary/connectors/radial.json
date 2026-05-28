@@ -1,0 +1,12 @@
+{
+  "term_id": "radial",
+  "category": "connector",
+  "plain_name": "Radial Connector",
+  "description": "Connector family for round or faceted assets where child parts may attach around the center.",
+  "required_params": { "center": "vec3", "radius": "float", "count_or_angles": "int | float[]" },
+  "outputs": { "type": "radial_connector_set" },
+  "constraints": { "radius": "> 0" },
+  "common_uses": ["column bands", "radial ornaments", "pipe sockets"],
+  "blender_method": "generate marker empties around radial positions",
+  "validation": ["finite_values", "direction_is_normalized"]
+}

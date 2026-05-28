@@ -1,0 +1,117 @@
+{
+  "schema": "terrain_tile_bending_build_acceleration_extract_v0",
+  "purpose": "Machine-readable build shortcuts extracted from Townscaper/Planet-style procedural grid systems.",
+  "sources": [
+    "https://www.boristhebrave.com/2022/12/18/how-does-planet-work/",
+    "https://www.boristhebrave.com/docs/sylves/1/articles/tutorials/townscaper.html",
+    "https://indiecade-europe.eu/en/programme/conferences",
+    "https://github.com/pablogila/TileMapDual",
+    "https://gamedev.net/forums/topic/712984-working-with-the-dual-graph-of-a-hex-grid/"
+  ],
+  "build_shortcuts": [
+    {
+      "shortcut_id": "shared_vertex_truth_first_v0",
+      "summary": "Store terrain truth on shared vertices/corners before cell mesh emission.",
+      "build_time_value": "Avoids per-hex crack debugging and duplicated seam height logic.",
+      "implementation_target": "shared_vertex_graph"
+    },
+    {
+      "shortcut_id": "dual_corner_regions_v0",
+      "summary": "Use dual triangle-like corner regions to own three-cell corner transitions.",
+      "build_time_value": "Makes corner elevation conflicts explicit and keeps edge rules smaller.",
+      "implementation_target": "dual_corner_region"
+    },
+    {
+      "shortcut_id": "integer_height_bands_first_v0",
+      "summary": "Classify terrain by integer height bands before solving continuous heights.",
+      "build_time_value": "Fits 32x32x8 constraints and removes vague slope thresholds from the first proof.",
+      "implementation_target": "height_band_classifier"
+    },
+    {
+      "shortcut_id": "delta_two_cliff_fault_v0",
+      "summary": "Treat height deltas of two or more bands as cliff/ledge/fault profiles by default.",
+      "build_time_value": "Prevents stretched melted slopes and gives simple ledge/cliff criteria.",
+      "implementation_target": "edge_profile_rule_table"
+    },
+    {
+      "shortcut_id": "layered_profiles_v0",
+      "summary": "Split terrain into base height, cliff, road, pad, and material layers instead of all combinations.",
+      "build_time_value": "Controls combinatorial explosion and keeps authored/profile variants reusable.",
+      "implementation_target": "profile_layer_stack"
+    },
+    {
+      "shortcut_id": "relax_after_weld_v0",
+      "summary": "Apply smoothing/relaxation only after shared seams are canonical and welded.",
+      "build_time_value": "Avoids local smoothing creating cracks between chunks or cells.",
+      "implementation_target": "post_validation_relaxation"
+    },
+    {
+      "shortcut_id": "macro_signature_after_basic_edges_v0",
+      "summary": "Detect bridges, stairs, gates, and pad clusters as macro signatures after simple edge policies work.",
+      "build_time_value": "Keeps the v0 compiler small and avoids burying special cases in edge code.",
+      "implementation_target": "macro_pattern_pass"
+    }
+  ],
+  "recommended_v0_rule_table": [
+    {
+      "rule_id": "flat_same_band",
+      "priority": 10,
+      "requires": {"delta_band": 0},
+      "profile": "shared_flat",
+      "mesh": "shared_midpoint_12_tri_top",
+      "walkability": "walkable"
+    },
+    {
+      "rule_id": "soft_single_band",
+      "priority": 20,
+      "requires": {"delta_band": 1},
+      "profile": "soft_fold",
+      "mesh": "shared_midpoint_12_tri_top",
+      "walkability": "walkable_with_cost"
+    },
+    {
+      "rule_id": "road_single_band_override",
+      "priority": 80,
+      "requires": {"delta_band": 1, "tags": ["road"]},
+      "profile": "road_ramp",
+      "mesh": "shared_midpoint_12_tri_top",
+      "walkability": "walkable"
+    },
+    {
+      "rule_id": "building_pad_boundary",
+      "priority": 90,
+      "requires": {"tags": ["building_pad_edge"]},
+      "profile": "foundation_snap",
+      "mesh": "pad_locked_top_plus_boundary_adapter",
+      "walkability": "walkable_or_socket"
+    },
+    {
+      "rule_id": "cliff_delta_two_plus",
+      "priority": 30,
+      "requires": {"delta_band_min": 2},
+      "profile": "cliff_fault",
+      "mesh": "upper_top_plus_vertical_wall",
+      "walkability": "blocked_without_connector"
+    }
+  ],
+  "recommended_build_order": [
+    "shared vertex/edge registry",
+    "integer height bands",
+    "dual corner triangle records",
+    "edge delta band records",
+    "profile lookup table",
+    "midpoint/corner height solve",
+    "indexed face emitter",
+    "validation table",
+    "optional layer overlays for road/pad",
+    "optional relaxation after weld"
+  ],
+  "deferred": [
+    "continuous organic relaxation",
+    "full WFC",
+    "arbitrary authored mesh variants",
+    "multi-chunk streaming",
+    "complex curve roads",
+    "macro bridge replacement"
+  ]
+}

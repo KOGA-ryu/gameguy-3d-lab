@@ -1,0 +1,11 @@
+{
+  "term_id": "bevel_edges",
+  "category": "mesh_operation",
+  "plain_name": "Bevel Edges",
+  "description": "Adds a chamfer or rounded transition along selected solid edges.",
+  "required_inputs": { "edge_set": "edge_ref[]", "radius": "float", "segments": "int" },
+  "outputs": { "type": "modified_solid_definition | mesh_future" },
+  "constraints": { "radius": "> 0", "segments": ">= 1", "radius_fits_local_bounds": true },
+  "blender_method": "apply bevel modifier or generated bevel geometry to selected edges",
+  "validation": ["nonzero_volume", "manifold_mesh", "scale_within_bounds"]
+}

@@ -1,0 +1,198 @@
+{
+  "schema": "connector_asset_component_recipe_v0",
+  "asset_id": "measured_curb_edge_unit_v1",
+  "source_measurement_refs": [
+    {
+      "ref_type": "local_ratio_doc",
+      "ref": "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md"
+    },
+    {
+      "ref_type": "local_policy_doc",
+      "ref": "docs/research/architectural_measurements/source_quality_notes_v0.md"
+    },
+    {
+      "ref_type": "local_asset_catalog",
+      "ref": "goal/architecture/asset_mill_measured_v1/asset_mill_measured_index_v1.json"
+    }
+  ],
+  "geometry_terms_used": [
+    "rectangle",
+    "width",
+    "height",
+    "extrude",
+    "socket",
+    "floor",
+    "ceiling",
+    "north",
+    "south",
+    "east",
+    "west",
+    "walkable",
+    "collision_proxy"
+  ],
+  "profile_terms": [
+    "rectangle"
+  ],
+  "operations": [
+    "extrude"
+  ],
+  "dimensions_m": {
+    "width": 0.18,
+    "depth": 1.2,
+    "height": 0.16
+  },
+  "bounds_m": {
+    "min": [
+      -0.09,
+      -0.6,
+      0.0
+    ],
+    "max": [
+      0.09,
+      0.6,
+      0.16
+    ]
+  },
+  "ratio_basis": {
+    "basis": "curb marks pathway edge and landing transitions",
+    "thickness_to_width": 0.888889
+  },
+  "uncertainty": {
+    "level": "medium",
+    "reason": "connector kit is a deterministic gameplay blockout layer using local ratios only"
+  },
+  "sockets": [
+    {
+      "socket_id": "floor_anchor",
+      "connector_term": "floor",
+      "position_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "role": "placement"
+    },
+    {
+      "socket_id": "top_walkable",
+      "connector_term": "ceiling",
+      "position_m": [
+        0.0,
+        0.0,
+        0.16
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "role": "walkable_surface"
+    },
+    {
+      "socket_id": "start_join",
+      "connector_term": "south",
+      "position_m": [
+        0.0,
+        -0.6,
+        0.08
+      ],
+      "direction": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "role": "connector_join"
+    },
+    {
+      "socket_id": "end_join",
+      "connector_term": "north",
+      "position_m": [
+        0.0,
+        0.6,
+        0.08
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "role": "connector_join"
+    },
+    {
+      "socket_id": "left_edge",
+      "connector_term": "west",
+      "position_m": [
+        -0.09,
+        0.0,
+        0.08
+      ],
+      "direction": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "role": "edge_mount"
+    },
+    {
+      "socket_id": "right_edge",
+      "connector_term": "east",
+      "position_m": [
+        0.09,
+        0.0,
+        0.08
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "role": "edge_mount"
+    }
+  ],
+  "semantic_roles": [
+    "connector",
+    "curb_edge",
+    "walkable_edge"
+  ],
+  "validation_expectations": {
+    "nonzero_bounds": true,
+    "known_geometry_terms": true,
+    "no_silent_scaling": true
+  },
+  "proof_primitives": [
+    {
+      "primitive": "cube",
+      "name": "curb_edge_unit",
+      "location_m": [
+        0.0,
+        0.0,
+        0.08
+      ],
+      "dimensions_m": [
+        0.18,
+        1.2,
+        0.16
+      ],
+      "material_role": "stone"
+    }
+  ],
+  "notes": [
+    "Connector asset for plug-contract proof scenes.",
+    "Uses local ratio hints only; not historically accurate or production/fabrication ready."
+  ],
+  "no_production_claim": true,
+  "no_structural_claim": true,
+  "no_fabrication_claim": true,
+  "no_historical_accuracy_claim": true,
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "hex_terrain_fold_recipe_contract_v0",
+  "purpose": "Hex terrain recipes that generate base heightfields, apply fold offsets, derive edge grammar, and emit optimized terrain mesh data.",
+  "required_fields": [
+    "schema",
+    "site_id",
+    "map_cube_ref",
+    "units",
+    "hex_grid",
+    "heightfield",
+    "folds",
+    "classification_rules",
+    "no_claims"
+  ],
+  "cell_outputs": [
+    "cell_id",
+    "q",
+    "r",
+    "s",
+    "world_x",
+    "world_y",
+    "base_height",
+    "fold_offset",
+    "final_height",
+    "surface_type",
+    "topology_role",
+    "buildable",
+    "edge_profiles",
+    "movement_tags",
+    "structure_socket_tags"
+  ],
+  "edge_types": [
+    "flat",
+    "step_up",
+    "step_down",
+    "ledge",
+    "cliff",
+    "wall_blocked",
+    "ramp_candidate",
+    "bridge_candidate",
+    "water_edge",
+    "structure_edge",
+    "boundary"
+  ],
+  "rules": {
+    "cube_coordinate_s_must_equal_negative_q_minus_r": true,
+    "map_cube_ref_must_exist": true,
+    "heightfield_must_fit_inside_map_cube_z": true,
+    "final_height_must_fit_inside_map_cube_z": true,
+    "edge_profiles_must_have_six_entries": true,
+    "compiler_emits_base_and_final_edges": true,
+    "compiler_emits_visible_face_stats": true,
+    "no_mesh_files": true,
+    "no_blender_output": true,
+    "no_structural_claims": true
+  }
+}

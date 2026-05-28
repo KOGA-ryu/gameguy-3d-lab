@@ -1,0 +1,12 @@
+{
+  "term_id": "rail",
+  "category": "semantic_geometry",
+  "plain_name": "Rail",
+  "description": "A narrow repeated or spanning member used for railing, trim, or pipe-like barriers.",
+  "required_inputs": { "asset_ref": "solid_definition", "span_axis": "x | y | z" },
+  "outputs": { "type": "rail_hint" },
+  "constraints": { "span_axis_declared": true },
+  "common_uses": ["railing unit", "bridge edge", "pipe", "trim rail"],
+  "blender_method": "tag capsule/beam asset as rail",
+  "validation": ["nonzero_volume", "axis_declared"]
+}

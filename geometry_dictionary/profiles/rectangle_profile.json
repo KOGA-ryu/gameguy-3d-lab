@@ -1,0 +1,13 @@
+{
+  "term_id": "rectangle",
+  "category": "profile_primitive",
+  "plain_name": "Rectangle Profile",
+  "description": "A closed four-sided 2D profile with independent width and depth.",
+  "required_params": { "width": "float", "depth": "float" },
+  "units": "meters",
+  "outputs": { "type": "closed_2d_profile", "coordinate_space": "local_xy", "must_be_closed": true },
+  "constraints": { "width": "> 0", "depth": "> 0", "vertex_count": 4 },
+  "common_uses": ["slab", "beam", "wall block", "brick", "trim strip"],
+  "blender_method": "generate four local XY vertices, create face, extrude or solidify",
+  "validation": ["closed_profile", "nonzero_area", "vertex_order_is_clockwise_or_declared"]
+}

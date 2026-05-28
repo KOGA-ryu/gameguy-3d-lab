@@ -1,0 +1,215 @@
+{
+  "schema": "asset_mill_recipe_bundle_v0",
+  "bundle_id": "simple_solids_v0",
+  "purpose": "First useful solid asset catalog: one flat profile plus one operation, then a few compound assemblies.",
+  "units": "abstract_meter",
+  "assets": [
+    {
+      "asset_id": "rectangular_slab_v0",
+      "asset_kind": "primitive",
+      "operation": "extrude",
+      "profile": { "type": "rectangle", "params": { "width": 2.0, "depth": 1.0 } },
+      "axis": "z",
+      "height": 0.18,
+      "architectural_role": "floor_slab",
+      "generation_use": ["flooring", "platform", "bridge_deck", "roof_plate"],
+      "semantic_tags": ["walkable", "collision_proxy"],
+      "connectors": ["north", "south", "east", "west", "floor", "ceiling"],
+      "child_slots": ["surface_panel", "edge_trim", "support_anchor"],
+      "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+    },
+    {
+      "asset_id": "wall_block_v0",
+      "asset_kind": "primitive",
+      "operation": "extrude",
+      "profile": { "type": "rectangle", "params": { "width": 2.0, "depth": 0.28 } },
+      "axis": "z",
+      "height": 1.4,
+      "architectural_role": "load_bearing_wall_stub",
+      "generation_use": ["wall", "cover", "divider", "facade_base"],
+      "semantic_tags": ["blocked", "cover", "line_of_sight_blocker", "collision_proxy"],
+      "connectors": ["north", "south", "east", "west", "floor", "ceiling"],
+      "child_slots": ["panel_socket", "opening_cut_future", "top_cap"],
+      "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+    },
+    {
+      "asset_id": "stone_brick_v0",
+      "asset_kind": "primitive",
+      "operation": "extrude",
+      "profile": { "type": "rectangle", "params": { "width": 0.55, "depth": 0.28 } },
+      "axis": "z",
+      "height": 0.22,
+      "architectural_role": "masonry_unit",
+      "generation_use": ["brick_wall", "step", "low_cover", "rubble_seed"],
+      "semantic_tags": ["blocked", "cover", "collision_proxy"],
+      "connectors": ["north", "south", "east", "west", "floor", "ceiling"],
+      "child_slots": ["mortar_gap", "damage_mask"],
+      "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+    },
+    {
+      "asset_id": "wood_beam_v0",
+      "asset_kind": "primitive",
+      "operation": "extrude",
+      "profile": { "type": "rectangle", "params": { "width": 1.6, "depth": 0.18 } },
+      "axis": "z",
+      "height": 0.18,
+      "architectural_role": "beam",
+      "generation_use": ["joist", "rafter", "rail", "lintel"],
+      "semantic_tags": ["support", "decorative_only", "collision_proxy"],
+      "connectors": ["east", "west", "floor", "ceiling"],
+      "child_slots": ["end_cap", "bolt_node"],
+      "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+    },
+    {
+      "asset_id": "square_post_v0",
+      "asset_kind": "primitive",
+      "operation": "extrude",
+      "profile": { "type": "square", "params": { "size": 0.24 } },
+      "axis": "z",
+      "height": 1.2,
+      "architectural_role": "post",
+      "generation_use": ["support", "railing_post", "corner_post", "frame_member"],
+      "semantic_tags": ["support", "blocked", "collision_proxy"],
+      "connectors": ["floor", "ceiling", "north", "south", "east", "west"],
+      "child_slots": ["rail_socket", "cap_socket", "base_socket"],
+      "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+    },
+    {
+      "asset_id": "round_post_v0",
+      "asset_kind": "primitive",
+      "operation": "extrude",
+      "profile": { "type": "circle", "params": { "radius": 0.16, "segments": 24 } },
+      "axis": "z",
+      "height": 1.4,
+      "architectural_role": "round_post",
+      "generation_use": ["column", "peg", "pipe_core", "support"],
+      "semantic_tags": ["support", "blocked", "collision_proxy"],
+      "connectors": ["floor", "ceiling", "radial"],
+      "child_slots": ["base_socket", "cap_socket", "band_socket"],
+      "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+    },
+    {
+      "asset_id": "octagon_column_v0",
+      "asset_kind": "primitive",
+      "operation": "extrude",
+      "profile": { "type": "octagon", "params": { "radius": 0.22 } },
+      "axis": "z",
+      "height": 1.8,
+      "architectural_role": "octagonal_column",
+      "generation_use": ["fantasy_pillar", "column", "tower_post"],
+      "semantic_tags": ["support", "blocked", "collision_proxy"],
+      "connectors": ["floor", "ceiling", "radial"],
+      "child_slots": ["base_socket", "cap_socket", "band_socket", "ornament_strip"],
+      "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+    },
+    {
+      "asset_id": "wedge_ramp_v0",
+      "asset_kind": "primitive",
+      "operation": "extrude",
+      "profile": { "type": "trapezoid", "params": { "bottom_width": 1.0, "top_width": 0.62, "depth": 0.7 } },
+      "axis": "z",
+      "height": 0.35,
+      "architectural_role": "ramp_or_support_foot",
+      "generation_use": ["ramp", "brace", "buttress_foot", "terrain_step"],
+      "semantic_tags": ["walkable", "support", "collision_proxy"],
+      "connectors": ["north", "south", "floor", "ceiling"],
+      "child_slots": ["side_trim", "top_surface"],
+      "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+    },
+    {
+      "asset_id": "rail_bar_v0",
+      "asset_kind": "primitive",
+      "operation": "extrude",
+      "profile": { "type": "capsule", "params": { "length": 1.4, "radius": 0.07, "segments": 12 } },
+      "axis": "z",
+      "height": 0.12,
+      "architectural_role": "rounded_rail_bar",
+      "generation_use": ["railing", "pipe", "trim_strip", "soft_beam"],
+      "semantic_tags": ["barrier", "rail", "cover"],
+      "connectors": ["east", "west"],
+      "child_slots": ["post_socket", "end_cap"],
+      "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+    },
+    {
+      "asset_id": "tapered_post_v0",
+      "asset_kind": "loft",
+      "operation": "loft_sections",
+      "axis": "z",
+      "sections": [
+        { "at": 0.0, "profile": { "type": "square", "params": { "size": 0.34 } } },
+        { "at": 1.4, "profile": { "type": "square", "params": { "size": 0.18 } } }
+      ],
+      "architectural_role": "tapered_post",
+      "generation_use": ["tapered_support", "alien_rib_seed", "decorative_post"],
+      "semantic_tags": ["support", "blocked", "collision_proxy"],
+      "connectors": ["floor", "ceiling"],
+      "child_slots": ["base_socket", "cap_socket"],
+      "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+    },
+    {
+      "asset_id": "railing_unit_v0",
+      "asset_kind": "compound",
+      "operation": "compound_asset",
+      "components": [
+        { "instance_id": "left_post", "asset_ref": "square_post_v0", "translation": [-0.75, 0.0, 0.0] },
+        { "instance_id": "right_post", "asset_ref": "square_post_v0", "translation": [0.75, 0.0, 0.0] },
+        { "instance_id": "top_rail", "asset_ref": "rail_bar_v0", "translation": [0.0, 0.0, 0.92] }
+      ],
+      "architectural_role": "railing_unit",
+      "generation_use": ["balcony_edge", "bridge_edge", "fall_barrier"],
+      "semantic_tags": ["barrier", "cover", "rail"],
+      "connectors": ["east", "west", "floor"],
+      "child_slots": ["repeat_left", "repeat_right", "panel_infill"],
+      "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+    },
+    {
+      "asset_id": "stair_unit_v0",
+      "asset_kind": "compound",
+      "operation": "compound_asset",
+      "components": [
+        { "instance_id": "step_00", "asset_ref": "stone_brick_v0", "translation": [0.0, -0.42, 0.0] },
+        { "instance_id": "step_01", "asset_ref": "stone_brick_v0", "translation": [0.0, -0.14, 0.18] },
+        { "instance_id": "step_02", "asset_ref": "stone_brick_v0", "translation": [0.0, 0.14, 0.36] },
+        { "instance_id": "step_03", "asset_ref": "stone_brick_v0", "translation": [0.0, 0.42, 0.54] }
+      ],
+      "architectural_role": "block_stair",
+      "generation_use": ["stairs", "terrain_steps", "height_transition"],
+      "semantic_tags": ["walkable", "vertical_transition", "collision_proxy"],
+      "connectors": ["north", "south", "floor", "ceiling"],
+      "child_slots": ["side_rail", "landing"],
+      "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+    },
+    {
+      "asset_id": "wall_panel_unit_v0",
+      "asset_kind": "compound",
+      "operation": "compound_asset",
+      "components": [
+        { "instance_id": "backing_wall", "asset_ref": "wall_block_v0", "translation": [0.0, 0.0, 0.0] },
+        { "instance_id": "top_trim", "asset_ref": "wood_beam_v0", "translation": [0.0, -0.18, 1.18] },
+        { "instance_id": "base_trim", "asset_ref": "wood_beam_v0", "translation": [0.0, -0.18, 0.18] }
+      ],
+      "architectural_role": "wall_panel",
+      "generation_use": ["facade_panel", "room_wall", "cover_wall"],
+      "semantic_tags": ["blocked", "cover", "line_of_sight_blocker", "panel_socket"],
+      "connectors": ["east", "west", "floor", "ceiling"],
+      "child_slots": ["center_panel", "opening_cut_future", "ornament_socket"],
+      "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+    },
+    {
+      "asset_id": "pillar_stack_v0",
+      "asset_kind": "compound",
+      "operation": "compound_asset",
+      "components": [
+        { "instance_id": "base_plinth", "asset_ref": "stone_brick_v0", "translation": [0.0, 0.0, 0.0] },
+        { "instance_id": "shaft", "asset_ref": "octagon_column_v0", "translation": [0.0, 0.0, 0.22] },
+        { "instance_id": "cap_block", "asset_ref": "stone_brick_v0", "translation": [0.0, 0.0, 2.02] }
+      ],
+      "architectural_role": "pillar",
+      "generation_use": ["column", "support_marker", "room_landmark"],
+      "semantic_tags": ["support", "blocked", "line_of_sight_blocker", "landmark"],
+      "connectors": ["floor", "ceiling", "radial"],
+      "child_slots": ["band_socket", "capital_ornament"],
+      "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+    }
+  ]
+}

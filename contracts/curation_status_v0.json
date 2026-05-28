@@ -1,0 +1,31 @@
+{
+  "schema": "curation_status_contract_v0",
+  "purpose": "Define human or Curator Dex review state for generated artifacts.",
+  "required_fields": [
+    "schema",
+    "artifact_id",
+    "job_id",
+    "lane",
+    "status",
+    "reason",
+    "reviewed_by",
+    "reviewed_at_utc",
+    "next_recommended_job",
+    "decision_history"
+  ],
+  "allowed_status": [
+    "unreviewed",
+    "keep",
+    "revise",
+    "reject",
+    "defer",
+    "blocked"
+  ],
+  "rules": {
+    "status_requires_reason": true,
+    "unreviewed_is_default": true,
+    "curation_does_not_claim_production_approval": true,
+    "decision_changes_append_history": true,
+    "curation_must_reference_existing_artifact_manifest": true
+  }
+}

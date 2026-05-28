@@ -1,0 +1,63 @@
+{
+  "schema": "architectural_module_recipe_v0",
+  "module_id": "octagonal_arch_room_v0",
+  "units": "abstract_meter",
+  "summary": "First multi-face construction grammar proof: an octagonal room with shared column points, pointed arch bays, low wall panels, and radial connector logic.",
+  "shape_dictionary_ref": "architectural_shape_dictionary_v0",
+  "base_plan": {
+    "shape_ref": "octagonal_plan",
+    "radius": 5.0,
+    "bay_count": 8,
+    "rotation_degrees": 22.5
+  },
+  "verticals": {
+    "floor_thickness": 0.18,
+    "springline_height": 2.4,
+    "wall_panel_height": 1.55,
+    "column_height": 2.4,
+    "arch_rib_radius": 0.08,
+    "wall_panel_thickness": 0.16,
+    "bay_depth": 0.42
+  },
+  "support": {
+    "shape_ref": "octagonal_column_stack",
+    "column_radius": 0.24,
+    "base_radius": 0.34,
+    "cap_radius": 0.34,
+    "base_height": 0.18,
+    "cap_height": 0.18
+  },
+  "arch": {
+    "shape_ref": "pointed_arch_bay",
+    "bend_law": "two_center_equal_radius_pointed_arch",
+    "segments_per_side": 12,
+    "curve_radius_rule": "span",
+    "springline_endpoint_rule": "match_adjacent_column_cap_connector"
+  },
+  "wall_bay": {
+    "shape_ref": "quad_wall_bay",
+    "panel_bottom_z": 0.18,
+    "panel_top_z": 1.55,
+    "inset_from_columns": 0.32
+  },
+  "connection_rules": {
+    "column_vertices_match_plan_vertices": true,
+    "arch_springline_points_match_column_caps": true,
+    "bay_edges_share_ordered_plan_endpoints": true,
+    "connection_tolerance": 0.000001
+  },
+  "output_roles": [
+    "central_room",
+    "radial_bay_ring",
+    "support_columns",
+    "pointed_arches",
+    "wall_panels",
+    "future_vault_rib_seed"
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "schema": "connector_asset_component_recipe_v0",
+  "asset_id": "measured_stepped_pathway_unit_v1",
+  "source_measurement_refs": [
+    {
+      "ref_type": "local_ratio_doc",
+      "ref": "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md"
+    },
+    {
+      "ref_type": "local_policy_doc",
+      "ref": "docs/research/architectural_measurements/source_quality_notes_v0.md"
+    },
+    {
+      "ref_type": "local_asset_catalog",
+      "ref": "goal/architecture/asset_mill_measured_v1/asset_mill_measured_index_v1.json"
+    }
+  ],
+  "geometry_terms_used": [
+    "rectangle",
+    "width",
+    "height",
+    "extrude",
+    "socket",
+    "floor",
+    "ceiling",
+    "north",
+    "south",
+    "east",
+    "west",
+    "walkable",
+    "collision_proxy"
+  ],
+  "profile_terms": [
+    "rectangle"
+  ],
+  "operations": [
+    "extrude"
+  ],
+  "dimensions_m": {
+    "width": 1.4,
+    "depth": 1.0,
+    "height": 0.32
+  },
+  "bounds_m": {
+    "min": [
+      -0.7,
+      -0.5,
+      0.0
+    ],
+    "max": [
+      0.7,
+      0.5,
+      0.32
+    ]
+  },
+  "ratio_basis": {
+    "basis": "step proportions are gameplay grammar values bounded by local ratio notes",
+    "thickness_to_width": 0.228571
+  },
+  "uncertainty": {
+    "level": "high",
+    "reason": "connector kit is a deterministic gameplay blockout layer using local ratios only"
+  },
+  "sockets": [
+    {
+      "socket_id": "floor_anchor",
+      "connector_term": "floor",
+      "position_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "role": "placement"
+    },
+    {
+      "socket_id": "top_walkable",
+      "connector_term": "ceiling",
+      "position_m": [
+        0.0,
+        0.0,
+        0.32
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "role": "walkable_surface"
+    },
+    {
+      "socket_id": "start_join",
+      "connector_term": "south",
+      "position_m": [
+        0.0,
+        -0.5,
+        0.16
+      ],
+      "direction": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "role": "connector_join"
+    },
+    {
+      "socket_id": "end_join",
+      "connector_term": "north",
+      "position_m": [
+        0.0,
+        0.5,
+        0.16
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "role": "connector_join"
+    },
+    {
+      "socket_id": "left_edge",
+      "connector_term": "west",
+      "position_m": [
+        -0.7,
+        0.0,
+        0.16
+      ],
+      "direction": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "role": "edge_mount"
+    },
+    {
+      "socket_id": "right_edge",
+      "connector_term": "east",
+      "position_m": [
+        0.7,
+        0.0,
+        0.16
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "role": "edge_mount"
+    }
+  ],
+  "semantic_roles": [
+    "walkable",
+    "connector",
+    "stepped_pathway"
+  ],
+  "validation_expectations": {
+    "nonzero_bounds": true,
+    "known_geometry_terms": true,
+    "no_silent_scaling": true
+  },
+  "proof_primitives": [
+    {
+      "primitive": "cube",
+      "name": "stepped_pathway_unit",
+      "location_m": [
+        0.0,
+        0.0,
+        0.16
+      ],
+      "dimensions_m": [
+        1.4,
+        1.0,
+        0.32
+      ],
+      "material_role": "stone"
+    }
+  ],
+  "notes": [
+    "Connector asset for plug-contract proof scenes.",
+    "Uses local ratio hints only; not historically accurate or production/fabrication ready."
+  ],
+  "no_production_claim": true,
+  "no_structural_claim": true,
+  "no_fabrication_claim": true,
+  "no_historical_accuracy_claim": true,
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false
+  }
+}

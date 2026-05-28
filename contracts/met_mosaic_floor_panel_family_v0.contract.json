@@ -1,0 +1,168 @@
+{
+  "family_id": "met_mosaic_floor_panel_family_v0",
+  "source_card_path": "sources/met_mosaic_floor_panel_38_11_12.source_card.json",
+  "source_asset_id": "met_mosaic_floor_panel_floor_fill_16x16",
+  "source_title": "Mosaic floor panel",
+  "source_url": "https://www.metmuseum.org/art/collection/search/253565",
+  "source_license": "CC0",
+  "palette_id": "roman_stone_glass_floor_v0",
+  "allowed_palette": [
+    "#23211d",
+    "#3a342c",
+    "#5b5143",
+    "#7d705c",
+    "#a4967b",
+    "#c8bda1",
+    "#6d2f29",
+    "#2f5b55"
+  ],
+  "base_tile_size_px": "16x16",
+  "derived_assets": [
+    {
+      "asset_id": "met_mosaic_floor_panel_floor_fill_16x16",
+      "tile_category": "floor_clean",
+      "motif_type": "floor_fill",
+      "target_tile_size_px": "16x16",
+      "output_png_path": "exports/met_mosaic_floor_panel_floor_fill_16x16.png",
+      "output_json_path": "exports/met_mosaic_floor_panel_floor_fill_16x16.json",
+      "parent_asset_id": null,
+      "variation_method": "base_clean",
+      "seamless_required": true,
+      "review_status": "exported",
+      "notes": "Existing manually authored base tile tied to the verified Met source card. This is the only exported family member at v0."
+    },
+    {
+      "asset_id": "met_mosaic_floor_panel_floor_cracked_16x16",
+      "tile_category": "floor_cracked",
+      "motif_type": "damaged_variant",
+      "target_tile_size_px": "16x16",
+      "output_png_path": "exports/met_mosaic_floor_panel_floor_cracked_16x16.png",
+      "output_json_path": "exports/met_mosaic_floor_panel_floor_cracked_16x16.json",
+      "parent_asset_id": "met_mosaic_floor_panel_floor_fill_16x16",
+      "variation_method": "crack_overlay",
+      "seamless_required": true,
+      "review_status": "exported",
+      "notes": "Exported deterministic cracked 16x16 variant generated from the existing base tile. Review still required before approval."
+    },
+    {
+      "asset_id": "met_mosaic_floor_panel_floor_shifted_16x16",
+      "tile_category": "floor_shifted",
+      "motif_type": "damaged_variant",
+      "target_tile_size_px": "16x16",
+      "output_png_path": "exports/met_mosaic_floor_panel_floor_shifted_16x16.png",
+      "output_json_path": "exports/met_mosaic_floor_panel_floor_shifted_16x16.json",
+      "parent_asset_id": "met_mosaic_floor_panel_floor_fill_16x16",
+      "variation_method": "shifted_tesserae",
+      "seamless_required": true,
+      "review_status": "planned",
+      "notes": "Planned misaligned tesserae variant. No PNG/JSON output exists yet."
+    },
+    {
+      "asset_id": "met_mosaic_floor_panel_floor_missing_tesserae_16x16",
+      "tile_category": "floor_missing_tesserae",
+      "motif_type": "damaged_variant",
+      "target_tile_size_px": "16x16",
+      "output_png_path": "exports/met_mosaic_floor_panel_floor_missing_tesserae_16x16.png",
+      "output_json_path": "exports/met_mosaic_floor_panel_floor_missing_tesserae_16x16.json",
+      "parent_asset_id": "met_mosaic_floor_panel_floor_fill_16x16",
+      "variation_method": "missing_tesserae",
+      "seamless_required": true,
+      "review_status": "planned",
+      "notes": "Planned missing-stone variant. No PNG/JSON output exists yet."
+    },
+    {
+      "asset_id": "met_mosaic_floor_panel_floor_stained_16x16",
+      "tile_category": "floor_stained",
+      "motif_type": "damaged_variant",
+      "target_tile_size_px": "16x16",
+      "output_png_path": "exports/met_mosaic_floor_panel_floor_stained_16x16.png",
+      "output_json_path": "exports/met_mosaic_floor_panel_floor_stained_16x16.json",
+      "parent_asset_id": "met_mosaic_floor_panel_floor_fill_16x16",
+      "variation_method": "stain_overlay",
+      "seamless_required": true,
+      "review_status": "planned",
+      "notes": "Planned stain overlay variant. No PNG/JSON output exists yet."
+    },
+    {
+      "asset_id": "met_mosaic_floor_panel_floor_symbol_marked_16x16",
+      "tile_category": "floor_symbol_marked",
+      "motif_type": "faction_emblem",
+      "target_tile_size_px": "16x16",
+      "output_png_path": "exports/met_mosaic_floor_panel_floor_symbol_marked_16x16.png",
+      "output_json_path": "exports/met_mosaic_floor_panel_floor_symbol_marked_16x16.json",
+      "parent_asset_id": "met_mosaic_floor_panel_floor_fill_16x16",
+      "variation_method": "symbol_overlay",
+      "seamless_required": true,
+      "review_status": "planned",
+      "notes": "Planned symbol-marked floor variant. No PNG/JSON output exists yet."
+    },
+    {
+      "asset_id": "met_mosaic_floor_panel_deco_moss_16x16",
+      "tile_category": "deco_moss",
+      "motif_type": "damaged_variant",
+      "target_tile_size_px": "16x16",
+      "output_png_path": "exports/met_mosaic_floor_panel_deco_moss_16x16.png",
+      "output_json_path": "exports/met_mosaic_floor_panel_deco_moss_16x16.json",
+      "parent_asset_id": "met_mosaic_floor_panel_floor_fill_16x16",
+      "variation_method": "moss_overlay",
+      "seamless_required": true,
+      "review_status": "planned",
+      "notes": "Planned multiplicative decoration overlay. No PNG/JSON output exists yet."
+    },
+    {
+      "asset_id": "met_mosaic_floor_panel_deco_loose_stone_16x16",
+      "tile_category": "deco_loose_stone",
+      "motif_type": "damaged_variant",
+      "target_tile_size_px": "16x16",
+      "output_png_path": "exports/met_mosaic_floor_panel_deco_loose_stone_16x16.png",
+      "output_json_path": "exports/met_mosaic_floor_panel_deco_loose_stone_16x16.json",
+      "parent_asset_id": "met_mosaic_floor_panel_floor_fill_16x16",
+      "variation_method": "loose_stone_overlay",
+      "seamless_required": true,
+      "review_status": "planned",
+      "notes": "Planned loose-stone decoration overlay. No PNG/JSON output exists yet."
+    },
+    {
+      "asset_id": "met_mosaic_floor_panel_deco_vine_root_16x16",
+      "tile_category": "deco_vine_root",
+      "motif_type": "damaged_variant",
+      "target_tile_size_px": "16x16",
+      "output_png_path": "exports/met_mosaic_floor_panel_deco_vine_root_16x16.png",
+      "output_json_path": "exports/met_mosaic_floor_panel_deco_vine_root_16x16.json",
+      "parent_asset_id": "met_mosaic_floor_panel_floor_fill_16x16",
+      "variation_method": "vine_root_overlay",
+      "seamless_required": true,
+      "review_status": "planned",
+      "notes": "Planned vine/root decoration overlay. No PNG/JSON output exists yet."
+    },
+    {
+      "asset_id": "met_mosaic_floor_panel_deco_glow_particle_16x16",
+      "tile_category": "deco_glow_particle",
+      "motif_type": "damaged_variant",
+      "target_tile_size_px": "16x16",
+      "output_png_path": "exports/met_mosaic_floor_panel_deco_glow_particle_16x16.png",
+      "output_json_path": "exports/met_mosaic_floor_panel_deco_glow_particle_16x16.json",
+      "parent_asset_id": "met_mosaic_floor_panel_floor_fill_16x16",
+      "variation_method": "glow_particle_overlay",
+      "seamless_required": true,
+      "review_status": "planned",
+      "notes": "Planned glow-particle decoration overlay. No PNG/JSON output exists yet."
+    }
+  ],
+  "required_family_outputs": [
+    {
+      "kind": "contact_sheet_svg",
+      "path": "review/mosaic_dungeon_floor_v0_contact_sheet.svg"
+    },
+    {
+      "kind": "room_mockup_png",
+      "path": "review/met_mosaic_floor_panel_family_v0_room_mockup.png"
+    },
+    {
+      "kind": "room_mockup_receipt",
+      "path": "receipts/met_mosaic_floor_panel_family_v0_room_mockup_receipt.json"
+    }
+  ],
+  "review_status": "trace_started",
+  "notes": "Tile family contract for one verified Met source and one existing exported base tile. Variant entries are planned only and must not be treated as exported assets until their PNG/JSON outputs exist and validate."
+}

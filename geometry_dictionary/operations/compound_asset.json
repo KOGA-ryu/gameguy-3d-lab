@@ -1,0 +1,11 @@
+{
+  "term_id": "compound_asset",
+  "category": "composition_operation",
+  "plain_name": "Compound Asset",
+  "description": "Assembles multiple compiled assets into one reusable module with local transforms.",
+  "required_inputs": { "components": "component_instance[]" },
+  "outputs": { "type": "compound_solid_definition" },
+  "constraints": { "component_refs_exist": true, "component_ids_unique": true },
+  "blender_method": "instantiate referenced assets with local transforms; keep as collection or join later",
+  "validation": ["component_refs_resolve", "bounds_update_is_valid", "nonzero_volume"]
+}

@@ -1,0 +1,119 @@
+{
+  "schema": "terrain_tile_bending_seams_extracted_terms_v0",
+  "purpose": "Machine-readable terms extracted from terrain bending and seam research.",
+  "terms": [
+    {
+      "term_id": "hex_cell_center_vertex_v0",
+      "term": "hex cell center vertex",
+      "definition": "A private top-surface vertex located at a hex cell center; used as the fixed vertex in the cell's radial fan.",
+      "source_ids": ["redblob_hex_grids_v0", "redblob_hex_implementation_v0", "khronos_opengl_primitive_v0"],
+      "project_mapping": ["hex/elevation cells", "terrain mesh compiler", "visible face meshing"],
+      "v0_status": "recommended"
+    },
+    {
+      "term_id": "shared_corner_vertex_v0",
+      "term": "shared corner vertex",
+      "definition": "A top-surface vertex at a hex corner referenced by all incident cells touching that corner.",
+      "source_ids": ["redblob_grid_parts_v0", "catlike_shared_grid_v0", "unity_mesh_anatomy_v0"],
+      "project_mapping": ["shared vertex topology", "terrain mesh compiler", "seam/fold grammar"],
+      "v0_status": "required"
+    },
+    {
+      "term_id": "shared_edge_midpoint_vertex_v0",
+      "term": "shared edge midpoint vertex",
+      "definition": "An optional top-surface vertex at the midpoint of a hex edge, referenced by both adjacent cells and solved to one final height.",
+      "source_ids": ["redblob_grid_parts_v0", "catlike_shared_grid_v0", "gpu_gems_geometry_clipmaps_v0"],
+      "project_mapping": ["terrain mesh compiler", "seam/fold grammar", "road/path layer"],
+      "v0_status": "recommended"
+    },
+    {
+      "term_id": "triangle_fan_v0",
+      "term": "triangle fan",
+      "definition": "A triangulation pattern in which one fixed vertex connects to adjacent boundary vertex pairs; for a hex this yields 6 triangles without midpoints or 12 triangles with edge midpoints.",
+      "source_ids": ["khronos_opengl_primitive_v0", "redblob_hex_implementation_v0"],
+      "project_mapping": ["visible face meshing", "terrain mesh compiler"],
+      "v0_status": "required"
+    },
+    {
+      "term_id": "indexed_triangle_mesh_v0",
+      "term": "indexed triangle mesh",
+      "definition": "A mesh representation where vertices are stored once and triangle faces reference vertices by integer index.",
+      "source_ids": ["unity_mesh_anatomy_v0", "blender_mesh_api_v0"],
+      "project_mapping": ["Blender proof renderer", "terrain mesh compiler"],
+      "v0_status": "required"
+    },
+    {
+      "term_id": "no_duplicate_seam_vertices_v0",
+      "term": "no duplicate seam vertices",
+      "definition": "A crack-prevention rule requiring neighboring top surfaces to reference the same vertex id and height for a shared edge or corner.",
+      "source_ids": ["redblob_grid_parts_v0", "catlike_shared_grid_v0", "gpu_gems_geometry_clipmaps_v0", "manifold_library_wiki_v0"],
+      "project_mapping": ["seam/fold grammar", "terrain mesh compiler", "visible face meshing"],
+      "v0_status": "required"
+    },
+    {
+      "term_id": "height_solver_v0",
+      "term": "shared vertex height solver",
+      "definition": "A pass that assigns exactly one final height to each shared corner and edge midpoint before faces are emitted.",
+      "source_ids": ["gpu_gems_geometry_clipmaps_v0", "unity_terrain_set_height_v0", "redblob_grid_parts_v0"],
+      "project_mapping": ["hex/elevation cells", "road/path layer", "building plot layer", "terrain mesh compiler"],
+      "v0_status": "required"
+    },
+    {
+      "term_id": "seam_policy_v0",
+      "term": "seam policy",
+      "definition": "An explicit edge classification that decides whether a shared edge is smooth, stepped, cliffed, road-blended, foundation-snapped, or boundary-skirted.",
+      "source_ids": ["gpu_gems_geometry_clipmaps_v0", "transvoxel_v0", "fold_format_v0"],
+      "project_mapping": ["seam/fold grammar", "future AI affordance graph", "terrain mesh compiler"],
+      "v0_status": "required"
+    },
+    {
+      "term_id": "transition_region_v0",
+      "term": "transition region",
+      "definition": "A terrain LOD region where geometry morphs or connects between resolution levels to avoid cracks and popping.",
+      "source_ids": ["gpu_gems_geometry_clipmaps_v0", "chunked_lod_ulrich_v0"],
+      "project_mapping": ["terrain mesh compiler", "future chunk LOD"],
+      "v0_status": "deferred"
+    },
+    {
+      "term_id": "transition_cell_v0",
+      "term": "transition cell",
+      "definition": "A connector cell used in Transvoxel to stitch neighboring terrain meshes generated at different voxel resolutions.",
+      "source_ids": ["transvoxel_v0"],
+      "project_mapping": ["future chunk LOD", "deferred voxel terrain"],
+      "v0_status": "deferred"
+    },
+    {
+      "term_id": "crease_graph_v0",
+      "term": "crease graph",
+      "definition": "A graph of vertices, edges, faces, and edge fold properties used as conceptual vocabulary for bent terrain surfaces.",
+      "source_ids": ["fold_format_v0"],
+      "project_mapping": ["seam/fold grammar", "terrain mesh compiler"],
+      "v0_status": "conceptual"
+    },
+    {
+      "term_id": "building_pad_height_lock_v0",
+      "term": "building pad height lock",
+      "definition": "A height constraint that sets all vertices inside a building footprint to a target pad height before mesh emission.",
+      "source_ids": ["unity_terrain_set_height_v0", "redblob_grid_parts_v0"],
+      "project_mapping": ["building plot layer", "asset placement layer", "terrain mesh compiler"],
+      "v0_status": "recommended"
+    },
+    {
+      "term_id": "road_blend_height_constraint_v0",
+      "term": "road blend height constraint",
+      "definition": "A height constraint that smooths or locks center and edge midpoint heights along a path while preserving shared seam vertices.",
+      "source_ids": ["unity_terrain_set_height_v0", "redblob_hex_grids_v0", "gpu_gems_geometry_clipmaps_v0"],
+      "project_mapping": ["road/path layer", "future AI affordance graph", "terrain mesh compiler"],
+      "v0_status": "recommended"
+    },
+    {
+      "term_id": "manifold_edge_pairing_v0",
+      "term": "manifold edge pairing",
+      "definition": "A stricter solid-mesh condition where each triangle edge is paired with exactly one opposite-oriented edge; useful as a validation reference for intentional open and closed terrain seams.",
+      "source_ids": ["manifold_library_wiki_v0", "manifold_docs_v0"],
+      "project_mapping": ["visible face meshing", "terrain mesh validation"],
+      "v0_status": "validation_reference"
+    }
+  ]
+}
+

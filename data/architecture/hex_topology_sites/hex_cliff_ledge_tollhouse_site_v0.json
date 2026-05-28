@@ -1,0 +1,124 @@
+{
+  "schema": "hex_topology_site_recipe_v0",
+  "site_id": "hex_cliff_ledge_tollhouse_site_v0",
+  "map_cube_ref": "standard_32m_cube_v0",
+  "units": "abstract_meter",
+  "summary": "A 32x32x8 cube map with a 1m-radius pointy-top hex surface, stepped elevations, cliff edges, road approach, and a planted building.",
+  "hex_grid": {
+    "layout": "pointy_top",
+    "radius": 1.0,
+    "vertical_step": 0.5,
+    "bounds_source": "map_cube_coordinate_range"
+  },
+  "elevation_model": {
+    "model_type": "rule_bands_v0",
+    "base_rules": [
+      {
+        "rule_id": "lower_basin",
+        "condition": "y < -7.0",
+        "elevation": 0.0,
+        "terrain_role": "lower_basin",
+        "semantic_tags": ["walkable", "low_ground", "route_pressure"]
+      },
+      {
+        "rule_id": "lower_terrace",
+        "condition": "-7.0 <= y < -5.6",
+        "elevation": 1.0,
+        "terrain_role": "terrace",
+        "semantic_tags": ["walkable", "restricted_route"]
+      },
+      {
+        "rule_id": "upper_ledge",
+        "condition": "-5.6 <= y < -4.1",
+        "elevation": 2.0,
+        "terrain_role": "ledge",
+        "semantic_tags": ["walkable", "fall_edge", "restricted_route"]
+      },
+      {
+        "rule_id": "upper_plateau",
+        "condition": "y >= -4.1",
+        "elevation": 3.0,
+        "terrain_role": "plateau",
+        "semantic_tags": ["walkable", "height_advantage", "buildable_site"]
+      }
+    ],
+    "overrides": [
+      {
+        "override_id": "road_approach",
+        "condition": "abs(x) <= 1.25 and y >= 1.4",
+        "elevation": 3.0,
+        "terrain_role": "road",
+        "semantic_tags": ["walkable", "route", "approach_vector"]
+      },
+      {
+        "override_id": "building_pad",
+        "condition": "abs(x) <= 3.7 and -3.4 <= y <= 1.4",
+        "elevation": 3.0,
+        "terrain_role": "buildable_pad",
+        "semantic_tags": ["walkable", "buildable_site", "height_advantage"]
+      },
+      {
+        "override_id": "ledge_path",
+        "condition": "abs(x) <= 4.4 and -5.1 <= y < -4.1",
+        "elevation": 2.5,
+        "terrain_role": "narrow_ledge",
+        "semantic_tags": ["walkable", "fall_edge", "restricted_route"]
+      }
+    ]
+  },
+  "building_placement": {
+    "source_assembly_id": "simple_entry_room_v0_assembly",
+    "site_type": "cliff_edge_building_site",
+    "origin": [0.0, -1.0, 3.12],
+    "rotation_degrees": [0.0, 0.0, 0.0],
+    "elevation": 3.12,
+    "required_flat_hexes": 12,
+    "connection_requirements": ["road_connection", "ledge_connection", "cliff_edge_awareness"]
+  },
+  "foundation_adapter": {
+    "adapter_type": "stepped_plinth",
+    "blend_rules": ["hex_cut_fill", "retaining_wall", "terrain_skirt"],
+    "asset_instances": [
+      {
+        "instance_id": "hex_foundation_slab",
+        "asset_ref": "rectangular_slab_v0",
+        "role": "foundation",
+        "translation": [0.0, -1.0, 2.98],
+        "rotation_degrees": [0.0, 0.0, 0.0],
+        "target_dimensions": [6.4, 4.4, 0.28],
+        "semantic_tags": ["support", "collision_proxy"]
+      },
+      {
+        "instance_id": "hex_cliff_retaining_wall",
+        "asset_ref": "wall_block_v0",
+        "role": "retaining_wall",
+        "translation": [0.0, -3.65, 2.2],
+        "rotation_degrees": [0.0, 0.0, 0.0],
+        "target_dimensions": [6.8, 0.35, 1.65],
+        "semantic_tags": ["blocked", "cover", "line_of_sight_blocker", "support"]
+      },
+      {
+        "instance_id": "hex_road_threshold_slab",
+        "asset_ref": "rectangular_slab_v0",
+        "role": "threshold",
+        "translation": [0.0, 1.55, 3.12],
+        "rotation_degrees": [0.0, 0.0, 0.0],
+        "target_dimensions": [2.2, 1.0, 0.08],
+        "semantic_tags": ["walkable", "route"]
+      }
+    ]
+  },
+  "classification_rules": {
+    "walkable_delta_max": 0.5,
+    "slope_delta_max": 1.0,
+    "fall_edge_delta_min": 1.0,
+    "buildable_max_elevation_variance": 0.25,
+    "buildable_required_role": "buildable_site"
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false
+  }
+}

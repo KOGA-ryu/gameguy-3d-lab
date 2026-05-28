@@ -1,0 +1,12 @@
+{
+  "term_id": "cover",
+  "category": "semantic_geometry",
+  "plain_name": "Cover",
+  "description": "Geometry that can partially obstruct line of sight or attacks.",
+  "required_inputs": { "surface_ref_or_bounds": "mesh_face | bounds", "height_range": "min_max_float" },
+  "outputs": { "type": "cover_hint" },
+  "constraints": { "height_range_declared": true },
+  "common_uses": ["low wall", "brick pile", "pillar", "railing"],
+  "blender_method": "tag object or generated bounds with cover metadata",
+  "validation": ["height_is_within_cover_range", "surface_has_collision"]
+}

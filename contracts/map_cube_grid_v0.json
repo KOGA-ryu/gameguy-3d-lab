@@ -1,0 +1,25 @@
+{
+  "schema": "map_cube_grid_contract_v0",
+  "purpose": "Standard bounded map-cube volumes for small dense tactical arenas.",
+  "required_fields": [
+    "schema",
+    "map_cube_id",
+    "cell_size_m",
+    "dimensions",
+    "origin",
+    "coordinate_range",
+    "connector_faces",
+    "layer_stack",
+    "no_claims"
+  ],
+  "dimension_fields": ["x", "y", "z"],
+  "connector_faces": ["north", "south", "east", "west", "upper", "lower"],
+  "rules": {
+    "cell_size_m_must_be_positive": true,
+    "dimensions_must_be_positive_integers": true,
+    "coordinate_range_must_match_dimensions": true,
+    "map_cube_is_a_bounded_container_not_a_mesh": true,
+    "no_structural_claims": true,
+    "no_production_approval": true
+  }
+}

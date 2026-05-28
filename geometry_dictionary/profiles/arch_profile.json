@@ -1,0 +1,13 @@
+{
+  "term_id": "arch_profile",
+  "category": "profile_primitive",
+  "plain_name": "Arch Profile",
+  "description": "A closed profile with vertical jambs and a curved or pointed top.",
+  "required_params": { "width": "float", "height": "float", "springline": "float", "arch_type": "round | pointed | horseshoe", "segments": "int" },
+  "units": "meters",
+  "outputs": { "type": "closed_2d_profile", "coordinate_space": "local_xz", "must_be_closed": true },
+  "constraints": { "width": "> 0", "height": "> 0", "segments": ">= 8", "springline": "inside height range" },
+  "common_uses": ["door opening", "window opening", "niche", "portal frame"],
+  "blender_method": "generate jamb points and top arc/point curve, then extrude or use as boolean cutter",
+  "validation": ["closed_profile", "nonzero_area", "profile_has_no_self_intersections"]
+}

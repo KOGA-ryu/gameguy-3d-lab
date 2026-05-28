@@ -1,0 +1,10 @@
+{
+  "term_id": "contour_points",
+  "category": "measurement",
+  "plain_name": "Contour Points",
+  "description": "Ordered point list sampled from a silhouette or profile edge.",
+  "required_inputs": { "source": "image_trace | manual_points | generated_profile", "coordinate_space": "string" },
+  "outputs": { "points": "vec2[]", "winding": "clockwise | counter_clockwise | unknown" },
+  "used_by": ["custom_polygon", "arch_profile", "measured_reference_shape"],
+  "validation": ["point_count_minimum", "finite_values", "winding_declared_or_recoverable"]
+}

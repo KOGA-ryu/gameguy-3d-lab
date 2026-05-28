@@ -1,0 +1,197 @@
+{
+  "schema": "connector_source_manifest_comparison_v0",
+  "packet_id": "3D-0009",
+  "created_at_utc": "2026-05-28T23:03:56.326169+00:00",
+  "source_manifest": "mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_manifest_v0.json",
+  "generated_index": "mosaic_dungeon_floor_v0/goal/architecture/connector_asset_kit_v0/connector_asset_kit_v0_index.json",
+  "source_asset_count": 9,
+  "generated_index_asset_count": 9,
+  "all_source_recipes_match_generated_recipes": true,
+  "all_expected_connector_source_ids_loaded": true,
+  "connector_source_recipe_count": 9,
+  "connector_asset_instance_count": 58,
+  "fit_status_counts": {
+    "pass": 4,
+    "warn": 4,
+    "fail": 0
+  },
+  "intentional_generated_metadata_differences": [
+    "connector_asset_kit_v0_index.json now records source_manifest.",
+    "connector_asset_kit_v0_index.json rules now include recipes_loaded_from_source_manifest.",
+    "connector_asset_placement_v0.json now records connector_source_manifest and source recipe validation fields.",
+    "created_at_utc timestamps update when compiler runs."
+  ],
+  "recipe_rows": [
+    {
+      "asset_id": "measured_pathway_slab_unit_v1",
+      "source_recipe_path": "data/architecture/assets/connectors/connector_asset_recipes_v0/measured_pathway_slab_unit_v1.json",
+      "generated_recipe_path": "goal/architecture/connector_asset_kit_v0/recipes/measured_pathway_slab_unit_v1.json",
+      "source_matches_generated_recipe": true,
+      "dimensions_m": {
+        "width": 1.4,
+        "depth": 1.2,
+        "height": 0.18
+      },
+      "semantic_roles": [
+        "walkable",
+        "connector",
+        "flat_pathway"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "no_claim_fields_valid": true
+    },
+    {
+      "asset_id": "measured_threshold_landing_v1",
+      "source_recipe_path": "data/architecture/assets/connectors/connector_asset_recipes_v0/measured_threshold_landing_v1.json",
+      "generated_recipe_path": "goal/architecture/connector_asset_kit_v0/recipes/measured_threshold_landing_v1.json",
+      "source_matches_generated_recipe": true,
+      "dimensions_m": {
+        "width": 2.2,
+        "depth": 1.1,
+        "height": 0.2
+      },
+      "semantic_roles": [
+        "walkable",
+        "connector",
+        "road_threshold"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "no_claim_fields_valid": true
+    },
+    {
+      "asset_id": "measured_ramp_pathway_unit_v1",
+      "source_recipe_path": "data/architecture/assets/connectors/connector_asset_recipes_v0/measured_ramp_pathway_unit_v1.json",
+      "generated_recipe_path": "goal/architecture/connector_asset_kit_v0/recipes/measured_ramp_pathway_unit_v1.json",
+      "source_matches_generated_recipe": true,
+      "dimensions_m": {
+        "width": 1.4,
+        "depth": 1.2,
+        "height": 0.18
+      },
+      "semantic_roles": [
+        "walkable",
+        "connector",
+        "ramp_pathway"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "no_claim_fields_valid": true
+    },
+    {
+      "asset_id": "measured_stepped_pathway_unit_v1",
+      "source_recipe_path": "data/architecture/assets/connectors/connector_asset_recipes_v0/measured_stepped_pathway_unit_v1.json",
+      "generated_recipe_path": "goal/architecture/connector_asset_kit_v0/recipes/measured_stepped_pathway_unit_v1.json",
+      "source_matches_generated_recipe": true,
+      "dimensions_m": {
+        "width": 1.4,
+        "depth": 1.0,
+        "height": 0.32
+      },
+      "semantic_roles": [
+        "walkable",
+        "connector",
+        "stepped_pathway"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "no_claim_fields_valid": true
+    },
+    {
+      "asset_id": "measured_bridge_deck_unit_v1",
+      "source_recipe_path": "data/architecture/assets/connectors/connector_asset_recipes_v0/measured_bridge_deck_unit_v1.json",
+      "generated_recipe_path": "goal/architecture/connector_asset_kit_v0/recipes/measured_bridge_deck_unit_v1.json",
+      "source_matches_generated_recipe": true,
+      "dimensions_m": {
+        "width": 2.4,
+        "depth": 1.2,
+        "height": 0.24
+      },
+      "semantic_roles": [
+        "walkable",
+        "connector",
+        "bridge_link"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "no_claim_fields_valid": true
+    },
+    {
+      "asset_id": "measured_bridge_abutment_v1",
+      "source_recipe_path": "data/architecture/assets/connectors/connector_asset_recipes_v0/measured_bridge_abutment_v1.json",
+      "generated_recipe_path": "goal/architecture/connector_asset_kit_v0/recipes/measured_bridge_abutment_v1.json",
+      "source_matches_generated_recipe": true,
+      "dimensions_m": {
+        "width": 2.8,
+        "depth": 0.5,
+        "height": 0.7
+      },
+      "semantic_roles": [
+        "support",
+        "connector",
+        "bridge_link"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "no_claim_fields_valid": true
+    },
+    {
+      "asset_id": "measured_bridge_rail_unit_v1",
+      "source_recipe_path": "data/architecture/assets/connectors/connector_asset_recipes_v0/measured_bridge_rail_unit_v1.json",
+      "generated_recipe_path": "goal/architecture/connector_asset_kit_v0/recipes/measured_bridge_rail_unit_v1.json",
+      "source_matches_generated_recipe": true,
+      "dimensions_m": {
+        "width": 0.16,
+        "depth": 1.2,
+        "height": 0.72
+      },
+      "semantic_roles": [
+        "rail",
+        "connector",
+        "bridge_link"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "no_claim_fields_valid": true
+    },
+    {
+      "asset_id": "measured_retaining_wall_unit_v1",
+      "source_recipe_path": "data/architecture/assets/connectors/connector_asset_recipes_v0/measured_retaining_wall_unit_v1.json",
+      "generated_recipe_path": "goal/architecture/connector_asset_kit_v0/recipes/measured_retaining_wall_unit_v1.json",
+      "source_matches_generated_recipe": true,
+      "dimensions_m": {
+        "width": 1.2,
+        "depth": 0.28,
+        "height": 0.75
+      },
+      "semantic_roles": [
+        "support",
+        "connector",
+        "retaining_edge"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "no_claim_fields_valid": true
+    },
+    {
+      "asset_id": "measured_curb_edge_unit_v1",
+      "source_recipe_path": "data/architecture/assets/connectors/connector_asset_recipes_v0/measured_curb_edge_unit_v1.json",
+      "generated_recipe_path": "goal/architecture/connector_asset_kit_v0/recipes/measured_curb_edge_unit_v1.json",
+      "source_matches_generated_recipe": true,
+      "dimensions_m": {
+        "width": 0.18,
+        "depth": 1.2,
+        "height": 0.16
+      },
+      "semantic_roles": [
+        "connector",
+        "curb_edge",
+        "walkable_edge"
+      ],
+      "socket_count": 6,
+      "proof_primitive_count": 1,
+      "no_claim_fields_valid": true
+    }
+  ]
+}

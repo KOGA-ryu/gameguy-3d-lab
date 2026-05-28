@@ -1,0 +1,11 @@
+{
+  "term_id": "array_linear",
+  "category": "composition_operation",
+  "plain_name": "Linear Array",
+  "description": "Repeats an asset or profile along a vector by count and spacing.",
+  "required_inputs": { "input_ref": "asset | profile | component", "count": "int", "spacing": "vec3" },
+  "outputs": { "type": "component_instances[]" },
+  "constraints": { "count": ">= 1", "spacing_finite": true },
+  "blender_method": "create repeated linked instances or apply array modifier",
+  "validation": ["instance_count_matches", "bounds_update_is_valid"]
+}

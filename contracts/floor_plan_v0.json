@@ -1,0 +1,42 @@
+{
+  "schema": "floor_plan_contract_v0",
+  "purpose": "Machine-readable measured floor plans for assigning compiled Asset Mill solids to plots, edges, openings, and features.",
+  "coordinate_model": {
+    "unit": "abstract_meter",
+    "axes": {
+      "x": "east-west",
+      "y": "south-north",
+      "z": "height"
+    },
+    "origin_rule": "plan origin is arbitrary; plot origins are center points unless declared otherwise"
+  },
+  "required_plan_fields": [
+    "schema",
+    "plan_id",
+    "units",
+    "asset_defaults",
+    "plots",
+    "no_claims"
+  ],
+  "plot_fields": [
+    "plot_id",
+    "space_role",
+    "origin",
+    "size",
+    "floor",
+    "edges",
+    "features",
+    "semantic_tags"
+  ],
+  "edge_sides": ["north", "south", "east", "west"],
+  "boundary_types": ["wall", "open", "railing", "low_wall", "void_edge"],
+  "feature_types": ["post", "column", "railing", "stair", "platform", "wall_panel", "pillar"],
+  "rules": {
+    "asset_refs_must_exist_in_compiled_asset_index": true,
+    "dimensions_must_be_positive": true,
+    "edge_openings_must_fit_inside_edge_length": true,
+    "no_mesh_output": true,
+    "no_blender_output": true,
+    "no_structural_claims": true
+  }
+}

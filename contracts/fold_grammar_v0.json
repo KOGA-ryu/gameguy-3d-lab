@@ -1,0 +1,30 @@
+{
+  "schema": "fold_grammar_contract_v0",
+  "purpose": "Legal fold and seam terms for modifying hex terrain surfaces after base tactical height is assigned.",
+  "fold_types": {
+    "flat": "No fold offset.",
+    "mountain": "Raises a ridge along a crease line.",
+    "valley": "Lowers a trench along a crease line.",
+    "hinge": "Soft transition seam used for ramps or bends.",
+    "pleat": "Repeated mountain/valley fold pair.",
+    "cut": "Hard terrain discontinuity or exposed break.",
+    "seam": "Explicit stitch line between terrain, structure, or chunk systems."
+  },
+  "fold_fields": [
+    "fold_id",
+    "type",
+    "line",
+    "magnitude",
+    "falloff_radius",
+    "affects"
+  ],
+  "rules": {
+    "base_height_is_tactical_truth": true,
+    "final_height_is_base_height_plus_fold_offset": true,
+    "folds_must_not_modify_map_cube_bounds": true,
+    "folds_may_affect_visual_mesh": true,
+    "folds_may_affect_topology_classification": true,
+    "no_structural_claims": true,
+    "no_production_approval": true
+  }
+}

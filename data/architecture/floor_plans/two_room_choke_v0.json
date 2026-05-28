@@ -1,0 +1,70 @@
+{
+  "schema": "floor_plan_v0",
+  "plan_id": "two_room_choke_v0",
+  "units": "abstract_meter",
+  "summary": "Two rectangular rooms joined by a narrow shared doorway for tactical choke tests.",
+  "asset_defaults": {
+    "floor": "rectangular_slab_v0",
+    "wall": "wall_block_v0",
+    "post": "square_post_v0",
+    "railing": "railing_unit_v0",
+    "stair": "stair_unit_v0"
+  },
+  "plots": [
+    {
+      "plot_id": "south_room",
+      "space_role": "approach_room",
+      "origin": [0.0, -2.5, 0.0],
+      "size": { "width": 5.5, "depth": 4.0, "height": 3.0 },
+      "floor": { "asset_ref": "rectangular_slab_v0", "thickness": 0.18 },
+      "edges": [
+        {
+          "side": "north",
+          "boundary": "wall",
+          "asset_ref": "wall_block_v0",
+          "thickness": 0.28,
+          "height": 3.0,
+          "openings": [
+            { "opening_id": "shared_choke_door_south", "type": "door_gap", "width": 0.95, "height": 2.1, "center_offset": 0.0 }
+          ]
+        },
+        { "side": "south", "boundary": "wall", "asset_ref": "wall_block_v0", "thickness": 0.28, "height": 3.0, "openings": [] },
+        { "side": "east", "boundary": "wall", "asset_ref": "wall_block_v0", "thickness": 0.28, "height": 3.0, "openings": [] },
+        { "side": "west", "boundary": "wall", "asset_ref": "wall_block_v0", "thickness": 0.28, "height": 3.0, "openings": [] }
+      ],
+      "features": [],
+      "semantic_tags": ["walkable", "cover"]
+    },
+    {
+      "plot_id": "north_room",
+      "space_role": "defender_room",
+      "origin": [0.0, 2.0, 0.0],
+      "size": { "width": 5.5, "depth": 4.5, "height": 3.0 },
+      "floor": { "asset_ref": "rectangular_slab_v0", "thickness": 0.18 },
+      "edges": [
+        {
+          "side": "south",
+          "boundary": "wall",
+          "asset_ref": "wall_block_v0",
+          "thickness": 0.28,
+          "height": 3.0,
+          "openings": [
+            { "opening_id": "shared_choke_door_north", "type": "door_gap", "width": 0.95, "height": 2.1, "center_offset": 0.0 }
+          ]
+        },
+        { "side": "north", "boundary": "wall", "asset_ref": "wall_block_v0", "thickness": 0.28, "height": 3.0, "openings": [] },
+        { "side": "east", "boundary": "wall", "asset_ref": "wall_block_v0", "thickness": 0.28, "height": 3.0, "openings": [] },
+        { "side": "west", "boundary": "wall", "asset_ref": "wall_block_v0", "thickness": 0.28, "height": 3.0, "openings": [] }
+      ],
+      "features": [
+        { "feature_id": "left_choke_post", "type": "post", "asset_ref": "square_post_v0", "position": [-0.62, -0.25, 0.18], "height": 2.2 },
+        { "feature_id": "right_choke_post", "type": "post", "asset_ref": "square_post_v0", "position": [0.62, -0.25, 0.18], "height": 2.2 }
+      ],
+      "semantic_tags": ["walkable", "blocked", "cover", "line_of_sight_blocker"]
+    }
+  ],
+  "connections": [
+    { "from_plot": "south_room", "to_plot": "north_room", "via_opening": "shared_choke_door_south", "connection_role": "narrow_choke" }
+  ],
+  "no_claims": { "production_approval": false, "structural_safety": false, "fabrication_ready": false, "gym_museum_approval": false }
+}
