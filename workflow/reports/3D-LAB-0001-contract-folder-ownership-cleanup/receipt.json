@@ -1,0 +1,33 @@
+{
+  "schema": "workflow_report_receipt_v0",
+  "packet_id": "3D-LAB-0001",
+  "status": "complete",
+  "scope_root": "/Users/kogaryu/gameguy-3d-lab",
+  "old_mac_prototype_touched": false,
+  "quarantine_folder": "contracts/quarantine_2d_mosaic_v0/",
+  "quarantined_contracts": [
+    "example_border_corner_32x32.contract.json",
+    "example_center_medallion_64x64.contract.json",
+    "example_floor_fill_16x16.contract.json",
+    "example_verified_floor_fill_16x16.contract.json",
+    "met_mosaic_floor_panel_family_v0.contract.json",
+    "met_mosaic_floor_panel_floor_fill_16x16.contract.json",
+    "mosaic_dungeon_tile_contract_v0.json",
+    "mosaic_tile_family_contract_v0.json"
+  ],
+  "ownership_docs_added": [
+    "FOLDER_OWNERSHIP.md",
+    "contracts/README.md",
+    "contracts/quarantine_2d_mosaic_v0/README.md"
+  ],
+  "validation_commands": [
+    "find data contracts docs geometry_dictionary workflow -name '*.json' -print0 | xargs -0 -n 1 python3 -m json.tool >/dev/null",
+    "python3 -m py_compile scripts/*.py"
+  ],
+  "validation_status": "pass",
+  "non_goals_respected": {
+    "old_mac_prototype_touched": false,
+    "assets_renders_meshes_generated": false,
+    "blender_run": false
+  }
+}
