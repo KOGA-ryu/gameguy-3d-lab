@@ -1,0 +1,40 @@
+{
+  "packet_id": "3D-LAB-0007",
+  "status": "blocked_missing_downstream_fixture",
+  "created_at_utc": "2026-05-29T01:21:09Z",
+  "scope": "/Users/kogaryu/gameguy-3d-lab",
+  "files_changed": [
+    "scripts/compile_integrated_map_scene_v0.py",
+    "workflow/reports/3D-LAB-0007-output-root-integrated-map-scene/output_root_validation.json",
+    "workflow/reports/3D-LAB-0007-output-root-integrated-map-scene/report.md",
+    "workflow/reports/3D-LAB-0007-output-root-integrated-map-scene/receipt.json"
+  ],
+  "implementation": {
+    "output_root_argument_added": true,
+    "no_regenerate_downstream_argument_added": true,
+    "default_repo_output_paths_preserved": true,
+    "receipts_redirected_with_output_root": true,
+    "downstream_display_root_overrides_added_for_temp_outputs": true,
+    "hidden_downstream_regeneration_blocked": true
+  },
+  "validation": {
+    "py_compile_integrated_compiler": "pass",
+    "temp_output_root_run": "blocked_missing_downstream_fixture",
+    "temp_json_validation": "pass",
+    "repo_goal_dirtying_prevented": true,
+    "blender_run": false,
+    "generated_media_created": false,
+    "old_repo_touched": false,
+    "staged_or_committed": false
+  },
+  "known_blocker": {
+    "missing_fixture": "goal/architecture/building_graph_variation_rules_v0/building_graph_variation_rules_v0.json",
+    "next_action": "Add output-root/no-regenerate support to the building graph variation dependency path, or provide an explicit source fixture path for this integrated compiler."
+  },
+  "claim_limits": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "historical_accuracy": false
+  }
+}

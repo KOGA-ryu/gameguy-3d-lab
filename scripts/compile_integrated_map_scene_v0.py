@@ -12,6 +12,8 @@ import json
 import math
 import copy
 import sys
+import argparse
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -35,6 +37,7 @@ import create_integrated_map_scene_v0 as scene_create  # noqa: E402
 
 TEMPLATE_PATH = scene_create.TEMPLATE_PATH
 OUT_DIR = ROOT / "goal" / "architecture" / "integrated_map_scene_v0"
+RECEIPT_DIR = ROOT / "goal" / "receipts"
 COMPILED_MAP_PATH = OUT_DIR / "integrated_map_scene_v0_compiled_map.json"
 SHARED_DIR = OUT_DIR / "shared_terrain"
 PROFILED_DIR = OUT_DIR / "profiled_terrain"
@@ -44,7 +47,7 @@ BUILDING_DIR = OUT_DIR / "building_variant_placement"
 PLUG_DIR = OUT_DIR / "plug_connection_graph"
 INTEGRATED_GRAPH_PATH = OUT_DIR / "integrated_map_scene_v0_compiled.json"
 REPORT_PATH = OUT_DIR / "integrated_map_scene_v0_report.md"
-RECEIPT_PATH = ROOT / "goal" / "receipts" / "integrated_map_scene_v0.receipt.json"
+RECEIPT_PATH = RECEIPT_DIR / "integrated_map_scene_v0.receipt.json"
 
 SHARED_ASSEMBLY_PATH = SHARED_DIR / "integrated_map_scene_v0_shared_terrain_assembly.json"
 SHARED_GRAPH_PATH = SHARED_DIR / "integrated_map_scene_v0_shared_terrain_graph.json"
@@ -53,6 +56,8 @@ REFINED_GRAPH_PATH = REFINED_DIR / "integrated_map_scene_v0_road_plot_refined_gr
 SEMANTIC_GRAPH_PATH = SEMANTIC_DIR / "integrated_map_scene_v0_gameplay_surface_semantics_graph.json"
 BUILDING_PLACEMENT_PATH = BUILDING_DIR / "integrated_map_scene_v0_building_variant_placement.json"
 PLUG_GRAPH_PATH = PLUG_DIR / "integrated_map_scene_v0_plug_connection_graph.json"
+ALLOW_DOWNSTREAM_REGENERATION = True
+DOWNSTREAM_DISPLAY_ROOT = ROOT
 
 NO_CLAIMS = {
     "production_approval": False,
@@ -68,6 +73,13 @@ def fail(message: str) -> None:
     raise SystemExit(1)
 
 
+def display_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -76,19 +88,68 @@ def load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         data = json.load(handle)
     if not isinstance(data, dict):
-        fail(f"{path.relative_to(ROOT)} must contain a JSON object")
+        fail(f"{display_path(path)} must contain a JSON object")
     return data
 
 
-def run_module_main_with_overrides(module: Any, overrides: dict[str, Any]) -> None:
+def configure_output_root(output_root: Path | None, no_regenerate_downstream: bool) -> None:
+    global OUT_DIR, RECEIPT_DIR, COMPILED_MAP_PATH, SHARED_DIR, PROFILED_DIR, REFINED_DIR, SEMANTIC_DIR, BUILDING_DIR, PLUG_DIR
+    global INTEGRATED_GRAPH_PATH, REPORT_PATH, RECEIPT_PATH, SHARED_ASSEMBLY_PATH, SHARED_GRAPH_PATH, PROFILED_GRAPH_PATH
+    global REFINED_GRAPH_PATH, SEMANTIC_GRAPH_PATH, BUILDING_PLACEMENT_PATH, PLUG_GRAPH_PATH, ALLOW_DOWNSTREAM_REGENERATION
+    global DOWNSTREAM_DISPLAY_ROOT
+
+    if output_root is not None:
+        root = output_root.resolve()
+        OUT_DIR = root / "goal" / "architecture" / "integrated_map_scene_v0"
+        RECEIPT_DIR = root / "goal" / "receipts"
+        DOWNSTREAM_DISPLAY_ROOT = Path("/")
+        # Output-root mode is intentionally source-only with respect to missing
+        # generated dependencies unless a future task adds safe downstream
+        # output-root support for those compilers.
+        ALLOW_DOWNSTREAM_REGENERATION = False
+    else:
+        OUT_DIR = ROOT / "goal" / "architecture" / "integrated_map_scene_v0"
+        RECEIPT_DIR = ROOT / "goal" / "receipts"
+        DOWNSTREAM_DISPLAY_ROOT = ROOT
+        ALLOW_DOWNSTREAM_REGENERATION = not no_regenerate_downstream
+
+    if no_regenerate_downstream:
+        ALLOW_DOWNSTREAM_REGENERATION = False
+
+    COMPILED_MAP_PATH = OUT_DIR / "integrated_map_scene_v0_compiled_map.json"
+    SHARED_DIR = OUT_DIR / "shared_terrain"
+    PROFILED_DIR = OUT_DIR / "profiled_terrain"
+    REFINED_DIR = OUT_DIR / "road_plot_refined"
+    SEMANTIC_DIR = OUT_DIR / "gameplay_surface_semantics"
+    BUILDING_DIR = OUT_DIR / "building_variant_placement"
+    PLUG_DIR = OUT_DIR / "plug_connection_graph"
+    INTEGRATED_GRAPH_PATH = OUT_DIR / "integrated_map_scene_v0_compiled.json"
+    REPORT_PATH = OUT_DIR / "integrated_map_scene_v0_report.md"
+    RECEIPT_PATH = RECEIPT_DIR / "integrated_map_scene_v0.receipt.json"
+    SHARED_ASSEMBLY_PATH = SHARED_DIR / "integrated_map_scene_v0_shared_terrain_assembly.json"
+    SHARED_GRAPH_PATH = SHARED_DIR / "integrated_map_scene_v0_shared_terrain_graph.json"
+    PROFILED_GRAPH_PATH = PROFILED_DIR / "integrated_map_scene_v0_profiled_terrain_graph.json"
+    REFINED_GRAPH_PATH = REFINED_DIR / "integrated_map_scene_v0_road_plot_refined_graph.json"
+    SEMANTIC_GRAPH_PATH = SEMANTIC_DIR / "integrated_map_scene_v0_gameplay_surface_semantics_graph.json"
+    BUILDING_PLACEMENT_PATH = BUILDING_DIR / "integrated_map_scene_v0_building_variant_placement.json"
+    PLUG_GRAPH_PATH = PLUG_DIR / "integrated_map_scene_v0_plug_connection_graph.json"
+
+
+@contextmanager
+def module_overrides(module: Any, overrides: dict[str, Any]) -> Any:
     previous = {name: getattr(module, name) for name in overrides}
     try:
         for name, value in overrides.items():
             setattr(module, name, value)
-        module.main()
+        yield
     finally:
         for name, value in previous.items():
             setattr(module, name, value)
+
+
+def run_module_main_with_overrides(module: Any, overrides: dict[str, Any]) -> None:
+    with module_overrides(module, overrides):
+        module.main()
 
 
 def round6(value: float) -> float:
@@ -99,53 +160,64 @@ def compile_terrain_pipeline() -> dict[str, Any]:
     for directory in (OUT_DIR, SHARED_DIR, PROFILED_DIR, REFINED_DIR, SEMANTIC_DIR, BUILDING_DIR, PLUG_DIR):
         directory.mkdir(parents=True, exist_ok=True)
     if not TEMPLATE_PATH.exists():
+        if not ALLOW_DOWNSTREAM_REGENERATION:
+            fail(
+                f"missing source template {display_path(TEMPLATE_PATH)}; "
+                "output-root/no-regenerate mode will not run create_integrated_map_scene_v0.py because it writes source data"
+            )
         scene_create.main()
 
     compiled = map_compile.compile_template(TEMPLATE_PATH)
     COMPILED_MAP_PATH.write_text(json.dumps(compiled, indent=2) + "\n", encoding="utf-8")
 
-    run_module_main_with_overrides(
-        shared_compile,
-        {
-            "COMPILED_PATH": COMPILED_MAP_PATH,
-            "OUT_DIR": SHARED_DIR,
-            "ASSEMBLY_PATH": SHARED_ASSEMBLY_PATH,
-            "GRAPH_PATH": SHARED_GRAPH_PATH,
-            "REPORT_PATH": SHARED_DIR / "integrated_map_scene_v0_shared_terrain_report.md",
-            "RECEIPT_PATH": ROOT / "goal" / "receipts" / "integrated_map_scene_v0_shared_terrain.receipt.json",
-        },
-    )
+    with module_overrides(shared_compile.terrain_graph, {"ROOT": DOWNSTREAM_DISPLAY_ROOT}):
+        run_module_main_with_overrides(
+            shared_compile,
+            {
+                "ROOT": DOWNSTREAM_DISPLAY_ROOT,
+                "MAP_CUBE_DIR": ROOT / "data" / "architecture" / "map_cubes",
+                "COMPILED_PATH": COMPILED_MAP_PATH,
+                "OUT_DIR": SHARED_DIR,
+                "ASSEMBLY_PATH": SHARED_ASSEMBLY_PATH,
+                "GRAPH_PATH": SHARED_GRAPH_PATH,
+                "REPORT_PATH": SHARED_DIR / "integrated_map_scene_v0_shared_terrain_report.md",
+                "RECEIPT_PATH": RECEIPT_DIR / "integrated_map_scene_v0_shared_terrain.receipt.json",
+            },
+        )
 
     run_module_main_with_overrides(
         profile_compile,
         {
+            "ROOT": DOWNSTREAM_DISPLAY_ROOT,
             "SHARED_GRAPH_PATH": SHARED_GRAPH_PATH,
             "OUT_DIR": PROFILED_DIR,
             "PROFILED_GRAPH_PATH": PROFILED_GRAPH_PATH,
             "REPORT_PATH": PROFILED_DIR / "integrated_map_scene_v0_profile_application_report.md",
-            "RECEIPT_PATH": ROOT / "goal" / "receipts" / "integrated_map_scene_v0_profile_application.receipt.json",
+            "RECEIPT_PATH": RECEIPT_DIR / "integrated_map_scene_v0_profile_application.receipt.json",
         },
     )
 
     run_module_main_with_overrides(
         refinement_compile,
         {
+            "ROOT": DOWNSTREAM_DISPLAY_ROOT,
             "PROFILED_GRAPH_PATH": PROFILED_GRAPH_PATH,
             "OUT_DIR": REFINED_DIR,
             "REFINED_GRAPH_PATH": REFINED_GRAPH_PATH,
             "REPORT_PATH": REFINED_DIR / "integrated_map_scene_v0_road_plot_refinement_report.md",
-            "RECEIPT_PATH": ROOT / "goal" / "receipts" / "integrated_map_scene_v0_road_plot_refinement.receipt.json",
+            "RECEIPT_PATH": RECEIPT_DIR / "integrated_map_scene_v0_road_plot_refinement.receipt.json",
         },
     )
 
     run_module_main_with_overrides(
         semantics_compile,
         {
+            "ROOT": DOWNSTREAM_DISPLAY_ROOT,
             "REFINED_GRAPH_PATH": REFINED_GRAPH_PATH,
             "OUT_DIR": SEMANTIC_DIR,
             "SEMANTIC_GRAPH_PATH": SEMANTIC_GRAPH_PATH,
             "REPORT_PATH": SEMANTIC_DIR / "integrated_map_scene_v0_surface_semantics_report.md",
-            "RECEIPT_PATH": ROOT / "goal" / "receipts" / "integrated_map_scene_v0_surface_semantics.receipt.json",
+            "RECEIPT_PATH": RECEIPT_DIR / "integrated_map_scene_v0_surface_semantics.receipt.json",
         },
     )
 
@@ -280,6 +352,12 @@ def relocate_variant_to_plot(variant: dict[str, Any], plot: dict[str, Any], comp
 
 def compile_buildings() -> dict[str, Any]:
     if not variation_compile.VARIATION_GRAPH_PATH.exists():
+        if not ALLOW_DOWNSTREAM_REGENERATION:
+            fail(
+                f"missing generated fixture {display_path(variation_compile.VARIATION_GRAPH_PATH)}; "
+                "rerun without --no-regenerate-downstream after adding output-root support to downstream building graph compilers, "
+                "or provide this fixture under a future explicit fixture path"
+            )
         variation_compile.main()
     compiled = load_json(COMPILED_MAP_PATH)
     refined = load_json(REFINED_GRAPH_PATH)
@@ -395,10 +473,10 @@ def compile_buildings() -> dict[str, Any]:
         "schema": "integrated_map_scene_v0_building_variant_placement",
         "created_at_utc": now_iso(),
         "source_files": {
-            "compiled_map": str(COMPILED_MAP_PATH.relative_to(ROOT)),
-            "semantic_graph": str(SEMANTIC_GRAPH_PATH.relative_to(ROOT)),
-            "refined_graph": str(REFINED_GRAPH_PATH.relative_to(ROOT)),
-            "building_graph_variants": str(variation_compile.VARIATION_GRAPH_PATH.relative_to(ROOT)),
+            "compiled_map": display_path(COMPILED_MAP_PATH),
+            "semantic_graph": display_path(SEMANTIC_GRAPH_PATH),
+            "refined_graph": display_path(REFINED_GRAPH_PATH),
+            "building_graph_variants": display_path(variation_compile.VARIATION_GRAPH_PATH),
         },
         "placed_building_graphs": placed_graphs,
         "building_variant_placements": placements,
@@ -415,6 +493,7 @@ def compile_base_plugs() -> dict[str, Any]:
     run_module_main_with_overrides(
         plug_compile,
         {
+            "ROOT": DOWNSTREAM_DISPLAY_ROOT,
             "MAP_V2_PLACEMENT_PATH": BUILDING_PLACEMENT_PATH,
             "COMPILED_MAP_PATH": COMPILED_MAP_PATH,
             "SEMANTIC_GRAPH_PATH": SEMANTIC_GRAPH_PATH,
@@ -422,7 +501,7 @@ def compile_base_plugs() -> dict[str, Any]:
             "OUT_DIR": PLUG_DIR,
             "GRAPH_PATH": PLUG_GRAPH_PATH,
             "REPORT_PATH": PLUG_DIR / "integrated_map_scene_v0_plug_connection_graph_report.md",
-            "RECEIPT_PATH": ROOT / "goal" / "receipts" / "integrated_map_scene_v0_plug_connection_graph.receipt.json",
+            "RECEIPT_PATH": RECEIPT_DIR / "integrated_map_scene_v0_plug_connection_graph.receipt.json",
         },
     )
     return load_json(PLUG_GRAPH_PATH)
@@ -631,9 +710,9 @@ def write_receipt(data: dict[str, Any]) -> None:
         "schema": "integrated_map_scene_v0_receipt",
         "created_at_utc": data["created_at_utc"],
         "outputs": {
-            "template": str(TEMPLATE_PATH.relative_to(ROOT)),
-            "compiled": str(INTEGRATED_GRAPH_PATH.relative_to(ROOT)),
-            "report": str(REPORT_PATH.relative_to(ROOT)),
+            "template": display_path(TEMPLATE_PATH),
+            "compiled": display_path(INTEGRATED_GRAPH_PATH),
+            "report": display_path(REPORT_PATH),
         },
         "acceptance": data["validation"],
         "no_claims": NO_CLAIMS,
@@ -659,15 +738,15 @@ def compile_integrated_scene() -> dict[str, Any]:
         "schema": "integrated_map_scene_v0_compiled",
         "created_at_utc": now_iso(),
         "source_files": {
-            "template": str(TEMPLATE_PATH.relative_to(ROOT)),
+            "template": display_path(TEMPLATE_PATH),
             "measured_asset_catalog": "goal/architecture/asset_mill_measured_v1/asset_mill_measured_index_v1.json",
             "building_graph_variants": "goal/architecture/building_graph_variation_rules_v0/building_graph_variation_rules_v0.json",
         },
-        "compiled_map_path": str(COMPILED_MAP_PATH.relative_to(ROOT)),
-        "shared_terrain_graph_path": str(SHARED_GRAPH_PATH.relative_to(ROOT)),
-        "profiled_terrain_graph_path": str(PROFILED_GRAPH_PATH.relative_to(ROOT)),
-        "refined_terrain_graph_path": str(REFINED_GRAPH_PATH.relative_to(ROOT)),
-        "semantic_graph_path": str(SEMANTIC_GRAPH_PATH.relative_to(ROOT)),
+        "compiled_map_path": display_path(COMPILED_MAP_PATH),
+        "shared_terrain_graph_path": display_path(SHARED_GRAPH_PATH),
+        "profiled_terrain_graph_path": display_path(PROFILED_GRAPH_PATH),
+        "refined_terrain_graph_path": display_path(REFINED_GRAPH_PATH),
+        "semantic_graph_path": display_path(SEMANTIC_GRAPH_PATH),
         "compiled_map": terrain["compiled_map"],
         "building_variant_placement": buildings,
         "plug_connection_graph": plug_graph,
@@ -677,15 +756,32 @@ def compile_integrated_scene() -> dict[str, Any]:
     }
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Compile Integrated Map Scene v0.")
+    parser.add_argument(
+        "--output-root",
+        type=Path,
+        help="Optional root for generated outputs. Outputs are written under <root>/goal/... instead of the repo goal/ tree.",
+    )
+    parser.add_argument(
+        "--no-regenerate-downstream",
+        action="store_true",
+        help="Fail instead of running downstream compiler/create scripts when generated fixtures are missing.",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
+    args = parse_args()
+    configure_output_root(args.output_root, args.no_regenerate_downstream)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     data = compile_integrated_scene()
     INTEGRATED_GRAPH_PATH.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     write_report(data)
     write_receipt(data)
-    print(f"wrote {INTEGRATED_GRAPH_PATH.relative_to(ROOT)}")
-    print(f"wrote {REPORT_PATH.relative_to(ROOT)}")
-    print(f"wrote {RECEIPT_PATH.relative_to(ROOT)}")
+    print(f"wrote {display_path(INTEGRATED_GRAPH_PATH)}")
+    print(f"wrote {display_path(REPORT_PATH)}")
+    print(f"wrote {display_path(RECEIPT_PATH)}")
     print(
         "cells={cell_count} triangles={top_triangle_count} buildings={building_count} connections={connection_count}".format(
             cell_count=data["validation"]["cell_count"],

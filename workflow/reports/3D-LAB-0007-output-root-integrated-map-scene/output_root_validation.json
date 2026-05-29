@@ -1,0 +1,63 @@
+{
+  "packet_id": "3D-LAB-0007",
+  "task": "output-root support for scripts/compile_integrated_map_scene_v0.py",
+  "created_at_utc": "2026-05-29T01:21:09Z",
+  "validation_status": "blocked_missing_downstream_fixture",
+  "output_root": "/tmp/gameguy_3d_lab_0007_integrated_map_scene",
+  "compile_command": [
+    "python3",
+    "scripts/compile_integrated_map_scene_v0.py",
+    "--output-root",
+    "/tmp/gameguy_3d_lab_0007_integrated_map_scene",
+    "--no-regenerate-downstream"
+  ],
+  "compile_exit_code": 1,
+  "expected_blocker": {
+    "path": "goal/architecture/building_graph_variation_rules_v0/building_graph_variation_rules_v0.json",
+    "reason": "The integrated compiler still depends on a generated building graph variation fixture. With --no-regenerate-downstream set, it must fail instead of invoking the downstream compiler that would write into the repo goal tree."
+  },
+  "output_root_results": {
+    "file_count": 14,
+    "json_file_count": 10,
+    "json_validation": "pass",
+    "files_written": [
+      "/tmp/gameguy_3d_lab_0007_integrated_map_scene/goal/architecture/integrated_map_scene_v0/gameplay_surface_semantics/integrated_map_scene_v0_gameplay_surface_semantics_graph.json",
+      "/tmp/gameguy_3d_lab_0007_integrated_map_scene/goal/architecture/integrated_map_scene_v0/gameplay_surface_semantics/integrated_map_scene_v0_surface_semantics_report.md",
+      "/tmp/gameguy_3d_lab_0007_integrated_map_scene/goal/architecture/integrated_map_scene_v0/integrated_map_scene_v0_compiled_map.json",
+      "/tmp/gameguy_3d_lab_0007_integrated_map_scene/goal/architecture/integrated_map_scene_v0/profiled_terrain/integrated_map_scene_v0_profile_application_report.md",
+      "/tmp/gameguy_3d_lab_0007_integrated_map_scene/goal/architecture/integrated_map_scene_v0/profiled_terrain/integrated_map_scene_v0_profiled_terrain_graph.json",
+      "/tmp/gameguy_3d_lab_0007_integrated_map_scene/goal/architecture/integrated_map_scene_v0/road_plot_refined/integrated_map_scene_v0_road_plot_refined_graph.json",
+      "/tmp/gameguy_3d_lab_0007_integrated_map_scene/goal/architecture/integrated_map_scene_v0/road_plot_refined/integrated_map_scene_v0_road_plot_refinement_report.md",
+      "/tmp/gameguy_3d_lab_0007_integrated_map_scene/goal/architecture/integrated_map_scene_v0/shared_terrain/integrated_map_scene_v0_shared_terrain_assembly.json",
+      "/tmp/gameguy_3d_lab_0007_integrated_map_scene/goal/architecture/integrated_map_scene_v0/shared_terrain/integrated_map_scene_v0_shared_terrain_graph.json",
+      "/tmp/gameguy_3d_lab_0007_integrated_map_scene/goal/architecture/integrated_map_scene_v0/shared_terrain/integrated_map_scene_v0_shared_terrain_report.md",
+      "/tmp/gameguy_3d_lab_0007_integrated_map_scene/goal/receipts/integrated_map_scene_v0_profile_application.receipt.json",
+      "/tmp/gameguy_3d_lab_0007_integrated_map_scene/goal/receipts/integrated_map_scene_v0_road_plot_refinement.receipt.json",
+      "/tmp/gameguy_3d_lab_0007_integrated_map_scene/goal/receipts/integrated_map_scene_v0_shared_terrain.receipt.json",
+      "/tmp/gameguy_3d_lab_0007_integrated_map_scene/goal/receipts/integrated_map_scene_v0_surface_semantics.receipt.json"
+    ]
+  },
+  "repo_write_results": {
+    "repo_goal_exists_after_temp_run": false,
+    "repo_goal_files_written": [],
+    "repo_dirtying_prevented": true
+  },
+  "terrain_stage_summary": {
+    "cell_count": 1024,
+    "top_triangle_count": 12288,
+    "cracked_seam_count": 0,
+    "road_count": 2,
+    "building_plot_count": 3,
+    "hazard_count": 1,
+    "asset_socket_count": 7
+  },
+  "default_behavior": {
+    "preserved_by_default_paths": true,
+    "default_run_executed": false,
+    "reason_default_run_not_executed": "A default run would write generated outputs under the repo goal tree, which this work order is designed to avoid during validation."
+  },
+  "blender_run": false,
+  "generated_media_created": false,
+  "old_repo_touched": false,
+  "staged_or_committed": false
+}
