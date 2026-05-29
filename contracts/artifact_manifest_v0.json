@@ -1,6 +1,6 @@
 {
   "schema": "artifact_manifest_contract_v0",
-  "purpose": "Define a shared record for factory-produced artifacts regardless of lane.",
+  "purpose": "Define a shared record for 3D architecture lab artifacts emitted by workflow jobs.",
   "required_fields": [
     "schema",
     "artifact_id",
@@ -12,8 +12,22 @@
     "validation_status",
     "review_outputs",
     "receipt",
-    "curation_status",
+    "review_status",
     "created_at_utc"
+  ],
+  "allowed_artifact_kinds_v0": [
+    "architecture_source_data",
+    "measurement_reference",
+    "geometry_dictionary_record",
+    "asset_recipe",
+    "connector_recipe",
+    "map_graph",
+    "terrain_graph",
+    "building_graph",
+    "blender_proof_script",
+    "validation_report",
+    "workflow_report",
+    "receipt"
   ],
   "validation_status_values": [
     "pass",
@@ -21,7 +35,7 @@
     "blocked",
     "awaiting_external_fetch"
   ],
-  "curation_status_values": [
+  "review_status_values": [
     "unreviewed",
     "keep",
     "revise",

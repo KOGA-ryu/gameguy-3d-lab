@@ -1,0 +1,80 @@
+{
+  "schema": "contract_decision_matrix_v0",
+  "packet_id": "3D-LAB-0002",
+  "contracts": [
+    {
+      "contract_path": "contracts/lane_registry_v0.json",
+      "decision": "KEEP_WITH_3D_LANGUAGE_EDIT",
+      "2d_terms_found": [
+        "pattern_lab_2d",
+        "pattern_lab_3d"
+      ],
+      "edits_made": [
+        "Narrowed purpose from generic factory lanes to 3D architecture lab workflow lanes.",
+        "Renamed required lane field curation_root to review_root.",
+        "Removed pattern_lab_2d and pattern_lab_3d from required_lane_ids_v0.",
+        "Replaced broad inherited lane ids curator and game_graph with 3D-lab lane ids: architecture_assets, map_graph, building_graph, connector_assets, blender_proof, workflow.",
+        "Added rules that lanes are scoped to the 3D architecture lab and must not reference Pattern Lab 2D or mosaic tile outputs."
+      ],
+      "deferred_questions": [],
+      "validation_status": "pass"
+    },
+    {
+      "contract_path": "contracts/factory_manifest_v0.json",
+      "decision": "KEEP_WITH_3D_LANGUAGE_EDIT",
+      "2d_terms_found": [],
+      "edits_made": [
+        "Narrowed purpose from a top-level procedural factory index to a 3D architecture lab workflow index.",
+        "Renamed required field curation_roots to review_roots.",
+        "Renamed broad factory rule keys to workflow rule keys.",
+        "Added rules excluding Pattern Lab 2D and mosaic tile outputs.",
+        "Expanded required no-claims to include structural safety, fabrication readiness, historical accuracy, and game-engine integration."
+      ],
+      "deferred_questions": [],
+      "validation_status": "pass"
+    },
+    {
+      "contract_path": "contracts/job_contract_v0.json",
+      "decision": "KEEP_WITH_3D_LANGUAGE_EDIT",
+      "2d_terms_found": [],
+      "edits_made": [
+        "Narrowed purpose from generic factory work to 3D architecture lab workflow work.",
+        "Renamed the receipt rule from factory receipt to workflow receipt.",
+        "Added rules requiring existing 3D-lab lanes and excluding Pattern Lab 2D and mosaic tile outputs.",
+        "Expanded required no-claims to include structural safety, fabrication readiness, historical accuracy, and game-engine integration."
+      ],
+      "deferred_questions": [],
+      "validation_status": "pass"
+    },
+    {
+      "contract_path": "contracts/artifact_manifest_v0.json",
+      "decision": "KEEP_WITH_3D_LANGUAGE_EDIT",
+      "2d_terms_found": [],
+      "edits_made": [
+        "Narrowed purpose from factory-produced artifacts regardless of lane to 3D architecture lab workflow artifacts.",
+        "Renamed curation_status required field to review_status.",
+        "Renamed curation_status_values to review_status_values.",
+        "Added allowed_artifact_kinds_v0 scoped to architecture source data, measurements, geometry dictionary records, recipes, connector/map/terrain/building graphs, Blender proof scripts, validation reports, workflow reports, and receipts."
+      ],
+      "deferred_questions": [],
+      "validation_status": "pass"
+    },
+    {
+      "contract_path": "contracts/curation_status_v0.json",
+      "decision": "KEEP_WITH_3D_LANGUAGE_EDIT",
+      "2d_terms_found": [
+        "Curator Dex"
+      ],
+      "edits_made": [
+        "Narrowed purpose from human or Curator Dex review of generated artifacts to human or Dex review of 3D architecture lab workflow artifacts.",
+        "Renamed rule keys from curation_* to review_* language where the active wording was broad.",
+        "Added review no-claim rules for structural safety, fabrication readiness, historical accuracy, and game-engine integration.",
+        "Added rules excluding Pattern Lab 2D and mosaic tile outputs."
+      ],
+      "deferred_questions": [
+        "Filename and schema remain curation_status_v0 / curation_status_contract_v0 for compatibility; a future version can rename the contract if consumers are updated."
+      ],
+      "validation_status": "pass"
+    }
+  ]
+}

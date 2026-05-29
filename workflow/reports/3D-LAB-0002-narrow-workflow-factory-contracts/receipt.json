@@ -1,0 +1,58 @@
+{
+  "schema": "workflow_report_receipt_v0",
+  "packet_id": "3D-LAB-0002",
+  "created_at_utc": "2026-05-29T00:05:13Z",
+  "status": "complete",
+  "files_changed": [
+    "contracts/lane_registry_v0.json",
+    "contracts/factory_manifest_v0.json",
+    "contracts/job_contract_v0.json",
+    "contracts/artifact_manifest_v0.json",
+    "contracts/curation_status_v0.json",
+    "contracts/README.md",
+    "workflow/reports/3D-LAB-0002-narrow-workflow-factory-contracts/report.md",
+    "workflow/reports/3D-LAB-0002-narrow-workflow-factory-contracts/contract_decision_matrix.json",
+    "workflow/reports/3D-LAB-0002-narrow-workflow-factory-contracts/receipt.json"
+  ],
+  "contracts_reviewed": [
+    "contracts/lane_registry_v0.json",
+    "contracts/factory_manifest_v0.json",
+    "contracts/job_contract_v0.json",
+    "contracts/artifact_manifest_v0.json",
+    "contracts/curation_status_v0.json"
+  ],
+  "contracts_quarantined": [],
+  "validation_run": [
+    {
+      "command": "find data contracts docs geometry_dictionary workflow -name '*.json' -print0 | xargs -0 -n 1 python3 -m json.tool >/dev/null",
+      "status": "pass"
+    },
+    {
+      "command": "python3 -m py_compile scripts/*.py",
+      "status": "pass"
+    },
+    {
+      "command": "python3 -m json.tool workflow/reports/3D-LAB-0002-narrow-workflow-factory-contracts/contract_decision_matrix.json >/dev/null",
+      "status": "pass"
+    },
+    {
+      "command": "python3 -m json.tool workflow/reports/3D-LAB-0002-narrow-workflow-factory-contracts/receipt.json >/dev/null",
+      "status": "pass"
+    },
+    {
+      "command": "find . -path './.git' -prune -o -path '*pattern_lab_2d*' -print",
+      "status": "pass",
+      "notes": "No paths printed."
+    },
+    {
+      "command": "find . -path './.git' -prune -o -type f \\( -name '*.png' -o -name '*.jpg' -o -name '*.gif' -o -name '*.webp' -o -name '*.blend' -o -name '*.blend1' -o -name '*.obj' -o -name '*.gltf' -o -name '*.glb' -o -name '*.fbx' \\) -print",
+      "status": "pass",
+      "notes": "No files printed."
+    }
+  ],
+  "old_repo_touched": false,
+  "blender_run": false,
+  "generated_outputs_created": false,
+  "staged_or_committed": false,
+  "recommended_next_task": "Review contracts/cube_math_shape_recipe_v0.json and contracts/plot_shape_taxonomy_v0.json for remaining ambiguous pattern/ornament/contact-sheet vocabulary."
+}

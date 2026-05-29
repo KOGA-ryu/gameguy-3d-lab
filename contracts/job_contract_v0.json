@@ -1,6 +1,6 @@
 {
   "schema": "job_contract_contract_v0",
-  "purpose": "Define the minimum executable unit of factory work.",
+  "purpose": "Define the minimum executable unit of 3D architecture lab workflow work.",
   "required_fields": [
     "schema",
     "job_id",
@@ -40,11 +40,18 @@
     "jobs_fail_if_required_inputs_are_missing": true,
     "jobs_fail_if_required_outputs_are_missing": true,
     "jobs_fail_if_validation_commands_fail": true,
-    "jobs_must_emit_a_factory_receipt": true
+    "jobs_must_emit_a_workflow_receipt": true,
+    "jobs_must_reference_existing_3d_lab_lanes": true,
+    "jobs_must_not_target_pattern_lab_2d": true,
+    "jobs_must_not_target_mosaic_tile_outputs": true
   },
   "required_no_claims": {
     "production_approval": false,
     "gym_museum_approval": false,
-    "final_asset_claim": false
+    "final_asset_claim": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
   }
 }

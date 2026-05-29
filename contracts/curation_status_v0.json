@@ -1,6 +1,6 @@
 {
   "schema": "curation_status_contract_v0",
-  "purpose": "Define human or Curator Dex review state for generated artifacts.",
+  "purpose": "Define human or Dex review state for 3D architecture lab workflow artifacts.",
   "required_fields": [
     "schema",
     "artifact_id",
@@ -24,8 +24,14 @@
   "rules": {
     "status_requires_reason": true,
     "unreviewed_is_default": true,
-    "curation_does_not_claim_production_approval": true,
+    "review_does_not_claim_production_approval": true,
+    "review_does_not_claim_structural_safety": true,
+    "review_does_not_claim_fabrication_readiness": true,
+    "review_does_not_claim_historical_accuracy": true,
+    "review_does_not_claim_game_engine_integration": true,
     "decision_changes_append_history": true,
-    "curation_must_reference_existing_artifact_manifest": true
+    "review_must_reference_existing_artifact_manifest": true,
+    "review_must_not_reference_pattern_lab_2d": true,
+    "review_must_not_reference_mosaic_tile_outputs": true
   }
 }

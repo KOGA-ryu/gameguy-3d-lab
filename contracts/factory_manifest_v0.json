@@ -1,6 +1,6 @@
 {
   "schema": "factory_manifest_contract_v0",
-  "purpose": "Define the top-level procedural factory index that points to lane registries, job roots, artifact roots, curation roots, receipts, reports, and validation commands.",
+  "purpose": "Define the top-level 3D architecture lab workflow index that points to lane registries, job roots, artifact roots, review roots, receipts, reports, and validation commands.",
   "required_fields": [
     "schema",
     "factory_id",
@@ -8,22 +8,28 @@
     "lane_registry",
     "job_roots",
     "artifact_roots",
-    "curation_roots",
+    "review_roots",
     "receipt_root",
     "report_root",
     "validation_commands",
     "no_claims"
   ],
   "rules": {
-    "factory_does_not_generate_assets_directly": true,
-    "factory_jobs_must_reference_existing_lanes": true,
-    "factory_jobs_must_have_inputs_commands_outputs_validation_and_receipt": true,
-    "factory_receipts_are_machine_readable": true,
-    "factory_reports_are_human_readable": true
+    "workflow_does_not_generate_assets_directly": true,
+    "workflow_jobs_must_reference_existing_3d_lab_lanes": true,
+    "workflow_jobs_must_have_inputs_commands_outputs_validation_and_receipt": true,
+    "workflow_receipts_are_machine_readable": true,
+    "workflow_reports_are_human_readable": true,
+    "workflow_must_not_reference_pattern_lab_2d": true,
+    "workflow_must_not_reference_mosaic_tile_outputs": true
   },
   "required_no_claims": {
     "production_approval": false,
     "gym_museum_approval": false,
-    "final_asset_claim": false
+    "final_asset_claim": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
   }
 }

@@ -1,13 +1,13 @@
 {
   "schema": "lane_registry_contract_v0",
-  "purpose": "Define factory lanes so specialized Dex jobs can run narrow scopes without needing project lore.",
+  "purpose": "Define 3D architecture lab workflow lanes so specialized Dex jobs can run narrow scopes without needing project lore.",
   "required_lane_fields": [
     "lane_id",
     "purpose",
     "owner_scope",
     "job_root",
     "artifact_root",
-    "curation_root",
+    "review_root",
     "allowed_commands",
     "required_outputs",
     "handoff_targets"
@@ -15,16 +15,21 @@
   "required_lane_ids_v0": [
     "research",
     "measurement",
-    "pattern_lab_2d",
-    "pattern_lab_3d",
+    "architecture_assets",
     "terrain",
+    "map_graph",
+    "building_graph",
+    "connector_assets",
+    "blender_proof",
     "validation",
-    "curator",
-    "game_graph"
+    "workflow"
   ],
   "rules": {
     "lanes_are_orchestration_metadata": true,
-    "lanes_do_not_replace_labs": true,
+    "lanes_do_not_replace_source_folders": true,
+    "lanes_are_scoped_to_3d_architecture_lab": true,
+    "lanes_must_not_reference_pattern_lab_2d": true,
+    "lanes_must_not_reference_mosaic_tile_outputs": true,
     "lane_jobs_must_be_validated_before_running": true
   }
 }
