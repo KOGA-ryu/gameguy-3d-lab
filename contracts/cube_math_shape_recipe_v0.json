@@ -34,7 +34,7 @@
     "generation_readiness",
     "building_generation_uses",
     "object_generation_uses",
-    "ornament_generation_uses",
+    "architectural_detail_generation_uses",
     "semantic_role_mappings",
     "utility_scores",
     "notes"
@@ -82,12 +82,12 @@
     "panel_sockets",
     "traversal_hints",
     "obstruction_zones",
-    "ornament_anchors",
+    "facade_detail_anchors",
     "future_ai_affordance_zones"
   ],
   "allowed_classifications": [
     "structural_skeleton",
-    "ornamental_panel",
+    "architectural_detail_panel",
     "airflow_void",
     "conduit_path",
     "column_core",
@@ -99,7 +99,7 @@
     "path_cube",
     "field_region_cube",
     "structure_cube",
-    "ornament_object_cube"
+    "detail_object_cube"
   ],
   "allowed_detail_levels": [
     "shallow",
@@ -118,16 +118,16 @@
     "facade_generation",
     "vertical_traversal",
     "object_prop_generation",
-    "ornament_panel_generation",
+    "architectural_detail_panel_generation",
     "ai_affordance_potential",
     "mesh_difficulty"
   ],
   "allowed_possible_outputs": [
     "metadata_json",
-    "xy_center_slice_debug_png",
-    "xz_center_slice_debug_png",
-    "yz_center_slice_debug_png",
-    "slice_contact_sheet_png",
+    "xy_center_slice_diagnostic",
+    "xz_center_slice_diagnostic",
+    "yz_center_slice_diagnostic",
+    "slice_diagnostic_summary",
     "occupancy_grid_future",
     "curve_sample_points_future",
     "implicit_field_samples_future",
@@ -138,7 +138,7 @@
     "game_affordance_map_future"
   ],
   "field_contract": {
-    "cube_id": "Stable id for the cube zoo specimen.",
+    "cube_id": "Stable id for the cube-volume recipe.",
     "math_family": "Human-readable mathematical family or construction type.",
     "formula_type": "One of allowed_formula_types.",
     "formula_or_parametric_definition": "Machine-readable formula notes, expressions, or algorithm steps. Study metadata only.",
@@ -163,7 +163,7 @@
     "generation_readiness": "Current readiness gate: research, previewed, semantic_mapped, or mesh_candidate.",
     "building_generation_uses": "Building/module uses this shape can support.",
     "object_generation_uses": "Object/prop uses this shape can support.",
-    "ornament_generation_uses": "Ornament/panel uses this shape can support.",
+    "architectural_detail_generation_uses": "Architectural detail or panel uses this shape can support.",
     "semantic_role_mappings": "Human-readable mapping from geometry categories into generation semantics.",
     "utility_scores": "0-5 utility/risk score matrix for curation and next-target selection.",
     "notes": "Caveats, deferments, source restrictions, and implementation warnings."

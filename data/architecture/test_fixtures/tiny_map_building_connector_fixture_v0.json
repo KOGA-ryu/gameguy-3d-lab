@@ -1,0 +1,166 @@
+{
+  "schema": "tiny_map_building_connector_fixture_v0",
+  "fixture_id": "tiny_map_building_connector_fixture_v0",
+  "version": "0.1.0",
+  "purpose": "Small source-only fixture for validating map, terrain, building plug, and connector asset references without generated proof output.",
+  "source_only": true,
+  "deterministic_ids": true,
+  "cell_layout": {
+    "grid": "axial_hex",
+    "hex_radius_m": 1.0,
+    "cell_count": 7
+  },
+  "cells": [
+    {
+      "cell_id": "cell_0_0",
+      "q": 0,
+      "r": 0,
+      "height_m": 0.0,
+      "role": "building_pad"
+    },
+    {
+      "cell_id": "cell_1_0",
+      "q": 1,
+      "r": 0,
+      "height_m": 0.0,
+      "role": "threshold"
+    },
+    {
+      "cell_id": "cell_2_0",
+      "q": 2,
+      "r": 0,
+      "height_m": 0.5,
+      "role": "raised_path"
+    },
+    {
+      "cell_id": "cell_0_1",
+      "q": 0,
+      "r": 1,
+      "height_m": 0.0,
+      "role": "yard"
+    },
+    {
+      "cell_id": "cell_1_1",
+      "q": 1,
+      "r": 1,
+      "height_m": 0.5,
+      "role": "slope_edge"
+    },
+    {
+      "cell_id": "cell_-1_1",
+      "q": -1,
+      "r": 1,
+      "height_m": 0.0,
+      "role": "yard"
+    },
+    {
+      "cell_id": "cell_0_-1",
+      "q": 0,
+      "r": -1,
+      "height_m": 0.0,
+      "role": "road_approach"
+    }
+  ],
+  "terrain_height_changes": [
+    {
+      "height_change_id": "height_change_pad_to_raised_path",
+      "from_cell": "cell_1_0",
+      "to_cell": "cell_2_0",
+      "delta_m": 0.5,
+      "intended_connection_type": "flat_pathway"
+    }
+  ],
+  "buildings": [
+    {
+      "building_id": "building_gatehouse_tiny_v0",
+      "plot_cell": "cell_0_0",
+      "footprint_cells": [
+        "cell_0_0"
+      ],
+      "plugs": [
+        {
+          "plug_id": "plug_building_east",
+          "owner_id": "building_gatehouse_tiny_v0",
+          "owner_type": "building",
+          "plug_type": "door_threshold",
+          "cell_id": "cell_0_0",
+          "position_m": [
+            0.8,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "width_m": 1.1,
+          "clearance_m": 2.0,
+          "allowed_connection_types": [
+            "road_threshold",
+            "flat_pathway"
+          ]
+        }
+      ]
+    }
+  ],
+  "road_plugs": [
+    {
+      "plug_id": "plug_road_west",
+      "owner_id": "road_approach_tiny_v0",
+      "owner_type": "road",
+      "plug_type": "path_endpoint",
+      "cell_id": "cell_2_0",
+      "position_m": [
+        2.0,
+        0.0,
+        0.5
+      ],
+      "direction": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "width_m": 1.1,
+      "clearance_m": 2.0,
+      "allowed_connection_types": [
+        "flat_pathway"
+      ]
+    }
+  ],
+  "connector_path_segments": [
+    {
+      "segment_id": "segment_building_to_raised_path",
+      "from_plug": "plug_building_east",
+      "to_plug": "plug_road_west",
+      "connection_type": "flat_pathway",
+      "route_cells": [
+        "cell_0_0",
+        "cell_1_0",
+        "cell_2_0"
+      ],
+      "connector_asset_id": "measured_pathway_slab_unit_v1",
+      "placement_policy_ref": "data/architecture/assets/connectors/connector_placement_policy_v0.json",
+      "connector_manifest_ref": "data/architecture/assets/connectors/connector_asset_manifest_v0.json",
+      "no_silent_scaling": true
+    }
+  ],
+  "expected_validation_targets": [
+    "cell_count_under_12",
+    "building_plug_exists",
+    "road_plug_exists",
+    "connector_asset_id_exists_in_manifest",
+    "connection_type_exists_in_policy",
+    "height_change_is_explicit",
+    "no_claims_all_false"
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false,
+    "movement_or_pathfinding_correctness": false
+  }
+}

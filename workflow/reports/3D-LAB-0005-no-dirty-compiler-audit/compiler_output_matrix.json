@@ -1,0 +1,682 @@
+{
+  "schema": "compiler_output_matrix_v0",
+  "packet_id": "3D-LAB-0005",
+  "created_at_utc": "2026-05-29T00:30:20.458269+00:00",
+  "audit_method": "static source inspection using script names, path constants, write calls, output-root flags, and compile-script imports; output-writing compilers were not executed",
+  "script_count": 39,
+  "recommended_action_counts": {
+    "ADD_OUTPUT_ROOT": 29,
+    "KEEP_SAFE": 4,
+    "ADD_READONLY_MODE": 6
+  },
+  "scripts": [
+    {
+      "script_path": "scripts/compile_architectural_modules_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [
+        "contracts",
+        "data",
+        "geometry_dictionary"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"architectural_modules_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"architectural_modules_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": false,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_architectural_proportion_ranges_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [
+        "contracts",
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"architectural_taxonomy_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"architectural_proportion_ranges_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": false,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_asset_mill_measured_components_v1.py",
+      "script_kind": "compile",
+      "reads_source_paths": [
+        "data",
+        "docs",
+        "geometry_dictionary"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_ROOT=ROOT / \"goal\" / \"architecture\" / \"asset_mill_measured_v1\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"asset_mill_measured_components_v1.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": false,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_asset_mill_measured_components_v2.py",
+      "script_kind": "compile",
+      "reads_source_paths": [
+        "data",
+        "docs",
+        "geometry_dictionary"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "ORIENTATION_REPORT_PATH=ROOT / \"goal\" / \"architecture\" / \"asset_mill_measured_v2\" / \"asset_dex_orientation_report.md\"",
+        "OUT_ROOT=ROOT / \"goal\" / \"architecture\" / \"asset_mill_measured_v2\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"asset_mill_measured_components_v2.receipt.json\"",
+        "V1_INDEX_PATH=ROOT / \"goal\" / \"architecture\" / \"asset_mill_measured_v1\" / \"asset_mill_measured_index_v1.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_asset_mill_solids_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_ROOT=ROOT / \"goal\" / \"architecture\" / \"asset_mill_v0\"",
+        "RECEIPT_DIR=ROOT / \"goal\" / \"receipts\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": false,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_building_entrance_road_join_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"map_templates_v2\" / \"building_entrance_road_join\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"building_entrance_road_join_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_building_graph_attachment_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "MEASURED_INDEX_PATH=ROOT / \"goal\" / \"architecture\" / \"asset_mill_measured_v1\" / \"asset_mill_measured_index_v1.json\"",
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"building_graph_attachment_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"building_graph_attachment_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_building_graph_kit_expansion_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"building_graph_kit_expansion_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"building_graph_kit_expansion_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_building_graph_variation_rules_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"building_graph_variation_rules_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"building_graph_variation_rules_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_connector_asset_placement_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "KIT_DIR=ROOT / \"goal\" / \"architecture\" / \"connector_asset_kit_v0\"",
+        "PLACEMENT_DIR=ROOT / \"goal\" / \"architecture\" / \"integrated_map_scene_v0\" / \"connector_asset_placement_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"connector_asset_placement_v0.receipt.json\""
+      ],
+      "supports_output_root": true,
+      "can_run_without_dirtying_repo": true,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "KEEP_SAFE",
+      "notes": "Default invocation writes generated outputs; use --output-root and --no-regenerate-integrated for no-dirty validation."
+    },
+    {
+      "script_path": "scripts/compile_floor_plans_to_assemblies_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"building_assemblies_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"building_assemblies_v0.receipt.json\"",
+        "SOLID_DIR=ROOT / \"goal\" / \"architecture\" / \"asset_mill_v0\" / \"solids\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_hex_plot_vertex_graph_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"hex_plot_vertex_graph_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"hex_plot_vertex_graph_v0.receipt.json\"",
+        "SHARED_MIDPOINT_RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"shared_midpoint_radial_hex_terrain_v0.receipt.json\"",
+        "SOURCE_DIR=ROOT / \"goal\" / \"architecture\" / \"hex_terrain_fold_sites_v0\" / \"sites\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_hex_terrain_fold_site_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"hex_terrain_fold_sites_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"hex_terrain_fold_sites_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": false,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_hex_topology_site_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "ASSEMBLY_DIR=ROOT / \"goal\" / \"architecture\" / \"building_assemblies_v0\" / \"assemblies\"",
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"hex_topology_sites_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"hex_topology_sites_v0.receipt.json\"",
+        "SOLID_DIR=ROOT / \"goal\" / \"architecture\" / \"asset_mill_v0\" / \"solids\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_integrated_map_scene_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"integrated_map_scene_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"integrated_map_scene_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_map_gameplay_surface_semantics_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"map_templates_v0\" / \"gameplay_surface_semantics\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"map_gameplay_surface_semantics_v0.receipt.json\"",
+        "REFINED_GRAPH_PATH=ROOT / \"goal\" / \"architecture\" / \"map_templates_v0\" / \"road_plot_refined\" / \"tiled_hex_map_template_v0_road_plot_refined_graph.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_map_template_profile_application_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"map_templates_v0\" / \"profiled_terrain\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"map_template_profile_application_v0.receipt.json\"",
+        "SHARED_GRAPH_PATH=ROOT / \"goal\" / \"architecture\" / \"map_templates_v0\" / \"shared_terrain\" / \"tiled_hex_map_template_v0_shared_terrain_graph.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_map_template_shared_terrain_adapter_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "COMPILED_PATH=ROOT / \"goal\" / \"architecture\" / \"map_templates_v0\" / \"compiled\" / \"tiled_hex_map_template_v0_compiled.json\"",
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"map_templates_v0\" / \"shared_terrain\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"map_template_shared_terrain_adapter_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_map_template_v2_building_variant_placement.py",
+      "script_kind": "compile",
+      "reads_source_paths": [],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"map_templates_v2\" / \"building_variant_placement\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"map_template_v2_building_variant_placement.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_measured_asset_placement_v1.py",
+      "script_kind": "compile",
+      "reads_source_paths": [],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "MEASURED_INDEX_PATH=ROOT / \"goal\" / \"architecture\" / \"asset_mill_measured_v1\" / \"asset_mill_measured_index_v1.json\"",
+        "MEASURED_RECIPE_DIR=ROOT / \"goal\" / \"architecture\" / \"asset_mill_measured_v1\" / \"recipes\"",
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"measured_asset_placement_v1\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"measured_asset_placement_v1.receipt.json\"",
+        "REFINED_GRAPH_PATH=ROOT / \"goal\" / \"architecture\" / \"map_templates_v0\" / \"road_plot_refined\" / \"tiled_hex_map_template_v0_road_plot_refined_graph.json\"",
+        "SEMANTIC_GRAPH_PATH=ROOT / \"goal\" / \"architecture\" / \"map_templates_v0\" / \"gameplay_surface_semantics\" / \"tiled_hex_map_template_v0_gameplay_surface_semantics_graph.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_pathway_engine_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [
+        "contracts",
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"pathway_engine_v0\"",
+        "RECEIPT_DIR=ROOT / \"goal\" / \"receipts\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": false,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_plug_based_connection_graph_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"map_templates_v2\" / \"plug_connection_graph\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"plug_based_connection_graph_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_profile_aware_road_plot_refinement_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"map_templates_v0\" / \"road_plot_refined\"",
+        "PROFILED_GRAPH_PATH=ROOT / \"goal\" / \"architecture\" / \"map_templates_v0\" / \"profiled_terrain\" / \"tiled_hex_map_template_v0_profiled_terrain_graph.json\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"profile_aware_road_plot_refinement_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_terrain_profile_bending_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"terrain_profile_bending_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"terrain_profile_bending_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_tiled_map_template_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"map_templates_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"map_template_compiler_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": false,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/compile_topology_sites_v0.py",
+      "script_kind": "compile",
+      "reads_source_paths": [
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "ASSEMBLY_DIR=ROOT / \"goal\" / \"architecture\" / \"building_assemblies_v0\" / \"assemblies\"",
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"topology_sites_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"topology_sites_v0.receipt.json\"",
+        "SOLID_DIR=ROOT / \"goal\" / \"architecture\" / \"asset_mill_v0\" / \"solids\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/create_integrated_map_scene_v0.py",
+      "script_kind": "create",
+      "reads_source_paths": [
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "MEASURED_INDEX_PATH=ROOT / \"goal\" / \"architecture\" / \"asset_mill_measured_v1\" / \"asset_mill_measured_index_v1.json\"",
+        "TEMPLATE_PATH=ROOT / \"data\" / \"architecture\" / \"map_templates\" / \"integrated_map_scene_v0.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/create_measured_asset_aware_map_template_v1.py",
+      "script_kind": "create",
+      "reads_source_paths": [
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "MEASURED_INDEX_PATH=ROOT / \"goal\" / \"architecture\" / \"asset_mill_measured_v1\" / \"asset_mill_measured_index_v1.json\"",
+        "OUT_ROOT=ROOT / \"goal\" / \"architecture\" / \"map_templates_v1\" / \"measured_asset_aware\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"measured_asset_aware_gameplay_surface_semantics_v1.receipt.json\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"measured_asset_aware_map_template_v1.receipt.json\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"measured_asset_aware_measured_asset_placement_v1.receipt.json\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"measured_asset_aware_profile_application_v1.receipt.json\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"measured_asset_aware_road_plot_refinement_v1.receipt.json\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"measured_asset_aware_shared_terrain_adapter_v1.receipt.json\"",
+        "TEMPLATE_PATH=ROOT / \"data\" / \"architecture\" / \"map_templates\" / f\"{TEMPLATE_ID}.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/create_tiled_map_template_fixture_v0.py",
+      "script_kind": "create",
+      "reads_source_paths": [
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"tiled_hex_map_template_fixture_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": false,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/audit_hex_terrain_deformation_v0.py",
+      "script_kind": "audit",
+      "reads_source_paths": [],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "GRAPH_DIR=ROOT / \"goal\" / \"architecture\" / \"hex_plot_vertex_graph_v0\" / \"graphs\"",
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"hex_deformation_audit_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"hex_deformation_audit_v0.receipt.json\"",
+        "SOURCE_DIR=ROOT / \"goal\" / \"architecture\" / \"hex_terrain_fold_sites_v0\" / \"sites\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_OUTPUT_ROOT",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/validate_architectural_measurements_v0.py",
+      "script_kind": "validate",
+      "reads_source_paths": [
+        "contracts",
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "OUT_DIR=ROOT / \"goal\" / \"architecture\" / \"architectural_taxonomy_v0\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"architectural_measurement_validation_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": false,
+      "recommended_action": "ADD_READONLY_MODE",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/validate_connector_source_v0.py",
+      "script_kind": "validate",
+      "reads_source_paths": [
+        "data",
+        "data/architecture/assets/connectors"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": true,
+      "depends_on_generated_fixture": false,
+      "recommended_action": "KEEP_SAFE",
+      "notes": "Read-only by default; optional --json-report writes only to caller-selected path."
+    },
+    {
+      "script_path": "scripts/validate_contract.py",
+      "script_kind": "validate",
+      "reads_source_paths": [],
+      "writes_output_paths": false,
+      "hardcoded_output_paths": [],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": true,
+      "depends_on_generated_fixture": false,
+      "recommended_action": "KEEP_SAFE",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/validate_dex_agent_profiles.py",
+      "script_kind": "validate",
+      "reads_source_paths": [],
+      "writes_output_paths": false,
+      "hardcoded_output_paths": [
+        "CATALOG_PATH=ROOT / \"goal\" / \"dex_workflow\" / \"agent_profile_catalog_v0.json\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"dex_workflow\" / \"agent_profile_receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": true,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "KEEP_SAFE",
+      "notes": "No writes detected, but reads existing goal/dex workflow fixture paths."
+    },
+    {
+      "script_path": "scripts/validate_floor_plans_v0.py",
+      "script_kind": "validate",
+      "reads_source_paths": [
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "ASSET_INDEX_PATH=ROOT / \"goal\" / \"architecture\" / \"asset_mill_v0\" / \"asset_mill_compiled_index_v0.json\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"floor_plans_v0.receipt.json\"",
+        "REPORT_PATH=ROOT / \"goal\" / \"architecture\" / \"floor_plans_v0\" / \"floor_plan_catalog_v0_report.md\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_READONLY_MODE",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/validate_geometry_dictionary.py",
+      "script_kind": "validate",
+      "reads_source_paths": [
+        "data",
+        "geometry_dictionary"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"geometry_dictionary_v0.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": false,
+      "recommended_action": "ADD_READONLY_MODE",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/validate_map_authoring_contract_v0.py",
+      "script_kind": "validate",
+      "reads_source_paths": [
+        "contracts",
+        "data"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"map_authoring_contract_v0.receipt.json\"",
+        "REPORT_PATH=ROOT / \"goal\" / \"architecture\" / \"map_editor_v0\" / \"map_authoring_contract_v0_report.md\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": false,
+      "recommended_action": "ADD_READONLY_MODE",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/validate_measurement_fetch_packet_v1.py",
+      "script_kind": "validate",
+      "reads_source_paths": [
+        "data",
+        "docs"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"architectural_measurement_extraction_v1.receipt.json\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": false,
+      "recommended_action": "ADD_READONLY_MODE",
+      "notes": "Static audit only; not executed in this task."
+    },
+    {
+      "script_path": "scripts/validate_topology_dictionary_v0.py",
+      "script_kind": "validate",
+      "reads_source_paths": [
+        "data",
+        "topology_dictionary"
+      ],
+      "writes_output_paths": true,
+      "hardcoded_output_paths": [
+        "ASSEMBLY_DIR=ROOT / \"goal\" / \"architecture\" / \"building_assemblies_v0\" / \"assemblies\"",
+        "RECEIPT_PATH=ROOT / \"goal\" / \"receipts\" / \"topology_dictionary_v0.receipt.json\"",
+        "SOLID_DIR=ROOT / \"goal\" / \"architecture\" / \"asset_mill_v0\" / \"solids\""
+      ],
+      "supports_output_root": false,
+      "can_run_without_dirtying_repo": false,
+      "depends_on_generated_fixture": true,
+      "recommended_action": "ADD_READONLY_MODE",
+      "notes": "Static audit only; not executed in this task."
+    }
+  ]
+}

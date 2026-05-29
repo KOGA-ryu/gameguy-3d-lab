@@ -19,9 +19,9 @@
     "geometry_outputs",
     "semantic_outputs",
     "generation_uses",
-    "tileability",
+    "repeatability",
     "connector_relevance",
-    "animation_relevance",
+    "deformation_relevance",
     "non_claims",
     "notes"
   ],
@@ -49,15 +49,15 @@
     "panel_sockets",
     "traversal_hints",
     "obstruction_zones",
-    "ornament_anchors",
+    "facade_detail_anchors",
     "future_ai_affordance_zones"
   ],
   "required_generation_use_fields": [
     "building_generation_uses",
     "object_generation_uses",
-    "ornament_generation_uses",
+    "architectural_detail_generation_uses",
     "ai_affordance_uses",
-    "animation_or_motion_uses"
+    "deformation_uses"
   ],
   "required_non_claim_flags": [
     "no_structural_validity",
@@ -73,10 +73,10 @@
     "parameter_fields": "Named inputs needed to instantiate the shape family.",
     "geometry_outputs": "Geometry output categories the shape can produce.",
     "semantic_outputs": "Semantic output categories the shape can support after role mapping.",
-    "generation_uses": "Building, object, ornament, AI-affordance, and motion use cases.",
-    "tileability": "Whether the shape can repeat, tile, wrap, or remain local.",
+    "generation_uses": "Building, object, architectural detail, AI-affordance, and deformation use cases.",
+    "repeatability": "Whether the shape can repeat, wrap, or remain local.",
     "connector_relevance": "How this shape can connect to cube faces, sockets, paths, or regions.",
-    "animation_relevance": "How this shape may later support motion or deformation.",
+    "deformation_relevance": "How this shape may later support geometry deformation.",
     "non_claims": "Explicit non-claims preventing production, fabrication, structural, AI correctness, Gym, or Museum approval."
   }
 }

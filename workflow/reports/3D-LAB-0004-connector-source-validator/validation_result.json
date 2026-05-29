@@ -1,0 +1,40 @@
+{
+  "schema": "connector_source_validation_result_v0",
+  "created_at_utc": "2026-05-29T00:26:51.037535+00:00",
+  "status": "pass",
+  "manifest_path": "data/architecture/assets/connectors/connector_asset_manifest_v0.json",
+  "placement_policy_path": "data/architecture/assets/connectors/connector_placement_policy_v0.json",
+  "required_connector_ids": [
+    "measured_pathway_slab_unit_v1",
+    "measured_threshold_landing_v1",
+    "measured_ramp_pathway_unit_v1",
+    "measured_stepped_pathway_unit_v1",
+    "measured_bridge_deck_unit_v1",
+    "measured_bridge_abutment_v1",
+    "measured_bridge_rail_unit_v1",
+    "measured_retaining_wall_unit_v1",
+    "measured_curb_edge_unit_v1"
+  ],
+  "required_connection_types": [
+    "road_threshold",
+    "flat_pathway",
+    "ramp_pathway",
+    "stepped_pathway",
+    "bridge_link"
+  ],
+  "manifest_loaded": true,
+  "placement_policy_loaded": true,
+  "recipe_count_loaded": 9,
+  "connector_ids_loaded": [
+    "measured_bridge_abutment_v1",
+    "measured_bridge_deck_unit_v1",
+    "measured_bridge_rail_unit_v1",
+    "measured_curb_edge_unit_v1",
+    "measured_pathway_slab_unit_v1",
+    "measured_ramp_pathway_unit_v1",
+    "measured_retaining_wall_unit_v1",
+    "measured_stepped_pathway_unit_v1",
+    "measured_threshold_landing_v1"
+  ],
+  "errors": []
+}

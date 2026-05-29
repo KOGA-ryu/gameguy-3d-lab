@@ -188,7 +188,7 @@
     "asset_expansion_owner": "Asset Dex"
   },
   "canonical_next_adapters": [
-    "map_authoring_contract_v0_to_tiled_style_template_v0",
+    "map_authoring_contract_v0_to_grid_style_template_v0",
     "map_authoring_contract_v0_to_pathway_testbed_template_v0"
   ],
   "no_claims": {

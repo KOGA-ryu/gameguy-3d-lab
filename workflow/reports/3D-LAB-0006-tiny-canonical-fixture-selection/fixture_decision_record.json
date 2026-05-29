@@ -1,0 +1,36 @@
+{
+  "schema": "fixture_decision_record_v0",
+  "packet_id": "3D-LAB-0006",
+  "created_at_utc": "2026-05-29T00:31:39Z",
+  "fixture_path": "data/architecture/test_fixtures/tiny_map_building_connector_fixture_v0.json",
+  "decision": "SELECT_CANONICAL_TINY_SOURCE_FIXTURE",
+  "fixture_summary": {
+    "cell_count": 7,
+    "grid": "axial_hex",
+    "building_count": 1,
+    "building_plug_count": 1,
+    "road_plug_count": 1,
+    "connector_path_segment_count": 1,
+    "terrain_height_change_count": 1,
+    "connector_asset_ids": [
+      "measured_pathway_slab_unit_v1"
+    ],
+    "connection_types": [
+      "flat_pathway"
+    ]
+  },
+  "why_canonical": [
+    "Small enough for source validators and unit tests.",
+    "Covers map cells, terrain height, building plug, road plug, connector path segment, connector asset reference, connector manifest reference, and placement policy reference.",
+    "References an existing source connector asset ID from connector_asset_manifest_v0.json.",
+    "Uses deterministic IDs and explicit no-claims.",
+    "Contains no render, media, mesh, screenshot, Blender, or generated proof output fields."
+  ],
+  "non_goals": {
+    "generated_by_compiler": false,
+    "movement_or_pathfinding_model": false,
+    "render_or_mesh_fixture": false,
+    "production_or_structural_claim": false
+  },
+  "validation_status": "pass"
+}

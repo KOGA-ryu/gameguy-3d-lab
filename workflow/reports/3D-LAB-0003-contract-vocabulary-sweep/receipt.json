@@ -1,0 +1,76 @@
+{
+  "schema": "workflow_report_receipt_v0",
+  "packet_id": "3D-LAB-0003",
+  "created_at_utc": "2026-05-29T00:19:56Z",
+  "status": "complete",
+  "files_changed": [
+    "contracts/cube_math_shape_recipe_v0.json",
+    "contracts/plot_shape_taxonomy_v0.json",
+    "contracts/map_authoring_contract_v0.json",
+    "workflow/reports/3D-LAB-0003-contract-vocabulary-sweep/report.md",
+    "workflow/reports/3D-LAB-0003-contract-vocabulary-sweep/vocabulary_decision_matrix.json",
+    "workflow/reports/3D-LAB-0003-contract-vocabulary-sweep/receipt.json"
+  ],
+  "primary_contracts_reviewed": [
+    "contracts/cube_math_shape_recipe_v0.json",
+    "contracts/plot_shape_taxonomy_v0.json",
+    "contracts/architectural_shape_dictionary_v0.json",
+    "contracts/architectural_measurement_record_v0.json",
+    "contracts/architectural_measurement_source_v0.json",
+    "contracts/map_authoring_contract_v0.json",
+    "contracts/pathway_connection_contract_v0.json",
+    "contracts/asset_mill_solid_recipe_v0.json"
+  ],
+  "secondary_active_contracts_scanned": true,
+  "terms_renamed": [
+    "ornament_generation_uses",
+    "ornament_anchors",
+    "ornamental_panel",
+    "ornament_object_cube",
+    "ornament_panel_generation",
+    "xy_center_slice_debug_png",
+    "xz_center_slice_debug_png",
+    "yz_center_slice_debug_png",
+    "slice_contact_sheet_png",
+    "cube zoo specimen",
+    "tileability",
+    "animation_relevance",
+    "animation_or_motion_uses",
+    "map_authoring_contract_v0_to_tiled_style_template_v0"
+  ],
+  "terms_deferred": [],
+  "contracts_quarantined": [],
+  "validation_run": [
+    {
+      "command": "find data contracts docs geometry_dictionary workflow -name '*.json' -print0 | xargs -0 -n 1 python3 -m json.tool >/dev/null",
+      "status": "pass"
+    },
+    {
+      "command": "python3 -m py_compile scripts/*.py",
+      "status": "pass"
+    },
+    {
+      "command": "python3 -m json.tool workflow/reports/3D-LAB-0003-contract-vocabulary-sweep/vocabulary_decision_matrix.json >/dev/null",
+      "status": "pass"
+    },
+    {
+      "command": "python3 -m json.tool workflow/reports/3D-LAB-0003-contract-vocabulary-sweep/receipt.json >/dev/null",
+      "status": "pass"
+    },
+    {
+      "command": "find . -path './.git' -prune -o -path '*pattern_lab_2d*' -print",
+      "status": "pass",
+      "notes": "No paths printed."
+    },
+    {
+      "command": "find . -path './.git' -prune -o -type f \\( -name '*.png' -o -name '*.jpg' -o -name '*.gif' -o -name '*.webp' -o -name '*.blend' -o -name '*.blend1' -o -name '*.obj' -o -name '*.gltf' -o -name '*.glb' -o -name '*.fbx' \\) -print",
+      "status": "pass",
+      "notes": "No files printed."
+    }
+  ],
+  "old_repo_touched": false,
+  "blender_run": false,
+  "generated_outputs_created": false,
+  "staged_or_committed": false,
+  "recommended_next_task": "Proceed to 3D-LAB-0004 and add a source-only connector source validator."
+}

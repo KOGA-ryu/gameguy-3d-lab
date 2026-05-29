@@ -16,13 +16,20 @@ Do not edit generated connector outputs as source. Regenerate them through `scri
 
 ## Validation
 
-Use a temporary output root when checking connector source changes without dirtying the normal generated output folders:
+Use the source validator for manifest, recipe, and placement policy checks:
+
+```bash
+python3 scripts/validate_connector_source_v0.py
+python3 scripts/validate_connector_source_v0.py --json-report /tmp/connector_source_validation.json
+```
+
+Use a temporary output root when checking generated connector placement behavior without dirtying the normal generated output folders:
 
 ```bash
 rm -rf /tmp/connector_asset_placement_v0_test
-python3 mosaic_dungeon_floor_v0/scripts/compile_connector_asset_placement_v0.py \
+python3 scripts/compile_connector_asset_placement_v0.py \
   --output-root /tmp/connector_asset_placement_v0_test \
-  --integrated-graph-path /Users/kogaryu/game/mosaic_dungeon_floor_v0/goal/architecture/integrated_map_scene_v0/integrated_map_scene_v0_compiled.json \
+  --integrated-graph-path /path/to/existing/integrated_map_scene_v0_compiled.json \
   --no-regenerate-integrated
 ```
 
@@ -34,9 +41,9 @@ Expected current result:
 Also check the source JSON files:
 
 ```bash
-python3 -m json.tool mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_manifest_v0.json >/dev/null
-python3 -m json.tool mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_placement_policy_v0.json >/dev/null
-find mosaic_dungeon_floor_v0/data/architecture/assets/connectors/connector_asset_recipes_v0 -name '*.json' -print0 | xargs -0 -n 1 python3 -m json.tool >/dev/null
+python3 -m json.tool data/architecture/assets/connectors/connector_asset_manifest_v0.json >/dev/null
+python3 -m json.tool data/architecture/assets/connectors/connector_placement_policy_v0.json >/dev/null
+find data/architecture/assets/connectors/connector_asset_recipes_v0 -name '*.json' -print0 | xargs -0 -n 1 python3 -m json.tool >/dev/null
 ```
 
 ## Guardrails
