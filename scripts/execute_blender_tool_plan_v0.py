@@ -187,7 +187,7 @@ def material_role_for_alias(alias: str) -> str:
         return "base"
     if alias.startswith("cap_"):
         return "cap"
-    if alias.startswith("window_"):
+    if alias.startswith("window_") or alias.startswith("door_"):
         return "frame"
     if alias in {"post_core"}:
         return "shaft"
@@ -259,7 +259,7 @@ def run_blender_execution(plan: dict[str, Any], steps: list[dict[str, Any]], out
     report["topology_cleanup"] = context["topology_cleanup"]
     face_counts_by_role = context["material_regions"].get("face_counts_by_role", {})
     material_regions_preserved = len(face_counts_by_role) > 1
-    if plan.get("asset_family") == "window_frame":
+    if plan.get("asset_family") in {"window_frame", "door_frame"}:
         material_regions_preserved = "frame" in face_counts_by_role
     report["quality_pass"] = {
         "asset_family_quality_profile": str(plan.get("asset_family", "unknown")),

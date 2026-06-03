@@ -274,6 +274,8 @@ def dimensions(asset: dict[str, Any]) -> dict[str, float]:
 def rectangular_frame_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
     params = style_params(asset)
     dims = dimensions(asset)
+    asset_family = require_string(asset.get("asset_family"), f"{asset['asset_id']}.asset_family")
+    frame_label = "door" if asset_family == "door_frame" else "window"
     width = positive_number(params.get("frame_width_m", dims["width"]), f"{asset['asset_id']}.style_parameters.frame_width_m")
     depth = positive_number(params.get("frame_depth_m", dims["depth"]), f"{asset['asset_id']}.style_parameters.frame_depth_m")
     height = positive_number(params.get("frame_height_m", dims["height"]), f"{asset['asset_id']}.style_parameters.frame_height_m")
@@ -291,16 +293,16 @@ def rectangular_frame_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
     jamb_z = round(bottom_height + jamb_height * 0.5, 6)
     top_z = round(height - top_height * 0.5, 6)
     return [
-        {"step_id": "create_window_left_jamb", "tool_id": "primitive_cube_add", "purpose": "Create the left vertical stone jamb.", "params": {"size_m": [side_width, depth, jamb_height], "location_m": [left_x, 0.0, jamb_z]}},
-        {"step_id": "create_window_right_jamb", "tool_id": "primitive_cube_add", "purpose": "Create the right vertical stone jamb.", "params": {"size_m": [side_width, depth, jamb_height], "location_m": [right_x, 0.0, jamb_z]}},
-        {"step_id": "create_window_sill", "tool_id": "primitive_cube_add", "purpose": "Create the lower sill block.", "params": {"size_m": [width, depth, bottom_height], "location_m": [0.0, 0.0, bottom_z]}},
-        {"step_id": "create_window_header", "tool_id": "primitive_cube_add", "purpose": "Create the upper header block.", "params": {"size_m": [width, depth, top_height], "location_m": [0.0, 0.0, top_z]}},
+        {"step_id": f"create_{frame_label}_left_jamb", "tool_id": "primitive_cube_add", "purpose": f"Create the left vertical {frame_label} jamb.", "params": {"size_m": [side_width, depth, jamb_height], "location_m": [left_x, 0.0, jamb_z]}},
+        {"step_id": f"create_{frame_label}_right_jamb", "tool_id": "primitive_cube_add", "purpose": f"Create the right vertical {frame_label} jamb.", "params": {"size_m": [side_width, depth, jamb_height], "location_m": [right_x, 0.0, jamb_z]}},
+        {"step_id": f"create_{frame_label}_sill", "tool_id": "primitive_cube_add", "purpose": f"Create the lower {frame_label} sill block.", "params": {"size_m": [width, depth, bottom_height], "location_m": [0.0, 0.0, bottom_z]}},
+        {"step_id": f"create_{frame_label}_header", "tool_id": "primitive_cube_add", "purpose": f"Create the upper {frame_label} header block.", "params": {"size_m": [width, depth, top_height], "location_m": [0.0, 0.0, top_z]}},
         {
-            "step_id": "join_window_frame_blocks",
+            "step_id": f"join_{frame_label}_frame_blocks",
             "tool_id": "join_objects",
-            "purpose": "Join the four frame blocks into one deterministic frame mesh.",
+            "purpose": f"Join the four {frame_label} frame blocks into one deterministic frame mesh.",
             "params": {
-                "objects": ["window_left_jamb", "window_right_jamb", "window_sill", "window_header"],
+                "objects": [f"{frame_label}_left_jamb", f"{frame_label}_right_jamb", f"{frame_label}_sill", f"{frame_label}_header"],
                 "opening_m": [round(width - side_width * 2.0, 6), round(height - bottom_height - top_height, 6)],
             },
         },
@@ -370,7 +372,7 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
             "socket": "gothic_stone_shadow",
             "socket_shadow": "gothic_stone_shadow",
         }
-        if asset.get("asset_family") == "window_frame":
+        if asset.get("asset_family") in {"window_frame", "door_frame"}:
             material_map = {
                 "frame": "gothic_stone_frame",
                 "default": "gothic_stone_frame",

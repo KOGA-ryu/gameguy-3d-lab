@@ -22,6 +22,7 @@ DEFAULT_BLENDER = Path("/Applications/Blender.app/Contents/MacOS/Blender")
 TOOL_PLAN_OUT = Path("/tmp/gameguy_blender_tool_plan_v0")
 TOOL_PLAN_EXECUTION_OUT = Path("/tmp/gameguy_blender_tool_plan_execution_v0")
 WINDOW_FRAME_TOOL_PLAN_EXECUTION_OUT = Path("/tmp/gameguy_blender_window_frame_tool_plan_execution_v0")
+DOOR_FRAME_TOOL_PLAN_EXECUTION_OUT = Path("/tmp/gameguy_blender_door_frame_tool_plan_execution_v0")
 SIMPLE_ASSET_OUT = Path("/tmp/gameguy_asset_pump_v0")
 MEASURED_ASSET_OUT = Path("/tmp/gameguy_measured_asset_pump_v0")
 SECTION_STACK_ASSET_OUT = Path("/tmp/gameguy_section_stack_asset_pump_v0")
@@ -118,6 +119,7 @@ def python_script(script: str, *args: str | Path) -> list[str]:
 def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender_path: Path) -> list[CommandStep]:
     plan_path = TOOL_PLAN_OUT / "plans" / "gothic_stone_banister_post_tool_plan_v0_compiled.json"
     window_frame_plan_path = TOOL_PLAN_OUT / "plans" / "gothic_stone_window_frame_tool_plan_v0_compiled.json"
+    door_frame_plan_path = TOOL_PLAN_OUT / "plans" / "gothic_stone_door_frame_tool_plan_v0_compiled.json"
     steps = [
         CommandStep("python_compile", [sys.executable, "-m", "py_compile", *[str(path) for path in sorted((ROOT / "scripts").glob("*.py"))]]),
         CommandStep("generation_registry_validate", python_script("scripts/validate_asset_generation_registry_v0.py")),
@@ -131,6 +133,7 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
             CommandStep("tool_plan_validate", python_script("scripts/validate_gameguy_tool_plan_v0.py", "--manifest", TOOL_PLAN_OUT / "manifest.json")),
             CommandStep("blender_adapter_validate_only", python_script("scripts/execute_blender_tool_plan_v0.py", "--plan", plan_path, "--validate-only")),
             CommandStep("window_frame_blender_adapter_validate_only", python_script("scripts/execute_blender_tool_plan_v0.py", "--plan", window_frame_plan_path, "--validate-only")),
+            CommandStep("door_frame_blender_adapter_validate_only", python_script("scripts/execute_blender_tool_plan_v0.py", "--plan", door_frame_plan_path, "--validate-only")),
         ]
     )
     if include_blender:
@@ -182,6 +185,30 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
                         "scripts/validate_blender_tool_plan_execution_report_v0.py",
                         "--report",
                         WINDOW_FRAME_TOOL_PLAN_EXECUTION_OUT / "tool_plan_execution_v0_report.json",
+                    ),
+                ),
+                CommandStep(
+                    "blender_execute_door_frame_tool_plan",
+                    [
+                        str(blender_path),
+                        "--background",
+                        "--python",
+                        "scripts/execute_blender_tool_plan_v0.py",
+                        "--",
+                        "--plan",
+                        str(door_frame_plan_path),
+                        "--out",
+                        str(DOOR_FRAME_TOOL_PLAN_EXECUTION_OUT),
+                        "--render",
+                        "--export",
+                    ],
+                ),
+                CommandStep(
+                    "door_frame_blender_execution_report_validate",
+                    python_script(
+                        "scripts/validate_blender_tool_plan_execution_report_v0.py",
+                        "--report",
+                        DOOR_FRAME_TOOL_PLAN_EXECUTION_OUT / "tool_plan_execution_v0_report.json",
                     ),
                 ),
             ]

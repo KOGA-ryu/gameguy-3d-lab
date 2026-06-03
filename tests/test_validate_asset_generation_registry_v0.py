@@ -42,7 +42,7 @@ class AssetGenerationRegistryValidatorTests(unittest.TestCase):
         self.assertEqual(report["canonical_geometry_bundle_count"], 5)
         self.assertEqual(report["canonical_geometry_asset_count"], 40)
         self.assertEqual(report["canonical_tool_plan_bundle"]["asset_family_policy_count"], 5)
-        self.assertEqual(report["canonical_tool_plan_bundle"]["default_plan_count"], 2)
+        self.assertEqual(report["canonical_tool_plan_bundle"]["default_plan_count"], 3)
         self.assertEqual(report["reference_only_recipe_count"], 3)
         self.assertFalse(report["generated_outputs_created"])
         self.assertTrue(report["rules"]["validates_pipeline_label_coverage"])

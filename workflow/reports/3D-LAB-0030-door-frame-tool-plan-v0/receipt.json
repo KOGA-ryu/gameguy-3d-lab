@@ -1,0 +1,48 @@
+{
+  "schema": "door_frame_tool_plan_receipt_v0",
+  "packet_id": "3D-LAB-0030",
+  "decision": "ADD_DOOR_FRAME_TOOL_PLAN",
+  "source_recipe": "data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json",
+  "sequence_policy": "data/architecture/asset_mill/blender_tools/asset_family_tool_sequence_policy_v0.json",
+  "compiler": "scripts/compile_blender_tool_plan_v0.py",
+  "validator": "scripts/validate_gameguy_tool_plan_v0.py",
+  "adapter": "scripts/execute_blender_tool_plan_v0.py",
+  "execution_report_validator": "scripts/validate_blender_tool_plan_execution_report_v0.py",
+  "asset": {
+    "asset_id": "gothic_stone_door_frame_tool_plan_v0",
+    "asset_family": "door_frame",
+    "plan_id": "gothic_stone_door_frame_tool_plan_v0_compiled",
+    "step_count": 25,
+    "unique_tool_count": 22,
+    "non_manifold_edge_count": 0,
+    "material_role_count": 1,
+    "socket_shadow_panel_count": 0,
+    "opening_m": [0.78, 1.45]
+  },
+  "validation_summary": {
+    "compiled_plan_count": 3,
+    "compiled_step_count": 82,
+    "compiled_unique_tool_count": 24,
+    "json_file_count": 219,
+    "non_blender_command_count": 24,
+    "full_blender_command_count": 30,
+    "repo_media_mesh_output_count": 0
+  },
+  "rules": {
+    "source_recipe_controls_design": true,
+    "sequence_policy_enforced": true,
+    "compiled_json_validated_before_blender": true,
+    "blender_reads_source_recipe": false,
+    "blender_runs_compiler": false,
+    "blender_outputs_under_tmp": true,
+    "generated_outputs_in_repo": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

@@ -9,7 +9,7 @@
     "no_generated_outputs": true,
     "tool_ids_must_exist_in_dictionary": true
   },
-  "asset_count": 2,
+  "asset_count": 3,
   "assets": [
     {
       "asset_id": "gothic_stone_banister_post_tool_plan_v0",
@@ -93,6 +93,57 @@
         "stone_noise_scale": 42.0,
         "uv_margin": 0.018,
         "lod_decimate_ratio": 0.62
+      },
+      "required_stage_coverage": [
+        "base_form",
+        "assembly",
+        "shape_refinement",
+        "sculpt_detail",
+        "retopo_cleanup",
+        "uv_mapping",
+        "material_texture",
+        "validation_export"
+      ],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false
+      }
+    },
+    {
+      "asset_id": "gothic_stone_door_frame_tool_plan_v0",
+      "asset_family": "door_frame",
+      "style": "gothic_stone",
+      "detail_level": "medium",
+      "target_readiness": "near_finished_procedural_asset",
+      "dimensions_m": {
+        "width": 1.1,
+        "depth": 0.2,
+        "height": 1.75
+      },
+      "features": [
+        "rectangular_frame_blocks",
+        "hard_edge_bevels",
+        "weighted_normals",
+        "stone_surface_material",
+        "smart_uvs",
+        "collision_and_lod_proxy",
+        "preview_and_export_plan"
+      ],
+      "style_parameters": {
+        "frame_width_m": 1.1,
+        "frame_depth_m": 0.2,
+        "frame_height_m": 1.75,
+        "side_member_width_m": 0.16,
+        "top_member_height_m": 0.18,
+        "bottom_member_height_m": 0.12,
+        "bevel_width_m": 0.016,
+        "stone_noise_scale": 40.0,
+        "uv_margin": 0.018,
+        "lod_decimate_ratio": 0.6
       },
       "required_stage_coverage": [
         "base_form",

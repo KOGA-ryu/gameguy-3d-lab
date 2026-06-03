@@ -125,7 +125,7 @@ class BlenderToolPlanTests(unittest.TestCase):
 
         self.assertEqual(manifest["schema"], "gameguy_tool_plan_manifest_v0")
         self.assertEqual(manifest["tool_sequence_policy"], "asset_family_tool_sequence_policy_v0")
-        self.assertEqual(manifest["plan_count"], 2)
+        self.assertEqual(manifest["plan_count"], 3)
         self.assertEqual(manifest["plans"][0]["step_count"], 32)
         self.assertEqual(manifest["plans"][0]["unique_tool_count"], 24)
         self.assertEqual(plan["asset_family"], "banister_post")
@@ -197,6 +197,35 @@ class BlenderToolPlanTests(unittest.TestCase):
             {"frame": "gothic_stone_frame", "default": "gothic_stone_frame"},
         )
 
+    def test_door_frame_recipe_compiles_to_third_family_sequence(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "plans"
+            run_compiler(out_root)
+            plan = plan_by_asset(out_root, "gothic_stone_door_frame_tool_plan_v0")
+
+        self.assertEqual(plan["asset_family"], "door_frame")
+        self.assertEqual(plan["asset_family_policy"], "door_frame")
+        self.assertEqual(plan["summary"]["step_count"], 25)
+        self.assertEqual(plan["summary"]["unique_tool_count"], 22)
+        self.assertEqual(plan["summary"]["covered_stages"], plan["stage_order"])
+        self.assertNotIn("modifier_boolean", plan["summary"]["unique_tools"])
+        self.assertNotIn("object_duplicate_radial", plan["summary"]["unique_tools"])
+
+        by_step = {step["step_id"]: step for step in plan["steps"]}
+        self.assertEqual(plan["steps"][0]["step_id"], "create_door_left_jamb")
+        self.assertEqual(by_step["create_door_left_jamb"]["params"]["size_m"], [0.16, 0.2, 1.45])
+        self.assertEqual(by_step["create_door_sill"]["params"]["size_m"], [1.1, 0.2, 0.12])
+        self.assertEqual(by_step["create_door_header"]["params"]["size_m"], [1.1, 0.2, 0.18])
+        self.assertEqual(
+            by_step["join_door_frame_blocks"]["params"]["objects"],
+            ["door_left_jamb", "door_right_jamb", "door_sill", "door_header"],
+        )
+        self.assertEqual(by_step["join_door_frame_blocks"]["params"]["opening_m"], [0.78, 1.45])
+        self.assertEqual(
+            by_step["assign_material_regions"]["params"]["material_map"],
+            {"frame": "gothic_stone_frame", "default": "gothic_stone_frame"},
+        )
+
     def test_validate_only_writes_no_manifest(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             out_root = Path(tmp) / "plans"
@@ -208,7 +237,7 @@ class BlenderToolPlanTests(unittest.TestCase):
                 text=True,
             )
 
-        self.assertIn("compiled tool plans=2 steps=57 tools=97 out=<validate-only>", result.stdout)
+        self.assertIn("compiled tool plans=3 steps=82 tools=97 out=<validate-only>", result.stdout)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_unknown_feature_fails_before_output(self) -> None:

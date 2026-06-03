@@ -63,7 +63,7 @@
     "bundle_id": "architectural_tool_plan_recipes_v0",
     "path": "data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json",
     "schema": "asset_mill_tool_plan_recipe_bundle_v0",
-    "expected_asset_count": 2,
+    "expected_asset_count": 3,
     "tool_dictionary": "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json",
     "tool_dictionary_schema": "blender_tool_dictionary_v0",
     "expected_tool_count": 97,
@@ -76,7 +76,8 @@
     "execution_report_validator": "scripts/validate_blender_tool_plan_execution_report_v0.py",
     "default_plan_ids": [
       "gothic_stone_banister_post_tool_plan_v0_compiled",
-      "gothic_stone_window_frame_tool_plan_v0_compiled"
+      "gothic_stone_window_frame_tool_plan_v0_compiled",
+      "gothic_stone_door_frame_tool_plan_v0_compiled"
     ],
     "pipeline_labels": [
       "tool_plan_compile_validate_only",
@@ -84,10 +85,13 @@
       "tool_plan_validate",
       "blender_adapter_validate_only",
       "window_frame_blender_adapter_validate_only",
+      "door_frame_blender_adapter_validate_only",
       "blender_execute_tool_plan",
       "blender_execution_report_validate",
       "blender_execute_window_frame_tool_plan",
-      "window_frame_blender_execution_report_validate"
+      "window_frame_blender_execution_report_validate",
+      "blender_execute_door_frame_tool_plan",
+      "door_frame_blender_execution_report_validate"
     ]
   },
   "reference_only_recipe_bundles": [
