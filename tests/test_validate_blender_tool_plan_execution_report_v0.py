@@ -91,9 +91,11 @@ def valid_report() -> dict[str, Any]:
             "non_manifold_edge_count_after": 0,
         },
         "quality_pass": {
+            "asset_family_quality_profile": "banister_post",
             "material_regions_preserved": True,
             "explicit_socket_boolean_targets": True,
             "socket_cutters_removed": True,
+            "socket_boolean_not_required": False,
             "topology_cleanup_attempted": True,
         },
         "render_path": "/tmp/gameguy_blender_tool_plan_execution_v0/tool_plan_execution_v0_workbench.png",
@@ -106,6 +108,48 @@ def valid_report() -> dict[str, Any]:
             "material_slot_count": 6,
         },
     }
+
+
+def valid_window_frame_report() -> dict[str, Any]:
+    report = valid_report()
+    report.update(
+        {
+            "source_plan": "/tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_window_frame_tool_plan_v0_compiled.json",
+            "plan_id": "gothic_stone_window_frame_tool_plan_v0_compiled",
+            "asset_id": "gothic_stone_window_frame_tool_plan_v0",
+            "asset_family": "window_frame",
+            "step_count": 25,
+            "supported_step_count": 25,
+            "unique_tool_count": 3,
+            "unique_tools": ["join_objects", "material_assign_by_part", "validate_non_manifold"],
+            "executed_step_count": 25,
+            "bounds_m": {"min": [-0.46, -0.08, 0.0], "max": [0.46, 0.08, 1.18]},
+            "material_regions": {
+                "material_slot_count": 1,
+                "face_counts_by_role": {
+                    "frame": 24
+                },
+                "material_slots": [],
+            },
+            "socket_pass": {},
+            "quality_pass": {
+                "asset_family_quality_profile": "window_frame",
+                "material_regions_preserved": True,
+                "explicit_socket_boolean_targets": False,
+                "socket_cutters_removed": False,
+                "socket_boolean_not_required": True,
+                "topology_cleanup_attempted": True,
+            },
+            "final_object": {
+                "name": "gothic_stone_window_frame_tool_plan_v0",
+                "vertex_count": 32,
+                "edge_count": 48,
+                "face_count": 24,
+                "material_slot_count": 1,
+            },
+        }
+    )
+    return report
 
 
 def write_report(path: Path, report: dict[str, Any]) -> None:
@@ -135,6 +179,20 @@ class BlenderToolPlanExecutionReportValidatorTests(unittest.TestCase):
         self.assertEqual(validation["material_role_count"], 5)
         self.assertEqual(validation["socket_shadow_panel_count"], 2)
         self.assertFalse(validation["generated_outputs_in_repo"])
+
+    def test_accepts_window_frame_quality_execution_report(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            report_path = Path(tmp) / "tool_plan_execution_report.json"
+            json_report = Path(tmp) / "quality_validation.json"
+            write_report(report_path, valid_window_frame_report())
+            result = run_validator(report_path, json_report)
+            validation = json.loads(json_report.read_text(encoding="utf-8"))
+
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("PASS Blender tool-plan execution quality validation", result.stdout)
+        self.assertEqual(validation["asset_id"], "gothic_stone_window_frame_tool_plan_v0")
+        self.assertEqual(validation["material_role_count"], 1)
+        self.assertEqual(validation["socket_shadow_panel_count"], 0)
 
     def test_rejects_nonzero_non_manifold_count(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:

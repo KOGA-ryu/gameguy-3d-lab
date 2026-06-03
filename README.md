@@ -189,6 +189,13 @@ python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool
   --render \
   --export
 python3 scripts/validate_blender_tool_plan_execution_report_v0.py --report /tmp/gameguy_blender_tool_plan_execution_v0/tool_plan_execution_v0_report.json
+/Applications/Blender.app/Contents/MacOS/Blender --background \
+  --python scripts/execute_blender_tool_plan_v0.py -- \
+  --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_window_frame_tool_plan_v0_compiled.json \
+  --out /tmp/gameguy_blender_window_frame_tool_plan_execution_v0 \
+  --render \
+  --export
+python3 scripts/validate_blender_tool_plan_execution_report_v0.py --report /tmp/gameguy_blender_window_frame_tool_plan_execution_v0/tool_plan_execution_v0_report.json
 python3 scripts/validate_tiny_fixture_v0.py
 python3 scripts/validate_measured_component_source_v0.py
 python3 scripts/asset_pump_v0.py --clean --out /tmp/gameguy_asset_pump_v0
@@ -217,8 +224,8 @@ Expected current checks:
 - Asset pump tests pass.
 - Blender tool-plan compiler validates a `97`-tool dictionary and compiles two default plans: a `32`-step banister post and a `25`-step window frame.
 - `gameguy_tool_plan_v0` validation proves manifest shape, known tool IDs, stable step order, stage order, deterministic steps, false claims, and no compiler media/mesh output.
-- Blender tool-plan execution adapter validation consumes the compiled `32`-step banister plan and accepts the compiled `25`-step window-frame plan in validate-only mode.
-- Blender tool-plan execution report validation proves adapter boundary rules, material-region preservation, socket boolean evidence, topology count, and no repo-local generated outputs.
+- Blender tool-plan execution adapter validation consumes the compiled `32`-step banister plan and the compiled `25`-step window-frame plan.
+- Blender tool-plan execution report validation proves adapter boundary rules, material-region preservation, topology count, and no repo-local generated outputs for both plans. The banister profile also proves socket boolean evidence.
 - Blender tool-plan execution quality evidence is recorded in `workflow/reports/3D-LAB-0021-execution-quality-pass-v0/`.
 - Tiny source fixture validation passes.
 - Measured component source validation passes.

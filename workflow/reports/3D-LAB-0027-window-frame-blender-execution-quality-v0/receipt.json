@@ -1,0 +1,53 @@
+{
+  "schema": "window_frame_blender_execution_quality_receipt_v0",
+  "packet_id": "3D-LAB-0027",
+  "decision": "ADD_WINDOW_FRAME_BLENDER_EXECUTION_QUALITY_GATE",
+  "source_recipe": "data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json",
+  "compiler": "scripts/compile_blender_tool_plan_v0.py",
+  "executor": "scripts/execute_blender_tool_plan_v0.py",
+  "report_validator": "scripts/validate_blender_tool_plan_execution_report_v0.py",
+  "pipeline_validator": "scripts/validate_generation_pipeline_v0.py",
+  "validated_profiles": [
+    {
+      "asset_family": "banister_post",
+      "plan_id": "gothic_stone_banister_post_tool_plan_v0_compiled",
+      "step_count": 32,
+      "non_manifold_edge_count": 0,
+      "material_role_count": 5,
+      "socket_shadow_panel_count": 2,
+      "socket_boolean_required": true
+    },
+    {
+      "asset_family": "window_frame",
+      "plan_id": "gothic_stone_window_frame_tool_plan_v0_compiled",
+      "step_count": 25,
+      "non_manifold_edge_count": 0,
+      "material_role_count": 1,
+      "socket_shadow_panel_count": 0,
+      "socket_boolean_required": false
+    }
+  ],
+  "full_pipeline": {
+    "command_count": 26,
+    "json_file_count": 214,
+    "include_blender": true,
+    "status": "pass"
+  },
+  "rules": {
+    "executor_consumes_compiled_tool_plan": true,
+    "executor_reads_source_intent_recipe": false,
+    "executor_runs_compiler": false,
+    "executor_imports_asset_pump": false,
+    "blender_outputs_under_tmp": true,
+    "repo_generated_outputs": false,
+    "asset_family_quality_profiles": true
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

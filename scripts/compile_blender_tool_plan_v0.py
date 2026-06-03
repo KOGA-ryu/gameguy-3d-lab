@@ -256,12 +256,25 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
             {"step_id": "apply_weighted_normals", "tool_id": "modifier_weighted_normal", "purpose": "Improve hard-surface shading without changing source proportions.", "params": {"keep_sharp": true_or_false(True)}},
         ]
     if feature == "stone_surface_material":
+        material_map = {
+            "base": "gothic_stone_dark",
+            "cap": "gothic_stone_cap",
+            "shaft": "gothic_stone",
+            "rib": "gothic_stone_highlight",
+            "socket": "gothic_stone_shadow",
+            "socket_shadow": "gothic_stone_shadow",
+        }
+        if asset.get("asset_family") == "window_frame":
+            material_map = {
+                "frame": "gothic_stone_frame",
+                "default": "gothic_stone_frame",
+            }
         return [
             {"step_id": "add_stone_displacement", "tool_id": "modifier_displace", "purpose": "Add restrained procedural stone surface variation.", "params": {"strength_m": 0.006, "texture": "stone_noise"}},
             {"step_id": "create_stone_material", "tool_id": "material_principled_shader", "purpose": "Create the base gothic stone material.", "params": {"base_color": [0.48, 0.46, 0.39], "roughness": 0.82, "metallic": 0.0}},
             {"step_id": "add_stone_noise_texture", "tool_id": "procedural_noise_texture", "purpose": "Add deterministic stone color and roughness variation.", "params": {"scale": params.get("stone_noise_scale", 38.0), "detail": 9, "roughness": 0.58, "seed": 19}},
             {"step_id": "add_stone_bump_map", "tool_id": "procedural_bump_map", "purpose": "Connect subtle bump detail for close views.", "params": {"height_source": "stone_noise", "strength": 0.07}},
-            {"step_id": "assign_material_regions", "tool_id": "material_assign_by_part", "purpose": "Assign material indexes by generated part role.", "params": {"material_map": {"base": "gothic_stone_dark", "cap": "gothic_stone_cap", "shaft": "gothic_stone", "rib": "gothic_stone_highlight", "socket": "gothic_stone_shadow", "socket_shadow": "gothic_stone_shadow"}}},
+            {"step_id": "assign_material_regions", "tool_id": "material_assign_by_part", "purpose": "Assign material indexes by generated part role.", "params": {"material_map": material_map}},
         ]
     if feature == "smart_uvs":
         return [

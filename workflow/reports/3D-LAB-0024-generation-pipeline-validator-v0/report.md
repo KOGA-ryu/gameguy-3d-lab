@@ -45,21 +45,23 @@ It orchestrates:
 Non-Blender pipeline result:
 
 ```text
-PASS generation pipeline validation: commands=22 json=213 include_blender=false
+PASS generation pipeline validation: commands=22 json=214 include_blender=false
 ```
 
 Full Blender pipeline result:
 
 ```text
-PASS generation pipeline validation: commands=24 json=213 include_blender=true
+PASS generation pipeline validation: commands=26 json=214 include_blender=true
 ```
 
 The full run includes:
 
 - `gameguy_tool_plan_v0`: `2` plans, `57` steps, `24` tools
 - Blender adapter validate-only: banister post and window frame plans
-- Blender execution: `32` steps
-- Execution report validation: non-manifold `0`, material roles `5`, socket panels `2`
+- Banister Blender execution: `32` steps
+- Banister execution report validation: non-manifold `0`, material roles `5`, socket panels `2`
+- Window-frame Blender execution: `25` steps
+- Window-frame execution report validation: non-manifold `0`, material roles `1`, socket panels `0`
 - Script orbit after Asset Mill retirement: `72` scripts, `14` canonical, `0` `DELETE_LATER`
 
 Generated outputs remain under `/tmp`; the validator rejects generated media/mesh files inside the repo.

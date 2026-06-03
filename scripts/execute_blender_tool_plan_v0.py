@@ -52,6 +52,7 @@ ROLE_MATERIAL_COLORS: dict[str, tuple[float, float, float, float]] = {
     "cap": (0.55, 0.52, 0.44, 1.0),
     "shaft": (0.47, 0.45, 0.38, 1.0),
     "rib": (0.58, 0.55, 0.46, 1.0),
+    "frame": (0.50, 0.48, 0.40, 1.0),
     "socket": (0.20, 0.22, 0.24, 1.0),
     "socket_shadow": (0.10, 0.11, 0.12, 1.0),
     "collision": (0.12, 0.35, 0.90, 0.25),
@@ -186,6 +187,8 @@ def material_role_for_alias(alias: str) -> str:
         return "base"
     if alias.startswith("cap_"):
         return "cap"
+    if alias.startswith("window_"):
+        return "frame"
     if alias in {"post_core"}:
         return "shaft"
     if "rib" in alias:
@@ -254,10 +257,16 @@ def run_blender_execution(plan: dict[str, Any], steps: list[dict[str, Any]], out
     report["material_regions"] = context["material_regions"]
     report["socket_pass"] = context["socket_pass"]
     report["topology_cleanup"] = context["topology_cleanup"]
+    face_counts_by_role = context["material_regions"].get("face_counts_by_role", {})
+    material_regions_preserved = len(face_counts_by_role) > 1
+    if plan.get("asset_family") == "window_frame":
+        material_regions_preserved = "frame" in face_counts_by_role
     report["quality_pass"] = {
-        "material_regions_preserved": len(context["material_regions"].get("face_counts_by_role", {})) > 1,
+        "asset_family_quality_profile": str(plan.get("asset_family", "unknown")),
+        "material_regions_preserved": material_regions_preserved,
         "explicit_socket_boolean_targets": bool(context["socket_pass"].get("target_names")),
         "socket_cutters_removed": bool(context["socket_pass"].get("cutter_objects_removed")),
+        "socket_boolean_not_required": plan.get("asset_family") != "banister_post",
         "topology_cleanup_attempted": bool(context["topology_cleanup"].get("attempted")),
     }
     if context.get("render_path"):
@@ -666,6 +675,8 @@ def material_role_from_name(name: str) -> str:
         return "socket_shadow"
     if "highlight" in normalized or "rib" in normalized:
         return "rib"
+    if "frame" in normalized:
+        return "frame"
     if "cap" in normalized:
         return "cap"
     if "dark" in normalized or "base" in normalized:
@@ -711,7 +722,14 @@ def assign_stone_material_to_final(bpy: Any, step: dict[str, Any], context: dict
 
 
 def collect_material_regions(obj: Any, material_map: dict[str, Any]) -> dict[str, Any]:
-    reverse_map = {str(material): role for role, material in material_map.items() if isinstance(role, str)}
+    reverse_map: dict[str, str] = {}
+    for role, material in material_map.items():
+        if not isinstance(role, str):
+            continue
+        material_name = str(material)
+        if role == "default" and material_name in reverse_map:
+            continue
+        reverse_map[material_name] = role
     face_counts_by_role: dict[str, int] = {}
     material_slots: list[dict[str, Any]] = []
     for slot_index, slot in enumerate(obj.material_slots):

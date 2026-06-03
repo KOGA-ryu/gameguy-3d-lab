@@ -164,6 +164,10 @@ class BlenderToolPlanTests(unittest.TestCase):
             ["window_left_jamb", "window_right_jamb", "window_sill", "window_header"],
         )
         self.assertEqual(by_step["join_window_frame_blocks"]["params"]["opening_m"], [0.64, 0.84])
+        self.assertEqual(
+            by_step["assign_material_regions"]["params"]["material_map"],
+            {"frame": "gothic_stone_frame", "default": "gothic_stone_frame"},
+        )
 
     def test_validate_only_writes_no_manifest(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:

@@ -62,6 +62,12 @@ class GenerationPipelineValidatorTests(unittest.TestCase):
         self.assertIn("measured_asset_adapter_validate", labels)
         self.assertIn("script_orbit_audit", labels)
 
+        module = load_pipeline_module()
+        blender_labels = {
+            step.label for step in module.build_command_steps(include_blender=True, skip_unit_tests=True, blender_path=module.DEFAULT_BLENDER)
+        }
+        self.assertIn("window_frame_blender_execution_report_validate", blender_labels)
+
     def test_forbidden_output_guard_detects_media_and_mesh_files(self) -> None:
         module = load_pipeline_module()
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:

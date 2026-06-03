@@ -27,13 +27,19 @@ REQUIRED_RULES: dict[str, bool] = {
     "executes_only_supported_deterministic_steps": True,
     "source_design_logic": False,
 }
-REQUIRED_QUALITY_FLAGS = {
+REQUIRED_COMMON_QUALITY_FLAGS = {
     "material_regions_preserved",
-    "explicit_socket_boolean_targets",
-    "socket_cutters_removed",
     "topology_cleanup_attempted",
 }
-REQUIRED_MATERIAL_ROLES = ("base", "cap", "shaft", "rib", "socket_shadow")
+REQUIRED_BANISTER_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
+    "explicit_socket_boolean_targets",
+    "socket_cutters_removed",
+}
+REQUIRED_WINDOW_FRAME_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
+    "socket_boolean_not_required",
+}
+REQUIRED_BANISTER_MATERIAL_ROLES = ("base", "cap", "shaft", "rib", "socket_shadow")
+REQUIRED_WINDOW_FRAME_MATERIAL_ROLES = ("frame",)
 REQUIRED_SOCKET_CUTTERS = ("east_socket_cutter", "west_socket_cutter")
 
 
@@ -135,14 +141,22 @@ def validate_execution_counts(report: dict[str, Any]) -> None:
         fail("unique_tool_count must match unique_tools")
 
 
-def validate_quality_flags(report: dict[str, Any]) -> None:
+def validate_quality_flags(report: dict[str, Any], asset_family: str) -> None:
     quality_pass = require_object(report.get("quality_pass"), "quality_pass")
-    for key in sorted(REQUIRED_QUALITY_FLAGS):
+    if quality_pass.get("asset_family_quality_profile") != asset_family:
+        fail("quality_pass.asset_family_quality_profile must match asset_family")
+    if asset_family == "banister_post":
+        required_flags = REQUIRED_BANISTER_QUALITY_FLAGS
+    elif asset_family == "window_frame":
+        required_flags = REQUIRED_WINDOW_FRAME_QUALITY_FLAGS
+    else:
+        fail(f"unsupported asset_family quality profile `{asset_family}`")
+    for key in sorted(required_flags):
         if quality_pass.get(key) is not True:
             fail(f"quality_pass.{key} must be true")
 
 
-def validate_material_regions(report: dict[str, Any], min_material_roles: int) -> dict[str, int]:
+def validate_material_regions(report: dict[str, Any], min_material_roles: int, required_roles: tuple[str, ...]) -> dict[str, int]:
     regions = require_object(report.get("material_regions"), "material_regions")
     material_slot_count = require_int(regions.get("material_slot_count"), "material_regions.material_slot_count", minimum=min_material_roles)
     face_counts_raw = require_object(regions.get("face_counts_by_role"), "material_regions.face_counts_by_role")
@@ -151,7 +165,7 @@ def validate_material_regions(report: dict[str, Any], min_material_roles: int) -
         if not isinstance(role, str) or not role:
             fail("material region roles must be non-empty strings")
         face_counts[role] = require_int(value, f"material_regions.face_counts_by_role.{role}", minimum=1)
-    for role in REQUIRED_MATERIAL_ROLES:
+    for role in required_roles:
         if role not in face_counts:
             fail(f"material_regions.face_counts_by_role must include `{role}`")
     if len(face_counts_raw) < min_material_roles:
@@ -193,6 +207,12 @@ def validate_socket_pass(report: dict[str, Any], min_socket_panels: int) -> None
             fail(f"socket_pass.removed_cutter_names must include `{cutter}`")
 
 
+def validate_socket_not_required(report: dict[str, Any]) -> None:
+    socket_pass = require_object(report.get("socket_pass", {}), "socket_pass")
+    if socket_pass:
+        fail("socket_pass must be empty when socket booleans are not required")
+
+
 def validate_topology(report: dict[str, Any], max_non_manifold_edges: int) -> None:
     validation = require_object(report.get("validation"), "validation")
     before = require_int(validation.get("non_manifold_edge_count_before_cleanup"), "validation.non_manifold_edge_count_before_cleanup")
@@ -232,11 +252,20 @@ def validate_report(report_path: Path, *, max_non_manifold_edges: int, min_mater
         fail("render_requested must be true for a quality execution report")
     if report.get("export_requested") is not True:
         fail("export_requested must be true for a quality execution report")
+    asset_family = require_string(report.get("asset_family"), "asset_family")
     validate_rules(report)
     validate_execution_counts(report)
-    validate_quality_flags(report)
-    face_counts = validate_material_regions(report, min_material_roles)
-    validate_socket_pass(report, min_socket_panels)
+    validate_quality_flags(report, asset_family)
+    if asset_family == "banister_post":
+        face_counts = validate_material_regions(report, min_material_roles, REQUIRED_BANISTER_MATERIAL_ROLES)
+        validate_socket_pass(report, min_socket_panels)
+        socket_shadow_panel_count = report["socket_pass"]["socket_shadow_panel_count"]
+    elif asset_family == "window_frame":
+        face_counts = validate_material_regions(report, len(REQUIRED_WINDOW_FRAME_MATERIAL_ROLES), REQUIRED_WINDOW_FRAME_MATERIAL_ROLES)
+        validate_socket_not_required(report)
+        socket_shadow_panel_count = 0
+    else:
+        fail(f"unsupported asset_family quality profile `{asset_family}`")
     validate_topology(report, max_non_manifold_edges)
     validate_final_object(report)
     validate_no_repo_generated_outputs(report)
@@ -249,7 +278,7 @@ def validate_report(report_path: Path, *, max_non_manifold_edges: int, min_mater
         "unique_tool_count": report.get("unique_tool_count"),
         "non_manifold_edge_count": report["validation"]["non_manifold_edge_count"],
         "material_role_count": len(face_counts),
-        "socket_shadow_panel_count": report["socket_pass"]["socket_shadow_panel_count"],
+        "socket_shadow_panel_count": socket_shadow_panel_count,
         "generated_outputs_in_repo": False,
         "rules": {
             "reads_source_intent_recipe": False,
