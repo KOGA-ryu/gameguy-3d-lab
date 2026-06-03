@@ -1,0 +1,65 @@
+{
+  "schema": "blocky_ribbed_column_receipt_v0",
+  "packet_id": "3D-LAB-0017",
+  "decision": "ADD_BLOCKY_RIBBED_COLUMN_SOURCE_AND_PUMP_SUPPORT",
+  "source_recipe": "data/architecture/asset_mill/recipes/blocky_column_assets_v0.json",
+  "operation_term": "geometry_dictionary/operations/blocky_column.json",
+  "source_contract": "contracts/asset_mill_solid_recipe_v0.json",
+  "generated_contract": "contracts/gameguy_asset_v0.json",
+  "generator": "scripts/asset_pump_v0.py",
+  "validator": "scripts/validate_gameguy_asset_v0.py",
+  "generated_schema": "gameguy_asset_v0",
+  "assets": [
+    {
+      "asset_id": "blocky_ribbed_column_v0",
+      "source_operation": "blocky_column",
+      "assembly": "simple_parts",
+      "part_count": 27,
+      "rib_count": 22,
+      "rib_depth_m": 0.04,
+      "rib_width_m": 0.04,
+      "vertex_count": 264,
+      "face_count": 186,
+      "dimensions_m": {
+        "width": 0.92,
+        "depth": 0.92,
+        "height": 2.46
+      },
+      "covered_seams": [
+        {
+          "seam_id": "square_plinth_to_lower_collar",
+          "overlap_z": [0.2, 0.24]
+        },
+        {
+          "seam_id": "lower_collar_to_ribs",
+          "overlap_z": [0.36, 0.4]
+        },
+        {
+          "seam_id": "ribs_to_upper_collar",
+          "overlap_z": [2.02, 2.06]
+        },
+        {
+          "seam_id": "upper_collar_to_square_abacus",
+          "overlap_z": [2.18, 2.22]
+        }
+      ]
+    }
+  ],
+  "rules": {
+    "source_recipe_first": true,
+    "pump_emits_deterministic_json": true,
+    "complexity_from_simple_parts": true,
+    "blender_adapter_added": false,
+    "blender_reads_source_recipes": false,
+    "retired_asset_mill_scripts_touched": false,
+    "generated_outputs_in_repo": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

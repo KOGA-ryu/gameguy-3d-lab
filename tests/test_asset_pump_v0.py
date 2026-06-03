@@ -18,6 +18,7 @@ PUMP = ROOT / "scripts" / "asset_pump_v0.py"
 ASSET_CONTRACT = ROOT / "contracts" / "gameguy_asset_v0.json"
 MEASURED_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "measured_components_v0.json"
 SECTION_STACK_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "section_stack_assets_v0.json"
+BLOCKY_COLUMN_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "blocky_column_assets_v0.json"
 FALSE_CLAIMS = {
     "production_approval": False,
     "structural_safety": False,
@@ -49,6 +50,16 @@ def run_measured_pump(out_root: Path) -> None:
 def run_section_stack_pump(out_root: Path) -> None:
     subprocess.run(
         [sys.executable, str(PUMP), "--bundle", str(SECTION_STACK_BUNDLE), "--out", str(out_root)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
+def run_blocky_column_pump(out_root: Path) -> None:
+    subprocess.run(
+        [sys.executable, str(PUMP), "--bundle", str(BLOCKY_COLUMN_BUNDLE), "--out", str(out_root)],
         cwd=ROOT,
         check=True,
         capture_output=True,
@@ -253,6 +264,44 @@ class AssetPumpTests(unittest.TestCase):
         self.assertEqual(column["source_terms"]["operators"], ["section_stack", "loft_sections"])
         self.assert_mesh_is_well_formed(column)
 
+    def test_blocky_column_bundle_generates_simple_part_ribbed_column(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "pump"
+            run_blocky_column_pump(out_root)
+            manifest = load_json(out_root / "manifest.json")
+            column = load_json(out_root / "assets" / "blocky_ribbed_column_v0.json")
+
+        self.assertEqual(manifest["source_bundle_schema"], "asset_mill_blocky_column_bundle_v0")
+        self.assertEqual(manifest["asset_count"], 1)
+        self.assertEqual(column["schema"], "gameguy_asset_v0")
+        self.assertEqual(column["source_schema"], "asset_mill_blocky_column_bundle_v0")
+        self.assertEqual(column["source_operation"], "blocky_column")
+        self.assertEqual(column["asset_kind"], "blocky_compound_column")
+        self.assertEqual(column["dimensions_m"], {"width": 0.92, "depth": 0.92, "height": 2.46})
+        self.assertEqual(len(column["mesh"]["vertices"]), 264)
+        self.assertEqual(len(column["mesh"]["faces"]), 186)
+        self.assertEqual(len(column["mesh"]["parts"]), 27)
+        self.assertEqual(column["mesh"]["parts"][0]["part_id"], "square_plinth")
+        self.assertEqual(column["mesh"]["parts"][0]["source_primitive"], "box")
+        self.assertEqual(column["mesh"]["parts"][3]["part_id"], "vertical_rib_00")
+        self.assertEqual(column["mesh"]["parts"][3]["source_primitive"], "oriented_box")
+        self.assertEqual(column["mesh"]["parts"][-1]["part_id"], "square_abacus")
+        self.assertEqual(column["mesh"]["blocky_column"]["axis"], "z")
+        self.assertEqual(column["mesh"]["blocky_column"]["assembly"], "simple_parts")
+        self.assertEqual(column["mesh"]["blocky_column"]["part_count"], 27)
+        self.assertEqual(column["mesh"]["blocky_column"]["rib_count"], 22)
+        self.assertEqual(column["mesh"]["blocky_column"]["rib_depth_m"], 0.04)
+        self.assertEqual(column["mesh"]["blocky_column"]["rib_center_radius_m"], 0.32)
+        self.assertIn(
+            {"seam_id": "lower_collar_to_ribs", "overlap_z": [0.36, 0.4]},
+            column["mesh"]["blocky_column"]["covered_seams"],
+        )
+        self.assertEqual(column["source_terms"]["profiles"], ["square", "circle", "rectangle"])
+        self.assertEqual(column["source_terms"]["operators"], ["blocky_column", "compound_asset", "extrude", "array_radial"])
+        self.assertEqual(column["validation_expectations"]["rib_count"], 22)
+        self.assertEqual(column["validation_expectations"]["rib_depth_m"], 0.04)
+        self.assert_mesh_is_well_formed(column)
+
     def test_output_is_deterministic_across_runs(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             out_a = Path(tmp) / "pump_a"
@@ -338,6 +387,20 @@ class AssetPumpTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("inner_radius_x must be less than outer_radius_x", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
+
+    def test_blocky_column_rejects_non_positive_rib_depth_before_output(self) -> None:
+        source_bundle = load_json(BLOCKY_COLUMN_BUNDLE)
+        source_bundle["assets"][0]["blocky_column"]["ribs"]["rib_depth_m"] = 0.0
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            bundle_path = Path(tmp) / "bad_blocky_column_bundle.json"
+            out_root = Path(tmp) / "pump"
+            bundle_path.write_text(json.dumps(source_bundle, indent=2) + "\n", encoding="utf-8")
+            result = run_pump_with_bundle(bundle_path, out_root)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("blocky_column.ribs.rib_depth_m must be positive", result.stderr)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def assert_mesh_is_well_formed(self, asset: dict[str, Any]) -> None:

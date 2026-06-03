@@ -60,6 +60,10 @@
     "section_stack": {
       "required_fields": ["section_stack"],
       "output": "ordered profile rings connected along one axis"
+    },
+    "blocky_column": {
+      "required_fields": ["blocky_column"],
+      "output": "named simple mesh parts assembled into a blocky architectural column"
     }
   },
   "required_asset_fields": [

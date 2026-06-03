@@ -28,6 +28,7 @@ DICTIONARY_ROOT = ROOT / "geometry_dictionary"
 SIMPLE_BUNDLE_SCHEMA = "asset_mill_recipe_bundle_v0"
 MEASURED_BUNDLE_SCHEMA = "asset_mill_measured_component_bundle_v0"
 SECTION_STACK_BUNDLE_SCHEMA = "asset_mill_section_stack_bundle_v0"
+BLOCKY_COLUMN_BUNDLE_SCHEMA = "asset_mill_blocky_column_bundle_v0"
 FALSE_CLAIMS = {
     "production_approval": False,
     "structural_safety": False,
@@ -130,6 +131,13 @@ def positive_vector(value: Any, field: str, length: int = 3) -> list[float]:
     for index, item in enumerate(items):
         if item <= 0.0:
             fail(f"{field}[{index}] must be positive")
+    return items
+
+
+def increasing_range(value: Any, field: str) -> list[float]:
+    items = finite_vector(value, field, 2)
+    if items[0] >= items[1]:
+        fail(f"{field} must increase")
     return items
 
 
@@ -339,6 +347,87 @@ def validate_section_stack_bundle_terms(bundle: dict[str, Any], terms: dict[str,
         if operation not in operation_terms(terms):
             fail(f"{asset_id}.operation uses unknown geometry dictionary operation `{operation}`")
         validate_section_stack_rings(asset.get("section_stack"), terms, f"{asset_id}.section_stack")
+        require_known_terms(asset.get("geometry_terms_used"), known_terms, f"{asset_id}.geometry_terms_used")
+        require_known_terms(asset.get("profile_terms"), terms["profile_primitive"], f"{asset_id}.profile_terms")
+        require_known_terms(asset.get("operations"), operation_terms(terms), f"{asset_id}.operations")
+        for connector_index, connector in enumerate(require_list(asset.get("connectors"), f"{asset_id}.connectors")):
+            connector_id = require_string(connector, f"{asset_id}.connectors[{connector_index}]")
+            if connector_id not in terms["connector"]:
+                fail(f"{asset_id}.connectors[{connector_index}] uses unknown geometry dictionary connector `{connector_id}`")
+        for tag_index, tag in enumerate(require_list(asset.get("semantic_tags"), f"{asset_id}.semantic_tags")):
+            semantic_tag = require_string(tag, f"{asset_id}.semantic_tags[{tag_index}]")
+            if semantic_tag not in terms["semantic_geometry"]:
+                fail(f"{asset_id}.semantic_tags[{tag_index}] uses unknown geometry dictionary semantic tag `{semantic_tag}`")
+        for slot_index, slot in enumerate(require_list(asset.get("child_slots"), f"{asset_id}.child_slots")):
+            require_string(slot, f"{asset_id}.child_slots[{slot_index}]")
+        validate_claims(asset)
+
+
+def validate_blocky_box_part(value: Any, field: str) -> None:
+    part = require_object(value, field)
+    require_string(part.get("part_id"), f"{field}.part_id")
+    positive_vector(part.get("size_m"), f"{field}.size_m", 2)
+    increasing_range(part.get("z_range"), f"{field}.z_range")
+    if "material_role" in part:
+        require_string(part.get("material_role"), f"{field}.material_role")
+
+
+def validate_blocky_cylinder_part(value: Any, field: str) -> None:
+    part = require_object(value, field)
+    require_string(part.get("part_id"), f"{field}.part_id")
+    positive_float(part.get("radius_m"), f"{field}.radius_m")
+    integer_at_least(part.get("segments"), 3, f"{field}.segments")
+    increasing_range(part.get("z_range"), f"{field}.z_range")
+    if "material_role" in part:
+        require_string(part.get("material_role"), f"{field}.material_role")
+
+
+def validate_blocky_ribs(value: Any, field: str) -> None:
+    ribs = require_object(value, field)
+    require_string(ribs.get("part_prefix"), f"{field}.part_prefix")
+    integer_at_least(ribs.get("count"), 1, f"{field}.count")
+    positive_float(ribs.get("core_radius_m"), f"{field}.core_radius_m")
+    positive_float(ribs.get("rib_depth_m"), f"{field}.rib_depth_m")
+    positive_float(ribs.get("rib_width_m"), f"{field}.rib_width_m")
+    increasing_range(ribs.get("z_range"), f"{field}.z_range")
+    finite_float(ribs.get("start_angle_degrees", 0.0), f"{field}.start_angle_degrees")
+    if "material_role" in ribs:
+        require_string(ribs.get("material_role"), f"{field}.material_role")
+
+
+def validate_blocky_column_source(value: Any, field: str) -> None:
+    column = require_object(value, field)
+    axis = require_string(column.get("axis"), f"{field}.axis")
+    if axis != "z":
+        fail(f"{field}.axis only supports z in v0")
+    validate_blocky_box_part(column.get("base"), f"{field}.base")
+    validate_blocky_cylinder_part(column.get("lower_collar"), f"{field}.lower_collar")
+    validate_blocky_cylinder_part(column.get("shaft_core"), f"{field}.shaft_core")
+    validate_blocky_ribs(column.get("ribs"), f"{field}.ribs")
+    validate_blocky_cylinder_part(column.get("upper_collar"), f"{field}.upper_collar")
+    validate_blocky_box_part(column.get("cap"), f"{field}.cap")
+
+
+def validate_blocky_column_bundle_terms(bundle: dict[str, Any], terms: dict[str, set[str]]) -> None:
+    assets = require_list(bundle.get("assets"), "assets")
+    if not assets:
+        fail("bundle assets must not be empty")
+    if bundle.get("asset_count") != len(assets):
+        fail("bundle asset_count must match assets length")
+    known_terms = all_terms(terms)
+    seen_asset_ids: set[str] = set()
+    for asset_index, item in enumerate(assets):
+        asset = require_object(item, f"assets[{asset_index}]")
+        asset_id = require_string(asset.get("asset_id"), f"assets[{asset_index}].asset_id")
+        if asset_id in seen_asset_ids:
+            fail(f"duplicate asset_id: {asset_id}")
+        seen_asset_ids.add(asset_id)
+        operation = require_string(asset.get("operation"), f"{asset_id}.operation")
+        if operation != "blocky_column":
+            fail(f"{asset_id}.operation must be blocky_column")
+        if operation not in operation_terms(terms):
+            fail(f"{asset_id}.operation uses unknown geometry dictionary operation `{operation}`")
+        validate_blocky_column_source(asset.get("blocky_column"), f"{asset_id}.blocky_column")
         require_known_terms(asset.get("geometry_terms_used"), known_terms, f"{asset_id}.geometry_terms_used")
         require_known_terms(asset.get("profile_terms"), terms["profile_primitive"], f"{asset_id}.profile_terms")
         require_known_terms(asset.get("operations"), operation_terms(terms), f"{asset_id}.operations")
@@ -605,6 +694,31 @@ def cylinder_mesh(location: list[float], radius: float, depth: float, segments: 
     return mesh.translated([location[0], location[1], round(location[2] - depth * 0.5, 6)])
 
 
+def oriented_box_mesh(center: list[float], radial_axis: list[float], tangent_axis: list[float], size: list[float]) -> Mesh:
+    cx, cy, cz = center
+    half_radial = size[0] * 0.5
+    half_tangent = size[1] * 0.5
+    half_z = size[2] * 0.5
+    bottom: list[list[float]] = []
+    top: list[list[float]] = []
+    for radial_sign, tangent_sign in ((-1.0, -1.0), (1.0, -1.0), (1.0, 1.0), (-1.0, 1.0)):
+        x = cx + radial_axis[0] * radial_sign * half_radial + tangent_axis[0] * tangent_sign * half_tangent
+        y = cy + radial_axis[1] * radial_sign * half_radial + tangent_axis[1] * tangent_sign * half_tangent
+        bottom.append([round(x, 6), round(y, 6), round(cz - half_z, 6)])
+        top.append([round(x, 6), round(y, 6), round(cz + half_z, 6)])
+    return Mesh(
+        vertices=bottom + top,
+        faces=[
+            [3, 2, 1, 0],
+            [4, 5, 6, 7],
+            [0, 1, 5, 4],
+            [1, 2, 6, 5],
+            [2, 3, 7, 6],
+            [3, 0, 4, 7],
+        ],
+    )
+
+
 def measured_curve_points(part: dict[str, Any]) -> list[list[float]]:
     span = positive_float(part.get("span_m"), "curve.span_m")
     spring_z = finite_float(part.get("spring_z_m"), "curve.spring_z_m")
@@ -812,6 +926,169 @@ def merged_mesh(parts: list[Mesh]) -> Mesh:
     return Mesh(vertices=vertices, faces=faces)
 
 
+def z_range_height(z_range: list[float]) -> float:
+    return round(z_range[1] - z_range[0], 6)
+
+
+def z_range_center(z_range: list[float]) -> float:
+    return round((z_range[0] + z_range[1]) * 0.5, 6)
+
+
+def append_mesh_part(parts_mesh: list[Mesh], mesh_parts: list[dict[str, Any]], part_id: str, source_primitive: str, material_role: Any, mesh: Mesh) -> None:
+    vertex_start = sum(len(part.vertices) for part in parts_mesh)
+    face_start = sum(len(part.faces) for part in parts_mesh)
+    parts_mesh.append(mesh)
+    mesh_parts.append(
+        mesh_part_record(
+            part_id,
+            source_primitive,
+            material_role,
+            vertex_start,
+            vertex_start + len(mesh.vertices) - 1,
+            face_start,
+            face_start + len(mesh.faces) - 1,
+        )
+    )
+
+
+def blocky_box_part_mesh(part: dict[str, Any], field: str) -> Mesh:
+    size_xy = positive_vector(part.get("size_m"), f"{field}.size_m", 2)
+    z_range = increasing_range(part.get("z_range"), f"{field}.z_range")
+    return box_mesh([0.0, 0.0, z_range_center(z_range)], [size_xy[0], size_xy[1], z_range_height(z_range)])
+
+
+def blocky_cylinder_part_mesh(part: dict[str, Any], field: str) -> Mesh:
+    z_range = increasing_range(part.get("z_range"), f"{field}.z_range")
+    return cylinder_mesh(
+        [0.0, 0.0, z_range_center(z_range)],
+        positive_float(part.get("radius_m"), f"{field}.radius_m"),
+        z_range_height(z_range),
+        integer_at_least(part.get("segments"), 3, f"{field}.segments"),
+    )
+
+
+def z_overlap(left: list[float], right: list[float]) -> list[float] | None:
+    start = round(max(left[0], right[0]), 6)
+    end = round(min(left[1], right[1]), 6)
+    if start >= end:
+        return None
+    return [start, end]
+
+
+def blocky_column_mesh(column: dict[str, Any]) -> tuple[Mesh, dict[str, Any], list[dict[str, Any]]]:
+    axis = require_string(column.get("axis"), "blocky_column.axis")
+    if axis != "z":
+        fail("blocky_column.axis only supports z in v0")
+
+    base = require_object(column.get("base"), "blocky_column.base")
+    lower_collar = require_object(column.get("lower_collar"), "blocky_column.lower_collar")
+    shaft_core = require_object(column.get("shaft_core"), "blocky_column.shaft_core")
+    ribs = require_object(column.get("ribs"), "blocky_column.ribs")
+    upper_collar = require_object(column.get("upper_collar"), "blocky_column.upper_collar")
+    cap = require_object(column.get("cap"), "blocky_column.cap")
+
+    parts_mesh: list[Mesh] = []
+    mesh_parts: list[dict[str, Any]] = []
+    append_mesh_part(
+        parts_mesh,
+        mesh_parts,
+        require_string(base.get("part_id"), "blocky_column.base.part_id"),
+        "box",
+        base.get("material_role"),
+        blocky_box_part_mesh(base, "blocky_column.base"),
+    )
+    append_mesh_part(
+        parts_mesh,
+        mesh_parts,
+        require_string(lower_collar.get("part_id"), "blocky_column.lower_collar.part_id"),
+        "cylinder",
+        lower_collar.get("material_role"),
+        blocky_cylinder_part_mesh(lower_collar, "blocky_column.lower_collar"),
+    )
+    append_mesh_part(
+        parts_mesh,
+        mesh_parts,
+        require_string(shaft_core.get("part_id"), "blocky_column.shaft_core.part_id"),
+        "cylinder",
+        shaft_core.get("material_role"),
+        blocky_cylinder_part_mesh(shaft_core, "blocky_column.shaft_core"),
+    )
+
+    rib_count = integer_at_least(ribs.get("count"), 1, "blocky_column.ribs.count")
+    rib_depth = positive_float(ribs.get("rib_depth_m"), "blocky_column.ribs.rib_depth_m")
+    rib_width = positive_float(ribs.get("rib_width_m"), "blocky_column.ribs.rib_width_m")
+    core_radius = positive_float(ribs.get("core_radius_m"), "blocky_column.ribs.core_radius_m")
+    rib_z_range = increasing_range(ribs.get("z_range"), "blocky_column.ribs.z_range")
+    rib_center_radius = round(core_radius + rib_depth * 0.5, 6)
+    start_angle = finite_float(ribs.get("start_angle_degrees", 0.0), "blocky_column.ribs.start_angle_degrees")
+    part_prefix = require_string(ribs.get("part_prefix"), "blocky_column.ribs.part_prefix")
+    for rib_index in range(rib_count):
+        angle = math.radians(start_angle + 360.0 * rib_index / rib_count)
+        radial = [math.cos(angle), math.sin(angle), 0.0]
+        tangent = [-math.sin(angle), math.cos(angle), 0.0]
+        center = [
+            round(radial[0] * rib_center_radius, 6),
+            round(radial[1] * rib_center_radius, 6),
+            z_range_center(rib_z_range),
+        ]
+        append_mesh_part(
+            parts_mesh,
+            mesh_parts,
+            f"{part_prefix}_{rib_index:02d}",
+            "oriented_box",
+            ribs.get("material_role"),
+            oriented_box_mesh(center, radial, tangent, [rib_depth, rib_width, z_range_height(rib_z_range)]),
+        )
+
+    append_mesh_part(
+        parts_mesh,
+        mesh_parts,
+        require_string(upper_collar.get("part_id"), "blocky_column.upper_collar.part_id"),
+        "cylinder",
+        upper_collar.get("material_role"),
+        blocky_cylinder_part_mesh(upper_collar, "blocky_column.upper_collar"),
+    )
+    append_mesh_part(
+        parts_mesh,
+        mesh_parts,
+        require_string(cap.get("part_id"), "blocky_column.cap.part_id"),
+        "box",
+        cap.get("material_role"),
+        blocky_box_part_mesh(cap, "blocky_column.cap"),
+    )
+
+    base_z = increasing_range(base.get("z_range"), "blocky_column.base.z_range")
+    lower_z = increasing_range(lower_collar.get("z_range"), "blocky_column.lower_collar.z_range")
+    shaft_z = increasing_range(shaft_core.get("z_range"), "blocky_column.shaft_core.z_range")
+    upper_z = increasing_range(upper_collar.get("z_range"), "blocky_column.upper_collar.z_range")
+    cap_z = increasing_range(cap.get("z_range"), "blocky_column.cap.z_range")
+    seam_pairs = [
+        ("square_plinth_to_lower_collar", base_z, lower_z),
+        ("lower_collar_to_ribs", lower_z, rib_z_range),
+        ("lower_collar_to_shaft_core", lower_z, shaft_z),
+        ("ribs_to_upper_collar", rib_z_range, upper_z),
+        ("shaft_core_to_upper_collar", shaft_z, upper_z),
+        ("upper_collar_to_square_abacus", upper_z, cap_z),
+    ]
+    covered_seams = [
+        {"seam_id": seam_id, "overlap_z": overlap}
+        for seam_id, left, right in seam_pairs
+        if (overlap := z_overlap(left, right)) is not None
+    ]
+    metadata = {
+        "axis": axis,
+        "assembly": "simple_parts",
+        "part_count": len(mesh_parts),
+        "rib_count": rib_count,
+        "rib_depth_m": rib_depth,
+        "rib_width_m": rib_width,
+        "rib_center_radius_m": rib_center_radius,
+        "shaft_core_radius_m": positive_float(shaft_core.get("radius_m"), "blocky_column.shaft_core.radius_m"),
+        "covered_seams": covered_seams,
+    }
+    return merged_mesh(parts_mesh), metadata, mesh_parts
+
+
 def source_profile_terms(asset: dict[str, Any]) -> list[str]:
     operation = asset.get("operation")
     if operation == "extrude":
@@ -834,6 +1111,8 @@ def source_profile_terms(asset: dict[str, Any]) -> list[str]:
             if profile_type not in terms:
                 terms.append(profile_type)
         return terms
+    if operation == "blocky_column":
+        return ["square", "circle", "rectangle"]
     return []
 
 
@@ -978,6 +1257,9 @@ def compile_asset(asset: dict[str, Any], compiled: dict[str, dict[str, Any]], so
     elif operation == "section_stack":
         mesh, stack_metadata, mesh_parts = section_stack_mesh(require_object(asset.get("section_stack"), f"{asset_id}.section_stack"))
         mesh_extra["section_stack"] = stack_metadata
+    elif operation == "blocky_column":
+        mesh, column_metadata, mesh_parts = blocky_column_mesh(require_object(asset.get("blocky_column"), f"{asset_id}.blocky_column"))
+        mesh_extra["blocky_column"] = column_metadata
     elif operation == "compound_asset":
         parts: list[Mesh] = []
         for component in require_list(asset.get("components"), f"{asset_id}.components"):
@@ -1024,7 +1306,7 @@ def compile_asset(asset: dict[str, Any], compiled: dict[str, dict[str, Any]], so
         },
         "source_refs": [],
         "source_terms": base_source_terms(asset),
-        "validation_expectations": {},
+        "validation_expectations": require_object(asset.get("validation_expectations", {}), f"{asset_id}.validation_expectations"),
         "no_claims": asset["no_claims"],
     }
 
@@ -1102,8 +1384,8 @@ def compile_measured_asset(asset: dict[str, Any], source_schema: str) -> dict[st
 
 def load_bundle(path: Path) -> dict[str, Any]:
     bundle = load_json(path)
-    if bundle.get("schema") not in {SIMPLE_BUNDLE_SCHEMA, MEASURED_BUNDLE_SCHEMA, SECTION_STACK_BUNDLE_SCHEMA}:
-        fail(f"bundle schema must be {SIMPLE_BUNDLE_SCHEMA}, {MEASURED_BUNDLE_SCHEMA}, or {SECTION_STACK_BUNDLE_SCHEMA}")
+    if bundle.get("schema") not in {SIMPLE_BUNDLE_SCHEMA, MEASURED_BUNDLE_SCHEMA, SECTION_STACK_BUNDLE_SCHEMA, BLOCKY_COLUMN_BUNDLE_SCHEMA}:
+        fail(f"bundle schema must be {SIMPLE_BUNDLE_SCHEMA}, {MEASURED_BUNDLE_SCHEMA}, {SECTION_STACK_BUNDLE_SCHEMA}, or {BLOCKY_COLUMN_BUNDLE_SCHEMA}")
     assets = require_list(bundle.get("assets"), "assets")
     if not assets:
         fail("bundle assets must not be empty")
@@ -1183,6 +1465,8 @@ def main() -> None:
         validate_measured_bundle_terms(bundle, geometry_terms)
     elif source_schema == SECTION_STACK_BUNDLE_SCHEMA:
         validate_section_stack_bundle_terms(bundle, geometry_terms)
+    elif source_schema == BLOCKY_COLUMN_BUNDLE_SCHEMA:
+        validate_blocky_column_bundle_terms(bundle, geometry_terms)
     else:
         fail(f"unsupported bundle schema: {source_schema}")
     compiled: dict[str, dict[str, Any]] = {}
@@ -1193,7 +1477,7 @@ def main() -> None:
         if asset_id in seen:
             fail(f"duplicate asset_id: {asset_id}")
         seen.add(asset_id)
-        if source_schema in {SIMPLE_BUNDLE_SCHEMA, SECTION_STACK_BUNDLE_SCHEMA}:
+        if source_schema in {SIMPLE_BUNDLE_SCHEMA, SECTION_STACK_BUNDLE_SCHEMA, BLOCKY_COLUMN_BUNDLE_SCHEMA}:
             compiled[asset_id] = compile_asset(asset, compiled, source_schema)
         else:
             compiled[asset_id] = compile_measured_asset(asset, source_schema)

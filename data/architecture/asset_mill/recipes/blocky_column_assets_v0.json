@@ -1,0 +1,133 @@
+{
+  "schema": "asset_mill_blocky_column_bundle_v0",
+  "bundle_id": "blocky_column_assets_v0",
+  "purpose": "Source-simple blocky column recipe that creates a complex-looking ribbed column from simple mesh parts.",
+  "units": "abstract_meter",
+  "rules": {
+    "source_lane": true,
+    "deterministic_output": true,
+    "no_blender_logic": true,
+    "no_generated_outputs": true,
+    "no_wall_clock_fields": true
+  },
+  "asset_count": 1,
+  "assets": [
+    {
+      "asset_id": "blocky_ribbed_column_v0",
+      "asset_kind": "blocky_compound_column",
+      "operation": "blocky_column",
+      "architectural_role": "square_plinth_round_collar_ribbed_shaft_square_abacus_blockout",
+      "generation_use": [
+        "column",
+        "support_marker",
+        "landmark",
+        "room_feature"
+      ],
+      "semantic_tags": [
+        "support",
+        "blocked",
+        "collision_proxy",
+        "landmark"
+      ],
+      "connectors": [
+        "floor",
+        "ceiling",
+        "radial"
+      ],
+      "child_slots": [
+        "plinth_face",
+        "collar_band",
+        "vertical_rib",
+        "abacus_face"
+      ],
+      "geometry_terms_used": [
+        "blocky_column",
+        "compound_asset",
+        "extrude",
+        "array_radial",
+        "square",
+        "circle",
+        "rectangle",
+        "floor",
+        "ceiling",
+        "radial",
+        "support",
+        "blocked",
+        "collision_proxy",
+        "landmark"
+      ],
+      "profile_terms": [
+        "square",
+        "circle",
+        "rectangle"
+      ],
+      "operations": [
+        "blocky_column",
+        "compound_asset",
+        "extrude",
+        "array_radial"
+      ],
+      "blocky_column": {
+        "axis": "z",
+        "base": {
+          "part_id": "square_plinth",
+          "size_m": [0.92, 0.92],
+          "z_range": [0.0, 0.24],
+          "material_role": "plinth"
+        },
+        "lower_collar": {
+          "part_id": "lower_round_collar",
+          "radius_m": 0.38,
+          "segments": 12,
+          "z_range": [0.2, 0.4],
+          "material_role": "collar"
+        },
+        "shaft_core": {
+          "part_id": "shaft_core",
+          "radius_m": 0.29,
+          "segments": 12,
+          "z_range": [0.36, 2.1],
+          "material_role": "shaft"
+        },
+        "ribs": {
+          "part_prefix": "vertical_rib",
+          "count": 22,
+          "core_radius_m": 0.3,
+          "rib_depth_m": 0.04,
+          "rib_width_m": 0.04,
+          "z_range": [0.36, 2.06],
+          "start_angle_degrees": 0.0,
+          "material_role": "rib"
+        },
+        "upper_collar": {
+          "part_id": "upper_round_necking",
+          "radius_m": 0.38,
+          "segments": 12,
+          "z_range": [2.02, 2.22],
+          "material_role": "collar"
+        },
+        "cap": {
+          "part_id": "square_abacus",
+          "size_m": [0.9, 0.9],
+          "z_range": [2.18, 2.46],
+          "material_role": "abacus"
+        }
+      },
+      "validation_expectations": {
+        "part_count": 27,
+        "rib_count": 22,
+        "rib_depth_m": 0.04,
+        "base_height_m": 0.24,
+        "cap_height_m": 0.28,
+        "nonzero_bounds": true,
+        "known_geometry_terms": true
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false
+      }
+    }
+  ]
+}

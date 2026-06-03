@@ -58,6 +58,15 @@ python3 scripts/asset_pump_v0.py \
   --out /tmp/gameguy_section_stack_asset_pump_v0
 ```
 
+Blocky compound columns keep the source simple while generating shape-rich assets from named simple parts:
+
+```bash
+python3 scripts/asset_pump_v0.py \
+  --bundle data/architecture/asset_mill/recipes/blocky_column_assets_v0.json \
+  --clean \
+  --out /tmp/gameguy_blocky_column_asset_pump_v0
+```
+
 The pump rejects recipe operations, profile types, connector IDs, and semantic tags that are not present in `geometry_dictionary/`.
 
 The first stable generated asset schema is:
@@ -112,6 +121,8 @@ python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_measured_as
 python3 scripts/export_blender_measured_components_preview_v0.py --manifest /tmp/gameguy_measured_asset_pump_v0/manifest.json --validate-only
 python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/section_stack_assets_v0.json --clean --out /tmp/gameguy_section_stack_asset_pump_v0
 python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_section_stack_asset_pump_v0/manifest.json
+python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/blocky_column_assets_v0.json --clean --out /tmp/gameguy_blocky_column_asset_pump_v0
+python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_blocky_column_asset_pump_v0/manifest.json
 python3 scripts/audit_script_orbit_v0.py
 test ! -d pattern_lab_2d
 find . -path '*pattern_lab_2d*' -print
@@ -125,7 +136,7 @@ Expected current checks:
 - Asset pump tests pass.
 - Tiny source fixture validation passes.
 - Measured component source validation passes.
-- Generated `gameguy_asset_v0` validation passes for simple, measured, and section-stack pump output.
+- Generated `gameguy_asset_v0` validation passes for simple, measured, section-stack, and blocky-column pump output.
 - Blender adapter validation consumes generated asset JSON.
 - Measured component Blender adapter validation consumes generated measured asset JSON.
 - Script orbit audit runs without deleting or moving files.

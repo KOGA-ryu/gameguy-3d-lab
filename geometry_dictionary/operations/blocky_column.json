@@ -1,0 +1,37 @@
+{
+  "term_id": "blocky_column",
+  "category": "composition_operation",
+  "plain_name": "Blocky Column",
+  "description": "Assembles a column from simple blocky mesh parts such as boxes, low-poly cylinders, and radial rib arrays.",
+  "required_inputs": {
+    "base": "box_part",
+    "lower_collar": "cylinder_part",
+    "shaft_core": "cylinder_part",
+    "ribs": "radial_box_array",
+    "upper_collar": "cylinder_part",
+    "cap": "box_part"
+  },
+  "outputs": {
+    "type": "mesh"
+  },
+  "constraints": {
+    "axis": "z",
+    "z_ranges_must_increase": true,
+    "rib_count": ">= 1",
+    "rib_depth_m": "> 0",
+    "parts_remain_simple_meshes": true
+  },
+  "common_uses": [
+    "blockout column",
+    "ribbed shaft",
+    "clustered pier proxy",
+    "square plinth to round collar transition"
+  ],
+  "blender_method": "adapter consumes generated mesh vertices and faces; Blender does not assemble source parts",
+  "validation": [
+    "component_ranges_resolve",
+    "bounds_update_is_valid",
+    "nonzero_volume",
+    "source_parts_are_named"
+  ]
+}
