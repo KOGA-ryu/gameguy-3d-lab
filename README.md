@@ -98,7 +98,7 @@ python3 scripts/compile_blender_tool_plan_v0.py \
   --out /tmp/gameguy_blender_tool_plan_v0
 ```
 
-This reads `data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json` and `data/architecture/asset_mill/tool_plan_recipes/banister_post_tool_plan_recipe_v0.json`. It does not execute Blender, write media, write mesh exports, or make render artifacts. A later Blender adapter should consume `gameguy_tool_plan_v0` and execute the staged operations.
+This reads `data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json` and `data/architecture/asset_mill/tool_plan_recipes/banister_post_tool_plan_recipe_v0.json`. It does not execute Blender, write media, write mesh exports, or make render artifacts. The Blender execution adapter consumes `gameguy_tool_plan_v0` and executes the staged operations.
 
 The first execution adapter consumes the compiled tool plan and runs supported deterministic steps in Blender:
 
@@ -114,6 +114,13 @@ The first execution adapter consumes the compiled tool plan and runs supported d
 This writes its report, preview, `.blend`, and optional `.glb` under `/tmp`, not the repo.
 
 The execution report includes `material_regions`, `socket_pass`, `topology_cleanup`, and `quality_pass` evidence. The current banister-post run preserves role material regions, applies two explicit socket booleans with cutter cleanup, creates two socket shadow panels, and reports `0` non-manifold edges after validation.
+
+After a Blender execution run, validate that report with:
+
+```bash
+python3 scripts/validate_blender_tool_plan_execution_report_v0.py \
+  --report /tmp/gameguy_blender_tool_plan_execution_v0/tool_plan_execution_v0_report.json
+```
 
 Blender scripts should be adapters for viewing or exporting deterministic asset JSON. If a Blender script contains source design decisions, move those decisions into source recipes or the asset pump.
 
@@ -154,6 +161,13 @@ python3 -m unittest discover -s tests
 python3 scripts/compile_blender_tool_plan_v0.py --validate-only
 python3 scripts/compile_blender_tool_plan_v0.py --clean --out /tmp/gameguy_blender_tool_plan_v0
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_banister_post_tool_plan_v0_compiled.json --validate-only
+/Applications/Blender.app/Contents/MacOS/Blender --background \
+  --python scripts/execute_blender_tool_plan_v0.py -- \
+  --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_banister_post_tool_plan_v0_compiled.json \
+  --out /tmp/gameguy_blender_tool_plan_execution_v0 \
+  --render \
+  --export
+python3 scripts/validate_blender_tool_plan_execution_report_v0.py --report /tmp/gameguy_blender_tool_plan_execution_v0/tool_plan_execution_v0_report.json
 python3 scripts/validate_tiny_fixture_v0.py
 python3 scripts/validate_measured_component_source_v0.py
 python3 scripts/asset_pump_v0.py --clean --out /tmp/gameguy_asset_pump_v0
@@ -181,6 +195,7 @@ Expected current checks:
 - Asset pump tests pass.
 - Blender tool-plan compiler validates a `97`-tool dictionary and compiles a `32`-step banister-post plan.
 - Blender tool-plan execution adapter validation consumes the compiled `32`-step plan.
+- Blender tool-plan execution report validation proves adapter boundary rules, material-region preservation, socket boolean evidence, topology count, and no repo-local generated outputs.
 - Blender tool-plan execution quality evidence is recorded in `workflow/reports/3D-LAB-0021-execution-quality-pass-v0/`.
 - Tiny source fixture validation passes.
 - Measured component source validation passes.

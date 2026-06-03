@@ -1,0 +1,38 @@
+{
+  "schema": "blender_tool_plan_execution_report_validator_receipt_v0",
+  "packet_id": "3D-LAB-0022",
+  "decision": "ADD_BLENDER_EXECUTION_REPORT_VALIDATOR",
+  "validator": "scripts/validate_blender_tool_plan_execution_report_v0.py",
+  "validated_report": "/tmp/gameguy_blender_tool_plan_execution_v0/tool_plan_execution_v0_report.json",
+  "validation_summary": {
+    "report_schema": "blender_tool_plan_execution_report_v0",
+    "plan_schema": "gameguy_tool_plan_v0",
+    "step_count": 32,
+    "non_manifold_edge_count": 0,
+    "material_role_count": 5,
+    "socket_shadow_panel_count": 2,
+    "generated_outputs_in_repo": false
+  },
+  "rules_validated": {
+    "consumes_gameguy_tool_plan_v0": true,
+    "reads_source_intent_recipe": false,
+    "runs_tool_plan_compiler": false,
+    "imports_asset_pump": false,
+    "executes_only_supported_deterministic_steps": true,
+    "source_design_logic": false
+  },
+  "validator_rules": {
+    "imports_blender": false,
+    "runs_tool_plan_compiler": false,
+    "reads_source_intent_recipe": false,
+    "creates_media_or_mesh": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

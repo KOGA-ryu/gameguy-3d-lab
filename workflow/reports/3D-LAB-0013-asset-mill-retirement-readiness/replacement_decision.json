@@ -12,6 +12,7 @@
     "generated_asset_validator": "scripts/validate_gameguy_asset_v0.py",
     "simple_adapter": "scripts/export_blender_asset_preview_v0.py",
     "measured_adapter": "scripts/export_blender_measured_components_preview_v0.py",
+    "blender_tool_plan_report_validator": "scripts/validate_blender_tool_plan_execution_report_v0.py",
     "generated_schema": "gameguy_asset_v0"
   },
   "retirement_candidates": [
@@ -111,7 +112,7 @@
     }
   ],
   "script_orbit_expected_after": {
-    "KEEP_CANONICAL": 11,
+    "KEEP_CANONICAL": 12,
     "CONVERT_TO_ADAPTER": 0,
     "REPLACE_BY_PUMP": 0,
     "REFERENCE_ONLY": 58,
