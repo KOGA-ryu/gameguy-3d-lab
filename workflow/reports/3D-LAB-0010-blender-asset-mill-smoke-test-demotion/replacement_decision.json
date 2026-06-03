@@ -1,0 +1,58 @@
+{
+  "schema": "blender_asset_mill_smoke_test_replacement_decision_v0",
+  "packet_id": "3D-LAB-0010",
+  "target_script": "scripts/blender_asset_mill_smoke_test_v0.py",
+  "replacement_adapter": "scripts/export_blender_asset_preview_v0.py",
+  "replacement_input_schema": "gameguy_asset_v0",
+  "decision": "DEMOTE_TO_REFERENCE_ONLY",
+  "safe_to_delete_now": false,
+  "reason": "The old Blender smoke test previews the obsolete compiled_asset_mill_solid_v0 goal lane. The new adapter consumes deterministic gameguy_asset_v0 JSON from the canonical pump and preserves the preview/export role without source recipe reads.",
+  "comparison_evidence": {
+    "old_input": "goal/architecture/asset_mill_v0/asset_mill_compiled_index_v0.json",
+    "new_input": "/tmp/gameguy_asset_pump_v0/manifest.json",
+    "old_schema": "compiled_asset_mill_solid_v0",
+    "new_schema": "gameguy_asset_v0",
+    "adapter_validate_only_tested": true,
+    "new_adapter_asset_count": 14,
+    "new_adapter_total_vertices": 280,
+    "new_adapter_total_faces": 186
+  },
+  "old_value_preserved": [
+    "Blender preview/export role for Asset Mill solids.",
+    "Semantic material grouping for walkable, barrier/rail, support, blocked, cover, and default assets.",
+    "Scene context with camera, light, and metric units in Blender mode.",
+    "Custom object properties carrying asset identity, schema, role, semantics, and no-claim flags.",
+    "Machine-readable adapter report."
+  ],
+  "not_preserved_by_design": [
+    {
+      "old_value": "Reads goal/architecture/asset_mill_v0 generated solids.",
+      "reason": "The old generated lane is no longer the canonical asset source."
+    },
+    {
+      "old_value": "Reconstructs meshes from profile sections and compound refs.",
+      "reason": "gameguy_asset_v0 already emits deterministic mesh vertices and faces."
+    },
+    {
+      "old_value": "Writes default outputs under goal/architecture/blender_tests.",
+      "reason": "The new adapter defaults to /tmp and requires explicit output roots for Blender export."
+    }
+  ],
+  "orbit_bucket_update": {
+    "from": "CONVERT_TO_ADAPTER",
+    "to": "REFERENCE_ONLY",
+    "applies_to": "scripts/blender_asset_mill_smoke_test_v0.py"
+  },
+  "follow_up": [
+    "Do not use blender_asset_mill_smoke_test_v0.py as active preview logic.",
+    "Use export_blender_asset_preview_v0.py for gameguy_asset_v0 preview/export validation.",
+    "Keep the old smoke test only as historical reference until a separate deletion task."
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "game_engine_integration": false
+  }
+}

@@ -31,6 +31,7 @@ OVERRIDES: dict[str, tuple[str, str]] = {
     "validate_measured_component_source_v0.py": ("KEEP_CANONICAL", "guards promoted measured component source recipes"),
     "validate_tiny_fixture_v0.py": ("KEEP_CANONICAL", "guards canonical source-only map/building/connector fixture"),
     "audit_script_orbit_v0.py": ("KEEP_CANONICAL", "tracks script cleanup buckets without deleting files"),
+    "blender_asset_mill_smoke_test_v0.py": ("REFERENCE_ONLY", "preview role is replaced by export_blender_asset_preview_v0.py consuming gameguy_asset_v0 JSON"),
     "compile_asset_mill_solids_v0.py": ("REFERENCE_ONLY", "core value has been replaced by asset_pump_v0; keep only as historical comparison until a deletion task"),
     "compile_asset_mill_measured_components_v1.py": ("REFERENCE_ONLY", "measured component catalog has been promoted to data/architecture/asset_mill/recipes/measured_components_v0.json"),
     "compile_asset_mill_measured_components_v2.py": ("REFERENCE_ONLY", "measured component catalog has been promoted to data/architecture/asset_mill/recipes/measured_components_v0.json"),

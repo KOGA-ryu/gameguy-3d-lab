@@ -1,0 +1,25 @@
+{
+  "schema": "workflow_receipt_v0",
+  "packet_id": "3D-LAB-0010",
+  "result": "blender_asset_mill_smoke_test_demoted_to_reference_only",
+  "files_changed": [
+    "scripts/audit_script_orbit_v0.py",
+    "tests/test_audit_script_orbit_v0.py",
+    "tests/test_blender_asset_mill_smoke_test_demotion_v0.py",
+    "workflow/reports/3D-LAB-0010-blender-asset-mill-smoke-test-demotion/replacement_decision.json",
+    "workflow/reports/3D-LAB-0010-blender-asset-mill-smoke-test-demotion/report.md",
+    "workflow/reports/3D-LAB-0010-blender-asset-mill-smoke-test-demotion/receipt.json"
+  ],
+  "validation": [
+    "asset pump emits 14 gameguy_asset_v0 assets",
+    "Blender adapter validate-only consumes generated asset JSON",
+    "script orbit audit demotes blender_asset_mill_smoke_test_v0.py to REFERENCE_ONLY"
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "game_engine_integration": false
+  }
+}
