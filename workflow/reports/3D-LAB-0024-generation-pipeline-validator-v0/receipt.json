@@ -3,12 +3,12 @@
   "packet_id": "3D-LAB-0024",
   "decision": "ADD_GENERATION_PIPELINE_VALIDATOR",
   "validator": "scripts/validate_generation_pipeline_v0.py",
-  "validation_summary": {
-    "json_file_count": 210,
-    "non_blender_command_count": 21,
-    "full_blender_command_count": 23,
-    "tool_plan_count": 1,
-    "tool_plan_step_count": 32,
+    "validation_summary": {
+      "json_file_count": 213,
+      "non_blender_command_count": 22,
+      "full_blender_command_count": 24,
+      "tool_plan_count": 2,
+    "tool_plan_step_count": 57,
     "tool_plan_unique_tool_count": 24,
     "blender_non_manifold_edge_count": 0,
     "blender_material_role_count": 5,

@@ -1,0 +1,46 @@
+{
+  "schema": "multi_asset_tool_plan_recipes_receipt_v0",
+  "packet_id": "3D-LAB-0026",
+  "decision": "PROMOTE_MULTI_ASSET_TOOL_PLAN_SOURCE_BUNDLE",
+  "source_recipe": "data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json",
+  "compiler": "scripts/compile_blender_tool_plan_v0.py",
+  "validator": "scripts/validate_gameguy_tool_plan_v0.py",
+  "adapter": "scripts/execute_blender_tool_plan_v0.py",
+  "generated_schema": "gameguy_tool_plan_v0",
+  "compiled_default": {
+    "plan_count": 2,
+    "total_steps": 57,
+    "unique_tool_count": 24,
+    "plans": [
+      {
+        "plan_id": "gothic_stone_banister_post_tool_plan_v0_compiled",
+        "asset_family": "banister_post",
+        "step_count": 32,
+        "unique_tool_count": 24
+      },
+      {
+        "plan_id": "gothic_stone_window_frame_tool_plan_v0_compiled",
+        "asset_family": "window_frame",
+        "step_count": 25,
+        "unique_tool_count": 22
+      }
+    ]
+  },
+  "rules": {
+    "compiler_imports_blender": false,
+    "compiler_executes_blender": false,
+    "compiler_writes_media_or_mesh": false,
+    "blender_adapter_consumes_compiled_plan": true,
+    "default_bundle_has_multiple_asset_families": true,
+    "window_frame_uses_distinct_tool_sequence": true,
+    "adapter_validate_only_accepts_default_plans": true
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

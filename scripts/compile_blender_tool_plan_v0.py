@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import shutil
 import sys
 from pathlib import Path
@@ -17,7 +18,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DICTIONARY = ROOT / "data" / "architecture" / "asset_mill" / "blender_tools" / "blender_tool_dictionary_v0.json"
-DEFAULT_RECIPE = ROOT / "data" / "architecture" / "asset_mill" / "tool_plan_recipes" / "banister_post_tool_plan_recipe_v0.json"
+DEFAULT_RECIPE = ROOT / "data" / "architecture" / "asset_mill" / "tool_plan_recipes" / "architectural_tool_plan_recipes_v0.json"
 DEFAULT_OUT = Path("/tmp/gameguy_blender_tool_plan_v0")
 FALSE_CLAIMS = {
     "production_approval": False,
@@ -76,6 +77,15 @@ def validate_false_claims(value: Any, field: str) -> dict[str, bool]:
     if claims != FALSE_CLAIMS:
         fail(f"{field} must exactly match required false claim flags")
     return claims
+
+
+def positive_number(value: Any, field: str) -> float:
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
+        fail(f"{field} must be a positive number")
+    number = float(value)
+    if not math.isfinite(number) or number <= 0.0:
+        fail(f"{field} must be a positive number")
+    return round(number, 6)
 
 
 def validate_tool_dictionary(dictionary: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -150,6 +160,47 @@ def style_params(asset: dict[str, Any]) -> dict[str, Any]:
     return require_object(asset.get("style_parameters", {}), f"{asset['asset_id']}.style_parameters")
 
 
+def dimensions(asset: dict[str, Any]) -> dict[str, float]:
+    raw = require_object(asset.get("dimensions_m"), f"{asset['asset_id']}.dimensions_m")
+    return {axis: positive_number(raw.get(axis), f"{asset['asset_id']}.dimensions_m.{axis}") for axis in ("width", "depth", "height")}
+
+
+def rectangular_frame_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
+    params = style_params(asset)
+    dims = dimensions(asset)
+    width = positive_number(params.get("frame_width_m", dims["width"]), f"{asset['asset_id']}.style_parameters.frame_width_m")
+    depth = positive_number(params.get("frame_depth_m", dims["depth"]), f"{asset['asset_id']}.style_parameters.frame_depth_m")
+    height = positive_number(params.get("frame_height_m", dims["height"]), f"{asset['asset_id']}.style_parameters.frame_height_m")
+    side_width = positive_number(params.get("side_member_width_m", 0.14), f"{asset['asset_id']}.style_parameters.side_member_width_m")
+    top_height = positive_number(params.get("top_member_height_m", side_width), f"{asset['asset_id']}.style_parameters.top_member_height_m")
+    bottom_height = positive_number(params.get("bottom_member_height_m", top_height), f"{asset['asset_id']}.style_parameters.bottom_member_height_m")
+    if side_width * 2.0 >= width:
+        fail(f"{asset['asset_id']}.style_parameters side members must leave a center opening")
+    if top_height + bottom_height >= height:
+        fail(f"{asset['asset_id']}.style_parameters top and bottom members must leave a center opening")
+    jamb_height = round(height - top_height - bottom_height, 6)
+    left_x = round(-width * 0.5 + side_width * 0.5, 6)
+    right_x = round(width * 0.5 - side_width * 0.5, 6)
+    bottom_z = round(bottom_height * 0.5, 6)
+    jamb_z = round(bottom_height + jamb_height * 0.5, 6)
+    top_z = round(height - top_height * 0.5, 6)
+    return [
+        {"step_id": "create_window_left_jamb", "tool_id": "primitive_cube_add", "purpose": "Create the left vertical stone jamb.", "params": {"size_m": [side_width, depth, jamb_height], "location_m": [left_x, 0.0, jamb_z]}},
+        {"step_id": "create_window_right_jamb", "tool_id": "primitive_cube_add", "purpose": "Create the right vertical stone jamb.", "params": {"size_m": [side_width, depth, jamb_height], "location_m": [right_x, 0.0, jamb_z]}},
+        {"step_id": "create_window_sill", "tool_id": "primitive_cube_add", "purpose": "Create the lower sill block.", "params": {"size_m": [width, depth, bottom_height], "location_m": [0.0, 0.0, bottom_z]}},
+        {"step_id": "create_window_header", "tool_id": "primitive_cube_add", "purpose": "Create the upper header block.", "params": {"size_m": [width, depth, top_height], "location_m": [0.0, 0.0, top_z]}},
+        {
+            "step_id": "join_window_frame_blocks",
+            "tool_id": "join_objects",
+            "purpose": "Join the four frame blocks into one deterministic frame mesh.",
+            "params": {
+                "objects": ["window_left_jamb", "window_right_jamb", "window_sill", "window_header"],
+                "opening_m": [round(width - side_width * 2.0, 6), round(height - bottom_height - top_height, 6)],
+            },
+        },
+    ]
+
+
 def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
     params = style_params(asset)
     if feature == "stepped_square_base":
@@ -166,6 +217,8 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
             {"step_id": "create_single_rib_source", "tool_id": "primitive_cube_add", "purpose": "Create one narrow rib source block before radial duplication.", "params": {"size_m": [params.get("rib_depth_m", 0.025), 0.035, 0.90], "location_m": [0.145, 0.0, 0.68]}},
             {"step_id": "duplicate_ribs_radially", "tool_id": "object_duplicate_radial", "purpose": "Duplicate the rib source around the post core.", "params": {"count": params.get("rib_count", 12), "axis": "z", "radius_m": 0.145}},
         ]
+    if feature == "rectangular_frame_blocks":
+        return rectangular_frame_steps(asset)
     if feature == "east_west_rail_sockets":
         return [
             {"step_id": "create_east_socket_cutter", "tool_id": "primitive_cube_add", "purpose": "Create the east rail socket cutter volume.", "params": {"size_m": [0.16, 0.22, params.get("rail_socket_height_m", 0.26)], "location_m": [0.18, 0.0, 0.70]}},

@@ -7,8 +7,8 @@
   "validation_summary": {
     "manifest_schema": "gameguy_tool_plan_manifest_v0",
     "plan_schema": "gameguy_tool_plan_v0",
-    "plan_count": 1,
-    "total_steps": 32,
+    "plan_count": 2,
+    "total_steps": 57,
     "unique_tool_count": 24,
     "generated_outputs_created": false
   },

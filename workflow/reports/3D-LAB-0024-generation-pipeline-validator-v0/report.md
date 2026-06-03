@@ -45,18 +45,19 @@ It orchestrates:
 Non-Blender pipeline result:
 
 ```text
-PASS generation pipeline validation: commands=21 json=210 include_blender=false
+PASS generation pipeline validation: commands=22 json=213 include_blender=false
 ```
 
 Full Blender pipeline result:
 
 ```text
-PASS generation pipeline validation: commands=23 json=210 include_blender=true
+PASS generation pipeline validation: commands=24 json=213 include_blender=true
 ```
 
 The full run includes:
 
-- `gameguy_tool_plan_v0`: `1` plan, `32` steps, `24` tools
+- `gameguy_tool_plan_v0`: `2` plans, `57` steps, `24` tools
+- Blender adapter validate-only: banister post and window frame plans
 - Blender execution: `32` steps
 - Execution report validation: non-manifold `0`, material roles `5`, socket panels `2`
 - Script orbit after Asset Mill retirement: `72` scripts, `14` canonical, `0` `DELETE_LATER`

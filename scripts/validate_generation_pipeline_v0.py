@@ -116,6 +116,7 @@ def python_script(script: str, *args: str | Path) -> list[str]:
 
 def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender_path: Path) -> list[CommandStep]:
     plan_path = TOOL_PLAN_OUT / "plans" / "gothic_stone_banister_post_tool_plan_v0_compiled.json"
+    window_frame_plan_path = TOOL_PLAN_OUT / "plans" / "gothic_stone_window_frame_tool_plan_v0_compiled.json"
     steps = [
         CommandStep("python_compile", [sys.executable, "-m", "py_compile", *[str(path) for path in sorted((ROOT / "scripts").glob("*.py"))]]),
     ]
@@ -127,6 +128,7 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
             CommandStep("tool_plan_compile", python_script("scripts/compile_blender_tool_plan_v0.py", "--clean", "--out", TOOL_PLAN_OUT)),
             CommandStep("tool_plan_validate", python_script("scripts/validate_gameguy_tool_plan_v0.py", "--manifest", TOOL_PLAN_OUT / "manifest.json")),
             CommandStep("blender_adapter_validate_only", python_script("scripts/execute_blender_tool_plan_v0.py", "--plan", plan_path, "--validate-only")),
+            CommandStep("window_frame_blender_adapter_validate_only", python_script("scripts/execute_blender_tool_plan_v0.py", "--plan", window_frame_plan_path, "--validate-only")),
         ]
     )
     if include_blender:

@@ -57,6 +57,7 @@ class GenerationPipelineValidatorTests(unittest.TestCase):
         self.assertFalse(report["rules"]["generated_outputs_in_repo"])
         labels = {command["label"] for command in report["commands"]}
         self.assertIn("tool_plan_validate", labels)
+        self.assertIn("window_frame_blender_adapter_validate_only", labels)
         self.assertIn("simple_asset_validate", labels)
         self.assertIn("measured_asset_adapter_validate", labels)
         self.assertIn("script_orbit_audit", labels)

@@ -25,7 +25,7 @@
       "scripts/export_blender_measured_components_preview_v0.py"
     ],
     "tool_plan_assets": [
-      "data/architecture/asset_mill/tool_plan_recipes/banister_post_tool_plan_recipe_v0.json",
+      "data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json",
       "scripts/compile_blender_tool_plan_v0.py",
       "scripts/validate_gameguy_tool_plan_v0.py",
       "scripts/execute_blender_tool_plan_v0.py",

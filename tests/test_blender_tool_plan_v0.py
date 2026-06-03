@@ -15,7 +15,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 COMPILER = ROOT / "scripts" / "compile_blender_tool_plan_v0.py"
 DICTIONARY = ROOT / "data" / "architecture" / "asset_mill" / "blender_tools" / "blender_tool_dictionary_v0.json"
-RECIPE = ROOT / "data" / "architecture" / "asset_mill" / "tool_plan_recipes" / "banister_post_tool_plan_recipe_v0.json"
+DEFAULT_RECIPE = ROOT / "data" / "architecture" / "asset_mill" / "tool_plan_recipes" / "architectural_tool_plan_recipes_v0.json"
 CONTRACT = ROOT / "contracts" / "gameguy_tool_plan_v0.json"
 
 
@@ -34,6 +34,15 @@ def run_compiler(out_root: Path) -> None:
         capture_output=True,
         text=True,
     )
+
+
+def plan_by_asset(out_root: Path, asset_id: str) -> dict[str, Any]:
+    manifest = load_json(out_root / "manifest.json")
+    for row in manifest["plans"]:
+        plan = load_json(out_root / row["path"])
+        if plan["asset_id"] == asset_id:
+            return plan
+    raise AssertionError(f"missing plan for {asset_id}")
 
 
 class BlenderToolPlanTests(unittest.TestCase):
@@ -89,10 +98,10 @@ class BlenderToolPlanTests(unittest.TestCase):
             out_root = Path(tmp) / "plans"
             run_compiler(out_root)
             manifest = load_json(out_root / "manifest.json")
-            plan = load_json(out_root / manifest["plans"][0]["path"])
+            plan = plan_by_asset(out_root, "gothic_stone_banister_post_tool_plan_v0")
 
         self.assertEqual(manifest["schema"], "gameguy_tool_plan_manifest_v0")
-        self.assertEqual(manifest["plan_count"], 1)
+        self.assertEqual(manifest["plan_count"], 2)
         self.assertEqual(manifest["plans"][0]["step_count"], 32)
         self.assertEqual(manifest["plans"][0]["unique_tool_count"], 24)
         self.assertEqual(plan["asset_family"], "banister_post")
@@ -129,6 +138,33 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(topology_validation["cleanup_merge_distance_m"], 0.0)
         self.assertEqual(topology_validation["cleanup_fill_hole_sides"], 0)
 
+    def test_window_frame_recipe_compiles_to_different_tool_sequence(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "plans"
+            run_compiler(out_root)
+            plan = plan_by_asset(out_root, "gothic_stone_window_frame_tool_plan_v0")
+
+        self.assertEqual(plan["asset_family"], "window_frame")
+        self.assertEqual(plan["style"], "gothic_stone")
+        self.assertEqual(plan["summary"]["step_count"], 25)
+        self.assertEqual(plan["summary"]["unique_tool_count"], 22)
+        self.assertEqual(plan["summary"]["covered_stages"], plan["stage_order"])
+        self.assertEqual(plan["summary"]["non_deterministic_step_count"], 0)
+        self.assertNotIn("modifier_boolean", plan["summary"]["unique_tools"])
+        self.assertNotIn("object_duplicate_radial", plan["summary"]["unique_tools"])
+        self.assertIn("join_objects", plan["summary"]["unique_tools"])
+
+        by_step = {step["step_id"]: step for step in plan["steps"]}
+        self.assertEqual(plan["steps"][0]["step_id"], "create_window_left_jamb")
+        self.assertEqual(by_step["create_window_left_jamb"]["params"]["size_m"], [0.14, 0.16, 0.84])
+        self.assertEqual(by_step["create_window_sill"]["params"]["size_m"], [0.92, 0.16, 0.18])
+        self.assertEqual(by_step["create_window_header"]["params"]["size_m"], [0.92, 0.16, 0.16])
+        self.assertEqual(
+            by_step["join_window_frame_blocks"]["params"]["objects"],
+            ["window_left_jamb", "window_right_jamb", "window_sill", "window_header"],
+        )
+        self.assertEqual(by_step["join_window_frame_blocks"]["params"]["opening_m"], [0.64, 0.84])
+
     def test_validate_only_writes_no_manifest(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             out_root = Path(tmp) / "plans"
@@ -140,11 +176,11 @@ class BlenderToolPlanTests(unittest.TestCase):
                 text=True,
             )
 
-        self.assertIn("compiled tool plans=1 steps=32 tools=97 out=<validate-only>", result.stdout)
+        self.assertIn("compiled tool plans=2 steps=57 tools=97 out=<validate-only>", result.stdout)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_unknown_feature_fails_before_output(self) -> None:
-        source = load_json(RECIPE)
+        source = load_json(DEFAULT_RECIPE)
         source["assets"][0]["features"].append("floating_magic")
 
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
@@ -160,6 +196,25 @@ class BlenderToolPlanTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("unknown feature `floating_magic`", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
+
+    def test_window_frame_invalid_member_dimensions_fail_before_output(self) -> None:
+        source = load_json(DEFAULT_RECIPE)
+        source["assets"][1]["style_parameters"]["side_member_width_m"] = 0.5
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            recipe_path = Path(tmp) / "bad_recipe.json"
+            out_root = Path(tmp) / "plans"
+            recipe_path.write_text(json.dumps(source, indent=2) + "\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(COMPILER), "--recipe", str(recipe_path), "--out", str(out_root)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("side members must leave a center opening", result.stderr)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_tool_count_mismatch_fails_before_output(self) -> None:

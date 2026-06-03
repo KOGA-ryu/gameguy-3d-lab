@@ -44,8 +44,8 @@ Validated manifest:
 
 Current measured result:
 
-- Plans: `1`
-- Steps: `32`
+- Plans: `2`
+- Steps: `57`
 - Unique tools: `24`
 - Generated outputs created by validator: `false`
 
