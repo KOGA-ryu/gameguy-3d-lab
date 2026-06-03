@@ -1,0 +1,66 @@
+{
+  "schema": "asset_mill_solids_replacement_decision_v0",
+  "packet_id": "3D-LAB-0008",
+  "target_script": "scripts/compile_asset_mill_solids_v0.py",
+  "replacement_script": "scripts/asset_pump_v0.py",
+  "decision": "DEMOTE_TO_REFERENCE_ONLY",
+  "safe_to_delete_now": false,
+  "reason": "The canonical pump now preserves the useful source value from the old compiler while avoiding repo-local generated outputs and wall-clock fields.",
+  "comparison_evidence": {
+    "old_asset_count": 14,
+    "new_asset_count": 14,
+    "asset_ids_match": true,
+    "dimension_mismatch_count": 0,
+    "old_schema": "compiled_asset_mill_solid_v0",
+    "new_schema": "gameguy_asset_v0",
+    "new_preserves_child_slots": true
+  },
+  "old_value_preserved": [
+    "Reads the same simple solid source recipe bundle.",
+    "Supports extrude, loft_sections, and compound_asset operations.",
+    "Preserves all 14 source asset IDs.",
+    "Preserves generated dimensions for every asset.",
+    "Preserves semantic tags and no-claims data.",
+    "Preserves connector anchor intent; the pump also emits connector directions.",
+    "Preserves child_slots in gameguy_asset_v0 output."
+  ],
+  "not_preserved_by_design": [
+    {
+      "old_value": "created_at_utc fields",
+      "reason": "The pump output must remain deterministic for same-source/same-json tests."
+    },
+    {
+      "old_value": "goal/architecture/asset_mill_v0 writes",
+      "reason": "The pump writes only to the requested output root and defaults to /tmp."
+    },
+    {
+      "old_value": "goal/receipts writes and Markdown report generation",
+      "reason": "Workflow evidence belongs in explicit workflow packets, not in the canonical generator."
+    },
+    {
+      "old_value": "profile_points_2d and section-only output",
+      "reason": "gameguy_asset_v0 emits deterministic mesh vertices and faces as the adapter-facing geometry contract."
+    },
+    {
+      "old_value": "approx_volume",
+      "reason": "This is a derived metric, not needed for the first stable generated asset schema."
+    }
+  ],
+  "orbit_bucket_update": {
+    "from": "REPLACE_BY_PUMP",
+    "to": "REFERENCE_ONLY",
+    "applies_to": "scripts/compile_asset_mill_solids_v0.py"
+  },
+  "follow_up": [
+    "Do not run compile_asset_mill_solids_v0.py as source logic.",
+    "Keep the old script only for historical comparison until a deletion task explicitly removes it.",
+    "Use asset_pump_v0.py plus gameguy_asset_v0 tests for future simple solid generation."
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "game_engine_integration": false
+  }
+}

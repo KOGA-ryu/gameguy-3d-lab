@@ -1,0 +1,30 @@
+{
+  "schema": "workflow_receipt_v0",
+  "packet_id": "3D-LAB-0008",
+  "result": "asset_mill_solids_compiler_demoted_to_reference_only",
+  "files_changed": [
+    "contracts/gameguy_asset_v0.json",
+    "scripts/asset_pump_v0.py",
+    "scripts/audit_script_orbit_v0.py",
+    "tests/test_asset_pump_v0.py",
+    "tests/test_audit_script_orbit_v0.py",
+    "tests/test_asset_mill_solids_replacement_decision_v0.py",
+    "workflow/reports/3D-LAB-0008-asset-mill-solids-replacement-decision/replacement_decision.json",
+    "workflow/reports/3D-LAB-0008-asset-mill-solids-replacement-decision/report.md",
+    "workflow/reports/3D-LAB-0008-asset-mill-solids-replacement-decision/receipt.json"
+  ],
+  "validation": [
+    "old and new asset counts match",
+    "old and new asset IDs match",
+    "old and new generated dimensions match",
+    "child_slots preserved by gameguy_asset_v0",
+    "script orbit bucket updated to REFERENCE_ONLY"
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "game_engine_integration": false
+  }
+}

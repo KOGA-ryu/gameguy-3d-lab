@@ -167,6 +167,8 @@ def validate_recipe_terms(bundle: dict[str, Any], terms: dict[str, set[str]]) ->
             semantic_tag = require_string(tag, f"{asset_id}.semantic_tags[{tag_index}]")
             if semantic_tag not in terms["semantic_geometry"]:
                 fail(f"{asset_id}.semantic_tags[{tag_index}] uses unknown geometry dictionary semantic tag `{semantic_tag}`")
+        for slot_index, slot in enumerate(require_list(asset.get("child_slots"), f"{asset_id}.child_slots")):
+            require_string(slot, f"{asset_id}.child_slots[{slot_index}]")
 
         if operation == "extrude":
             validate_profile_terms(asset.get("profile"), terms, f"{asset_id}.profile")
@@ -353,6 +355,7 @@ def require_asset_core(asset: dict[str, Any]) -> None:
         "generation_use",
         "semantic_tags",
         "connectors",
+        "child_slots",
         "no_claims",
     ):
         if field not in asset:
@@ -400,6 +403,7 @@ def compile_asset(asset: dict[str, Any], compiled: dict[str, dict[str, Any]]) ->
         "architectural_role": asset["architectural_role"],
         "generation_use": asset["generation_use"],
         "semantic_tags": asset["semantic_tags"],
+        "child_slots": asset["child_slots"],
         "connectors": connector_points(bounds_m, require_list(asset["connectors"], f"{asset_id}.connectors")),
         "components": components,
         "bounds_m": bounds_m,

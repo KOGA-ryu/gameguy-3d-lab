@@ -101,6 +101,7 @@ class AssetPumpTests(unittest.TestCase):
 
         self.assertEqual(slab["source_operation"], "extrude")
         self.assertEqual(slab["dimensions_m"], {"width": 2.0, "depth": 1.0, "height": 0.18})
+        self.assertEqual(slab["child_slots"], ["surface_panel", "edge_trim", "support_anchor"])
         self.assertEqual(len(slab["mesh"]["vertices"]), 8)
         self.assertEqual(len(slab["mesh"]["faces"]), 6)
         self.assertEqual(
