@@ -111,6 +111,16 @@
       "guard_panel_blender_execution_report_validate"
     ]
   },
+  "source_profile_bundles": [
+    {
+      "bundle_id": "measured_molding_profiles_v0",
+      "path": "data/architecture/asset_mill/profile_sources/measured_molding_profiles_v0.json",
+      "schema": "asset_mill_measured_molding_profile_bundle_v0",
+      "expected_profile_count": 5,
+      "validator": "scripts/validate_measured_molding_profiles_v0.py",
+      "pipeline_labels": ["measured_molding_profile_validate"]
+    }
+  ],
   "reference_only_recipe_bundles": [
     {
       "path": "data/architecture/asset_mill/recipes/architectural_asset_batch_v0.json",

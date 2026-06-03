@@ -1,0 +1,55 @@
+{
+  "schema": "measured_molding_profile_receipt_v0",
+  "packet_id": "3D-LAB-0039",
+  "decision": "ADD_SOURCE_ONLY_MEASURED_MOLDING_PROFILES",
+  "source_profile_bundle": "data/architecture/asset_mill/profile_sources/measured_molding_profiles_v0.json",
+  "validator": "scripts/validate_measured_molding_profiles_v0.py",
+  "registry": "data/architecture/asset_mill/asset_generation_registry_v0.json",
+  "pipeline_validator": "scripts/validate_generation_pipeline_v0.py",
+  "tests": [
+    "tests/test_validate_measured_molding_profiles_v0.py",
+    "tests/test_validate_asset_generation_registry_v0.py",
+    "tests/test_validate_generation_pipeline_v0.py"
+  ],
+  "profile_source_summary": {
+    "reference_count": 2,
+    "profile_count": 5,
+    "side_molding_profile_count": 3,
+    "shaft_channel_cross_section_count": 1,
+    "compound_pier_cross_section_count": 1,
+    "measurement_hint_count": 29,
+    "candidate_blender_tool_count": 11
+  },
+  "profile_ids": [
+    "column_cap_cyma_profile_v0",
+    "fluted_shaft_channel_cross_section_v0",
+    "column_base_torus_side_profile_v0",
+    "plinth_ogee_side_profile_v0",
+    "compound_pier_lobed_cross_section_v0"
+  ],
+  "validation_summary": {
+    "source_profile_count": 5,
+    "source_profile_bundle_count": 1,
+    "json_file_count": 232,
+    "non_blender_command_count": 30,
+    "full_blender_command_count": 44,
+    "repo_media_mesh_output_count": 0
+  },
+  "rules": {
+    "source_profile_only": true,
+    "blender_does_not_choose_design_shape": true,
+    "measured_profiles_validate_before_generation": true,
+    "no_asset_json_generated_by_this_slice": true,
+    "no_blender_execution_for_profile_sources": true,
+    "generated_outputs_in_repo": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false,
+    "building_code_compliance": false
+  }
+}

@@ -1,0 +1,340 @@
+{
+  "schema": "asset_mill_measured_molding_profile_bundle_v0",
+  "bundle_id": "measured_molding_profiles_v0",
+  "purpose": "Capture user-supplied column molding and compound-pier references as measured source profiles before generating finished assets.",
+  "status": "source_profile_only",
+  "rules": {
+    "source_profile_only": true,
+    "no_blender_execution": true,
+    "no_generated_outputs": true,
+    "measurements_are_reference_hints": true,
+    "blender_tool_choices_declared": true,
+    "geometry_terms_must_exist": true
+  },
+  "references": [
+    {
+      "reference_id": "user_column_molding_profile_reference_v0",
+      "source_type": "user_supplied_image",
+      "observed_subject": "Measured classical column/pedestal side profiles with cap, fluted shaft, base, plinth, and centimeter callouts.",
+      "access_date": "2026-06-03",
+      "use_policy": "morphology_reference_only"
+    },
+    {
+      "reference_id": "user_compound_pier_reference_v0",
+      "source_type": "user_supplied_image",
+      "observed_subject": "Compound pier diagram showing arch, pier, shaft, and lobed cross-section.",
+      "access_date": "2026-06-03",
+      "use_policy": "morphology_reference_only"
+    }
+  ],
+  "profile_count": 5,
+  "profiles": [
+    {
+      "profile_id": "column_cap_cyma_profile_v0",
+      "profile_family": "side_molding_profile",
+      "source_reference_id": "user_column_molding_profile_reference_v0",
+      "coordinate_space": "local_xz",
+      "units": "cm",
+      "source_measurements_cm": {
+        "overall_height": 30.0,
+        "top_lip_projection": 5.0,
+        "upper_fillet_height": 1.5,
+        "cyma_curve_height": 17.0,
+        "middle_bead_height": 1.5,
+        "necking_band_height": 2.5,
+        "lower_fillet_height": 1.5
+      },
+      "shape_controls": {
+        "dominant_silhouette": "wide flat cap over concave-convex side curve and narrow necking bands",
+        "intended_profile_points": "trace as a small ordered custom_polygon in local xz, then revolve or extrude by asset family",
+        "curve_handling": "use low point count first, then bevel or shade for apparent roundness"
+      },
+      "geometry_terms_used": ["custom_polygon", "circle", "offset_profile", "extrude", "bevel_edges", "profile_operation_stack"],
+      "profile_terms": ["custom_polygon", "circle"],
+      "operations": ["offset_profile", "extrude", "bevel_edges", "profile_operation_stack"],
+      "candidate_blender_tools": [
+        {
+          "tool_id": "mesh_from_pydata",
+          "v0_use": "preferred",
+          "use": "Create the traced side-profile polygon deterministically."
+        },
+        {
+          "tool_id": "modifier_screw",
+          "v0_use": "preferred_for_round_columns",
+          "use": "Revolve the side profile when building a column cap."
+        },
+        {
+          "tool_id": "modifier_bevel",
+          "v0_use": "supporting",
+          "use": "Round the narrow lip and bead edges without adding source-side complexity."
+        },
+        {
+          "tool_id": "modifier_weighted_normal",
+          "v0_use": "supporting",
+          "use": "Improve hard-surface shading after bevels."
+        }
+      ],
+      "implementation_notes": [
+        "This is the first cap profile source; it is not yet a generated column asset.",
+        "The visible centimeter callouts are recorded as source hints, not production dimensions."
+      ],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "profile_id": "fluted_shaft_channel_cross_section_v0",
+      "profile_family": "shaft_channel_cross_section",
+      "source_reference_id": "user_column_molding_profile_reference_v0",
+      "coordinate_space": "local_xy",
+      "units": "cm",
+      "source_measurements_cm": {
+        "reference_span": 40.0,
+        "major_channel_width": 6.0,
+        "minor_channel_width": 5.0,
+        "edge_lobe_width": 2.0,
+        "repeat_depth_hint": 2.0
+      },
+      "shape_controls": {
+        "dominant_silhouette": "repeated shallow rounded flutes around or across a shaft face",
+        "intended_profile_points": "define one channel as a low-vertex concave custom polygon, then repeat by array",
+        "curve_handling": "represent the flute with a small faceted arc and let bevel/normal tools sell the carved edge"
+      },
+      "geometry_terms_used": ["custom_polygon", "circle", "array_linear", "array_radial", "extrude", "bevel_edges"],
+      "profile_terms": ["custom_polygon", "circle"],
+      "operations": ["array_linear", "array_radial", "extrude", "bevel_edges"],
+      "candidate_blender_tools": [
+        {
+          "tool_id": "mesh_from_pydata",
+          "v0_use": "preferred",
+          "use": "Build one simple fluted channel profile."
+        },
+        {
+          "tool_id": "modifier_array",
+          "v0_use": "preferred_for_flat_faces",
+          "use": "Repeat channels across a rectangular shaft side."
+        },
+        {
+          "tool_id": "object_duplicate_radial",
+          "v0_use": "preferred_for_round_columns",
+          "use": "Repeat channel cutters or raised ribs around a shaft."
+        },
+        {
+          "tool_id": "modifier_bevel",
+          "v0_use": "supporting",
+          "use": "Round the flute lips while keeping the channel source low vertex."
+        }
+      ],
+      "implementation_notes": [
+        "This profile is the bridge between the user's simple-vertex idea and visually complex ribbing.",
+        "The generator should expose channel count, depth, and lip width as controls."
+      ],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "profile_id": "column_base_torus_side_profile_v0",
+      "profile_family": "side_molding_profile",
+      "source_reference_id": "user_column_molding_profile_reference_v0",
+      "coordinate_space": "local_xz",
+      "units": "cm",
+      "source_measurements_cm": {
+        "overall_height": 15.0,
+        "main_torus_radius": 8.0,
+        "upper_fillet_height": 1.5,
+        "small_bead_height": 2.5,
+        "lower_fillet_height": 1.5
+      },
+      "shape_controls": {
+        "dominant_silhouette": "large round torus-like swelling over narrow stacked bands",
+        "intended_profile_points": "trace the side silhouette as a faceted custom polygon and optionally revolve with screw",
+        "curve_handling": "bevel and weighted normals should provide rounded stone without high source vertex count"
+      },
+      "geometry_terms_used": ["custom_polygon", "circle", "offset_profile", "extrude", "bevel_edges", "profile_operation_stack"],
+      "profile_terms": ["custom_polygon", "circle"],
+      "operations": ["offset_profile", "extrude", "bevel_edges", "profile_operation_stack"],
+      "candidate_blender_tools": [
+        {
+          "tool_id": "mesh_from_pydata",
+          "v0_use": "preferred",
+          "use": "Create the torus-side silhouette from declared profile points."
+        },
+        {
+          "tool_id": "modifier_screw",
+          "v0_use": "preferred_for_round_columns",
+          "use": "Revolve the base profile into a column base."
+        },
+        {
+          "tool_id": "modifier_bevel",
+          "v0_use": "supporting",
+          "use": "Add catch-light rounding to bands and torus edges."
+        },
+        {
+          "tool_id": "shade_smooth",
+          "v0_use": "supporting",
+          "use": "Smooth the visually round swelling after profile generation."
+        }
+      ],
+      "implementation_notes": [
+        "This should replace generic square base slabs when a column source calls for a classical base.",
+        "The 8 cm callout is treated as visual proportion evidence, not a fabrication radius."
+      ],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "profile_id": "plinth_ogee_side_profile_v0",
+      "profile_family": "side_molding_profile",
+      "source_reference_id": "user_column_molding_profile_reference_v0",
+      "coordinate_space": "local_xz",
+      "units": "cm",
+      "source_measurements_cm": {
+        "overall_height": 26.0,
+        "main_ogee_radius": 9.5,
+        "foot_depth": 8.0,
+        "top_fillet_height": 1.5,
+        "middle_step_height": 2.0,
+        "lower_fillet_height": 1.5
+      },
+      "shape_controls": {
+        "dominant_silhouette": "stepped plinth with an ogee-like rounded transition into a broad foot",
+        "intended_profile_points": "use a stepped custom polygon with a small number of curve control corners",
+        "curve_handling": "the source stores the important silhouette breaks; bevels can create the soft stone transitions"
+      },
+      "geometry_terms_used": ["custom_polygon", "rectangle", "offset_profile", "extrude", "bevel_edges", "profile_operation_stack"],
+      "profile_terms": ["custom_polygon", "rectangle"],
+      "operations": ["offset_profile", "extrude", "bevel_edges", "profile_operation_stack"],
+      "candidate_blender_tools": [
+        {
+          "tool_id": "mesh_from_pydata",
+          "v0_use": "preferred",
+          "use": "Build a traced plinth profile with explicit silhouette corners."
+        },
+        {
+          "tool_id": "primitive_cube_add",
+          "v0_use": "supporting",
+          "use": "Add broad square plinth slabs when the profile is used in a blocky post."
+        },
+        {
+          "tool_id": "modifier_bevel",
+          "v0_use": "supporting",
+          "use": "Round selected profile edges after extrusion or screw revolve."
+        },
+        {
+          "tool_id": "mark_sharp",
+          "v0_use": "supporting",
+          "use": "Keep major plinth steps crisp after beveling."
+        }
+      ],
+      "implementation_notes": [
+        "This is the profile most likely to improve square-to-round base transitions in the next column/post recipe.",
+        "The shape is intentionally stored as source morphology, not Blender-specific modeling steps."
+      ],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "profile_id": "compound_pier_lobed_cross_section_v0",
+      "profile_family": "compound_pier_cross_section",
+      "source_reference_id": "user_compound_pier_reference_v0",
+      "coordinate_space": "local_xy",
+      "units": "normalized",
+      "source_measurements_cm": {
+        "normalized_outer_width": 100.0,
+        "normalized_outer_depth": 100.0,
+        "cardinal_major_lobe_radius": 15.0,
+        "diagonal_minor_lobe_radius": 7.5,
+        "central_core_half_width": 30.0,
+        "shaft_cluster_count_hint": 12.0
+      },
+      "shape_controls": {
+        "dominant_silhouette": "central compound shaft with four major lobes, smaller intermediate lobes, and vertical clustered ribs",
+        "intended_profile_points": "declare a lobed custom_polygon or generate lobes from normalized radii before extrusion",
+        "curve_handling": "start with faceted lobes; later add bevels or radial duplicated half-round ribs"
+      },
+      "geometry_terms_used": ["custom_polygon", "circle", "array_radial", "compound_asset", "loft_sections", "extrude", "bevel_edges"],
+      "profile_terms": ["custom_polygon", "circle"],
+      "operations": ["array_radial", "compound_asset", "loft_sections", "extrude", "bevel_edges"],
+      "candidate_blender_tools": [
+        {
+          "tool_id": "mesh_from_pydata",
+          "v0_use": "preferred",
+          "use": "Create the lobed cross-section as a deterministic low-vertex mesh profile."
+        },
+        {
+          "tool_id": "primitive_cylinder_add",
+          "v0_use": "supporting",
+          "use": "Add simple shaft lobes or column clusters when the source chooses separate solids."
+        },
+        {
+          "tool_id": "object_duplicate_radial",
+          "v0_use": "supporting",
+          "use": "Repeat rib/lobe members around the central pier."
+        },
+        {
+          "tool_id": "join_objects",
+          "v0_use": "supporting",
+          "use": "Join compound pier members after source-defined placement."
+        },
+        {
+          "tool_id": "modifier_bevel",
+          "v0_use": "supporting",
+          "use": "Soften rib edges while preserving the lobed silhouette."
+        }
+      ],
+      "implementation_notes": [
+        "This establishes the compound-pier cross-section as reusable source data for posts, columns, frame mullions, and pier-like supports.",
+        "The numbers are normalized because the reference diagram is a form diagram, not a measured construction drawing."
+      ],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    }
+  ],
+  "next_generation_goal": {
+    "recommended_slice": "3D-LAB-0040-profile-driven-column-tool-plan-v0",
+    "first_geometry_change": "Compile one square plinth, cap/base molding, fluted shaft, and compound-lobed cross-section into a Blender tool plan."
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false,
+    "building_code_compliance": false
+  }
+}
