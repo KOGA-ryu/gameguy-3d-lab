@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PUMP = ROOT / "scripts" / "asset_pump_v0.py"
 ASSET_CONTRACT = ROOT / "contracts" / "gameguy_asset_v0.json"
 MEASURED_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "measured_components_v0.json"
+SECTION_STACK_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "section_stack_assets_v0.json"
 FALSE_CLAIMS = {
     "production_approval": False,
     "structural_safety": False,
@@ -38,6 +39,16 @@ def run_pump(out_root: Path) -> None:
 def run_measured_pump(out_root: Path) -> None:
     subprocess.run(
         [sys.executable, str(PUMP), "--bundle", str(MEASURED_BUNDLE), "--out", str(out_root)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
+def run_section_stack_pump(out_root: Path) -> None:
+    subprocess.run(
+        [sys.executable, str(PUMP), "--bundle", str(SECTION_STACK_BUNDLE), "--out", str(out_root)],
         cwd=ROOT,
         check=True,
         capture_output=True,
@@ -202,6 +213,41 @@ class AssetPumpTests(unittest.TestCase):
         self.assertIn("validation_warnings", arch)
         self.assertEqual(arch["validation_warnings"][0]["mesh_bounds_m"], arch["mesh"]["bounds_m"])
 
+    def test_section_stack_bundle_generates_star_column(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "pump"
+            run_section_stack_pump(out_root)
+            manifest = load_json(out_root / "manifest.json")
+            column = load_json(out_root / "assets" / "star_column_v0.json")
+
+        self.assertEqual(manifest["source_bundle_schema"], "asset_mill_section_stack_bundle_v0")
+        self.assertEqual(manifest["asset_count"], 1)
+        self.assertEqual(column["schema"], "gameguy_asset_v0")
+        self.assertEqual(column["source_schema"], "asset_mill_section_stack_bundle_v0")
+        self.assertEqual(column["source_operation"], "section_stack")
+        self.assertEqual(column["asset_kind"], "section_stack")
+        self.assertEqual(column["dimensions_m"], {"width": 0.811378, "depth": 0.811378, "height": 2.46})
+        self.assertEqual(len(column["mesh"]["vertices"]), 84)
+        self.assertEqual(len(column["mesh"]["faces"]), 74)
+        self.assertEqual(
+            column["mesh"]["parts"],
+            [
+                {
+                    "part_id": "section_stack_body",
+                    "source_primitive": "section_stack",
+                    "vertex_range": [0, 83],
+                    "face_range": [0, 73],
+                }
+            ],
+        )
+        self.assertEqual(column["mesh"]["section_stack"]["axis"], "z")
+        self.assertEqual(column["mesh"]["section_stack"]["ring_count"], 7)
+        self.assertEqual(column["mesh"]["section_stack"]["rings"][0]["ring_id"], "base_foot")
+        self.assertEqual(column["mesh"]["section_stack"]["rings"][-1]["vertex_range"], [72, 83])
+        self.assertEqual(column["source_terms"]["profiles"], ["custom_polygon"])
+        self.assertEqual(column["source_terms"]["operators"], ["section_stack", "loft_sections"])
+        self.assert_mesh_is_well_formed(column)
+
     def test_output_is_deterministic_across_runs(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             out_a = Path(tmp) / "pump_a"
@@ -259,6 +305,20 @@ class AssetPumpTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("unknown geometry dictionary term `made_up_semantic`", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
+
+    def test_section_stack_mismatched_ring_vertex_count_fails_before_output(self) -> None:
+        source_bundle = load_json(SECTION_STACK_BUNDLE)
+        source_bundle["assets"][0]["section_stack"]["rings"][1]["profile"]["params"]["points"].pop()
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            bundle_path = Path(tmp) / "bad_section_stack_bundle.json"
+            out_root = Path(tmp) / "pump"
+            bundle_path.write_text(json.dumps(source_bundle, indent=2) + "\n", encoding="utf-8")
+            result = run_pump_with_bundle(bundle_path, out_root)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("rings must have matching vertex counts", result.stderr)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def assert_mesh_is_well_formed(self, asset: dict[str, Any]) -> None:

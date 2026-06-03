@@ -11,13 +11,13 @@ The rule is strict: Asset Mill recipes may only use profile, operation, connecto
 | `composition_operation` | 3 |
 | `connector` | 16 |
 | `measurement` | 10 |
-| `mesh_operation` | 6 |
+| `mesh_operation` | 7 |
 | `profile_primitive` | 11 |
 | `semantic_geometry` | 12 |
 | `transform` | 2 |
 | `validation_term` | 6 |
 
-Total terms: `66`
+Total terms: `67`
 
 ## Asset Mill Enforcement
 

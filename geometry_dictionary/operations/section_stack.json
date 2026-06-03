@@ -1,0 +1,24 @@
+{
+  "term_id": "section_stack",
+  "category": "mesh_operation",
+  "plain_name": "Section Stack",
+  "description": "Builds a deterministic mesh by bridging two or more ordered profile rings along an axis.",
+  "required_inputs": {
+    "axis": "x | y | z",
+    "rings": "profile_ring[]"
+  },
+  "outputs": {
+    "type": "mesh"
+  },
+  "constraints": {
+    "min_rings": 2,
+    "profiles_must_have_matching_vertex_count": true,
+    "ring_positions_must_increase": true
+  },
+  "blender_method": "adapter consumes generated mesh vertices and faces; Blender does not rebuild rings",
+  "validation": [
+    "matching_vertex_count",
+    "manifold_mesh",
+    "outward_normals"
+  ]
+}

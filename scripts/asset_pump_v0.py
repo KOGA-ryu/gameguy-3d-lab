@@ -27,6 +27,7 @@ DEFAULT_OUT = Path("/tmp/gameguy_asset_pump_v0")
 DICTIONARY_ROOT = ROOT / "geometry_dictionary"
 SIMPLE_BUNDLE_SCHEMA = "asset_mill_recipe_bundle_v0"
 MEASURED_BUNDLE_SCHEMA = "asset_mill_measured_component_bundle_v0"
+SECTION_STACK_BUNDLE_SCHEMA = "asset_mill_section_stack_bundle_v0"
 FALSE_CLAIMS = {
     "production_approval": False,
     "structural_safety": False,
@@ -273,6 +274,72 @@ def validate_recipe_terms(bundle: dict[str, Any], terms: dict[str, set[str]]) ->
                     fail(f"{asset_id} references unknown or later asset_ref `{ref}`")
 
 
+def validate_section_stack_rings(stack: Any, terms: dict[str, set[str]], field: str) -> None:
+    stack_obj = require_object(stack, field)
+    axis = require_string(stack_obj.get("axis"), f"{field}.axis")
+    if axis != "z":
+        fail(f"{field}.axis only supports z in v0")
+    rings = require_list(stack_obj.get("rings"), f"{field}.rings")
+    if len(rings) < 2:
+        fail(f"{field}.rings requires at least two rings")
+    seen_ring_ids: set[str] = set()
+    previous_at: float | None = None
+    ring_size: int | None = None
+    for ring_index, ring in enumerate(rings):
+        ring_obj = require_object(ring, f"{field}.rings[{ring_index}]")
+        ring_id = require_string(ring_obj.get("ring_id"), f"{field}.rings[{ring_index}].ring_id")
+        if ring_id in seen_ring_ids:
+            fail(f"{field}.rings duplicate ring_id: {ring_id}")
+        seen_ring_ids.add(ring_id)
+        at = finite_float(ring_obj.get("at"), f"{field}.rings[{ring_index}].at")
+        if previous_at is not None and at <= previous_at:
+            fail(f"{field}.rings[{ring_index}].at must increase")
+        previous_at = at
+        profile = require_object(ring_obj.get("profile"), f"{field}.rings[{ring_index}].profile")
+        validate_profile_terms(profile, terms, f"{field}.rings[{ring_index}].profile")
+        points = profile_points(profile)
+        if ring_size is None:
+            ring_size = len(points)
+        elif len(points) != ring_size:
+            fail(f"{field}.rings must have matching vertex counts")
+
+
+def validate_section_stack_bundle_terms(bundle: dict[str, Any], terms: dict[str, set[str]]) -> None:
+    assets = require_list(bundle.get("assets"), "assets")
+    if not assets:
+        fail("bundle assets must not be empty")
+    if bundle.get("asset_count") != len(assets):
+        fail("bundle asset_count must match assets length")
+    known_terms = all_terms(terms)
+    seen_asset_ids: set[str] = set()
+    for asset_index, item in enumerate(assets):
+        asset = require_object(item, f"assets[{asset_index}]")
+        asset_id = require_string(asset.get("asset_id"), f"assets[{asset_index}].asset_id")
+        if asset_id in seen_asset_ids:
+            fail(f"duplicate asset_id: {asset_id}")
+        seen_asset_ids.add(asset_id)
+        operation = require_string(asset.get("operation"), f"{asset_id}.operation")
+        if operation != "section_stack":
+            fail(f"{asset_id}.operation must be section_stack")
+        if operation not in operation_terms(terms):
+            fail(f"{asset_id}.operation uses unknown geometry dictionary operation `{operation}`")
+        validate_section_stack_rings(asset.get("section_stack"), terms, f"{asset_id}.section_stack")
+        require_known_terms(asset.get("geometry_terms_used"), known_terms, f"{asset_id}.geometry_terms_used")
+        require_known_terms(asset.get("profile_terms"), terms["profile_primitive"], f"{asset_id}.profile_terms")
+        require_known_terms(asset.get("operations"), operation_terms(terms), f"{asset_id}.operations")
+        for connector_index, connector in enumerate(require_list(asset.get("connectors"), f"{asset_id}.connectors")):
+            connector_id = require_string(connector, f"{asset_id}.connectors[{connector_index}]")
+            if connector_id not in terms["connector"]:
+                fail(f"{asset_id}.connectors[{connector_index}] uses unknown geometry dictionary connector `{connector_id}`")
+        for tag_index, tag in enumerate(require_list(asset.get("semantic_tags"), f"{asset_id}.semantic_tags")):
+            semantic_tag = require_string(tag, f"{asset_id}.semantic_tags[{tag_index}]")
+            if semantic_tag not in terms["semantic_geometry"]:
+                fail(f"{asset_id}.semantic_tags[{tag_index}] uses unknown geometry dictionary semantic tag `{semantic_tag}`")
+        for slot_index, slot in enumerate(require_list(asset.get("child_slots"), f"{asset_id}.child_slots")):
+            require_string(slot, f"{asset_id}.child_slots[{slot_index}]")
+        validate_claims(asset)
+
+
 def validate_measured_proof_primitive(part: Any, field: str) -> None:
     item = require_object(part, field)
     primitive = require_string(item.get("primitive"), f"{field}.primitive")
@@ -416,6 +483,17 @@ def profile_points(profile: dict[str, Any]) -> list[list[float]]:
             positive_float(params.get("radius"), "profile.params.radius"),
             int(params.get("segments", 12)),
         )
+    if profile_type == "custom_polygon":
+        points = require_list(params.get("points"), "profile.params.points")
+        if len(points) < 3:
+            fail("profile.params.points requires at least 3 points")
+        winding = params.get("winding", "counter_clockwise")
+        if winding not in {"clockwise", "counter_clockwise"}:
+            fail("profile.params.winding must be clockwise or counter_clockwise")
+        result = [finite_vector(point, f"profile.params.points[{index}]", 2) for index, point in enumerate(points)]
+        if winding == "clockwise":
+            result = list(reversed(result))
+        return result
     fail(f"unsupported profile type: {profile_type}")
 
 
@@ -535,6 +613,68 @@ def loft_mesh(sections: list[dict[str, Any]]) -> Mesh:
     return Mesh(vertices=vertices, faces=faces)
 
 
+def section_stack_mesh(stack: dict[str, Any]) -> tuple[Mesh, dict[str, Any], list[dict[str, Any]]]:
+    axis = require_string(stack.get("axis"), "section_stack.axis")
+    if axis != "z":
+        fail("section_stack.axis only supports z in v0")
+    rings_source = require_list(stack.get("rings"), "section_stack.rings")
+    if len(rings_source) < 2:
+        fail("section_stack.rings requires at least two rings")
+
+    rings: list[dict[str, Any]] = []
+    vertices: list[list[float]] = []
+    ring_size: int | None = None
+    previous_at: float | None = None
+    for ring_index, ring in enumerate(rings_source):
+        ring_obj = require_object(ring, f"section_stack.rings[{ring_index}]")
+        ring_id = require_string(ring_obj.get("ring_id"), f"section_stack.rings[{ring_index}].ring_id")
+        at = finite_float(ring_obj.get("at"), f"section_stack.rings[{ring_index}].at")
+        if previous_at is not None and at <= previous_at:
+            fail(f"section_stack.rings[{ring_index}].at must increase")
+        previous_at = at
+        points = profile_points(require_object(ring_obj.get("profile"), f"section_stack.rings[{ring_index}].profile"))
+        if ring_size is None:
+            ring_size = len(points)
+        elif len(points) != ring_size:
+            fail("section_stack.rings requires matching profile vertex counts")
+        start = len(vertices)
+        vertices.extend([[round(x, 6), round(y, 6), at] for x, y in points])
+        rings.append(
+            {
+                "ring_id": ring_id,
+                "at": at,
+                "profile_type": require_string(require_object(ring_obj.get("profile"), f"section_stack.rings[{ring_index}].profile").get("type"), f"section_stack.rings[{ring_index}].profile.type"),
+                "vertex_range": [start, len(vertices) - 1],
+            }
+        )
+
+    assert ring_size is not None
+    faces: list[list[int]] = [list(reversed(range(ring_size)))]
+    last_start = (len(rings) - 1) * ring_size
+    faces.append(list(range(last_start, last_start + ring_size)))
+    for ring_index in range(len(rings) - 1):
+        start = ring_index * ring_size
+        next_start = (ring_index + 1) * ring_size
+        for vertex_index in range(ring_size):
+            nxt = (vertex_index + 1) % ring_size
+            faces.append([start + vertex_index, start + nxt, next_start + nxt, next_start + vertex_index])
+
+    parts = [
+        {
+            "part_id": "section_stack_body",
+            "source_primitive": "section_stack",
+            "vertex_range": [0, len(vertices) - 1],
+            "face_range": [0, len(faces) - 1],
+        }
+    ]
+    metadata = {
+        "axis": axis,
+        "ring_count": len(rings),
+        "rings": rings,
+    }
+    return Mesh(vertices=vertices, faces=faces), metadata, parts
+
+
 def bounds(vertices: list[list[float]]) -> dict[str, list[float]]:
     if not vertices:
         fail("cannot calculate bounds for empty mesh")
@@ -605,15 +745,38 @@ def source_profile_terms(asset: dict[str, Any]) -> list[str]:
             if profile_type not in terms:
                 terms.append(profile_type)
         return terms
+    if operation == "section_stack":
+        terms = []
+        stack = require_object(asset.get("section_stack"), f"{asset.get('asset_id', '<unknown>')}.section_stack")
+        for ring in require_list(stack.get("rings"), f"{asset.get('asset_id', '<unknown>')}.section_stack.rings"):
+            profile = require_object(require_object(ring, "ring").get("profile"), "ring.profile")
+            profile_type = require_string(profile.get("type"), "ring.profile.type")
+            if profile_type not in terms:
+                terms.append(profile_type)
+        return terms
     return []
 
 
 def base_source_terms(asset: dict[str, Any]) -> dict[str, list[str]]:
     operation = require_string(asset.get("operation"), f"{asset.get('asset_id', '<unknown>')}.operation")
+    geometry_terms = [
+        require_string(term, f"{asset.get('asset_id', '<unknown>')}.geometry_terms_used[]")
+        for term in require_list(asset.get("geometry_terms_used", []), f"{asset.get('asset_id', '<unknown>')}.geometry_terms_used")
+    ]
+    profile_terms_source = asset.get("profile_terms", source_profile_terms(asset))
+    profile_terms = [
+        require_string(term, f"{asset.get('asset_id', '<unknown>')}.profile_terms[]")
+        for term in require_list(profile_terms_source, f"{asset.get('asset_id', '<unknown>')}.profile_terms")
+    ]
+    operation_terms_source = asset.get("operations", [operation])
+    operator_terms = [
+        require_string(term, f"{asset.get('asset_id', '<unknown>')}.operations[]")
+        for term in require_list(operation_terms_source, f"{asset.get('asset_id', '<unknown>')}.operations")
+    ]
     return {
-        "geometry": [],
-        "profiles": source_profile_terms(asset),
-        "operators": [operation],
+        "geometry": geometry_terms,
+        "profiles": profile_terms,
+        "operators": operator_terms,
     }
 
 
@@ -726,10 +889,15 @@ def compile_asset(asset: dict[str, Any], compiled: dict[str, dict[str, Any]], so
     asset_id = require_string(asset["asset_id"], "asset_id")
     operation = require_string(asset["operation"], f"{asset_id}.operation")
     components: list[dict[str, Any]] = []
+    mesh_parts: list[dict[str, Any]] = []
+    mesh_extra: dict[str, Any] = {}
     if operation == "extrude":
         mesh = extrude_mesh(profile_points(require_object(asset.get("profile"), f"{asset_id}.profile")), positive_float(asset.get("height"), f"{asset_id}.height"))
     elif operation == "loft_sections":
         mesh = loft_mesh(require_list(asset.get("sections"), f"{asset_id}.sections"))
+    elif operation == "section_stack":
+        mesh, stack_metadata, mesh_parts = section_stack_mesh(require_object(asset.get("section_stack"), f"{asset_id}.section_stack"))
+        mesh_extra["section_stack"] = stack_metadata
     elif operation == "compound_asset":
         parts: list[Mesh] = []
         for component in require_list(asset.get("components"), f"{asset_id}.components"):
@@ -769,7 +937,8 @@ def compile_asset(asset: dict[str, Any], compiled: dict[str, dict[str, Any]], so
         "dimensions_m": dimensions(bounds_m),
         "mesh": {
             "coordinate_space": "local_xyz_m",
-            "parts": [],
+            "parts": mesh_parts,
+            **mesh_extra,
             "vertices": mesh.vertices,
             "faces": mesh.faces,
         },
@@ -853,8 +1022,8 @@ def compile_measured_asset(asset: dict[str, Any], source_schema: str) -> dict[st
 
 def load_bundle(path: Path) -> dict[str, Any]:
     bundle = load_json(path)
-    if bundle.get("schema") not in {SIMPLE_BUNDLE_SCHEMA, MEASURED_BUNDLE_SCHEMA}:
-        fail(f"bundle schema must be {SIMPLE_BUNDLE_SCHEMA} or {MEASURED_BUNDLE_SCHEMA}")
+    if bundle.get("schema") not in {SIMPLE_BUNDLE_SCHEMA, MEASURED_BUNDLE_SCHEMA, SECTION_STACK_BUNDLE_SCHEMA}:
+        fail(f"bundle schema must be {SIMPLE_BUNDLE_SCHEMA}, {MEASURED_BUNDLE_SCHEMA}, or {SECTION_STACK_BUNDLE_SCHEMA}")
     assets = require_list(bundle.get("assets"), "assets")
     if not assets:
         fail("bundle assets must not be empty")
@@ -932,6 +1101,8 @@ def main() -> None:
         validate_recipe_terms(bundle, geometry_terms)
     elif source_schema == MEASURED_BUNDLE_SCHEMA:
         validate_measured_bundle_terms(bundle, geometry_terms)
+    elif source_schema == SECTION_STACK_BUNDLE_SCHEMA:
+        validate_section_stack_bundle_terms(bundle, geometry_terms)
     else:
         fail(f"unsupported bundle schema: {source_schema}")
     compiled: dict[str, dict[str, Any]] = {}
@@ -942,7 +1113,7 @@ def main() -> None:
         if asset_id in seen:
             fail(f"duplicate asset_id: {asset_id}")
         seen.add(asset_id)
-        if source_schema == SIMPLE_BUNDLE_SCHEMA:
+        if source_schema in {SIMPLE_BUNDLE_SCHEMA, SECTION_STACK_BUNDLE_SCHEMA}:
             compiled[asset_id] = compile_asset(asset, compiled, source_schema)
         else:
             compiled[asset_id] = compile_measured_asset(asset, source_schema)

@@ -7,6 +7,7 @@
   "source_inputs": [
     "data/architecture/asset_mill/recipes/simple_solids_v0.json",
     "data/architecture/asset_mill/recipes/measured_components_v0.json",
+    "data/architecture/asset_mill/recipes/section_stack_assets_v0.json",
     "geometry_dictionary/"
   ],
   "coordinate_model": {

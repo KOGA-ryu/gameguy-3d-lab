@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PUMP = ROOT / "scripts" / "asset_pump_v0.py"
 VALIDATOR = ROOT / "scripts" / "validate_gameguy_asset_v0.py"
 MEASURED_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "measured_components_v0.json"
+SECTION_STACK_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "section_stack_assets_v0.json"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -25,10 +26,12 @@ def load_json(path: Path) -> dict[str, Any]:
     return data
 
 
-def run_pump(out_root: Path, *, measured: bool = False) -> None:
+def run_pump(out_root: Path, *, measured: bool = False, section_stack: bool = False) -> None:
     cmd = [sys.executable, str(PUMP)]
     if measured:
         cmd.extend(["--bundle", str(MEASURED_BUNDLE)])
+    if section_stack:
+        cmd.extend(["--bundle", str(SECTION_STACK_BUNDLE)])
     cmd.extend(["--out", str(out_root)])
     subprocess.run(cmd, cwd=ROOT, check=True, capture_output=True, text=True)
 
@@ -74,6 +77,22 @@ class GameguyAssetValidatorTests(unittest.TestCase):
         self.assertEqual(report["total_faces"], 926)
         self.assertEqual(report["total_parts"], 52)
         self.assertEqual(report["total_connectors"], 74)
+
+    def test_validates_section_stack_asset_pump_manifest(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "pump"
+            report_path = Path(tmp) / "asset_report.json"
+            run_pump(out_root, section_stack=True)
+            result = run_validator(out_root / "manifest.json", report_path)
+            report = load_json(report_path)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(report["source_bundle_schema"], "asset_mill_section_stack_bundle_v0")
+        self.assertEqual(report["asset_count"], 1)
+        self.assertEqual(report["measured_asset_count"], 0)
+        self.assertEqual(report["total_vertices"], 84)
+        self.assertEqual(report["total_faces"], 74)
+        self.assertEqual(report["total_parts"], 1)
 
     def test_rejects_invalid_mesh_face_index(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
