@@ -286,8 +286,10 @@ def validate_source_asset_polish_bundle(item: Any, index: int, known_labels: set
         fail("source_asset_polish_plan_bundles geometry_dictionary must contain operations/asset_polish_tool_plan.json")
     compiler = script_path(bundle_ref.get("compiler"), f"source_asset_polish_plan_bundles[{index}].compiler")
     validator = script_path(bundle_ref.get("validator"), f"source_asset_polish_plan_bundles[{index}].validator")
+    adapter = script_path(bundle_ref.get("adapter_validate_only"), f"source_asset_polish_plan_bundles[{index}].adapter_validate_only")
     assert_no_blender_import(compiler, f"source_asset_polish_plan_bundles[{index}].compiler")
     assert_no_blender_import(validator, f"source_asset_polish_plan_bundles[{index}].validator")
+    assert_no_blender_import(adapter, f"source_asset_polish_plan_bundles[{index}].adapter_validate_only")
     labels = validate_pipeline_labels(bundle_ref.get("pipeline_labels"), known_labels, f"source_asset_polish_plan_bundles[{index}].pipeline_labels")
     return {
         "bundle_id": bundle_id,
@@ -295,6 +297,7 @@ def validate_source_asset_polish_bundle(item: Any, index: int, known_labels: set
         "schema": expected_schema,
         "plan_count": expected_count,
         "tool_dictionary": display_path(dictionary_path),
+        "adapter_validate_only": display_path(adapter),
         "pipeline_label_count": len(labels),
     }
 

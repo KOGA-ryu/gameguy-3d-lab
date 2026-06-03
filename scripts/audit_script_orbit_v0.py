@@ -37,6 +37,7 @@ OVERRIDES: dict[str, tuple[str, str]] = {
     "validate_generation_pipeline_v0.py": ("KEEP_CANONICAL", "orchestrates canonical deterministic 3D generation validation gates"),
     "validate_reference_dissection_packet_v0.py": ("KEEP_CANONICAL", "guards reference-led shape and Blender tool dissection packets before geometry generation"),
     "validate_asset_generation_registry_v0.py": ("KEEP_CANONICAL", "guards the declared canonical generation recipe/tool-plan surface and reference-only boundaries"),
+    "validate_asset_polish_blender_adapter_v0.py": ("KEEP_CANONICAL", "validate-only adapter boundary for compiled asset_polish_tool_plan_v0 before Blender execution support"),
     "validate_asset_polish_tool_plan_v0.py": ("KEEP_CANONICAL", "guards deterministic asset_polish_tool_plan_v0 compiler output before Blender adapter execution"),
     "validate_blender_tool_plan_execution_report_v0.py": ("KEEP_CANONICAL", "guards Blender execution quality reports without importing Blender or source recipes"),
     "validate_gameguy_tool_plan_v0.py": ("KEEP_CANONICAL", "guards deterministic gameguy_tool_plan_v0 compiler output before Blender adapter execution"),

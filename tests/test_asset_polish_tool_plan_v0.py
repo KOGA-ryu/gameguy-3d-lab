@@ -79,13 +79,29 @@ class AssetPolishToolPlanTests(unittest.TestCase):
         self.assertIn("weighted_normals", plan["terminology_terms"])
 
         targets = {target["target_id"]: target for target in plan["targets"]}
-        self.assertIn("newel.plinth.panel_faces", targets)
-        self.assertEqual(targets["newel.plinth.panel_faces"]["selector"]["faces"], ["front", "back", "left", "right"])
-        self.assertIn("newel.cap.ogee_lip", targets)
+        self.assertIn("newel.plinth.fielded_panel_faces", targets)
+        self.assertEqual(targets["newel.plinth.fielded_panel_faces"]["selector"]["faces"], ["front", "back", "left", "right"])
+        self.assertIn("newel.cap.lower_outer_ogee_lip", targets)
+        self.assertEqual(targets["newel.shaft.panel_lips"]["selector"]["from_target"], "newel.shaft.side_panels")
 
         steps = {step["step_id"]: step for step in plan["steps"]}
+        self.assertEqual(
+            [step["step_id"] for step in plan["steps"]],
+            [
+                "inset_plinth_fielded_panels",
+                "inset_shaft_side_panels",
+                "raise_shaft_panel_beads",
+                "define_east_west_socket_reveals",
+                "sweep_cap_lower_outer_ogee_lip",
+                "chamfer_plinth_outer_arrises",
+                "bevel_all_visible_hard_edges",
+                "assign_gothic_stone_material_slots",
+                "apply_weighted_normals",
+                "smart_uv_unwrap_visible_parts",
+            ],
+        )
         self.assertEqual(steps["inset_plinth_fielded_panels"]["operation"], "inset_faces")
-        self.assertEqual(steps["sweep_cap_ogee_lip"]["tool_id"], "curve_bevel_profile")
+        self.assertEqual(steps["sweep_cap_lower_outer_ogee_lip"]["tool_id"], "curve_bevel_profile")
         self.assertEqual(steps["apply_weighted_normals"]["tool_id"], "modifier_weighted_normal")
         self.assertEqual(steps["smart_uv_unwrap_visible_parts"]["tool_id"], "uv_smart_project")
         self.assertFalse(plan["rules"]["compiler_executes_blender"])
@@ -109,6 +125,25 @@ class AssetPolishToolPlanTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("references unknown target", result.stderr)
+
+    def test_validator_rejects_unknown_selector_from_target(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "polish"
+            compile_to(out_root)
+            manifest = load_json(out_root / "manifest.json")
+            plan_path = out_root / manifest["plans"][0]["path"]
+            plan = load_json(plan_path)
+            plan["targets"][3]["selector"]["from_target"] = "missing.side_panels"
+            plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "--manifest", str(out_root / "manifest.json")],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("selector.from_target references unknown target", result.stderr)
 
     def test_recipe_references_terminology_doc(self) -> None:
         recipe = load_json(RECIPE)

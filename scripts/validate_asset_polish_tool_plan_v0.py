@@ -30,6 +30,27 @@ FALSE_CLAIMS = {
     "game_engine_integration": False,
 }
 FORBIDDEN_OUTPUT_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".blend", ".obj", ".gltf", ".glb", ".fbx"}
+ALLOWED_OPERATIONS = {
+    "bevel_edges",
+    "boolean_cut",
+    "chamfer_edges",
+    "extrude_along_normals",
+    "inset_faces",
+    "material_assign",
+    "sweep_profile",
+    "uv_unwrap",
+    "weighted_normals",
+}
+ALLOWED_SELECTOR_KINDS = {
+    "all_visible_hard_edges",
+    "all_visible_mesh_parts",
+    "edge_band",
+    "edge_role",
+    "face_border",
+    "part_ids",
+    "side_faces",
+}
+ALLOWED_SIDE_FACES = {"front", "back", "left", "right"}
 
 
 def fail(message: str) -> None:
@@ -131,6 +152,26 @@ def validate_dimensions(value: Any, field: str) -> None:
         require_number(dimensions.get(key), f"{field}.{key}", positive=True)
 
 
+def validate_selector_shape(selector: dict[str, Any], target_id: str) -> str:
+    kind = require_string(selector.get("kind"), f"{target_id}.selector.kind")
+    if kind not in ALLOWED_SELECTOR_KINDS:
+        fail(f"{target_id}.selector.kind uses unknown selector `{kind}`")
+    if kind == "edge_role":
+        require_string(selector.get("edge_role"), f"{target_id}.selector.edge_role")
+    elif kind == "side_faces":
+        faces = require_string_list(selector.get("faces"), f"{target_id}.selector.faces")
+        invalid = [face for face in faces if face not in ALLOWED_SIDE_FACES]
+        if invalid:
+            fail(f"{target_id}.selector.faces uses unknown side faces: {invalid}")
+    elif kind == "face_border":
+        require_string(selector.get("from_target"), f"{target_id}.selector.from_target")
+    elif kind == "part_ids":
+        require_string_list(selector.get("part_ids"), f"{target_id}.selector.part_ids")
+    elif kind == "edge_band":
+        require_string(selector.get("band"), f"{target_id}.selector.band")
+    return kind
+
+
 def validate_plan(plan: dict[str, Any], tool_map: dict[str, dict[str, Any]]) -> dict[str, Any]:
     if plan.get("schema") != PLAN_SCHEMA:
         fail(f"plan schema must be {PLAN_SCHEMA}")
@@ -155,8 +196,16 @@ def validate_plan(plan: dict[str, Any], tool_map: dict[str, dict[str, Any]]) -> 
         target_ids.add(target_id)
         require_string_list(target.get("architectural_terms"), f"{target_id}.architectural_terms")
         require_string_list(target.get("source_part_ids"), f"{target_id}.source_part_ids")
-        require_object(target.get("selector"), f"{target_id}.selector")
+        validate_selector_shape(require_object(target.get("selector"), f"{target_id}.selector"), target_id)
         require_string(target.get("material_role"), f"{target_id}.material_role")
+    for item in targets:
+        target = require_object(item, f"{plan_id}.targets")
+        target_id = require_string(target.get("target_id"), f"{plan_id}.targets.target_id")
+        selector = require_object(target.get("selector"), f"{target_id}.selector")
+        if selector.get("kind") == "face_border":
+            from_target = require_string(selector.get("from_target"), f"{target_id}.selector.from_target")
+            if from_target not in target_ids:
+                fail(f"{target_id}.selector.from_target references unknown target `{from_target}`")
     steps = require_list(plan.get("steps"), f"{plan_id}.steps")
     step_ids: set[str] = set()
     unique_tools: set[str] = set()
@@ -170,7 +219,10 @@ def validate_plan(plan: dict[str, Any], tool_map: dict[str, dict[str, Any]]) -> 
         if step_id in step_ids:
             fail(f"{plan_id} duplicate step_id `{step_id}`")
         step_ids.add(step_id)
-        operations.add(require_string(step.get("operation"), f"{step_id}.operation"))
+        operation = require_string(step.get("operation"), f"{step_id}.operation")
+        if operation not in ALLOWED_OPERATIONS:
+            fail(f"{step_id}.operation uses unknown operation `{operation}`")
+        operations.add(operation)
         tool_id = require_string(step.get("tool_id"), f"{step_id}.tool_id")
         if tool_id not in tool_map:
             fail(f"{step_id}.tool_id uses unknown tool `{tool_id}`")

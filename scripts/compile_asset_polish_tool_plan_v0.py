@@ -45,6 +45,16 @@ ALLOWED_OPERATIONS = {
     "uv_unwrap",
     "weighted_normals",
 }
+ALLOWED_SELECTOR_KINDS = {
+    "all_visible_hard_edges",
+    "all_visible_mesh_parts",
+    "edge_band",
+    "edge_role",
+    "face_border",
+    "part_ids",
+    "side_faces",
+}
+ALLOWED_SIDE_FACES = {"front", "back", "left", "right"}
 
 
 def fail(message: str) -> None:
@@ -195,7 +205,7 @@ def validate_target(value: Any, index: int) -> dict[str, Any]:
     target = require_object(value, f"targets[{index}]")
     target_id = require_string(target.get("target_id"), f"targets[{index}].target_id")
     selector = require_object(target.get("selector"), f"{target_id}.selector")
-    require_string(selector.get("kind"), f"{target_id}.selector.kind")
+    validate_selector_shape(selector, target_id)
     normalized = {
         "target_id": target_id,
         "architectural_terms": require_string_list(target.get("architectural_terms"), f"{target_id}.architectural_terms"),
@@ -204,6 +214,36 @@ def validate_target(value: Any, index: int) -> dict[str, Any]:
         "material_role": require_string(target.get("material_role"), f"{target_id}.material_role"),
     }
     return normalized
+
+
+def validate_selector_shape(selector: dict[str, Any], target_id: str) -> str:
+    kind = require_string(selector.get("kind"), f"{target_id}.selector.kind")
+    if kind not in ALLOWED_SELECTOR_KINDS:
+        fail(f"{target_id}.selector.kind uses unknown selector `{kind}`")
+    if kind == "edge_role":
+        require_string(selector.get("edge_role"), f"{target_id}.selector.edge_role")
+    elif kind == "side_faces":
+        faces = require_string_list(selector.get("faces"), f"{target_id}.selector.faces")
+        invalid = [face for face in faces if face not in ALLOWED_SIDE_FACES]
+        if invalid:
+            fail(f"{target_id}.selector.faces uses unknown side faces: {invalid}")
+    elif kind == "face_border":
+        require_string(selector.get("from_target"), f"{target_id}.selector.from_target")
+    elif kind == "part_ids":
+        require_string_list(selector.get("part_ids"), f"{target_id}.selector.part_ids")
+    elif kind == "edge_band":
+        require_string(selector.get("band"), f"{target_id}.selector.band")
+    return kind
+
+
+def validate_selector_references(target_map: dict[str, dict[str, Any]], field: str) -> None:
+    for target_id, target in target_map.items():
+        selector = require_object(target.get("selector"), f"{target_id}.selector")
+        kind = validate_selector_shape(selector, target_id)
+        if kind == "face_border":
+            from_target = require_string(selector.get("from_target"), f"{target_id}.selector.from_target")
+            if from_target not in target_map:
+                fail(f"{field}.{target_id}.selector.from_target references unknown target `{from_target}`")
 
 
 def validate_step_params(operation: str, params: dict[str, Any], field: str) -> dict[str, Any]:
@@ -310,6 +350,7 @@ def compile_plan(recipe: dict[str, Any], geometry_terms: set[str], tool_map: dic
         if target["target_id"] in target_map:
             fail(f"{recipe_id} duplicate target `{target['target_id']}`")
         target_map[target["target_id"]] = target
+    validate_selector_references(target_map, f"{recipe_id}.targets")
     steps = []
     seen_steps: set[str] = set()
     for index, step_value in enumerate(require_list(recipe.get("sequence"), f"{recipe_id}.sequence")):

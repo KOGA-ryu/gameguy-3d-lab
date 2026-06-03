@@ -1,0 +1,122 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0059-asset-polish-blender-adapter-validate-only-v0",
+  "created_utc": "2026-06-03T22:16:35Z",
+  "summary": "Added a validate-only adapter boundary for compiled asset_polish_tool_plan_v0 JSON, tightened selector reference validation, and wired the adapter into the canonical registry, pipeline, and script orbit audit.",
+  "source_inputs": {
+    "recipe_bundle": "data/architecture/asset_mill/polish_recipes/asset_polish_tool_plan_recipes_v0.json",
+    "compiled_plan": "/tmp/gameguy_asset_polish_tool_plan_v0/plans/blocky_fence_post_asset_polish_plan_v0_compiled.json",
+    "compiler": "scripts/compile_asset_polish_tool_plan_v0.py",
+    "validator": "scripts/validate_asset_polish_tool_plan_v0.py",
+    "adapter_validate_only": "scripts/validate_asset_polish_blender_adapter_v0.py",
+    "terminology_reference": "docs/asset_pump/asset_polish_terminology_reference_v0.md",
+    "tool_dictionary": "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json"
+  },
+  "target_cleanup": {
+    "renamed_targets": {
+      "newel.plinth.panel_faces": "newel.plinth.fielded_panel_faces",
+      "newel.cap.ogee_lip": "newel.cap.lower_outer_ogee_lip"
+    },
+    "from_target_required": true,
+    "from_target": {
+      "target": "newel.shaft.panel_lips",
+      "selector": "face_border",
+      "from_target": "newel.shaft.side_panels"
+    },
+    "step_order": [
+      "inset_plinth_fielded_panels",
+      "inset_shaft_side_panels",
+      "raise_shaft_panel_beads",
+      "define_east_west_socket_reveals",
+      "sweep_cap_lower_outer_ogee_lip",
+      "chamfer_plinth_outer_arrises",
+      "bevel_all_visible_hard_edges",
+      "assign_gothic_stone_material_slots",
+      "apply_weighted_normals",
+      "smart_uv_unwrap_visible_parts"
+    ]
+  },
+  "adapter_report": {
+    "schema": "asset_polish_blender_adapter_validation_report_v0",
+    "json_report": "/tmp/gameguy_asset_polish_blender_adapter_0059.json",
+    "validation_status": "warn",
+    "supported_step_count": 4,
+    "future_step_count": 6,
+    "warning_count": 15,
+    "error_count": 0,
+    "supported_operations": [
+      "bevel_edges",
+      "chamfer_edges",
+      "material_assign",
+      "weighted_normals"
+    ],
+    "future_operations": [
+      "inset_faces",
+      "extrude_along_normals",
+      "boolean_cut",
+      "sweep_profile",
+      "uv_unwrap"
+    ]
+  },
+  "registry": {
+    "source_asset_polish_plan_bundle_count": 1,
+    "source_asset_polish_plan_count": 1,
+    "adapter_validate_only": "scripts/validate_asset_polish_blender_adapter_v0.py",
+    "pipeline_labels": [
+      "asset_polish_tool_plan_compile_validate_only",
+      "asset_polish_tool_plan_compile",
+      "asset_polish_tool_plan_validate",
+      "asset_polish_blender_adapter_validate_only"
+    ]
+  },
+  "validation": {
+    "python_compile": {
+      "command": "python3 -m py_compile scripts/compile_asset_polish_tool_plan_v0.py scripts/validate_asset_polish_tool_plan_v0.py scripts/validate_asset_polish_blender_adapter_v0.py scripts/validate_asset_generation_registry_v0.py scripts/validate_generation_pipeline_v0.py scripts/audit_script_orbit_v0.py",
+      "result": "PASS"
+    },
+    "targeted_tests": {
+      "command": "python3 -m unittest tests/test_asset_polish_tool_plan_v0.py tests/test_asset_polish_blender_adapter_v0.py tests/test_validate_asset_generation_registry_v0.py tests/test_audit_script_orbit_v0.py tests/test_asset_mill_retirement_readiness_v0.py",
+      "result": "OK",
+      "test_count": 24
+    },
+    "asset_polish_compile": {
+      "command": "python3 scripts/compile_asset_polish_tool_plan_v0.py --clean --out /tmp/gameguy_asset_polish_tool_plan_v0",
+      "result": "PASS asset polish tool-plan compile: plans=1 steps=10 targets=8 out=/tmp/gameguy_asset_polish_tool_plan_v0"
+    },
+    "asset_polish_validate": {
+      "command": "python3 scripts/validate_asset_polish_tool_plan_v0.py --manifest /tmp/gameguy_asset_polish_tool_plan_v0/manifest.json --json-report /tmp/gameguy_asset_polish_tool_plan_0059.json",
+      "result": "PASS asset polish tool-plan validation: plans=1 steps=10 targets=8"
+    },
+    "asset_polish_blender_adapter_validate_only": {
+      "command": "python3 scripts/validate_asset_polish_blender_adapter_v0.py --plan /tmp/gameguy_asset_polish_tool_plan_v0/plans/blocky_fence_post_asset_polish_plan_v0_compiled.json --json-report /tmp/gameguy_asset_polish_blender_adapter_0059.json",
+      "result": "WARN asset polish Blender adapter validation: status=warn supported=4 future=6 warnings=15 errors=0"
+    },
+    "asset_generation_registry": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py --json-report /tmp/gameguy_registry_0059.json",
+      "result": "PASS asset generation registry validation: geometry_bundles=5 geometry_assets=40 source_profiles=19 source_asset_polish_plans=1 source_graphs=1 source_cell_selections=1 source_pattern_fields=1 source_pattern_segments=1 source_taxonomies=23 reference_only=3"
+    },
+    "script_orbit_audit": {
+      "command": "python3 scripts/audit_script_orbit_v0.py --json-report /tmp/gameguy_script_orbit_0059.json",
+      "result": "PASS script orbit audit: scripts=85 KEEP_CANONICAL=26, CONVERT_TO_ADAPTER=0, REPLACE_BY_PUMP=0, REFERENCE_ONLY=59, DELETE_LATER=0"
+    },
+    "generation_pipeline_non_blender_skip_unit_tests": {
+      "command": "python3 scripts/validate_generation_pipeline_v0.py --skip-unit-tests --json-report /tmp/gameguy_pipeline_0059_asset_polish_blender_adapter_final.json",
+      "result": "PASS generation pipeline validation: commands=42 json=265 include_blender=false",
+      "command_count": 42,
+      "json_file_count": 265
+    }
+  },
+  "rules": {
+    "validate_only": true,
+    "adapter_imports_blender": false,
+    "adapter_creates_meshes": false,
+    "adapter_applies_modifiers": false,
+    "adapter_renders_media": false,
+    "adapter_exports_files": false,
+    "adapter_mutates_source_assets": false,
+    "generated_outputs_stay_under_tmp": true,
+    "no_mesh_output": true,
+    "no_media_output": true
+  },
+  "recommended_next_goal": "Implement the first asset_polish_tool_plan_v0 execution slice for bevel/chamfer, material assignment, and weighted normals only."
+}

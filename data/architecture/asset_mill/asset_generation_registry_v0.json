@@ -128,10 +128,12 @@
       "geometry_dictionary": "geometry_dictionary",
       "compiler": "scripts/compile_asset_polish_tool_plan_v0.py",
       "validator": "scripts/validate_asset_polish_tool_plan_v0.py",
+      "adapter_validate_only": "scripts/validate_asset_polish_blender_adapter_v0.py",
       "pipeline_labels": [
         "asset_polish_tool_plan_compile_validate_only",
         "asset_polish_tool_plan_compile",
-        "asset_polish_tool_plan_validate"
+        "asset_polish_tool_plan_validate",
+        "asset_polish_blender_adapter_validate_only"
       ]
     }
   ],

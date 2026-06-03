@@ -80,7 +80,7 @@
           "material_role": "base"
         },
         {
-          "target_id": "newel.plinth.panel_faces",
+          "target_id": "newel.plinth.fielded_panel_faces",
           "architectural_terms": ["fielded_panel", "reveal", "plinth"],
           "source_part_ids": ["square_foot"],
           "selector": {
@@ -120,7 +120,7 @@
           "material_role": "socket_shadow"
         },
         {
-          "target_id": "newel.cap.ogee_lip",
+          "target_id": "newel.cap.lower_outer_ogee_lip",
           "architectural_terms": ["cap_block", "ogee", "cyma_reversa", "bead"],
           "source_part_ids": ["upper_step_band", "square_cap"],
           "selector": {
@@ -158,22 +158,10 @@
       ],
       "sequence": [
         {
-          "step_id": "chamfer_plinth_outer_arrises",
-          "operation": "chamfer_edges",
-          "tool_id": "modifier_bevel",
-          "target": "newel.plinth.outer_arrises",
-          "params": {
-            "width_m": 0.012,
-            "segments": 1,
-            "profile": 0.5,
-            "harden_normals": true
-          }
-        },
-        {
           "step_id": "inset_plinth_fielded_panels",
           "operation": "inset_faces",
           "tool_id": "inset_faces",
-          "target": "newel.plinth.panel_faces",
+          "target": "newel.plinth.fielded_panel_faces",
           "params": {
             "inset_m": 0.035,
             "depth_m": -0.012,
@@ -217,15 +205,27 @@
           }
         },
         {
-          "step_id": "sweep_cap_ogee_lip",
+          "step_id": "sweep_cap_lower_outer_ogee_lip",
           "operation": "sweep_profile",
           "tool_id": "curve_bevel_profile",
-          "target": "newel.cap.ogee_lip",
+          "target": "newel.cap.lower_outer_ogee_lip",
           "params": {
             "profile": "small_ogee_over_bead",
             "projection_m": 0.018,
             "height_m": 0.032,
             "fill_caps": true
+          }
+        },
+        {
+          "step_id": "chamfer_plinth_outer_arrises",
+          "operation": "chamfer_edges",
+          "tool_id": "modifier_bevel",
+          "target": "newel.plinth.outer_arrises",
+          "params": {
+            "width_m": 0.012,
+            "segments": 1,
+            "profile": 0.5,
+            "harden_normals": true
           }
         },
         {
