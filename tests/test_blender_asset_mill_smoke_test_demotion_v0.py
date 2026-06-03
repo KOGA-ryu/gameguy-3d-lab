@@ -89,7 +89,7 @@ class BlenderAssetMillSmokeTestDemotionTests(unittest.TestCase):
             report = load_json(report_path)
 
         rows = {row["script"]: row for row in report["scripts"]}
-        self.assertEqual(rows["scripts/blender_asset_mill_smoke_test_v0.py"]["bucket"], "REFERENCE_ONLY")
+        self.assertEqual(rows["scripts/blender_asset_mill_smoke_test_v0.py"]["bucket"], "DELETE_LATER")
         self.assertEqual(report["bucket_counts"]["CONVERT_TO_ADAPTER"], 0)
 
 

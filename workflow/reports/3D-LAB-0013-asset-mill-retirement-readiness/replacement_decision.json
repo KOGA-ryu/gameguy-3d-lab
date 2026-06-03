@@ -1,0 +1,133 @@
+{
+  "schema": "asset_mill_retirement_readiness_decision_v0",
+  "packet_id": "3D-LAB-0013",
+  "decision": "MARK_REPLACED_ASSET_MILL_SCRIPTS_DELETE_LATER",
+  "safe_to_delete_now": false,
+  "reason": "The canonical source-to-geometry path now preserves the useful value of the old Asset Mill compilers and Blender proof scripts. They are marked DELETE_LATER to make replacement explicit, but actual deletion remains a separate task.",
+  "canonical_path": {
+    "simple_source_recipe": "data/architecture/asset_mill/recipes/simple_solids_v0.json",
+    "measured_source_recipe": "data/architecture/asset_mill/recipes/measured_components_v0.json",
+    "source_validator": "scripts/validate_measured_component_source_v0.py",
+    "generator": "scripts/asset_pump_v0.py",
+    "generated_asset_validator": "scripts/validate_gameguy_asset_v0.py",
+    "simple_adapter": "scripts/export_blender_asset_preview_v0.py",
+    "measured_adapter": "scripts/export_blender_measured_components_preview_v0.py",
+    "generated_schema": "gameguy_asset_v0"
+  },
+  "retirement_candidates": [
+    {
+      "script": "scripts/compile_asset_mill_solids_v0.py",
+      "bucket": "DELETE_LATER",
+      "replaced_by": [
+        "data/architecture/asset_mill/recipes/simple_solids_v0.json",
+        "scripts/asset_pump_v0.py",
+        "scripts/validate_gameguy_asset_v0.py"
+      ],
+      "replacement_evidence": {
+        "asset_count": 14,
+        "vertex_count": 280,
+        "face_count": 186
+      }
+    },
+    {
+      "script": "scripts/blender_asset_mill_smoke_test_v0.py",
+      "bucket": "DELETE_LATER",
+      "replaced_by": [
+        "scripts/asset_pump_v0.py",
+        "scripts/validate_gameguy_asset_v0.py",
+        "scripts/export_blender_asset_preview_v0.py"
+      ],
+      "replacement_evidence": {
+        "asset_count": 14,
+        "vertex_count": 280,
+        "face_count": 186
+      }
+    },
+    {
+      "script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "bucket": "DELETE_LATER",
+      "replaced_by": [
+        "data/architecture/asset_mill/recipes/measured_components_v0.json",
+        "scripts/validate_measured_component_source_v0.py",
+        "scripts/asset_pump_v0.py",
+        "scripts/validate_gameguy_asset_v0.py"
+      ],
+      "replacement_evidence": {
+        "source_version": "v1",
+        "source_asset_count": 12,
+        "pumped_asset_count": 22,
+        "vertex_count": 1256,
+        "face_count": 926
+      }
+    },
+    {
+      "script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "bucket": "DELETE_LATER",
+      "replaced_by": [
+        "data/architecture/asset_mill/recipes/measured_components_v0.json",
+        "scripts/validate_measured_component_source_v0.py",
+        "scripts/asset_pump_v0.py",
+        "scripts/validate_gameguy_asset_v0.py"
+      ],
+      "replacement_evidence": {
+        "source_version": "v2",
+        "source_asset_count": 10,
+        "pumped_asset_count": 22,
+        "vertex_count": 1256,
+        "face_count": 926
+      }
+    },
+    {
+      "script": "scripts/blender_asset_mill_measured_components_v1.py",
+      "bucket": "DELETE_LATER",
+      "replaced_by": [
+        "scripts/asset_pump_v0.py",
+        "scripts/validate_gameguy_asset_v0.py",
+        "scripts/export_blender_measured_components_preview_v0.py"
+      ],
+      "replacement_evidence": {
+        "asset_count": 22,
+        "part_count": 52,
+        "socket_count": 74,
+        "vertex_count": 1256,
+        "face_count": 926
+      }
+    },
+    {
+      "script": "scripts/blender_asset_mill_measured_components_v2.py",
+      "bucket": "DELETE_LATER",
+      "replaced_by": [
+        "scripts/asset_pump_v0.py",
+        "scripts/validate_gameguy_asset_v0.py",
+        "scripts/export_blender_measured_components_preview_v0.py"
+      ],
+      "replacement_evidence": {
+        "asset_count": 22,
+        "part_count": 52,
+        "socket_count": 74,
+        "vertex_count": 1256,
+        "face_count": 926
+      }
+    }
+  ],
+  "script_orbit_expected_after": {
+    "KEEP_CANONICAL": 9,
+    "CONVERT_TO_ADAPTER": 0,
+    "REPLACE_BY_PUMP": 0,
+    "REFERENCE_ONLY": 58,
+    "DELETE_LATER": 6
+  },
+  "follow_up": [
+    "Do not run these six scripts as active source, generator, or adapter logic.",
+    "Keep them only until a separate deletion task removes them or moves them into an explicit archive.",
+    "Run the source validators, asset pump, gameguy asset validator, and Blender adapters before any deletion commit."
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

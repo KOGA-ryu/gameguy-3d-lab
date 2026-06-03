@@ -86,7 +86,7 @@ class AssetMillSolidsReplacementDecisionTests(unittest.TestCase):
             report = load_json(report_path)
 
         rows = {row["script"]: row for row in report["scripts"]}
-        self.assertEqual(rows["scripts/compile_asset_mill_solids_v0.py"]["bucket"], "REFERENCE_ONLY")
+        self.assertEqual(rows["scripts/compile_asset_mill_solids_v0.py"]["bucket"], "DELETE_LATER")
 
 
 if __name__ == "__main__":

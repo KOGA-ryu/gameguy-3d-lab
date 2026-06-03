@@ -82,8 +82,8 @@ class MeasuredComponentsBlenderAdapterDecisionTests(unittest.TestCase):
 
         rows = {row["script"]: row for row in report["scripts"]}
         self.assertEqual(rows["scripts/export_blender_measured_components_preview_v0.py"]["bucket"], "KEEP_CANONICAL")
-        self.assertEqual(rows["scripts/blender_asset_mill_measured_components_v1.py"]["bucket"], "REFERENCE_ONLY")
-        self.assertEqual(rows["scripts/blender_asset_mill_measured_components_v2.py"]["bucket"], "REFERENCE_ONLY")
+        self.assertEqual(rows["scripts/blender_asset_mill_measured_components_v1.py"]["bucket"], "DELETE_LATER")
+        self.assertEqual(rows["scripts/blender_asset_mill_measured_components_v2.py"]["bucket"], "DELETE_LATER")
 
 
 if __name__ == "__main__":
