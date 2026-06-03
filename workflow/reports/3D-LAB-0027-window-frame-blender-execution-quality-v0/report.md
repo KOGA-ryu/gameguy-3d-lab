@@ -20,6 +20,7 @@ The full pipeline now executes and validates all default tool plans:
 | --- | ---: | ---: | ---: | ---: |
 | `gothic_stone_banister_post_tool_plan_v0_compiled` | 32 | 0 | 5 | 2 |
 | `gothic_stone_fence_post_tool_plan_v0_compiled` | 32 | 0 | 5 | 2 |
+| `gothic_stone_column_tool_plan_v0_compiled` | 31 | 0 | 5 | 0 |
 | `gothic_stone_window_frame_tool_plan_v0_compiled` | 25 | 0 | 1 | 0 |
 | `gothic_stone_door_frame_tool_plan_v0_compiled` | 25 | 0 | 1 | 0 |
 
@@ -27,6 +28,7 @@ The execution report validator is now asset-family aware:
 
 - `banister_post` requires socket booleans, cutter cleanup, material-region preservation, and topology cleanup.
 - `fence_post` requires socket booleans, cutter cleanup, material-region preservation, and topology cleanup.
+- `column` requires square/circular transition material-region preservation, explicit no-socket-required evidence, and topology cleanup.
 - `window_frame` requires frame material-region preservation, explicit no-socket-required evidence, and topology cleanup.
 - `door_frame` requires frame material-region preservation, explicit no-socket-required evidence, and topology cleanup.
 
@@ -43,7 +45,7 @@ python3 scripts/validate_generation_pipeline_v0.py --include-blender
 Expected output:
 
 ```text
-PASS generation pipeline validation: commands=33 json=220 include_blender=true
+PASS generation pipeline validation: commands=36 json=221 include_blender=true
 ```
 
 Relevant command evidence:
@@ -51,6 +53,7 @@ Relevant command evidence:
 ```text
 PASS Blender tool-plan execution quality validation: steps=32 non_manifold=0 material_roles=5 socket_panels=2
 PASS Blender tool-plan execution quality validation: steps=32 non_manifold=0 material_roles=5 socket_panels=2
+PASS Blender tool-plan execution quality validation: steps=31 non_manifold=0 material_roles=5 socket_panels=0
 PASS Blender tool-plan execution quality validation: steps=25 non_manifold=0 material_roles=1 socket_panels=0
 PASS Blender tool-plan execution quality validation: steps=25 non_manifold=0 material_roles=1 socket_panels=0
 ```

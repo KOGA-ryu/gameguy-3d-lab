@@ -43,17 +43,17 @@ The generation registry now declares the sequence policy as part of the canonica
 ## Current Evidence
 
 ```text
-compiled tool plans=4 steps=114 tools=97 out=<validate-only>
-PASS gameguy_tool_plan_v0 validation: 4 plans, 114 steps, 24 tools
+compiled tool plans=5 steps=145 tools=97 out=<validate-only>
+PASS gameguy_tool_plan_v0 validation: 5 plans, 145 steps, 25 tools
 PASS asset generation registry validation: geometry_bundles=5 geometry_assets=40 reference_only=3
-PASS generation pipeline validation: commands=25 json=220 include_blender=false
-PASS generation pipeline validation: commands=33 json=220 include_blender=true
+PASS generation pipeline validation: commands=26 json=221 include_blender=false
+PASS generation pipeline validation: commands=36 json=221 include_blender=true
 ```
 
 Focused tests prove:
 
 - `5` asset-family policies are present.
-- Current banister, fence-post, window-frame, and door-frame plans declare `asset_family_tool_sequence_policy_v0`.
+- Current banister, fence-post, column, window-frame, and door-frame plans declare `asset_family_tool_sequence_policy_v0`.
 - A window-frame recipe cannot add the banister-only `east_west_rail_sockets` feature.
 - A hand-edited window-frame plan cannot use `primitive_cylinder_add`.
 - A hand-edited banister plan cannot move socket booleans before radial rib duplication.

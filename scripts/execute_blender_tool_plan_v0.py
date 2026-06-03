@@ -37,6 +37,7 @@ SUPPORTED_TOOLS = {
     "modifier_weld",
     "object_duplicate_radial",
     "primitive_cube_add",
+    "primitive_cylinder_add",
     "procedural_bump_map",
     "procedural_noise_texture",
     "recalc_normals",
@@ -50,6 +51,7 @@ ROLE_MATERIAL_COLORS: dict[str, tuple[float, float, float, float]] = {
     "default": (0.48, 0.46, 0.39, 1.0),
     "base": (0.38, 0.36, 0.31, 1.0),
     "cap": (0.55, 0.52, 0.44, 1.0),
+    "transition": (0.44, 0.42, 0.36, 1.0),
     "shaft": (0.47, 0.45, 0.38, 1.0),
     "rib": (0.58, 0.55, 0.46, 1.0),
     "frame": (0.50, 0.48, 0.40, 1.0),
@@ -187,9 +189,11 @@ def material_role_for_alias(alias: str) -> str:
         return "base"
     if alias.startswith("cap_"):
         return "cap"
+    if "transition" in alias or alias.endswith("_ring"):
+        return "transition"
     if alias.startswith("window_") or alias.startswith("door_"):
         return "frame"
-    if alias in {"post_core"}:
+    if alias in {"post_core"} or "shaft_core" in alias:
         return "shaft"
     if "rib" in alias:
         return "rib"
@@ -214,6 +218,8 @@ def run_blender_execution(plan: dict[str, Any], steps: list[dict[str, Any]], out
         "groups": {
             "base": [],
             "cap": [],
+            "transition": [],
+            "shaft": [],
             "ribs": [],
             "cutters": [],
             "socket_shadows": [],
@@ -295,6 +301,8 @@ def execute_step(bpy: Any, mathutils: Any, plan: dict[str, Any], step: dict[str,
     tool_id = step["tool_id"]
     if tool_id == "primitive_cube_add":
         execute_primitive_cube_add(bpy, step, context)
+    elif tool_id == "primitive_cylinder_add":
+        execute_primitive_cylinder_add(bpy, step, context)
     elif tool_id == "object_duplicate_radial":
         execute_object_duplicate_radial(step, context)
     elif tool_id == "modifier_boolean":
@@ -378,6 +386,8 @@ def execute_primitive_cube_add(bpy: Any, step: dict[str, Any], context: dict[str
         context["groups"]["base"].append(alias)
     elif role == "cap":
         context["groups"]["cap"].append(alias)
+    elif role == "transition":
+        context["groups"]["transition"].append(alias)
     elif role == "rib":
         context["groups"]["ribs"].append(alias)
     elif role == "socket":
@@ -386,28 +396,62 @@ def execute_primitive_cube_add(bpy: Any, step: dict[str, Any], context: dict[str
         obj.hide_render = True
     elif role == "shaft":
         context["objects"]["post_core"] = obj
+        context["groups"]["shaft"].append(alias)
     if role != "socket":
         context["groups"]["visible"].append(alias)
 
 
+def execute_primitive_cylinder_add(bpy: Any, step: dict[str, Any], context: dict[str, Any]) -> None:
+    params = step["params"]
+    vertices = int(params.get("vertices", 8))
+    if vertices < 4:
+        fail(f"{step['step_id']}.params.vertices must be >= 4")
+    radius = float(params.get("radius_m", params.get("radius", 0.1)))
+    depth = float(params.get("depth_m", params.get("depth", 0.1)))
+    location = require_vector(params.get("location_m"), f"{step['step_id']}.params.location_m", 3)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=vertices, radius=radius, depth=depth, location=location)
+    obj = bpy.context.object
+    alias = alias_from_step_id(step["step_id"])
+    obj.name = alias
+    role = material_role_for_alias(alias)
+    obj["tool_plan_step_id"] = step["step_id"]
+    obj["tool_id"] = step["tool_id"]
+    obj["material_role"] = role
+    obj.data.materials.append(context["materials"].get(role, context["materials"]["default"]))
+    context["objects"][alias] = obj
+    if role == "transition":
+        context["groups"]["transition"].append(alias)
+    elif role == "shaft":
+        context["objects"]["post_core"] = obj
+        context["groups"]["shaft"].append(alias)
+    elif role == "cap":
+        context["groups"]["cap"].append(alias)
+    elif role == "base":
+        context["groups"]["base"].append(alias)
+    context["groups"]["visible"].append(alias)
+
+
 def execute_object_duplicate_radial(step: dict[str, Any], context: dict[str, Any]) -> None:
-    source = context["objects"].get("single_rib_source")
+    source_alias = str(step["params"].get("source_object", "single_rib_source"))
+    source = context["objects"].get(source_alias)
     if source is None:
-        fail("duplicate_ribs_radially requires single_rib_source")
+        fail(f"{step['step_id']} requires {source_alias}")
     count = int(step["params"].get("count", 1))
     if count < 1:
-        fail("duplicate_ribs_radially count must be positive")
+        fail(f"{step['step_id']} count must be positive")
     radius = float(step["params"].get("radius_m", source.location.x))
     z = source.location.z
-    source.name = "rib_00"
+    name_prefix = str(step["params"].get("name_prefix", "rib"))
+    source.name = f"{name_prefix}_00"
     source["material_role"] = "rib"
-    context["objects"]["rib_00"] = source
-    context["groups"]["ribs"] = ["rib_00"]
+    context["objects"].pop(source_alias, None)
+    context["objects"][source.name] = source
+    context["groups"]["ribs"] = [source.name]
     for index in range(1, count):
         angle = math.tau * index / count
         duplicate = source.copy()
         duplicate.data = source.data.copy()
-        duplicate.name = f"rib_{index:02d}"
+        duplicate.name = f"{name_prefix}_{index:02d}"
         duplicate.location.x = math.cos(angle) * radius
         duplicate.location.y = math.sin(angle) * radius
         duplicate.location.z = z
@@ -677,6 +721,8 @@ def material_role_from_name(name: str) -> str:
         return "rib"
     if "frame" in normalized:
         return "frame"
+    if "transition" in normalized:
+        return "transition"
     if "cap" in normalized:
         return "cap"
     if "dark" in normalized or "base" in normalized:

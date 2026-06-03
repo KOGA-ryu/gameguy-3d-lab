@@ -46,24 +46,26 @@ It orchestrates:
 Non-Blender pipeline result:
 
 ```text
-PASS generation pipeline validation: commands=25 json=220 include_blender=false
+PASS generation pipeline validation: commands=26 json=221 include_blender=false
 ```
 
 Full Blender pipeline result:
 
 ```text
-PASS generation pipeline validation: commands=33 json=220 include_blender=true
+PASS generation pipeline validation: commands=36 json=221 include_blender=true
 ```
 
 The full run includes:
 
-- `gameguy_tool_plan_v0`: `4` plans, `114` steps, `24` tools
+- `gameguy_tool_plan_v0`: `5` plans, `145` steps, `25` tools
 - Asset-family sequence policy: `5` target families
-- Blender adapter validate-only: banister post, fence post, window frame, and door frame plans
+- Blender adapter validate-only: banister post, fence post, column, window frame, and door frame plans
 - Banister Blender execution: `32` steps
 - Banister execution report validation: non-manifold `0`, material roles `5`, socket panels `2`
 - Fence-post Blender execution: `32` steps
 - Fence-post execution report validation: non-manifold `0`, material roles `5`, socket panels `2`
+- Column Blender execution: `31` steps
+- Column execution report validation: non-manifold `0`, material roles `5`, socket panels `0`
 - Window-frame Blender execution: `25` steps
 - Window-frame execution report validation: non-manifold `0`, material roles `1`, socket panels `0`
 - Door-frame Blender execution: `25` steps

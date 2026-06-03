@@ -132,7 +132,7 @@ class BlenderToolPlanTests(unittest.TestCase):
 
         self.assertEqual(manifest["schema"], "gameguy_tool_plan_manifest_v0")
         self.assertEqual(manifest["tool_sequence_policy"], "asset_family_tool_sequence_policy_v0")
-        self.assertEqual(manifest["plan_count"], 4)
+        self.assertEqual(manifest["plan_count"], 5)
         self.assertEqual(manifest["plans"][0]["step_count"], 32)
         self.assertEqual(manifest["plans"][0]["unique_tool_count"], 24)
         self.assertEqual(plan["asset_family"], "banister_post")
@@ -195,6 +195,47 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(by_step["boolean_cut_rail_sockets"]["params"]["cutters"], ["east_socket_cutter", "west_socket_cutter"])
         self.assertEqual(by_step["boolean_cut_rail_sockets"]["params"]["socket_shadow_panels"]["surface_x_m"], 0.1)
         self.assertIn("socket_shadows", by_step["join_visible_post_parts"]["params"]["objects"])
+
+    def test_column_recipe_compiles_to_square_circle_fluted_sequence(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "plans"
+            run_compiler(out_root)
+            plan = plan_by_asset(out_root, "gothic_stone_column_tool_plan_v0")
+
+        self.assertEqual(plan["asset_family"], "column")
+        self.assertEqual(plan["asset_family_policy"], "column")
+        self.assertEqual(plan["style"], "gothic_stone")
+        self.assertEqual(plan["summary"]["step_count"], 31)
+        self.assertEqual(plan["summary"]["unique_tool_count"], 24)
+        self.assertEqual(plan["summary"]["covered_stages"], plan["stage_order"])
+        self.assertIn("primitive_cylinder_add", plan["summary"]["unique_tools"])
+        self.assertIn("object_duplicate_radial", plan["summary"]["unique_tools"])
+        self.assertNotIn("modifier_boolean", plan["summary"]["unique_tools"])
+
+        by_step = {step["step_id"]: step for step in plan["steps"]}
+        self.assertEqual(by_step["create_base_foot"]["params"]["size_m"], [0.56, 0.56, 0.1])
+        self.assertEqual(by_step["create_bottom_transition_ring"]["params"]["vertices"], 8)
+        self.assertEqual(by_step["create_bottom_transition_ring"]["params"]["radius_m"], 0.24)
+        self.assertEqual(by_step["create_column_shaft_core"]["params"]["vertices"], 8)
+        self.assertEqual(by_step["create_column_shaft_core"]["params"]["radius_m"], 0.17)
+        self.assertEqual(by_step["duplicate_column_ribs_radially"]["params"]["count"], 8)
+        self.assertEqual(by_step["duplicate_column_ribs_radially"]["params"]["source_object"], "column_single_rib_source")
+        self.assertEqual(by_step["create_cap_top"]["params"]["size_m"], [0.54, 0.54, 0.12])
+        self.assertEqual(
+            by_step["join_column_parts"]["params"]["profile_transition_sequence"],
+            ["square_base", "circle_ring", "fluted_shaft", "circle_ring", "square_cap"],
+        )
+        self.assertEqual(
+            by_step["assign_material_regions"]["params"]["material_map"],
+            {
+                "base": "gothic_stone_dark",
+                "cap": "gothic_stone_cap",
+                "transition": "gothic_stone_transition",
+                "shaft": "gothic_stone",
+                "rib": "gothic_stone_highlight",
+                "default": "gothic_stone",
+            },
+        )
 
     def test_window_frame_recipe_compiles_to_different_tool_sequence(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
@@ -268,7 +309,7 @@ class BlenderToolPlanTests(unittest.TestCase):
                 text=True,
             )
 
-        self.assertIn("compiled tool plans=4 steps=114 tools=97 out=<validate-only>", result.stdout)
+        self.assertIn("compiled tool plans=5 steps=145 tools=97 out=<validate-only>", result.stdout)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_unknown_feature_fails_before_output(self) -> None:

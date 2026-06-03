@@ -181,6 +181,52 @@ def valid_fence_post_report() -> dict[str, Any]:
     return report
 
 
+def valid_column_report() -> dict[str, Any]:
+    report = valid_report()
+    report.update(
+        {
+            "source_plan": "/tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_column_tool_plan_v0_compiled.json",
+            "plan_id": "gothic_stone_column_tool_plan_v0_compiled",
+            "asset_id": "gothic_stone_column_tool_plan_v0",
+            "asset_family": "column",
+            "step_count": 31,
+            "supported_step_count": 31,
+            "unique_tool_count": 4,
+            "unique_tools": ["join_objects", "material_assign_by_part", "primitive_cylinder_add", "validate_non_manifold"],
+            "executed_step_count": 31,
+            "bounds_m": {"min": [-0.28, -0.28, 0.0], "max": [0.28, 0.28, 1.38]},
+            "material_regions": {
+                "material_slot_count": 5,
+                "face_counts_by_role": {
+                    "base": 18,
+                    "cap": 12,
+                    "transition": 32,
+                    "shaft": 10,
+                    "rib": 48
+                },
+                "material_slots": [],
+            },
+            "socket_pass": {},
+            "quality_pass": {
+                "asset_family_quality_profile": "column",
+                "material_regions_preserved": True,
+                "explicit_socket_boolean_targets": False,
+                "socket_cutters_removed": False,
+                "socket_boolean_not_required": True,
+                "topology_cleanup_attempted": True,
+            },
+            "final_object": {
+                "name": "gothic_stone_column_tool_plan_v0",
+                "vertex_count": 160,
+                "edge_count": 256,
+                "face_count": 120,
+                "material_slot_count": 5,
+            },
+        }
+    )
+    return report
+
+
 def valid_door_frame_report() -> dict[str, Any]:
     report = valid_window_frame_report()
     report.update(
@@ -265,6 +311,20 @@ class BlenderToolPlanExecutionReportValidatorTests(unittest.TestCase):
         self.assertEqual(validation["asset_id"], "gothic_stone_fence_post_tool_plan_v0")
         self.assertEqual(validation["material_role_count"], 5)
         self.assertEqual(validation["socket_shadow_panel_count"], 2)
+
+    def test_accepts_column_quality_execution_report(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            report_path = Path(tmp) / "tool_plan_execution_report.json"
+            json_report = Path(tmp) / "quality_validation.json"
+            write_report(report_path, valid_column_report())
+            result = run_validator(report_path, json_report)
+            validation = json.loads(json_report.read_text(encoding="utf-8"))
+
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("PASS Blender tool-plan execution quality validation", result.stdout)
+        self.assertEqual(validation["asset_id"], "gothic_stone_column_tool_plan_v0")
+        self.assertEqual(validation["material_role_count"], 5)
+        self.assertEqual(validation["socket_shadow_panel_count"], 0)
 
     def test_accepts_door_frame_quality_execution_report(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:

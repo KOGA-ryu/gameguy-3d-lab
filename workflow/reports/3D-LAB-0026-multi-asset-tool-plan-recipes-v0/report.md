@@ -20,10 +20,11 @@ The default bundle now emits:
 | --- | --- | ---: | ---: |
 | `gothic_stone_banister_post_tool_plan_v0` | `banister_post` | 32 | 24 |
 | `gothic_stone_fence_post_tool_plan_v0` | `fence_post` | 32 | 24 |
+| `gothic_stone_column_tool_plan_v0` | `column` | 31 | 24 |
 | `gothic_stone_window_frame_tool_plan_v0` | `window_frame` | 25 | 22 |
 | `gothic_stone_door_frame_tool_plan_v0` | `door_frame` | 25 | 22 |
 
-The window and door frames use different sequences from the post assets. They create frame blocks, join them, apply bevels and weighted normals, add procedural stone material/detail, UVs, cleanup, bounds validation, proxy/LOD, preview, and export steps. The fence post stays in the socketed post family, but its dimensions, rail sockets, rib count, and cap/base sizes come from the source recipe.
+The window and door frames use different sequences from the post assets. They create frame blocks, join them, apply bevels and weighted normals, add procedural stone material/detail, UVs, cleanup, bounds validation, proxy/LOD, preview, and export steps. The fence post stays in the socketed post family, but its dimensions, rail sockets, rib count, and cap/base sizes come from the source recipe. The column uses the column policy for square base, circular transition rings, fluted shaft, circular transition, and square cap.
 
 ## Boundary
 
@@ -37,6 +38,7 @@ python3 scripts/compile_blender_tool_plan_v0.py --clean --out /tmp/gameguy_blend
 python3 scripts/validate_gameguy_tool_plan_v0.py --manifest /tmp/gameguy_blender_tool_plan_v0/manifest.json
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_banister_post_tool_plan_v0_compiled.json --validate-only
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_fence_post_tool_plan_v0_compiled.json --validate-only
+python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_column_tool_plan_v0_compiled.json --validate-only
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_window_frame_tool_plan_v0_compiled.json --validate-only
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_door_frame_tool_plan_v0_compiled.json --validate-only
 ```
@@ -44,10 +46,11 @@ python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool
 Expected output:
 
 ```text
-compiled tool plans=4 steps=114 tools=97 out=<validate-only>
-PASS gameguy_tool_plan_v0 validation: 4 plans, 114 steps, 24 tools
+compiled tool plans=5 steps=145 tools=97 out=<validate-only>
+PASS gameguy_tool_plan_v0 validation: 5 plans, 145 steps, 25 tools
 PASS Blender tool-plan adapter validation: steps=32 tools=24
 PASS Blender tool-plan adapter validation: steps=32 tools=24
+PASS Blender tool-plan adapter validation: steps=31 tools=24
 PASS Blender tool-plan adapter validation: steps=25 tools=22
 PASS Blender tool-plan adapter validation: steps=25 tools=22
 ```

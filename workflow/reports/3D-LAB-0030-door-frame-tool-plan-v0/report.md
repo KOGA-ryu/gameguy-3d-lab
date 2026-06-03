@@ -33,12 +33,12 @@ The new source recipe uses the `door_frame` policy with a rectangular stone fram
 ## Current Evidence
 
 ```text
-compiled tool plans=4 steps=114 tools=97 out=<validate-only>
-PASS gameguy_tool_plan_v0 validation: 4 plans, 114 steps, 24 tools
+compiled tool plans=5 steps=145 tools=97 out=<validate-only>
+PASS gameguy_tool_plan_v0 validation: 5 plans, 145 steps, 25 tools
 PASS Blender tool-plan adapter validation: steps=25 tools=22
 PASS Blender tool-plan execution quality validation: steps=25 non_manifold=0 material_roles=1 socket_panels=0
-PASS generation pipeline validation: commands=25 json=220 include_blender=false
-PASS generation pipeline validation: commands=33 json=220 include_blender=true
+PASS generation pipeline validation: commands=26 json=221 include_blender=false
+PASS generation pipeline validation: commands=36 json=221 include_blender=true
 ```
 
 The full default tool-plan bundle now contains:
@@ -47,6 +47,7 @@ The full default tool-plan bundle now contains:
 | --- | --- | ---: | ---: |
 | `gothic_stone_banister_post_tool_plan_v0_compiled` | `banister_post` | 32 | 24 |
 | `gothic_stone_fence_post_tool_plan_v0_compiled` | `fence_post` | 32 | 24 |
+| `gothic_stone_column_tool_plan_v0_compiled` | `column` | 31 | 24 |
 | `gothic_stone_window_frame_tool_plan_v0_compiled` | `window_frame` | 25 | 22 |
 | `gothic_stone_door_frame_tool_plan_v0_compiled` | `door_frame` | 25 | 22 |
 

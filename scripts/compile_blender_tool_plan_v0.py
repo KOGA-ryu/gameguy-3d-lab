@@ -278,6 +278,20 @@ def number_param(params: dict[str, Any], name: str, default: float) -> float:
     return round(float(value), 6)
 
 
+def int_param(params: dict[str, Any], name: str, default: int, *, minimum: int = 1) -> int:
+    value = params.get(name, default)
+    if not isinstance(value, int) or isinstance(value, bool) or value < minimum:
+        fail(f"style_parameters.{name} must be an integer >= {minimum}")
+    return value
+
+
+def bool_param(params: dict[str, Any], name: str, default: bool) -> bool:
+    value = params.get(name, default)
+    if not isinstance(value, bool):
+        fail(f"style_parameters.{name} must be a boolean")
+    return value
+
+
 def vector_param(params: dict[str, Any], name: str, default: list[float]) -> list[float]:
     value = params.get(name, default)
     if not isinstance(value, list) or len(value) != len(default):
@@ -342,12 +356,68 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
         base_top_z = round(base_foot_size[2] + base_mid_size[2] + base_top_size[2] * 0.5, 6)
         cap_neck_z = round(base_foot_size[2] + base_mid_size[2] + base_top_size[2] + post_core_height + cap_neck_size[2] * 0.5, 6)
         cap_top_z = round(base_foot_size[2] + base_mid_size[2] + base_top_size[2] + post_core_height + cap_neck_size[2] + cap_top_size[2] * 0.5, 6)
-        return [
+        base_steps = [
             {"step_id": "create_base_foot", "tool_id": "primitive_cube_add", "purpose": "Create the bottom square foot block.", "params": {"size_m": base_foot_size, "location_m": [0.0, 0.0, base_foot_z]}},
             {"step_id": "create_base_mid_step", "tool_id": "primitive_cube_add", "purpose": "Create the middle stepped plinth block.", "params": {"size_m": base_mid_size, "location_m": [0.0, 0.0, base_mid_z]}},
             {"step_id": "create_base_top_step", "tool_id": "primitive_cube_add", "purpose": "Create the top base transition block.", "params": {"size_m": base_top_size, "location_m": [0.0, 0.0, base_top_z], "base_step_count": params.get("base_step_count", 3)}},
+        ]
+        if not bool_param(params, "include_cap_blocks", True):
+            return base_steps
+        return [
+            *base_steps,
             {"step_id": "create_cap_neck", "tool_id": "primitive_cube_add", "purpose": "Create the upper necking block under the cap.", "params": {"size_m": cap_neck_size, "location_m": [0.0, 0.0, cap_neck_z]}},
             {"step_id": "create_cap_top", "tool_id": "primitive_cube_add", "purpose": "Create the square top cap block.", "params": {"size_m": cap_top_size, "location_m": [0.0, 0.0, cap_top_z]}},
+        ]
+    if feature == "round_transition_ring":
+        bottom_radius = number_param(params, "bottom_transition_radius_m", 0.24)
+        top_radius = number_param(params, "top_transition_radius_m", bottom_radius)
+        bottom_depth = number_param(params, "bottom_transition_depth_m", 0.08)
+        top_depth = number_param(params, "top_transition_depth_m", bottom_depth)
+        bottom_z = number_param(params, "bottom_transition_location_z_m", 0.26)
+        top_z = number_param(params, "top_transition_location_z_m", 1.16)
+        bottom_vertices = int_param(params, "bottom_transition_vertices", 8, minimum=4)
+        top_vertices = int_param(params, "top_transition_vertices", bottom_vertices, minimum=4)
+        return [
+            {"step_id": "create_bottom_transition_ring", "tool_id": "primitive_cylinder_add", "purpose": "Create the low-vertex circular transition from square base to shaft.", "params": {"vertices": bottom_vertices, "radius_m": bottom_radius, "depth_m": bottom_depth, "location_m": [0.0, 0.0, bottom_z]}},
+            {"step_id": "create_top_transition_ring", "tool_id": "primitive_cylinder_add", "purpose": "Create the low-vertex circular transition from shaft to square cap.", "params": {"vertices": top_vertices, "radius_m": top_radius, "depth_m": top_depth, "location_m": [0.0, 0.0, top_z]}},
+        ]
+    if feature == "star_or_fluted_shaft":
+        shaft_vertices = int_param(params, "shaft_vertices", 8, minimum=4)
+        shaft_radius = number_param(params, "shaft_radius_m", 0.18)
+        shaft_height = number_param(params, "shaft_height_m", 0.82)
+        shaft_z = number_param(params, "shaft_location_z_m", 0.71)
+        rib_size = vector_param(params, "column_rib_source_size_m", [0.025, 0.04, 0.80])
+        rib_radius = number_param(params, "column_rib_radius_m", 0.21)
+        rib_z = number_param(params, "column_rib_location_z_m", shaft_z)
+        rib_count = int_param(params, "column_rib_count", 8, minimum=4)
+        return [
+            {"step_id": "create_column_shaft_core", "tool_id": "primitive_cylinder_add", "purpose": "Create the low-vertex central column shaft.", "params": {"vertices": shaft_vertices, "radius_m": shaft_radius, "depth_m": shaft_height, "location_m": [0.0, 0.0, shaft_z]}},
+            {"step_id": "create_column_single_rib_source", "tool_id": "primitive_cube_add", "purpose": "Create one blocky shaft rib before radial duplication.", "params": {"size_m": rib_size, "location_m": [rib_radius, 0.0, rib_z]}},
+            {"step_id": "duplicate_column_ribs_radially", "tool_id": "object_duplicate_radial", "purpose": "Duplicate blocky shaft ribs around the column core.", "params": {"source_object": "column_single_rib_source", "count": rib_count, "axis": "z", "radius_m": rib_radius}},
+        ]
+    if feature == "square_top_cap":
+        base_foot_size = vector_param(params, "base_foot_size_m", [0.52, 0.52, 0.10])
+        base_mid_size = vector_param(params, "base_mid_size_m", [0.44, 0.44, 0.06])
+        base_top_size = vector_param(params, "base_top_size_m", [0.34, 0.34, 0.06])
+        cap_neck_size = vector_param(params, "cap_neck_size_m", [0.34, 0.34, 0.07])
+        cap_top_size = vector_param(params, "cap_top_size_m", [0.50, 0.50, 0.13])
+        post_core_height = number_param(params, "post_core_height_m", 0.96)
+        default_cap_neck_z = round(base_foot_size[2] + base_mid_size[2] + base_top_size[2] + post_core_height + cap_neck_size[2] * 0.5, 6)
+        default_cap_top_z = round(base_foot_size[2] + base_mid_size[2] + base_top_size[2] + post_core_height + cap_neck_size[2] + cap_top_size[2] * 0.5, 6)
+        cap_neck_z = number_param(params, "cap_neck_location_z_m", default_cap_neck_z)
+        cap_top_z = number_param(params, "cap_top_location_z_m", default_cap_top_z)
+        return [
+            {"step_id": "create_cap_neck", "tool_id": "primitive_cube_add", "purpose": "Create the square necking block above the upper transition ring.", "params": {"size_m": cap_neck_size, "location_m": [0.0, 0.0, cap_neck_z]}},
+            {"step_id": "create_cap_top", "tool_id": "primitive_cube_add", "purpose": "Create the square top cap block.", "params": {"size_m": cap_top_size, "location_m": [0.0, 0.0, cap_top_z]}},
+            {
+                "step_id": "join_column_parts",
+                "tool_id": "join_objects",
+                "purpose": "Join square base, circular transitions, fluted shaft, and square cap into one deterministic column.",
+                "params": {
+                    "objects": ["base", "bottom_transition_ring", "column_shaft_core", "ribs", "top_transition_ring", "cap"],
+                    "profile_transition_sequence": ["square_base", "circle_ring", "fluted_shaft", "circle_ring", "square_cap"],
+                },
+            },
         ]
     if feature == "ribbed_post_core":
         core_size = vector_param(params, "post_core_size_m", [0.24, 0.24, 0.96])
@@ -411,6 +481,15 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
             "socket": "gothic_stone_shadow",
             "socket_shadow": "gothic_stone_shadow",
         }
+        if asset.get("asset_family") == "column":
+            material_map = {
+                "base": "gothic_stone_dark",
+                "cap": "gothic_stone_cap",
+                "transition": "gothic_stone_transition",
+                "shaft": "gothic_stone",
+                "rib": "gothic_stone_highlight",
+                "default": "gothic_stone",
+            }
         if asset.get("asset_family") in {"window_frame", "door_frame"}:
             material_map = {
                 "frame": "gothic_stone_frame",

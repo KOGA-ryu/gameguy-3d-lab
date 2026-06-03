@@ -20,12 +20,12 @@
     "opening_m": [0.78, 1.45]
   },
   "validation_summary": {
-    "compiled_plan_count": 4,
-    "compiled_step_count": 114,
-    "compiled_unique_tool_count": 24,
-    "json_file_count": 220,
-    "non_blender_command_count": 25,
-    "full_blender_command_count": 33,
+    "compiled_plan_count": 5,
+    "compiled_step_count": 145,
+    "compiled_unique_tool_count": 25,
+    "json_file_count": 221,
+    "non_blender_command_count": 26,
+    "full_blender_command_count": 36,
     "repo_media_mesh_output_count": 0
   },
   "rules": {
