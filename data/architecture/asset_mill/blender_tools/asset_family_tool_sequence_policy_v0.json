@@ -411,6 +411,7 @@
       "dictionary_family_tags": ["column", "stone", "all"],
       "allowed_features": [
         "profiled_plinth_post_context",
+        "profiled_plinth_lipped_post_context",
         "finish_tool_stack",
         "hard_edge_bevels",
         "weighted_normals",

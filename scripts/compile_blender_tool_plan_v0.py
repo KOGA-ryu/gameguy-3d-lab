@@ -578,6 +578,60 @@ def validate_profiled_plinth_post_context(asset: dict[str, Any], geometry_terms:
         fail(f"{asset_id}.style_parameters.context_post_core_size_m.y must fit inside the profiled plinth top landing")
 
 
+def validate_profiled_plinth_lipped_post_context(asset: dict[str, Any], geometry_terms: dict[str, set[str]], tool_map: dict[str, dict[str, Any]]) -> None:
+    asset_id = require_string(asset.get("asset_id"), "asset_id")
+    validate_profiled_plinth_post_context(asset, geometry_terms, tool_map)
+    if "relief_stack" not in operation_terms(geometry_terms):
+        fail("geometry dictionary must define relief_stack before lipped post context compilation")
+    params = style_params(asset)
+    plinth_height = positive_number(params.get("profiled_plinth_height_m", 0.22), f"{asset_id}.style_parameters.profiled_plinth_height_m")
+    base_z = finite_number(params.get("profiled_plinth_base_z_m", 0.0), f"{asset_id}.style_parameters.profiled_plinth_base_z_m")
+    overlap = positive_number(params.get("context_post_core_overlap_m", 0.012), f"{asset_id}.style_parameters.context_post_core_overlap_m")
+    post_size = positive_vector(params.get("context_post_core_size_m", [0.18, 0.18, 0.62]), f"{asset_id}.style_parameters.context_post_core_size_m", 3)
+    post_height = post_size[2]
+    panel_width = positive_number(params.get("lip_panel_width_m", 0.108), f"{asset_id}.style_parameters.lip_panel_width_m")
+    panel_height = positive_number(params.get("lip_panel_height_m", 0.42), f"{asset_id}.style_parameters.lip_panel_height_m")
+    panel_center_z = finite_number(
+        params.get("lip_panel_center_z_m", base_z + plinth_height - overlap + post_height * 0.5),
+        f"{asset_id}.style_parameters.lip_panel_center_z_m",
+    )
+    recess_projection = positive_number(params.get("lip_recess_projection_m", 0.003), f"{asset_id}.style_parameters.lip_recess_projection_m")
+    outer_width = positive_number(params.get("outer_lip_width_m", 0.014), f"{asset_id}.style_parameters.outer_lip_width_m")
+    outer_projection = positive_number(params.get("outer_lip_projection_m", 0.012), f"{asset_id}.style_parameters.outer_lip_projection_m")
+    inner_width = positive_number(params.get("inner_bead_width_m", 0.008), f"{asset_id}.style_parameters.inner_bead_width_m")
+    inner_projection = positive_number(params.get("inner_bead_projection_m", 0.018), f"{asset_id}.style_parameters.inner_bead_projection_m")
+    relief_gap = positive_number(params.get("relief_gap_m", 0.001), f"{asset_id}.style_parameters.relief_gap_m")
+    if not recess_projection < outer_projection < inner_projection:
+        fail(f"{asset_id}.style_parameters lip projections must increase from recess to outer lip to inner bead")
+    if inner_width >= panel_width * 0.5:
+        fail(f"{asset_id}.style_parameters.inner_bead_width_m must be less than half the panel width")
+    face_width = min(post_size[0], post_size[1])
+    if panel_width + outer_width * 2.0 > face_width:
+        fail(f"{asset_id}.style_parameters lip panel and outer lips must fit inside the post face width")
+    if panel_height + outer_width * 2.0 > post_height:
+        fail(f"{asset_id}.style_parameters lip panel and outer lips must fit inside the post height")
+    if relief_gap >= min(outer_width, inner_width):
+        fail(f"{asset_id}.style_parameters.relief_gap_m must be smaller than the lip widths")
+    if panel_width - relief_gap * 2.0 <= 0.0:
+        fail(f"{asset_id}.style_parameters.relief_gap_m leaves no width for horizontal outer lips")
+    if panel_height - relief_gap * 2.0 <= 0.0:
+        fail(f"{asset_id}.style_parameters.relief_gap_m leaves no height for vertical outer lips")
+    if panel_width - inner_width * 2.0 - relief_gap * 2.0 <= 0.0:
+        fail(f"{asset_id}.style_parameters.relief_gap_m leaves no width for horizontal inner beads")
+    if panel_height - inner_width * 2.0 - relief_gap * 2.0 <= 0.0:
+        fail(f"{asset_id}.style_parameters.relief_gap_m leaves no height for vertical inner beads")
+    post_bottom_z = base_z + plinth_height - overlap
+    post_top_z = post_bottom_z + post_height
+    if panel_center_z - panel_height * 0.5 - outer_width < post_bottom_z:
+        fail(f"{asset_id}.style_parameters lip panel lower lips must fit above the post bottom")
+    if panel_center_z + panel_height * 0.5 + outer_width > post_top_z:
+        fail(f"{asset_id}.style_parameters lip panel upper lips must fit below the post top")
+    faces = require_string_list(params.get("lip_panel_faces", ["front", "back", "left", "right"]), f"{asset_id}.style_parameters.lip_panel_faces")
+    expected_faces = ["front", "back", "left", "right"]
+    if faces != expected_faces:
+        fail(f"{asset_id}.style_parameters.lip_panel_faces must be {expected_faces}")
+
+
 def resolve_finish_tool_stack(asset: dict[str, Any], finish_stack_map: dict[str, dict[str, Any]]) -> None:
     asset_id = require_string(asset.get("asset_id"), "asset_id")
     if "finish_tool_stack" not in require_list(asset.get("features"), f"{asset_id}.features"):
@@ -623,6 +677,8 @@ def validate_recipe_bundle(
             validate_profiled_plinth_base_detail(asset, geometry_terms, tool_map)
         if "profiled_plinth_post_context" in asset.get("features", []):
             validate_profiled_plinth_post_context(asset, geometry_terms, tool_map)
+        if "profiled_plinth_lipped_post_context" in asset.get("features", []):
+            validate_profiled_plinth_lipped_post_context(asset, geometry_terms, tool_map)
         if "finish_tool_stack" in asset.get("features", []):
             resolve_finish_tool_stack(asset, finish_stack_map)
         for stage_index, stage in enumerate(require_list(asset.get("required_stage_coverage"), f"{asset_id}.required_stage_coverage")):
@@ -1111,6 +1167,224 @@ def profiled_plinth_post_context_steps(asset: dict[str, Any]) -> list[dict[str, 
                 "post_core_overlap_m": post_overlap,
                 "post_core_fit_clearance_m": fit_clearance,
             },
+        },
+    ]
+
+
+def relief_cube_location_and_size(
+    *,
+    face: str,
+    post_size: list[float],
+    post_xy: list[float],
+    u_center: float,
+    z_center: float,
+    u_size: float,
+    z_size: float,
+    projection: float,
+) -> tuple[list[float], list[float]]:
+    x_center, y_center = post_xy
+    if face == "front":
+        return [round(u_size, 6), round(projection, 6), round(z_size, 6)], [
+            round(x_center + u_center, 6),
+            round(y_center - post_size[1] * 0.5 - projection * 0.5, 6),
+            round(z_center, 6),
+        ]
+    if face == "back":
+        return [round(u_size, 6), round(projection, 6), round(z_size, 6)], [
+            round(x_center + u_center, 6),
+            round(y_center + post_size[1] * 0.5 + projection * 0.5, 6),
+            round(z_center, 6),
+        ]
+    if face == "left":
+        return [round(projection, 6), round(u_size, 6), round(z_size, 6)], [
+            round(x_center - post_size[0] * 0.5 - projection * 0.5, 6),
+            round(y_center + u_center, 6),
+            round(z_center, 6),
+        ]
+    if face == "right":
+        return [round(projection, 6), round(u_size, 6), round(z_size, 6)], [
+            round(x_center + post_size[0] * 0.5 + projection * 0.5, 6),
+            round(y_center + u_center, 6),
+            round(z_center, 6),
+        ]
+    fail(f"unsupported relief face `{face}`")
+
+
+def relief_cube_step(
+    *,
+    step_id: str,
+    face: str,
+    layer: str,
+    role: str,
+    post_size: list[float],
+    post_xy: list[float],
+    u_center: float,
+    z_center: float,
+    u_size: float,
+    z_size: float,
+    projection: float,
+) -> dict[str, Any]:
+    size, location = relief_cube_location_and_size(
+        face=face,
+        post_size=post_size,
+        post_xy=post_xy,
+        u_center=u_center,
+        z_center=z_center,
+        u_size=u_size,
+        z_size=z_size,
+        projection=projection,
+    )
+    return {
+        "step_id": step_id,
+        "tool_id": "primitive_cube_add",
+        "purpose": f"Create the {face} {layer.replace('_', ' ')} relief solid.",
+        "params": {
+            "size_m": size,
+            "location_m": location,
+            "source_profile": "rectangle",
+            "source_operation": "extrude",
+            "source_composition": "relief_stack",
+            "face": face,
+            "relief_layer": layer,
+            "projection_m": round(projection, 6),
+            "material_role": role,
+        },
+    }
+
+
+def lipped_post_relief_panel_steps(asset: dict[str, Any], *, post_location_z: float) -> tuple[list[dict[str, Any]], list[str], dict[str, Any]]:
+    params = style_params(asset)
+    post_size = vector_param(params, "context_post_core_size_m", [0.18, 0.18, 0.62])
+    post_xy = vector_param(params, "context_post_core_center_xy_m", [0.0, 0.0])
+    faces = require_string_list(params.get("lip_panel_faces", ["front", "back", "left", "right"]), f"{asset['asset_id']}.style_parameters.lip_panel_faces")
+    panel_width = number_param(params, "lip_panel_width_m", 0.108)
+    panel_height = number_param(params, "lip_panel_height_m", 0.42)
+    panel_center_z = number_param(params, "lip_panel_center_z_m", post_location_z)
+    recess_projection = number_param(params, "lip_recess_projection_m", 0.003)
+    outer_width = number_param(params, "outer_lip_width_m", 0.014)
+    outer_projection = number_param(params, "outer_lip_projection_m", 0.012)
+    inner_width = number_param(params, "inner_bead_width_m", 0.008)
+    inner_projection = number_param(params, "inner_bead_projection_m", 0.018)
+    relief_gap = number_param(params, "relief_gap_m", 0.001)
+    outer_vertical_z = panel_height - relief_gap * 2.0
+    outer_horizontal_u = panel_width - relief_gap * 2.0
+    inner_vertical_z = panel_height - inner_width * 2.0 - relief_gap * 2.0
+    inner_horizontal_u = panel_width - inner_width * 2.0 - relief_gap * 2.0
+    steps: list[dict[str, Any]] = []
+    aliases: list[str] = []
+
+    def append_step(step: dict[str, Any]) -> None:
+        steps.append(step)
+        aliases.append(step["step_id"].removeprefix("create_"))
+
+    for face in faces:
+        append_step(
+            relief_cube_step(
+                step_id=f"create_{face}_recess_field",
+                face=face,
+                layer="recess_field",
+                role="recess",
+                post_size=post_size,
+                post_xy=post_xy,
+                u_center=0.0,
+                z_center=panel_center_z,
+                u_size=panel_width,
+                z_size=panel_height,
+                projection=recess_projection,
+            )
+        )
+        for side, sign in (("left", -1.0), ("right", 1.0)):
+            append_step(
+                relief_cube_step(
+                    step_id=f"create_{face}_outer_{side}_lip",
+                    face=face,
+                    layer="outer_lip",
+                    role="trim",
+                    post_size=post_size,
+                    post_xy=post_xy,
+                    u_center=sign * (panel_width * 0.5 + outer_width * 0.5),
+                    z_center=panel_center_z,
+                    u_size=outer_width,
+                    z_size=outer_vertical_z,
+                    projection=outer_projection,
+                )
+            )
+        for side, sign in (("top", 1.0), ("bottom", -1.0)):
+            append_step(
+                relief_cube_step(
+                    step_id=f"create_{face}_outer_{side}_lip",
+                    face=face,
+                    layer="outer_lip",
+                    role="trim",
+                    post_size=post_size,
+                    post_xy=post_xy,
+                    u_center=0.0,
+                    z_center=panel_center_z + sign * (panel_height * 0.5 + outer_width * 0.5),
+                    u_size=outer_horizontal_u,
+                    z_size=outer_width,
+                    projection=outer_projection,
+                )
+            )
+        for side, sign in (("left", -1.0), ("right", 1.0)):
+            append_step(
+                relief_cube_step(
+                    step_id=f"create_{face}_inner_{side}_bead",
+                    face=face,
+                    layer="inner_bead",
+                    role="rib",
+                    post_size=post_size,
+                    post_xy=post_xy,
+                    u_center=sign * (panel_width * 0.5 - inner_width * 0.5),
+                    z_center=panel_center_z,
+                    u_size=inner_width,
+                    z_size=inner_vertical_z,
+                    projection=inner_projection,
+                )
+            )
+        for side, sign in (("top", 1.0), ("bottom", -1.0)):
+            append_step(
+                relief_cube_step(
+                    step_id=f"create_{face}_inner_{side}_bead",
+                    face=face,
+                    layer="inner_bead",
+                    role="rib",
+                    post_size=post_size,
+                    post_xy=post_xy,
+                    u_center=0.0,
+                    z_center=panel_center_z + sign * (panel_height * 0.5 - inner_width * 0.5),
+                    u_size=inner_horizontal_u,
+                    z_size=inner_width,
+                    projection=inner_projection,
+                )
+            )
+    return steps, aliases, {
+        "relief_operation": "relief_stack",
+        "relief_face_count": len(faces),
+        "relief_part_count": len(aliases),
+        "relief_layers": ["recess_field", "outer_lip", "inner_bead"],
+        "relief_projection_sequence_m": [recess_projection, outer_projection, inner_projection],
+        "lip_panel_size_m": [panel_width, panel_height],
+        "outer_lip_width_m": outer_width,
+        "inner_bead_width_m": inner_width,
+        "relief_gap_m": relief_gap,
+    }
+
+
+def profiled_plinth_lipped_post_context_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
+    base_steps = profiled_plinth_post_context_steps(asset)
+    post_location_z = float(base_steps[1]["params"]["location_m"][2])
+    relief_steps, relief_aliases, relief_summary = lipped_post_relief_panel_steps(asset, post_location_z=post_location_z)
+    join_params = dict(base_steps[2]["params"])
+    join_params["objects"] = [*join_params["objects"], *relief_aliases]
+    join_params.update(relief_summary)
+    return [
+        *base_steps[:2],
+        *relief_steps,
+        {
+            "step_id": "join_profiled_plinth_lipped_post_context",
+            "tool_id": "join_objects",
+            "purpose": "Join the profiled plinth, square post core, and four-sided raised/recessed relief stack.",
+            "params": join_params,
         },
     ]
 
@@ -1720,6 +1994,8 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
         return profiled_plinth_base_detail_steps(asset)
     if feature == "profiled_plinth_post_context":
         return profiled_plinth_post_context_steps(asset)
+    if feature == "profiled_plinth_lipped_post_context":
+        return profiled_plinth_lipped_post_context_steps(asset)
     if feature == "finish_tool_stack":
         return finish_tool_stack_steps(asset)
     if feature == "stepped_square_base":
@@ -1919,6 +2195,8 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
                 "base": "gothic_stone_dark",
                 "shaft": "gothic_stone",
                 "trim": "gothic_stone_trim",
+                "rib": "gothic_stone_highlight",
+                "recess": "gothic_stone_recess",
                 "default": "gothic_stone",
             }
         return [
@@ -2114,6 +2392,59 @@ def source_terms_for_asset(asset: dict[str, Any]) -> dict[str, Any]:
             "post_core_operation": "extrude",
             "post_core_size_m": vector_param(params, "context_post_core_size_m", [0.18, 0.18, 0.62]),
             "post_core_overlap_m": number_param(params, "context_post_core_overlap_m", 0.012),
+            "tool_ids": tool_ids,
+        }
+    if "profiled_plinth_lipped_post_context" in features:
+        params = style_params(asset)
+        bundle_path = repo_relative_path(
+            params.get("profiled_plinth_profile_bundle", repo_display_path(DEFAULT_RAILING_DETAIL_PROFILES)),
+            f"{asset_id}.style_parameters.profiled_plinth_profile_bundle",
+        )
+        bundle = load_json(bundle_path)
+        profile_id = require_string(
+            params.get("profiled_plinth_profile_id", PROFILED_PLINTH_BASE_DETAIL_PROFILE_ID),
+            f"{asset_id}.style_parameters.profiled_plinth_profile_id",
+        )
+        ring_specs = profiled_plinth_ring_specs(asset_id, params)
+        profile_map = profile_map_from_bundle(bundle, f"{asset_id}.profiled_plinth_profile_bundle")
+        profile = require_object(profile_map.get(profile_id), f"{asset_id}.profiled_plinth_lipped_post_context.{profile_id}")
+        append_unique("geometry", require_string_list(profile.get("geometry_terms_used"), f"{profile_id}.geometry_terms_used") + ["square", "rectangle", "relief_stack"])
+        append_unique("profiles", require_string_list(profile.get("profile_terms"), f"{profile_id}.profile_terms") + ["square", "rectangle"])
+        append_unique("operators", require_string_list(profile.get("operations"), f"{profile_id}.operations") + ["relief_stack"])
+        tool_ids = []
+        for step_value in require_list(profile.get("blender_tool_sequence"), f"{profile_id}.blender_tool_sequence"):
+            step = require_object(step_value, f"{profile_id}.blender_tool_sequence[]")
+            tool_id = require_string(step.get("tool_id"), f"{profile_id}.blender_tool_sequence.tool_id")
+            if tool_id not in tool_ids:
+                tool_ids.append(tool_id)
+        for tool_id in ("primitive_cube_add",):
+            if tool_id not in tool_ids:
+                tool_ids.append(tool_id)
+        result["profiled_plinth_lipped_post_context"] = {
+            "bundle_path": repo_display_path(bundle_path),
+            "profile_id": profile_id,
+            "compile_mode": "wrapped_plinth_square_post_relief_stack_v0",
+            "source_control_point_count": PROFILED_PLINTH_SOURCE_CONTROL_POINT_COUNT,
+            "profile_ring_count": len(ring_specs),
+            "footprint_point_count": 8,
+            "corner_chamfer_ratio": number_param(params, "profiled_plinth_corner_chamfer_ratio", 0.18),
+            "post_core_profile": "square",
+            "post_core_operation": "extrude",
+            "relief_operation": "relief_stack",
+            "relief_face_count": len(require_string_list(params.get("lip_panel_faces", ["front", "back", "left", "right"]), f"{asset_id}.style_parameters.lip_panel_faces")),
+            "relief_layers": ["recess_field", "outer_lip", "inner_bead"],
+            "relief_projection_sequence_m": [
+                number_param(params, "lip_recess_projection_m", 0.003),
+                number_param(params, "outer_lip_projection_m", 0.012),
+                number_param(params, "inner_bead_projection_m", 0.018),
+            ],
+            "post_core_size_m": vector_param(params, "context_post_core_size_m", [0.18, 0.18, 0.62]),
+            "post_core_overlap_m": number_param(params, "context_post_core_overlap_m", 0.012),
+            "lip_panel_size_m": [
+                number_param(params, "lip_panel_width_m", 0.108),
+                number_param(params, "lip_panel_height_m", 0.42),
+            ],
+            "relief_gap_m": number_param(params, "relief_gap_m", 0.001),
             "tool_ids": tool_ids,
         }
     if "finish_tool_stack" in features:

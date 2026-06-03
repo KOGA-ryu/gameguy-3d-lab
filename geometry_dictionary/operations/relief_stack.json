@@ -1,0 +1,33 @@
+{
+  "term_id": "relief_stack",
+  "category": "composition_operation",
+  "plain_name": "Relief Stack",
+  "description": "Composes shallow raised and recessed face details from ordered 2D profiles with measured projection depths.",
+  "required_inputs": {
+    "base_face": "face_region",
+    "profiles": "profile_primitive[]",
+    "projection_depths": "float[]",
+    "placement_faces": "connector[]"
+  },
+  "outputs": {
+    "type": "layered_relief_detail"
+  },
+  "constraints": {
+    "projection_depths_are_ordered": true,
+    "profiles_fit_target_face": true,
+    "source_recipe_declares_face_placement": true
+  },
+  "common_uses": [
+    "raised panel lips",
+    "recessed ornamental fields",
+    "stacked molding bands",
+    "low-profile post and rail relief"
+  ],
+  "blender_method": "compile 2D face profiles into deterministic shallow solids, place them on target faces, then bevel as a finish step",
+  "validation": [
+    "profile_fits_face",
+    "projection_depths_ordered",
+    "material_role_coverage",
+    "non_manifold_check"
+  ]
+}

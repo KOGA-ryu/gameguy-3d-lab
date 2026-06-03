@@ -156,7 +156,7 @@ class BlenderToolPlanTests(unittest.TestCase):
 
         self.assertEqual(manifest["schema"], "gameguy_tool_plan_manifest_v0")
         self.assertEqual(manifest["tool_sequence_policy"], "asset_family_tool_sequence_policy_v0")
-        self.assertEqual(manifest["plan_count"], 9)
+        self.assertEqual(manifest["plan_count"], 10)
         self.assertEqual(manifest["plans"][0]["step_count"], 32)
         self.assertEqual(manifest["plans"][0]["unique_tool_count"], 24)
         self.assertEqual(plan["asset_family"], "banister_post")
@@ -604,7 +604,93 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(by_step["add_hard_edge_bevels"]["params"]["segments"], 1)
         self.assertEqual(
             by_step["assign_material_regions"]["params"]["material_map"],
-            {"base": "gothic_stone_dark", "shaft": "gothic_stone", "trim": "gothic_stone_trim", "default": "gothic_stone"},
+            {
+                "base": "gothic_stone_dark",
+                "shaft": "gothic_stone",
+                "trim": "gothic_stone_trim",
+                "rib": "gothic_stone_highlight",
+                "recess": "gothic_stone_recess",
+                "default": "gothic_stone",
+            },
+        )
+
+    def test_profiled_plinth_lipped_post_context_compiles_to_four_sided_relief_stack(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "plans"
+            run_compiler(out_root)
+            plan = plan_by_asset(out_root, "profiled_plinth_lipped_post_context_tool_plan_v0")
+
+        self.assertEqual(plan["asset_family"], "context_prototype")
+        self.assertEqual(plan["asset_family_policy"], "context_prototype")
+        self.assertEqual(plan["features"], ["profiled_plinth_lipped_post_context", "finish_tool_stack"])
+        self.assertEqual(plan["summary"]["step_count"], 59)
+        self.assertEqual(plan["summary"]["unique_tool_count"], 23)
+        self.assertIn("relief_stack", plan["source_terms"]["operators"])
+        self.assertEqual(plan["source_terms"]["profiles"], ["custom_polygon", "square", "rectangle"])
+        self.assertNotIn("modifier_boolean", plan["summary"]["unique_tools"])
+        self.assertNotIn("object_duplicate_radial", plan["summary"]["unique_tools"])
+        self.assertEqual(
+            plan["source_terms"]["profiled_plinth_lipped_post_context"],
+            {
+                "bundle_path": "data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json",
+                "profile_id": "railing_plinth_ogee_base_side_profile_v0",
+                "compile_mode": "wrapped_plinth_square_post_relief_stack_v0",
+                "source_control_point_count": 14,
+                "profile_ring_count": 15,
+                "footprint_point_count": 8,
+                "corner_chamfer_ratio": 0.18,
+                "post_core_profile": "square",
+                "post_core_operation": "extrude",
+                "relief_operation": "relief_stack",
+                "relief_face_count": 4,
+                "relief_layers": ["recess_field", "outer_lip", "inner_bead"],
+                "relief_projection_sequence_m": [0.003, 0.012, 0.018],
+                "post_core_size_m": [0.18, 0.18, 0.62],
+                "post_core_overlap_m": 0.012,
+                "lip_panel_size_m": [0.108, 0.42],
+                "relief_gap_m": 0.001,
+                "tool_ids": ["mesh_from_pydata", "join_objects", "modifier_bevel", "modifier_weighted_normal", "primitive_cube_add"],
+            },
+        )
+
+        by_step = {step["step_id"]: step for step in plan["steps"]}
+        role_counts: dict[str, int] = {}
+        layer_counts: dict[str, int] = {}
+        for step in plan["steps"]:
+            role = step["params"].get("material_role")
+            if role:
+                role_counts[role] = role_counts.get(role, 0) + 1
+            layer = step["params"].get("relief_layer")
+            if layer:
+                layer_counts[layer] = layer_counts.get(layer, 0) + 1
+        self.assertEqual(role_counts, {"base": 1, "shaft": 1, "recess": 4, "trim": 16, "rib": 16})
+        self.assertEqual(layer_counts, {"recess_field": 4, "outer_lip": 16, "inner_bead": 16})
+        self.assertEqual(by_step["create_front_recess_field"]["params"]["size_m"], [0.108, 0.003, 0.42])
+        self.assertEqual(by_step["create_front_recess_field"]["params"]["location_m"], [0.0, -0.0915, 0.518])
+        self.assertEqual(by_step["create_front_outer_left_lip"]["params"]["size_m"], [0.014, 0.012, 0.418])
+        self.assertEqual(by_step["create_front_outer_left_lip"]["params"]["location_m"], [-0.061, -0.096, 0.518])
+        self.assertEqual(by_step["create_front_outer_top_lip"]["params"]["size_m"], [0.106, 0.012, 0.014])
+        self.assertEqual(by_step["create_front_inner_left_bead"]["params"]["size_m"], [0.008, 0.018, 0.402])
+        self.assertEqual(by_step["create_front_inner_top_bead"]["params"]["size_m"], [0.09, 0.018, 0.008])
+        self.assertEqual(by_step["create_front_inner_left_bead"]["params"]["projection_m"], 0.018)
+        join_params = by_step["join_profiled_plinth_lipped_post_context"]["params"]
+        self.assertEqual(join_params["relief_operation"], "relief_stack")
+        self.assertEqual(join_params["relief_face_count"], 4)
+        self.assertEqual(join_params["relief_part_count"], 36)
+        self.assertEqual(len(join_params["objects"]), 38)
+        self.assertEqual(join_params["relief_projection_sequence_m"], [0.003, 0.012, 0.018])
+        self.assertEqual(join_params["relief_gap_m"], 0.001)
+        self.assertEqual(by_step["add_hard_edge_bevels"]["params"]["width_m"], 0.004)
+        self.assertEqual(
+            by_step["assign_material_regions"]["params"]["material_map"],
+            {
+                "base": "gothic_stone_dark",
+                "shaft": "gothic_stone",
+                "trim": "gothic_stone_trim",
+                "rib": "gothic_stone_highlight",
+                "recess": "gothic_stone_recess",
+                "default": "gothic_stone",
+            },
         )
 
     def test_validate_only_writes_no_manifest(self) -> None:
@@ -618,7 +704,7 @@ class BlenderToolPlanTests(unittest.TestCase):
                 text=True,
             )
 
-        self.assertIn("compiled tool plans=9 steps=275 tools=97 out=<validate-only>", result.stdout)
+        self.assertIn("compiled tool plans=10 steps=334 tools=97 out=<validate-only>", result.stdout)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_unknown_feature_fails_before_output(self) -> None:

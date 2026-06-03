@@ -1,0 +1,101 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0047-lipped-post-relief-stack-v0",
+  "created_utc": "2026-06-03T00:00:00Z",
+  "summary": "Added a context_prototype tool-plan asset that gives a square post varying ornamental thickness through a source-owned relief_stack.",
+  "source_inputs": {
+    "tool_plan_recipe_bundle": "data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json",
+    "sequence_policy": "data/architecture/asset_mill/blender_tools/asset_family_tool_sequence_policy_v0.json",
+    "geometry_operation": "geometry_dictionary/operations/relief_stack.json",
+    "source_profile_bundle": "data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json",
+    "source_profile_id": "railing_plinth_ogee_base_side_profile_v0"
+  },
+  "compiled_asset": {
+    "asset_id": "profiled_plinth_lipped_post_context_tool_plan_v0",
+    "asset_family": "context_prototype",
+    "plan_id": "profiled_plinth_lipped_post_context_tool_plan_v0_compiled",
+    "step_count": 59,
+    "unique_tool_count": 23,
+    "source_construction_tools": ["mesh_from_pydata", "primitive_cube_add", "join_objects"],
+    "finish_stack": "gothic_stone_finish_stack_v0"
+  },
+  "geometry_inputs": {
+    "profile_control_point_count": 14,
+    "profile_ring_count": 15,
+    "footprint_point_count": 8,
+    "post_core_size_m": [0.18, 0.18, 0.62],
+    "post_core_overlap_m": 0.012,
+    "relief_operation": "relief_stack",
+    "relief_face_count": 4,
+    "relief_part_count": 36,
+    "relief_layers": ["recess_field", "outer_lip", "inner_bead"],
+    "relief_projection_sequence_m": [0.003, 0.012, 0.018],
+    "relief_gap_m": 0.001,
+    "lip_panel_size_m": [0.108, 0.42],
+    "outer_lip_width_m": 0.014,
+    "inner_bead_width_m": 0.008
+  },
+  "blender_context_execution": {
+    "render_path": "/tmp/gameguy_profiled_plinth_lipped_post_context_execution_v0_0047/tool_plan_execution_v0_workbench.png",
+    "export_path": "/tmp/gameguy_profiled_plinth_lipped_post_context_execution_v0_0047/tool_plan_execution_v0.glb",
+    "blend_path": "/tmp/gameguy_profiled_plinth_lipped_post_context_execution_v0_0047/tool_plan_execution_v0.blend",
+    "report_path": "/tmp/gameguy_profiled_plinth_lipped_post_context_execution_v0_0047/tool_plan_execution_v0_report.json",
+    "final_object": {
+      "vertex_count": 1214,
+      "edge_count": 2456,
+      "face_count": 1318,
+      "material_slot_count": 5
+    },
+    "material_roles": ["base", "shaft", "recess", "trim", "rib"],
+    "non_manifold_edge_count": 0
+  },
+  "validation": {
+    "focused_unit_tests": {
+      "command": "python3 -m unittest tests.test_blender_tool_plan_v0 tests.test_execute_blender_tool_plan_v0 tests.test_validate_gameguy_tool_plan_v0 tests.test_validate_asset_generation_registry_v0 tests.test_validate_generation_pipeline_v0 tests.test_validate_blender_tool_plan_execution_report_v0",
+      "result": "OK",
+      "test_count": 61
+    },
+    "unit_tests": {
+      "command": "python3 -m unittest discover -s tests",
+      "result": "OK",
+      "test_count": 129
+    },
+    "tool_plan_compile_validate_only": {
+      "command": "python3 scripts/compile_blender_tool_plan_v0.py --validate-only",
+      "result": "compiled tool plans=10 steps=334 tools=97 out=<validate-only>"
+    },
+    "tool_plan_validation": {
+      "command": "python3 scripts/validate_gameguy_tool_plan_v0.py --manifest /tmp/gameguy_blender_tool_plan_v0_0047_probe/manifest.json",
+      "result": "PASS gameguy_tool_plan_v0 validation: 10 plans, 334 steps, 28 tools"
+    },
+    "lipped_post_context_adapter_validate_only": {
+      "command": "python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0_0047_probe/plans/profiled_plinth_lipped_post_context_tool_plan_v0_compiled.json --validate-only",
+      "result": "PASS Blender tool-plan adapter validation: steps=59 tools=23"
+    },
+    "lipped_post_context_execution_report_validate": {
+      "command": "python3 scripts/validate_blender_tool_plan_execution_report_v0.py --report /tmp/gameguy_profiled_plinth_lipped_post_context_execution_v0_0047/tool_plan_execution_v0_report.json",
+      "result": "PASS Blender tool-plan execution quality validation: steps=59 non_manifold=0 material_roles=5 socket_panels=0"
+    },
+    "generation_pipeline": {
+      "non_blender": {
+        "command": "python3 scripts/validate_generation_pipeline_v0.py --json-report /tmp/gameguy_pipeline_0047_final.json",
+        "result": "PASS generation pipeline validation: commands=34 json=242 include_blender=false",
+        "command_count": 34,
+        "json_file_count": 242
+      },
+      "full_blender": {
+        "command": "python3 scripts/validate_generation_pipeline_v0.py --include-blender --json-report /tmp/gameguy_pipeline_blender_0047_final.json",
+        "result": "PASS generation pipeline validation: commands=48 json=242 include_blender=true",
+        "command_count": 48,
+        "json_file_count": 242
+      }
+    }
+  },
+  "rules": {
+    "blender_is_adapter_layer": true,
+    "source_recipe_owns_design_decisions": true,
+    "relief_stack_is_source_operation": true,
+    "generated_outputs_stay_under_tmp": true,
+    "no_production_or_structural_claims": true
+  }
+}
