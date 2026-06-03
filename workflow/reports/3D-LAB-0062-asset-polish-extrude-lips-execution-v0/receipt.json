@@ -1,0 +1,164 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0062-asset-polish-extrude-lips-execution-v0",
+  "created_utc": "2026-06-03T23:45:26Z",
+  "summary": "Promoted extrude_along_normals / extrude_faces to first execution Blender polish logic for raised shaft panel lips.",
+  "source_inputs": {
+    "compiled_plan": "/tmp/gameguy_asset_polish_tool_plan_v0/plans/blocky_fence_post_asset_polish_plan_v0_compiled.json",
+    "source_asset": "/tmp/gameguy_blocky_shape_grammar_asset_pump_v0/assets/blocky_fence_post_v0.json",
+    "executor": "scripts/execute_asset_polish_blender_adapter_v0.py",
+    "execution_report_validator": "scripts/validate_asset_polish_blender_execution_report_v0.py",
+    "validate_only_adapter": "scripts/validate_asset_polish_blender_adapter_v0.py"
+  },
+  "execution_scope": {
+    "supported_step_count": 7,
+    "future_step_count": 3,
+    "executed_step_count": 7,
+    "skipped_future_step_count": 3,
+    "supported_tools": [
+      "extrude_faces",
+      "inset_faces",
+      "modifier_bevel",
+      "material_assign_by_part",
+      "modifier_weighted_normal"
+    ],
+    "future_operations_skipped": [
+      "boolean_cut",
+      "sweep_profile",
+      "uv_unwrap"
+    ]
+  },
+  "extrusion_execution": {
+    "step_id": "raise_shaft_panel_beads",
+    "operation": "extrude_along_normals",
+    "tool_id": "extrude_faces",
+    "target": "newel.shaft.panel_lips",
+    "from_target": "newel.shaft.side_panels",
+    "target_objects": [
+      "post_core"
+    ],
+    "depth_m": 0.014,
+    "lip_width_m": 0.008,
+    "lip_profile": "small_bead",
+    "panel_face_count": 4,
+    "lip_surface_count": 16,
+    "added_vertex_count": 128,
+    "added_face_count": 80
+  },
+  "blender_execution": {
+    "command": "/Applications/Blender.app/Contents/MacOS/Blender --background --python scripts/execute_asset_polish_blender_adapter_v0.py -- --plan /tmp/gameguy_asset_polish_tool_plan_v0/plans/blocky_fence_post_asset_polish_plan_v0_compiled.json --asset /tmp/gameguy_blocky_shape_grammar_asset_pump_v0/assets/blocky_fence_post_v0.json --out /tmp/gameguy_asset_polish_blender_execution_v0",
+    "result": "PASS asset polish Blender execution: executed=7 skipped_future=3 out=/tmp/gameguy_asset_polish_blender_execution_v0",
+    "report": "/tmp/gameguy_asset_polish_blender_execution_v0/asset_polish_execution_report_v0.json",
+    "blend": "/tmp/gameguy_asset_polish_blender_execution_v0/asset_polish_execution_v0.blend",
+    "object_count": 9,
+    "mesh_object_count": 7,
+    "part_object_count": 7,
+    "inset_panel_face_count": 8,
+    "extruded_lip_surface_count": 16,
+    "trim_lip_face_count": 272,
+    "material_assignment": {
+      "panel_material_slot": "gothic_stone_panel_shadow",
+      "panel_material_face_count": 8,
+      "trim_material_slot": "gothic_stone_trim_highlight",
+      "trim_material_face_count": 272
+    },
+    "polish_face_inspection": {
+      "result": "PASS",
+      "method": "Opened the saved blend after bevel application and counted faces by material slot.",
+      "faces_by_object": {
+        "post_core": {
+          "trim": 272,
+          "panel": 4
+        },
+        "square_foot": {
+          "panel": 4
+        }
+      }
+    },
+    "quality_pass": {
+      "supported_polish_steps_executed": true,
+      "future_steps_skipped": true,
+      "source_asset_preserved": true,
+      "source_recipe_not_read": true,
+      "insets_applied": true,
+      "extrusions_applied": true,
+      "material_assignment_applied": true,
+      "bevels_applied": true,
+      "weighted_normals_added": true
+    }
+  },
+  "registry": {
+    "source_asset_polish_plan_bundle_count": 1,
+    "source_asset_polish_plan_count": 1,
+    "executor": "scripts/execute_asset_polish_blender_adapter_v0.py",
+    "execution_report_validator": "scripts/validate_asset_polish_blender_execution_report_v0.py",
+    "pipeline_labels": [
+      "asset_polish_tool_plan_compile_validate_only",
+      "asset_polish_tool_plan_compile",
+      "asset_polish_tool_plan_validate",
+      "asset_polish_blender_adapter_validate_only",
+      "asset_polish_blender_executor_validate_only",
+      "blender_execute_asset_polish_plan",
+      "asset_polish_blender_execution_report_validate"
+    ]
+  },
+  "validation": {
+    "python_compile": {
+      "command": "python3 -m py_compile scripts/validate_asset_polish_blender_adapter_v0.py scripts/execute_asset_polish_blender_adapter_v0.py scripts/validate_asset_polish_blender_execution_report_v0.py scripts/validate_asset_generation_registry_v0.py scripts/validate_generation_pipeline_v0.py scripts/audit_script_orbit_v0.py",
+      "result": "PASS"
+    },
+    "targeted_tests": {
+      "command": "python3 -m unittest tests/test_asset_polish_blender_adapter_v0.py tests/test_asset_polish_blender_execution_report_v0.py tests/test_validate_asset_generation_registry_v0.py tests/test_audit_script_orbit_v0.py tests/test_asset_mill_retirement_readiness_v0.py",
+      "result": "OK",
+      "test_count": 24
+    },
+    "asset_polish_compile": {
+      "command": "python3 scripts/compile_asset_polish_tool_plan_v0.py --clean --out /tmp/gameguy_asset_polish_tool_plan_v0",
+      "result": "PASS asset polish tool-plan compile: plans=1 steps=10 targets=8 out=/tmp/gameguy_asset_polish_tool_plan_v0"
+    },
+    "blocky_shape_asset_pump": {
+      "command": "python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/blocky_shape_grammar_assets_v0.json --clean --out /tmp/gameguy_blocky_shape_grammar_asset_pump_v0",
+      "result": "pumped assets=2 vertices=320 faces=228 out=/tmp/gameguy_blocky_shape_grammar_asset_pump_v0"
+    },
+    "asset_polish_blender_adapter_validate_only": {
+      "command": "python3 scripts/validate_asset_polish_blender_adapter_v0.py --plan /tmp/gameguy_asset_polish_tool_plan_v0/plans/blocky_fence_post_asset_polish_plan_v0_compiled.json --json-report /tmp/gameguy_asset_polish_blender_adapter_0062.json",
+      "result": "WARN asset polish Blender adapter validation: status=warn supported=7 future=3 warnings=9 errors=0"
+    },
+    "asset_polish_executor_validate_only": {
+      "command": "python3 scripts/execute_asset_polish_blender_adapter_v0.py --plan /tmp/gameguy_asset_polish_tool_plan_v0/plans/blocky_fence_post_asset_polish_plan_v0_compiled.json --asset /tmp/gameguy_blocky_shape_grammar_asset_pump_v0/assets/blocky_fence_post_v0.json --validate-only --json-report /tmp/gameguy_asset_polish_executor_validate_only_0062.json",
+      "result": "PASS asset polish Blender executor validation: supported=7 future=3 asset=blocky_fence_post_v0"
+    },
+    "asset_polish_blender_execution_report": {
+      "command": "python3 scripts/validate_asset_polish_blender_execution_report_v0.py --report /tmp/gameguy_asset_polish_blender_execution_v0/asset_polish_execution_report_v0.json",
+      "result": "PASS asset polish Blender execution report validation: executed=7 skipped_future=3"
+    },
+    "polish_face_inspection": {
+      "command": "/Applications/Blender.app/Contents/MacOS/Blender --background /tmp/gameguy_asset_polish_blender_execution_v0/asset_polish_execution_v0.blend --python-expr '<polish face inspection>'",
+      "result": "POLISH_FACE_INSPECTION post_core.trim=272 post_core.panel=4 square_foot.panel=4"
+    },
+    "asset_generation_registry": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py --json-report /tmp/gameguy_registry_0062.json",
+      "result": "PASS asset generation registry validation: geometry_bundles=5 geometry_assets=40 source_profiles=19 source_asset_polish_plans=1 source_graphs=1 source_cell_selections=1 source_pattern_fields=1 source_pattern_segments=1 source_taxonomies=23 reference_only=3"
+    },
+    "script_orbit_audit": {
+      "command": "python3 scripts/audit_script_orbit_v0.py --json-report /tmp/gameguy_script_orbit_0062.json",
+      "result": "PASS script orbit audit: scripts=87 KEEP_CANONICAL=28, CONVERT_TO_ADAPTER=0, REPLACE_BY_PUMP=0, REFERENCE_ONLY=59, DELETE_LATER=0"
+    },
+    "generation_pipeline_non_blender_skip_unit_tests": {
+      "command": "python3 scripts/validate_generation_pipeline_v0.py --skip-unit-tests --json-report /tmp/gameguy_pipeline_0062_asset_polish_extrude_lips_final.json",
+      "result": "PASS generation pipeline validation: commands=43 json=268 include_blender=false",
+      "command_count": 43,
+      "json_file_count": 268
+    }
+  },
+  "rules": {
+    "executor_reads_source_recipe": false,
+    "executor_runs_asset_pump": false,
+    "executor_executes_unresolved_future_operations": false,
+    "executor_mutates_source_asset_json": false,
+    "generated_outputs_stay_under_tmp": true,
+    "no_repo_mesh_output": true,
+    "no_repo_media_output": true
+  },
+  "recommended_next_goal": "Implement boolean_cut as the next asset polish execution primitive for east/west rail socket reveals."
+}

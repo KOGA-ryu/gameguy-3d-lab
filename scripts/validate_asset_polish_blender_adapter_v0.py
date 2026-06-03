@@ -22,10 +22,10 @@ DEFAULT_REPORT = Path("/tmp/gameguy_asset_polish_blender_adapter_v0/asset_polish
 PLAN_SCHEMA = "asset_polish_tool_plan_v0"
 TOOL_DICTIONARY_SCHEMA = "blender_tool_dictionary_v0"
 REPORT_SCHEMA = "asset_polish_blender_adapter_validation_report_v0"
-SUPPORTED_OPERATIONS = {"bevel_edges", "chamfer_edges", "inset_faces", "material_assign", "weighted_normals"}
-SUPPORTED_TOOLS = {"inset_faces", "material_assign_by_part", "modifier_bevel", "modifier_weighted_normal"}
-FUTURE_OPERATIONS = {"boolean_cut", "extrude_along_normals", "sweep_profile", "uv_unwrap"}
-FUTURE_TOOLS = {"curve_bevel_profile", "extrude_faces", "modifier_boolean", "uv_smart_project", "uv_unwrap"}
+SUPPORTED_OPERATIONS = {"bevel_edges", "chamfer_edges", "extrude_along_normals", "inset_faces", "material_assign", "weighted_normals"}
+SUPPORTED_TOOLS = {"extrude_faces", "inset_faces", "material_assign_by_part", "modifier_bevel", "modifier_weighted_normal"}
+FUTURE_OPERATIONS = {"boolean_cut", "sweep_profile", "uv_unwrap"}
+FUTURE_TOOLS = {"curve_bevel_profile", "modifier_boolean", "uv_smart_project", "uv_unwrap"}
 KNOWN_OPERATIONS = SUPPORTED_OPERATIONS | FUTURE_OPERATIONS
 KNOWN_SELECTOR_KINDS = {
     "all_visible_hard_edges",
@@ -36,7 +36,7 @@ KNOWN_SELECTOR_KINDS = {
     "part_ids",
     "side_faces",
 }
-FIRST_EXECUTION_SELECTOR_KINDS = {"all_visible_hard_edges", "all_visible_mesh_parts", "edge_role", "part_ids", "side_faces"}
+FIRST_EXECUTION_SELECTOR_KINDS = {"all_visible_hard_edges", "all_visible_mesh_parts", "edge_role", "face_border", "part_ids", "side_faces"}
 SIDE_FACES = {"front", "back", "left", "right"}
 GEOMETRY_STAGE_NAMES = {"assembly", "base_form", "shape_refinement", "sculpt_detail", "retopo_cleanup"}
 REQUIRED_TOP_LEVEL_FIELDS = (

@@ -38,6 +38,7 @@ DEFAULT_OUT = Path("/tmp/gameguy_asset_polish_blender_execution_v0")
 DEFAULT_REPORT = Path("/tmp/gameguy_asset_polish_blender_executor_validate_only_v0.json")
 REPORT_SCHEMA = "asset_polish_blender_execution_report_v0"
 SUPPORTED_TOOL_FAMILIES = {
+    "extrude_faces",
     "inset_faces",
     "modifier_bevel",
     "material_assign_by_part",
@@ -161,6 +162,14 @@ def material_slot_index_for_role(plan: dict[str, Any], role: str) -> int | None:
     return None
 
 
+def material_slot_id_for_role(plan: dict[str, Any], role: str) -> str | None:
+    for index, slot in enumerate(require_list(plan.get("material_slots"), "plan.material_slots")):
+        item = require_object(slot, f"material_slots[{index}]")
+        if item.get("material_role") == role:
+            return require_string(item.get("slot_id"), f"material_slots[{index}].slot_id")
+    return None
+
+
 def source_role_to_polish_role(role: str) -> str:
     if role == "base":
         return "base"
@@ -181,6 +190,24 @@ def parse_index_property(value: Any) -> list[int]:
         except ValueError:
             continue
     return result
+
+
+def store_index_property(obj: Any, key: str, indexes: list[int]) -> None:
+    existing = parse_index_property(obj.get(key))
+    seen: set[int] = set()
+    result = []
+    for index in [*existing, *indexes]:
+        if index in seen:
+            continue
+        seen.add(index)
+        result.append(index)
+    obj[key] = ",".join(str(index) for index in result)
+
+
+def material_marked_face_indexes(obj: Any, slot_index: int | None) -> list[int]:
+    if slot_index is None or slot_index < 0:
+        return []
+    return [polygon.index for polygon in obj.data.polygons if int(polygon.material_index) == slot_index]
 
 
 def supported_steps(plan: dict[str, Any]) -> list[dict[str, Any]]:
@@ -245,6 +272,7 @@ def make_execution_report(
         "executed_steps": [],
         "skipped_steps": skipped,
         "inset_applications": [],
+        "extrusion_applications": [],
         "modifier_applications": [],
         "material_assignment": {},
         "weighted_normals": {},
@@ -358,6 +386,131 @@ def inset_axis_indexes(normal: Any) -> tuple[int, int]:
     return axes[0], axes[1]
 
 
+def normal_axis_index(normal: Any) -> int:
+    values = (abs(float(normal.x)), abs(float(normal.y)), abs(float(normal.z)))
+    return max(range(3), key=lambda index: values[index])
+
+
+def dot3(left: tuple[float, float, float], right: tuple[float, float, float]) -> float:
+    return left[0] * right[0] + left[1] * right[1] + left[2] * right[2]
+
+
+def cross3(left: tuple[float, float, float], right: tuple[float, float, float]) -> tuple[float, float, float]:
+    return (
+        left[1] * right[2] - left[2] * right[1],
+        left[2] * right[0] - left[0] * right[2],
+        left[0] * right[1] - left[1] * right[0],
+    )
+
+
+def sub3(left: tuple[float, float, float], right: tuple[float, float, float]) -> tuple[float, float, float]:
+    return (left[0] - right[0], left[1] - right[1], left[2] - right[2])
+
+
+def oriented_quad(indexes: tuple[int, int, int, int], vertices: list[tuple[float, float, float]], normal: Any) -> tuple[int, int, int, int]:
+    p0 = vertices[indexes[0]]
+    p1 = vertices[indexes[1]]
+    p2 = vertices[indexes[2]]
+    face_normal = cross3(sub3(p1, p0), sub3(p2, p1))
+    desired = (float(normal.x), float(normal.y), float(normal.z))
+    if dot3(face_normal, desired) < 0.0:
+        return tuple(reversed(indexes))  # type: ignore[return-value]
+    return indexes
+
+
+def point_on_panel_plane(face_vertices: list[Any], normal: Any, axis_a: int, axis_b: int, a_value: float, b_value: float, offset: float) -> tuple[float, float, float]:
+    coords = [0.0, 0.0, 0.0]
+    axis_normal = normal_axis_index(normal)
+    coords[axis_a] = a_value
+    coords[axis_b] = b_value
+    coords[axis_normal] = sum(float(vertex[axis_normal]) for vertex in face_vertices) / len(face_vertices)
+    coords[0] += float(normal.x) * offset
+    coords[1] += float(normal.y) * offset
+    coords[2] += float(normal.z) * offset
+    return (round(coords[0], 6), round(coords[1], 6), round(coords[2], 6))
+
+
+def add_raised_lip_rect(
+    vertices: list[tuple[float, float, float]],
+    faces: list[tuple[int, ...]],
+    face_materials: list[int],
+    face_vertices: list[Any],
+    normal: Any,
+    axis_a: int,
+    axis_b: int,
+    rect: tuple[float, float, float, float],
+    depth: float,
+    trim_slot_index: int | None,
+) -> tuple[int, int, int]:
+    min_a, max_a, min_b, max_b = rect
+    base_points = [
+        point_on_panel_plane(face_vertices, normal, axis_a, axis_b, min_a, min_b, 0.0),
+        point_on_panel_plane(face_vertices, normal, axis_a, axis_b, max_a, min_b, 0.0),
+        point_on_panel_plane(face_vertices, normal, axis_a, axis_b, max_a, max_b, 0.0),
+        point_on_panel_plane(face_vertices, normal, axis_a, axis_b, min_a, max_b, 0.0),
+    ]
+    raised_points = [
+        point_on_panel_plane(face_vertices, normal, axis_a, axis_b, min_a, min_b, depth),
+        point_on_panel_plane(face_vertices, normal, axis_a, axis_b, max_a, min_b, depth),
+        point_on_panel_plane(face_vertices, normal, axis_a, axis_b, max_a, max_b, depth),
+        point_on_panel_plane(face_vertices, normal, axis_a, axis_b, min_a, max_b, depth),
+    ]
+    start = len(vertices)
+    vertices.extend(base_points)
+    vertices.extend(raised_points)
+    material_index = trim_slot_index if trim_slot_index is not None else 0
+    top_face = oriented_quad((start + 4, start + 5, start + 6, start + 7), vertices, normal)
+    faces.append(top_face)
+    face_materials.append(material_index)
+    for face in (
+        (start, start + 1, start + 5, start + 4),
+        (start + 1, start + 2, start + 6, start + 5),
+        (start + 2, start + 3, start + 7, start + 6),
+        (start + 3, start, start + 4, start + 7),
+    ):
+        trim_face_indices.append(len(faces))
+        faces.append(face)
+        face_materials.append(material_index)
+    return 8, 5, 1
+
+
+def add_raised_lips_for_panel(
+    vertices: list[tuple[float, float, float]],
+    faces: list[tuple[int, ...]],
+    face_materials: list[int],
+    face_vertices: list[Any],
+    normal: Any,
+    lip_width: float,
+    depth: float,
+    trim_slot_index: int | None,
+) -> tuple[list[int], int, int, int]:
+    axis_a, axis_b = inset_axis_indexes(normal)
+    axis_a_values = [float(vertex[axis_a]) for vertex in face_vertices]
+    axis_b_values = [float(vertex[axis_b]) for vertex in face_vertices]
+    min_a, max_a = min(axis_a_values), max(axis_a_values)
+    min_b, max_b = min(axis_b_values), max(axis_b_values)
+    if (max_a - min_a) <= lip_width * 2.0 or (max_b - min_b) <= lip_width * 2.0:
+        return [], 0, 0, 0
+    rects = [
+        (min_a, max_a, min_b, min_b + lip_width),
+        (min_a, max_a, max_b - lip_width, max_b),
+        (min_a, min_a + lip_width, min_b + lip_width, max_b - lip_width),
+        (max_a - lip_width, max_a, min_b + lip_width, max_b - lip_width),
+    ]
+    trim_face_indices = []
+    added_vertices = 0
+    added_faces = 0
+    lip_surface_count = 0
+    for rect in rects:
+        before_faces = len(faces)
+        vertex_count, face_count, surface_count = add_raised_lip_rect(vertices, faces, face_materials, face_vertices, normal, axis_a, axis_b, rect, depth, trim_slot_index)
+        trim_face_indices.extend(range(before_faces, before_faces + face_count))
+        added_vertices += vertex_count
+        added_faces += face_count
+        lip_surface_count += surface_count
+    return trim_face_indices, added_vertices, added_faces, lip_surface_count
+
+
 def apply_inset_faces(step: dict[str, Any], target: dict[str, Any], objects: list[Any], panel_slot_index: int | None) -> dict[str, Any]:
     selector = require_object(target.get("selector"), f"{target['target_id']}.selector")
     if selector.get("kind") != "side_faces":
@@ -420,8 +573,7 @@ def apply_inset_faces(step: dict[str, Any], target: dict[str, Any], objects: lis
         if panel_slot_index is not None:
             for face_index in panel_face_indices:
                 mesh.polygons[face_index].material_index = panel_slot_index
-        existing = parse_index_property(obj.get("polish_panel_face_indices"))
-        obj["polish_panel_face_indices"] = ",".join(str(index) for index in [*existing, *panel_face_indices])
+        store_index_property(obj, "polish_panel_face_indices", panel_face_indices)
         obj["polish_panel_role"] = "panel"
     return {
         "step_id": step["step_id"],
@@ -432,6 +584,92 @@ def apply_inset_faces(step: dict[str, Any], target: dict[str, Any], objects: lis
         "inset_m": inset,
         "depth_m": depth,
         "panel_face_count": panel_face_count,
+        "skipped_face_count": skipped_face_count,
+        "added_vertex_count": added_vertex_count,
+        "added_face_count": added_face_count,
+    }
+
+
+def apply_extrude_along_normals(step: dict[str, Any], target: dict[str, Any], targets: dict[str, dict[str, Any]], objects: list[Any], trim_slot_index: int | None) -> dict[str, Any]:
+    selector = require_object(target.get("selector"), f"{target['target_id']}.selector")
+    if selector.get("kind") != "face_border":
+        fail(f"{step['step_id']} requires a face_border selector")
+    from_target_id = require_string(selector.get("from_target"), f"{target['target_id']}.selector.from_target")
+    if from_target_id not in targets:
+        fail(f"{step['step_id']} references unknown face_border source target `{from_target_id}`")
+    depth = float(step["params"]["depth_m"])
+    lip_width = float(step["params"]["lip_width_m"])
+    target_names = []
+    panel_face_count = 0
+    lip_surface_count = 0
+    skipped_face_count = 0
+    added_vertex_count = 0
+    added_face_count = 0
+    for obj in objects:
+        target_names.append(obj.name)
+        panel_face_indices = parse_index_property(obj.get("polish_panel_face_indices"))
+        if not panel_face_indices:
+            skipped_face_count += 1
+            continue
+        mesh = obj.data
+        mesh.update(calc_edges=True)
+        old_vertices = [vertex.co.copy() for vertex in mesh.vertices]
+        old_faces = [list(poly.vertices) for poly in mesh.polygons]
+        old_normals = [poly.normal.copy() for poly in mesh.polygons]
+        old_materials = [int(poly.material_index) for poly in mesh.polygons]
+        vertices = [tuple(round(float(value), 6) for value in vertex) for vertex in old_vertices]
+        faces: list[tuple[int, ...]] = [tuple(face) for face in old_faces]
+        face_materials = list(old_materials)
+        trim_face_indices: list[int] = []
+        for face_index in panel_face_indices:
+            if face_index < 0 or face_index >= len(old_faces):
+                skipped_face_count += 1
+                continue
+            face_indexes = old_faces[face_index]
+            if len(face_indexes) != 4:
+                skipped_face_count += 1
+                continue
+            normal = old_normals[face_index]
+            if face_name_from_normal(normal) is None:
+                skipped_face_count += 1
+                continue
+            face_vertices = [old_vertices[index] for index in face_indexes]
+            new_trim_faces, new_vertices, new_faces, new_lip_surfaces = add_raised_lips_for_panel(
+                vertices,
+                faces,
+                face_materials,
+                face_vertices,
+                normal,
+                lip_width,
+                depth,
+                trim_slot_index,
+            )
+            if not new_trim_faces:
+                skipped_face_count += 1
+                continue
+            trim_face_indices.extend(new_trim_faces)
+            panel_face_count += 1
+            lip_surface_count += new_lip_surfaces
+            added_vertex_count += new_vertices
+            added_face_count += new_faces
+        mesh.clear_geometry()
+        mesh.from_pydata(vertices, [], faces)
+        mesh.update(calc_edges=True)
+        for face_index, material_index in enumerate(face_materials):
+            mesh.polygons[face_index].material_index = material_index
+        store_index_property(obj, "polish_trim_face_indices", trim_face_indices)
+        obj["polish_trim_role"] = "trim"
+    return {
+        "step_id": step["step_id"],
+        "tool_id": step["tool_id"],
+        "operation": step["operation"],
+        "from_target": from_target_id,
+        "target_objects": target_names,
+        "depth_m": depth,
+        "lip_width_m": lip_width,
+        "lip_profile": step["params"]["lip_profile"],
+        "panel_face_count": panel_face_count,
+        "lip_surface_count": lip_surface_count,
         "skipped_face_count": skipped_face_count,
         "added_vertex_count": added_vertex_count,
         "added_face_count": added_face_count,
@@ -482,11 +720,10 @@ def assign_materials_by_part(plan: dict[str, Any], asset_parts: list[dict[str, A
         slot_index = slot_indexes[slot_id]
         panel_slot_id = material_map.get("panel")
         panel_slot_index = slot_indexes.get(panel_slot_id, -1) if panel_slot_id else -1
-        material_marked_panel_indices = [
-            polygon.index
-            for polygon in obj.data.polygons
-            if panel_slot_index >= 0 and int(polygon.material_index) == panel_slot_index
-        ]
+        trim_slot_id = material_map.get("trim")
+        trim_slot_index = slot_indexes.get(trim_slot_id, -1) if trim_slot_id else -1
+        material_marked_panel_indices = material_marked_face_indexes(obj, panel_slot_index)
+        material_marked_trim_indices = material_marked_face_indexes(obj, trim_slot_index)
         for polygon in obj.data.polygons:
             polygon.material_index = slot_index
         obj["polish_material_role"] = polish_role
@@ -497,6 +734,12 @@ def assign_materials_by_part(plan: dict[str, Any], asset_parts: list[dict[str, A
                 if 0 <= face_index < len(obj.data.polygons):
                     obj.data.polygons[face_index].material_index = panel_slot_index
             assigned_parts.setdefault("panel", []).append(part_id)
+        trim_indices = material_marked_trim_indices or parse_index_property(obj.get("polish_trim_face_indices"))
+        if trim_indices and trim_slot_id in slot_indexes:
+            for face_index in trim_indices:
+                if 0 <= face_index < len(obj.data.polygons):
+                    obj.data.polygons[face_index].material_index = trim_slot_index
+            assigned_parts.setdefault("trim", []).append(part_id)
         for polygon in obj.data.polygons:
             assigned_slot_id = material_slots_by_index.get(int(polygon.material_index), slot_id)
             assigned_faces_by_slot[assigned_slot_id] = assigned_faces_by_slot.get(assigned_slot_id, 0) + 1
@@ -598,9 +841,12 @@ def run_blender_execution(
     objects = create_part_objects(bpy, asset, parts, materials)
     targets = target_map(plan)
     panel_slot_index = material_slot_index_for_role(plan, "panel")
+    trim_slot_index = material_slot_index_for_role(plan, "trim")
+    trim_slot_id = material_slot_id_for_role(plan, "trim")
     report = make_execution_report(plan_path, asset_path, plan, asset, validation_report, parts, generated=True)
     report["executed_steps"] = []
     report["inset_applications"] = []
+    report["extrusion_applications"] = []
     report["modifier_applications"] = []
     material_assignment: dict[str, Any] = {}
     weighted_normals: dict[str, Any] = {}
@@ -614,6 +860,11 @@ def run_blender_execution(
             if target is None:
                 fail(f"{step['step_id']} references unknown target `{step['target']}`")
             report["inset_applications"].append(apply_inset_faces(step, target, target_objects(step, targets, objects), panel_slot_index))
+        elif step["tool_id"] == "extrude_faces":
+            target = targets.get(require_string(step.get("target"), f"{step['step_id']}.target"))
+            if target is None:
+                fail(f"{step['step_id']} references unknown target `{step['target']}`")
+            report["extrusion_applications"].append(apply_extrude_along_normals(step, target, targets, target_objects(step, targets, objects), trim_slot_index))
         elif step["tool_id"] == "modifier_bevel":
             application = apply_bevel(bpy, step, target_objects(step, targets, objects))
             report["modifier_applications"].append(application)
@@ -650,7 +901,9 @@ def run_blender_execution(
     report["part_object_count"] = len(objects)
     report["executed_step_count"] = len(report["executed_steps"])
     report["inset_panel_face_count"] = sum(item["panel_face_count"] for item in report["inset_applications"])
+    report["extruded_lip_surface_count"] = sum(item["lip_surface_count"] for item in report["extrusion_applications"])
     report["material_assignment"] = material_assignment
+    report["trim_lip_face_count"] = material_assignment.get("assigned_faces_by_slot", {}).get(trim_slot_id, 0) if trim_slot_id else 0
     report["weighted_normals"] = weighted_normals
     report["quality_pass"] = {
         "supported_polish_steps_executed": report["executed_step_count"] == report["supported_step_count"],
@@ -658,6 +911,7 @@ def run_blender_execution(
         "source_asset_preserved": True,
         "source_recipe_not_read": True,
         "insets_applied": report["inset_panel_face_count"] >= 8,
+        "extrusions_applied": report["extruded_lip_surface_count"] >= 16 and report["trim_lip_face_count"] >= 16,
         "material_assignment_applied": bool(material_assignment),
         "bevels_applied": sum(1 for item in report["modifier_applications"] if item["modifier_type"] == "BEVEL") == 2,
         "weighted_normals_added": bool(weighted_normals),

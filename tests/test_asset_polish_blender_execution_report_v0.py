@@ -36,12 +36,12 @@ def valid_report() -> dict[str, Any]:
         "source_asset_id": "blocky_fence_post_v0",
         "asset_id": "blocky_fence_post_v0",
         "step_count": 10,
-        "supported_step_count": 6,
-        "future_step_count": 4,
-        "executed_step_count": 6,
-        "skipped_future_step_count": 4,
-        "unique_tool_count": 4,
-        "unique_tools": ["inset_faces", "material_assign_by_part", "modifier_bevel", "modifier_weighted_normal"],
+        "supported_step_count": 7,
+        "future_step_count": 3,
+        "executed_step_count": 7,
+        "skipped_future_step_count": 3,
+        "unique_tool_count": 5,
+        "unique_tools": ["extrude_faces", "inset_faces", "material_assign_by_part", "modifier_bevel", "modifier_weighted_normal"],
         "mesh_part_count": 7,
         "generated_outputs_created": True,
         "blend_path": "/tmp/gameguy_asset_polish_blender_execution_v0/asset_polish_execution_v0.blend",
@@ -52,6 +52,7 @@ def valid_report() -> dict[str, Any]:
         "executed_steps": [
             {"step_id": "inset_plinth_fielded_panels", "operation": "inset_faces", "tool_id": "inset_faces", "target": "newel.plinth.fielded_panel_faces"},
             {"step_id": "inset_shaft_side_panels", "operation": "inset_faces", "tool_id": "inset_faces", "target": "newel.shaft.side_panels"},
+            {"step_id": "raise_shaft_panel_beads", "operation": "extrude_along_normals", "tool_id": "extrude_faces", "target": "newel.shaft.panel_lips"},
             {"step_id": "chamfer_plinth_outer_arrises", "operation": "chamfer_edges", "tool_id": "modifier_bevel", "target": "newel.plinth.outer_arrises"},
             {"step_id": "bevel_all_visible_hard_edges", "operation": "bevel_edges", "tool_id": "modifier_bevel", "target": "newel.all.hard_edges"},
             {"step_id": "assign_gothic_stone_material_slots", "operation": "material_assign", "tool_id": "material_assign_by_part", "target": "newel.all.visible_parts"},
@@ -59,7 +60,7 @@ def valid_report() -> dict[str, Any]:
         ],
         "skipped_steps": [
             {"step_id": f"future_{index}", "operation": "future", "tool_id": "future_tool", "reason": "recognized_future_operation_not_in_first_execution_slice"}
-            for index in range(4)
+            for index in range(3)
         ],
         "inset_applications": [
             {
@@ -90,6 +91,25 @@ def valid_report() -> dict[str, Any]:
             }
         ],
         "inset_panel_face_count": 8,
+        "extrusion_applications": [
+            {
+                "step_id": "raise_shaft_panel_beads",
+                "tool_id": "extrude_faces",
+                "operation": "extrude_along_normals",
+                "from_target": "newel.shaft.side_panels",
+                "target_objects": ["post_core"],
+                "depth_m": 0.014,
+                "lip_width_m": 0.008,
+                "lip_profile": "small_bead",
+                "panel_face_count": 4,
+                "lip_surface_count": 16,
+                "skipped_face_count": 0,
+                "added_vertex_count": 128,
+                "added_face_count": 80
+            }
+        ],
+        "extruded_lip_surface_count": 16,
+        "trim_lip_face_count": 80,
         "modifier_applications": [
             {"step_id": "chamfer_plinth_outer_arrises", "modifier_type": "BEVEL", "target_objects": ["square_foot"], "applied": True},
             {"step_id": "bevel_all_visible_hard_edges", "modifier_type": "BEVEL", "target_objects": ["square_foot"], "applied": True},
@@ -98,8 +118,8 @@ def valid_report() -> dict[str, Any]:
         "material_assignment": {
             "step_id": "assign_gothic_stone_material_slots",
             "tool_id": "material_assign_by_part",
-            "assigned_parts_by_role": {"base": ["square_foot"], "stone": ["post_core"]},
-            "assigned_faces_by_slot": {"gothic_stone_base": 6, "gothic_stone_body": 6},
+            "assigned_parts_by_role": {"base": ["square_foot"], "stone": ["post_core"], "trim": ["post_core"]},
+            "assigned_faces_by_slot": {"gothic_stone_base": 6, "gothic_stone_body": 6, "gothic_stone_trim_highlight": 80},
             "material_slot_count": 6,
         },
         "weighted_normals": {
@@ -115,6 +135,7 @@ def valid_report() -> dict[str, Any]:
             "source_asset_preserved": True,
             "source_recipe_not_read": True,
             "insets_applied": True,
+            "extrusions_applied": True,
             "material_assignment_applied": True,
             "bevels_applied": True,
             "weighted_normals_added": True,
@@ -150,7 +171,7 @@ class AssetPolishBlenderExecutionReportTests(unittest.TestCase):
     def test_rejects_unexecuted_supported_steps(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             report = valid_report()
-            report["executed_step_count"] = 5
+            report["executed_step_count"] = 6
             report_path = Path(tmp) / "execution_report.json"
             report_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
             result = subprocess.run(

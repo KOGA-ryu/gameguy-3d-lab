@@ -35,11 +35,13 @@ REQUIRED_QUALITY_FLAGS = {
     "source_asset_preserved",
     "source_recipe_not_read",
     "insets_applied",
+    "extrusions_applied",
     "material_assignment_applied",
     "bevels_applied",
     "weighted_normals_added",
 }
 REQUIRED_UNIQUE_TOOLS = {
+    "extrude_faces",
     "inset_faces",
     "material_assign_by_part",
     "modifier_bevel",
@@ -178,6 +180,13 @@ def validate_quality(report: dict[str, Any]) -> None:
         fail("inset_applications must include both fielded panel inset steps")
     if require_int(report.get("inset_panel_face_count"), "inset_panel_face_count", minimum=1) < 8:
         fail("inset_panel_face_count must include side panels on plinth and shaft")
+    extrusions = require_list(report.get("extrusion_applications"), "extrusion_applications")
+    if len(extrusions) < 1:
+        fail("extrusion_applications must include the shaft panel bead extrusion step")
+    if require_int(report.get("extruded_lip_surface_count"), "extruded_lip_surface_count", minimum=1) < 16:
+        fail("extruded_lip_surface_count must include four lip surfaces on four shaft panels")
+    if require_int(report.get("trim_lip_face_count"), "trim_lip_face_count", minimum=1) < 16:
+        fail("trim_lip_face_count must include assigned trim material faces")
     weighted_normals = require_object(report.get("weighted_normals"), "weighted_normals")
     require_string(weighted_normals.get("modifier_type"), "weighted_normals.modifier_type")
     if weighted_normals["modifier_type"] != "WEIGHTED_NORMAL":
