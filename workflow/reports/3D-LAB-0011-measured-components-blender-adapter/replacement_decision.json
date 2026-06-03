@@ -7,22 +7,27 @@
   ],
   "replacement_adapter": "scripts/export_blender_measured_components_preview_v0.py",
   "replacement_source": "data/architecture/asset_mill/recipes/measured_components_v0.json",
+  "replacement_input": "gameguy_asset_v0 JSON emitted by scripts/asset_pump_v0.py",
   "decision": "DEMOTE_TO_REFERENCE_ONLY",
   "safe_to_delete_now": false,
-  "reason": "The old Blender measured component proofs import compiler scripts. The replacement adapter consumes the promoted measured component source bundle directly and keeps Blender as a preview/export layer.",
+  "reason": "The old Blender measured component proofs import compiler scripts and contain proof-primitive geometry decisions. The replacement adapter consumes measured gameguy_asset_v0 JSON emitted by the asset pump and keeps Blender as a preview/export layer.",
   "comparison_evidence": {
     "source_asset_count": 22,
     "v1_asset_count": 12,
     "v2_asset_count": 10,
     "proof_primitive_count": 52,
     "socket_count": 74,
+    "total_vertices": 1256,
+    "total_faces": 926,
+    "consumes_deterministic_asset_json": true,
+    "reads_source_recipes": false,
     "imports_old_compiler_scripts": false,
     "runs_old_compiler_scripts": false,
     "validate_only_tested": true
   },
   "old_value_preserved": [
     "Measured component preview/export role.",
-    "Cube, cylinder, and curve proof primitive preview hints.",
+    "Cube, cylinder, and curve proof primitive blockout meshes compiled by the asset pump.",
     "Socket marker preview support.",
     "Semantic material grouping.",
     "No-claims and adapter-only custom properties in Blender mode.",
@@ -32,6 +37,10 @@
     {
       "old_value": "Imports compile_asset_mill_measured_components_v1.py or v2.py",
       "reason": "Measured component catalog data is now source JSON and should not be generated from compiler scripts."
+    },
+    {
+      "old_value": "Blender adapter interprets proof_primitives directly",
+      "reason": "Proof-primitive geometry belongs in the asset pump so Blender remains an adapter over deterministic JSON."
     },
     {
       "old_value": "Default writes under goal/architecture/blender_tests",
@@ -52,7 +61,7 @@
   ],
   "follow_up": [
     "Do not use the old measured component Blender proof scripts as active preview logic.",
-    "Use export_blender_measured_components_preview_v0.py for promoted measured component source previews.",
+    "Run asset_pump_v0.py on measured_components_v0.json before using export_blender_measured_components_preview_v0.py.",
     "Keep old proof scripts only as historical reference until a separate deletion task."
   ],
   "no_claims": {

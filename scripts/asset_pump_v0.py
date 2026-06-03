@@ -25,6 +25,8 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "simple_solids_v0.json"
 DEFAULT_OUT = Path("/tmp/gameguy_asset_pump_v0")
 DICTIONARY_ROOT = ROOT / "geometry_dictionary"
+SIMPLE_BUNDLE_SCHEMA = "asset_mill_recipe_bundle_v0"
+MEASURED_BUNDLE_SCHEMA = "asset_mill_measured_component_bundle_v0"
 FALSE_CLAIMS = {
     "production_approval": False,
     "structural_safety": False,
@@ -72,7 +74,7 @@ def load_json(path: Path) -> dict[str, Any]:
 def finite_float(value: Any, field: str) -> float:
     if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(float(value)):
         fail(f"{field} must be a finite number")
-    return float(value)
+    return round(float(value), 6)
 
 
 def positive_float(value: Any, field: str) -> float:
@@ -100,6 +102,34 @@ def require_object(value: Any, field: str) -> dict[str, Any]:
     return value
 
 
+def finite_vector(value: Any, field: str, length: int = 3) -> list[float]:
+    items = require_list(value, field)
+    if len(items) != length:
+        fail(f"{field} must contain {length} numbers")
+    return [finite_float(item, f"{field}[{index}]") for index, item in enumerate(items)]
+
+
+def positive_vector(value: Any, field: str, length: int = 3) -> list[float]:
+    items = finite_vector(value, field, length)
+    for index, item in enumerate(items):
+        if item <= 0.0:
+            fail(f"{field}[{index}] must be positive")
+    return items
+
+
+def require_false_claims(value: Any, field: str, required_keys: set[str]) -> dict[str, bool]:
+    claims = require_object(value, field)
+    for key in required_keys:
+        if claims.get(key) is not False:
+            fail(f"{field}.{key} must be false")
+    for key, claim in claims.items():
+        if not isinstance(key, str) or not isinstance(claim, bool):
+            fail(f"{field} must contain boolean claim flags")
+        if claim is not False:
+            fail(f"{field}.{key} must be false")
+    return claims
+
+
 def validate_claims(asset: dict[str, Any]) -> None:
     if asset.get("no_claims") != FALSE_CLAIMS:
         fail(f"{asset.get('asset_id', '<unknown>')} no_claims must exactly match false claim flags")
@@ -113,6 +143,8 @@ def load_geometry_terms() -> dict[str, set[str]]:
         "transform": set(),
         "connector": set(),
         "semantic_geometry": set(),
+        "measurement": set(),
+        "validation_term": set(),
     }
     for path in sorted(DICTIONARY_ROOT.rglob("*.json")):
         if "schemas" in path.parts:
@@ -134,6 +166,57 @@ def load_geometry_terms() -> dict[str, set[str]]:
 
 def operation_terms(terms: dict[str, set[str]]) -> set[str]:
     return terms["mesh_operation"] | terms["composition_operation"] | terms["transform"]
+
+
+def all_terms(terms: dict[str, set[str]]) -> set[str]:
+    values: set[str] = set()
+    for ids in terms.values():
+        values.update(ids)
+    return values
+
+
+def require_known_terms(values: Any, known: set[str], field: str) -> list[str]:
+    items = require_list(values, field)
+    result: list[str] = []
+    for index, item in enumerate(items):
+        term_id = require_string(item, f"{field}[{index}]")
+        if term_id not in known:
+            fail(f"{field}[{index}] uses unknown geometry dictionary term `{term_id}`")
+        result.append(term_id)
+    return result
+
+
+def validate_dimensions_object(value: Any, field: str) -> dict[str, float]:
+    dims = require_object(value, field)
+    return {axis: positive_float(dims.get(axis), f"{field}.{axis}") for axis in ("width", "depth", "height")}
+
+
+def validate_bounds_object(value: Any, field: str) -> dict[str, list[float]]:
+    bounds_m = require_object(value, field)
+    min_values = finite_vector(bounds_m.get("min"), f"{field}.min")
+    max_values = finite_vector(bounds_m.get("max"), f"{field}.max")
+    for axis, (min_value, max_value) in enumerate(zip(min_values, max_values, strict=True)):
+        if min_value >= max_value:
+            fail(f"{field} axis {axis} min must be less than max")
+    return {"min": min_values, "max": max_values}
+
+
+def validate_bounds_match_dimensions(bounds_m: dict[str, list[float]], dims: dict[str, float], field: str) -> None:
+    expected = {
+        "width": round(bounds_m["max"][0] - bounds_m["min"][0], 6),
+        "depth": round(bounds_m["max"][1] - bounds_m["min"][1], 6),
+        "height": round(bounds_m["max"][2] - bounds_m["min"][2], 6),
+    }
+    if expected != dims:
+        fail(f"{field}.bounds_m span must match dimensions_m")
+
+
+def validate_unit_direction(value: Any, field: str) -> list[float]:
+    direction = finite_vector(value, field)
+    length = math.sqrt(sum(item * item for item in direction))
+    if not math.isclose(length, 1.0, rel_tol=0.0, abs_tol=1e-6):
+        fail(f"{field} must be normalized")
+    return direction
 
 
 def validate_profile_terms(profile: Any, terms: dict[str, set[str]], field: str) -> None:
@@ -188,6 +271,91 @@ def validate_recipe_terms(bundle: dict[str, Any], terms: dict[str, set[str]]) ->
                 ref = require_string(component_obj.get("asset_ref"), f"{asset_id}.components[{component_index}].asset_ref")
                 if ref not in seen_asset_ids:
                     fail(f"{asset_id} references unknown or later asset_ref `{ref}`")
+
+
+def validate_measured_proof_primitive(part: Any, field: str) -> None:
+    item = require_object(part, field)
+    primitive = require_string(item.get("primitive"), f"{field}.primitive")
+    require_string(item.get("name"), f"{field}.name")
+    if primitive == "cube":
+        finite_vector(item.get("location_m"), f"{field}.location_m")
+        positive_vector(item.get("dimensions_m"), f"{field}.dimensions_m")
+    elif primitive == "cylinder":
+        finite_vector(item.get("location_m"), f"{field}.location_m")
+        positive_float(item.get("radius_m"), f"{field}.radius_m")
+        positive_float(item.get("depth_m"), f"{field}.depth_m")
+        vertices = item.get("vertices")
+        if not isinstance(vertices, int) or isinstance(vertices, bool) or vertices < 3:
+            fail(f"{field}.vertices must be an integer >= 3")
+    elif primitive == "curve":
+        positive_float(item.get("span_m"), f"{field}.span_m")
+        finite_float(item.get("spring_z_m"), f"{field}.spring_z_m")
+        finite_float(item.get("rise_m"), f"{field}.rise_m")
+        finite_float(item.get("y_m"), f"{field}.y_m")
+        positive_float(item.get("bevel_depth_m"), f"{field}.bevel_depth_m")
+        curve_kind = item.get("curve_kind", "pointed")
+        if curve_kind not in {"pointed", "round"}:
+            fail(f"{field}.curve_kind unsupported: {curve_kind}")
+    else:
+        fail(f"{field}.primitive unsupported: {primitive}")
+
+
+def validate_measured_bundle_terms(bundle: dict[str, Any], terms: dict[str, set[str]]) -> None:
+    assets = require_list(bundle.get("assets"), "assets")
+    if not assets:
+        fail("bundle assets must not be empty")
+    seen_asset_ids: set[str] = set()
+    known_terms = all_terms(terms)
+    for asset_index, item in enumerate(assets):
+        asset = require_object(item, f"assets[{asset_index}]")
+        asset_id = require_string(asset.get("asset_id"), f"assets[{asset_index}].asset_id")
+        if asset_id in seen_asset_ids:
+            fail(f"duplicate asset_id: {asset_id}")
+        seen_asset_ids.add(asset_id)
+
+        source_version = require_string(asset.get("source_version"), f"{asset_id}.source_version")
+        if source_version not in {"v1", "v2"}:
+            fail(f"{asset_id}.source_version must be v1 or v2")
+        require_string(asset.get("source_script"), f"{asset_id}.source_script")
+        dims = validate_dimensions_object(asset.get("dimensions_m"), f"{asset_id}.dimensions_m")
+        bounds_m = validate_bounds_object(asset.get("bounds_m"), f"{asset_id}.bounds_m")
+        validate_bounds_match_dimensions(bounds_m, dims, asset_id)
+
+        if not require_list(asset.get("source_measurement_refs"), f"{asset_id}.source_measurement_refs"):
+            fail(f"{asset_id}.source_measurement_refs must not be empty")
+        require_known_terms(asset.get("geometry_terms_used"), known_terms, f"{asset_id}.geometry_terms_used")
+        require_known_terms(asset.get("profile_terms"), terms["profile_primitive"], f"{asset_id}.profile_terms")
+        require_known_terms(asset.get("operations"), operation_terms(terms), f"{asset_id}.operations")
+        require_known_terms(asset.get("semantic_roles"), terms["semantic_geometry"], f"{asset_id}.semantic_roles")
+
+        sockets = require_list(asset.get("sockets"), f"{asset_id}.sockets")
+        if not sockets:
+            fail(f"{asset_id}.sockets must not be empty")
+        seen_sockets: set[str] = set()
+        for socket_index, socket in enumerate(sockets):
+            socket_obj = require_object(socket, f"{asset_id}.sockets[{socket_index}]")
+            socket_id = require_string(socket_obj.get("socket_id"), f"{asset_id}.sockets[{socket_index}].socket_id")
+            if socket_id in seen_sockets:
+                fail(f"{asset_id}.sockets duplicate socket_id: {socket_id}")
+            seen_sockets.add(socket_id)
+            connector_term = require_string(socket_obj.get("connector_term"), f"{asset_id}.sockets[{socket_index}].connector_term")
+            if connector_term not in terms["connector"]:
+                fail(f"{asset_id}.sockets[{socket_index}].connector_term uses unknown connector `{connector_term}`")
+            finite_vector(socket_obj.get("position_m"), f"{asset_id}.sockets[{socket_index}].position_m")
+            validate_unit_direction(socket_obj.get("direction"), f"{asset_id}.sockets[{socket_index}].direction")
+            require_string(socket_obj.get("role"), f"{asset_id}.sockets[{socket_index}].role")
+
+        primitives = require_list(asset.get("proof_primitives"), f"{asset_id}.proof_primitives")
+        if not primitives:
+            fail(f"{asset_id}.proof_primitives must not be empty")
+        for primitive_index, part in enumerate(primitives):
+            validate_measured_proof_primitive(part, f"{asset_id}.proof_primitives[{primitive_index}]")
+
+        require_false_claims(
+            asset.get("no_claims"),
+            f"{asset_id}.no_claims",
+            {"production_approval", "structural_safety", "fabrication_ready", "gym_museum_approval", "historical_accuracy"},
+        )
 
 
 def polygon_points(sides: int, radius: float) -> list[list[float]]:
@@ -263,6 +431,84 @@ def extrude_mesh(points: list[list[float]], height: float) -> Mesh:
         nxt = (index + 1) % count
         faces.append([index, nxt, nxt + count, index + count])
     return Mesh(vertices=vertices, faces=faces)
+
+
+def box_mesh(location: list[float], size: list[float]) -> Mesh:
+    cx, cy, cz = location
+    half_x, half_y, half_z = [value * 0.5 for value in size]
+    min_x, max_x = round(cx - half_x, 6), round(cx + half_x, 6)
+    min_y, max_y = round(cy - half_y, 6), round(cy + half_y, 6)
+    min_z, max_z = round(cz - half_z, 6), round(cz + half_z, 6)
+    return Mesh(
+        vertices=[
+            [min_x, min_y, min_z],
+            [max_x, min_y, min_z],
+            [max_x, max_y, min_z],
+            [min_x, max_y, min_z],
+            [min_x, min_y, max_z],
+            [max_x, min_y, max_z],
+            [max_x, max_y, max_z],
+            [min_x, max_y, max_z],
+        ],
+        faces=[
+            [3, 2, 1, 0],
+            [4, 5, 6, 7],
+            [0, 1, 5, 4],
+            [1, 2, 6, 5],
+            [2, 3, 7, 6],
+            [3, 0, 4, 7],
+        ],
+    )
+
+
+def cylinder_mesh(location: list[float], radius: float, depth: float, segments: int) -> Mesh:
+    if segments < 3:
+        fail("cylinder segments must be >= 3")
+    mesh = extrude_mesh(polygon_points(segments, radius), depth)
+    return mesh.translated([location[0], location[1], round(location[2] - depth * 0.5, 6)])
+
+
+def measured_curve_points(part: dict[str, Any]) -> list[list[float]]:
+    span = positive_float(part.get("span_m"), "curve.span_m")
+    spring_z = finite_float(part.get("spring_z_m"), "curve.spring_z_m")
+    rise = finite_float(part.get("rise_m"), "curve.rise_m")
+    y = finite_float(part.get("y_m"), "curve.y_m")
+    points: list[list[float]] = []
+    if part.get("curve_kind") == "round":
+        radius = span * 0.5
+        for index in range(29):
+            angle = math.pi - math.pi * index / 28
+            points.append([round(math.cos(angle) * radius, 6), y, round(spring_z + math.sin(angle) * radius, 6)])
+    else:
+        half = span * 0.5
+        for index in range(19):
+            t = index / 18
+            points.append([round(-half + half * t, 6), y, round(spring_z + rise * (1.0 - (1.0 - t) ** 2), 6)])
+        for index in range(1, 19):
+            t = index / 18
+            points.append([round(half * t, 6), y, round(spring_z + rise * (1.0 - t**2), 6)])
+    return points
+
+
+def curve_strip_mesh(part: dict[str, Any]) -> Mesh:
+    points = measured_curve_points(part)
+    bevel = positive_float(part.get("bevel_depth_m"), "curve.bevel_depth_m")
+    boxes: list[Mesh] = []
+    for start, end in zip(points, points[1:], strict=False):
+        min_x, max_x = min(start[0], end[0]), max(start[0], end[0])
+        min_z, max_z = min(start[2], end[2]), max(start[2], end[2])
+        center = [
+            round((min_x + max_x) * 0.5, 6),
+            start[1],
+            round((min_z + max_z) * 0.5, 6),
+        ]
+        size = [
+            round(max(max_x - min_x, bevel * 2.0), 6),
+            round(bevel * 2.0, 6),
+            round(max(max_z - min_z, bevel * 2.0), 6),
+        ]
+        boxes.append(box_mesh(center, size))
+    return merged_mesh(boxes)
 
 
 def loft_mesh(sections: list[dict[str, Any]]) -> Mesh:
@@ -346,6 +592,118 @@ def merged_mesh(parts: list[Mesh]) -> Mesh:
     return Mesh(vertices=vertices, faces=faces)
 
 
+def source_profile_terms(asset: dict[str, Any]) -> list[str]:
+    operation = asset.get("operation")
+    if operation == "extrude":
+        profile = require_object(asset.get("profile"), f"{asset.get('asset_id', '<unknown>')}.profile")
+        return [require_string(profile.get("type"), "profile.type")]
+    if operation == "loft_sections":
+        terms: list[str] = []
+        for section in require_list(asset.get("sections"), f"{asset.get('asset_id', '<unknown>')}.sections"):
+            profile = require_object(require_object(section, "section").get("profile"), "section.profile")
+            profile_type = require_string(profile.get("type"), "section.profile.type")
+            if profile_type not in terms:
+                terms.append(profile_type)
+        return terms
+    return []
+
+
+def base_source_terms(asset: dict[str, Any]) -> dict[str, list[str]]:
+    operation = require_string(asset.get("operation"), f"{asset.get('asset_id', '<unknown>')}.operation")
+    return {
+        "geometry": [],
+        "profiles": source_profile_terms(asset),
+        "operators": [operation],
+    }
+
+
+def mesh_part_record(part_id: str, source_primitive: str, material_role: Any, vertex_start: int, vertex_end: int, face_start: int, face_end: int) -> dict[str, Any]:
+    record: dict[str, Any] = {
+        "part_id": part_id,
+        "source_primitive": source_primitive,
+        "vertex_range": [vertex_start, vertex_end],
+        "face_range": [face_start, face_end],
+    }
+    if isinstance(material_role, str) and material_role:
+        record["material_role"] = material_role
+    return record
+
+
+def proof_primitive_mesh(asset_id: str, part: dict[str, Any], field: str) -> Mesh:
+    primitive = require_string(part.get("primitive"), f"{field}.primitive")
+    if primitive == "cube":
+        return box_mesh(finite_vector(part.get("location_m"), f"{field}.location_m"), positive_vector(part.get("dimensions_m"), f"{field}.dimensions_m"))
+    if primitive == "cylinder":
+        vertices = part.get("vertices")
+        if not isinstance(vertices, int) or isinstance(vertices, bool):
+            fail(f"{field}.vertices must be an integer")
+        return cylinder_mesh(
+            finite_vector(part.get("location_m"), f"{field}.location_m"),
+            positive_float(part.get("radius_m"), f"{field}.radius_m"),
+            positive_float(part.get("depth_m"), f"{field}.depth_m"),
+            vertices,
+        )
+    if primitive == "curve":
+        return curve_strip_mesh(part)
+    fail(f"{asset_id} unsupported proof primitive: {primitive}")
+
+
+def proof_primitives_mesh(asset_id: str, primitives: list[Any]) -> tuple[Mesh, list[dict[str, Any]]]:
+    vertices: list[list[float]] = []
+    faces: list[list[int]] = []
+    parts: list[dict[str, Any]] = []
+    for part_index, item in enumerate(primitives):
+        part = require_object(item, f"{asset_id}.proof_primitives[{part_index}]")
+        part_id = require_string(part.get("name"), f"{asset_id}.proof_primitives[{part_index}].name")
+        source_primitive = require_string(part.get("primitive"), f"{asset_id}.proof_primitives[{part_index}].primitive")
+        part_mesh = proof_primitive_mesh(asset_id, part, f"{asset_id}.proof_primitives[{part_index}]")
+        vertex_start = len(vertices)
+        face_start = len(faces)
+        vertices.extend(part_mesh.vertices)
+        faces.extend([[index + vertex_start for index in face] for face in part_mesh.faces])
+        parts.append(
+            mesh_part_record(
+                part_id,
+                source_primitive,
+                part.get("material_role"),
+                vertex_start,
+                len(vertices) - 1,
+                face_start,
+                len(faces) - 1,
+            )
+        )
+    return Mesh(vertices=vertices, faces=faces), parts
+
+
+def measured_connectors(asset_id: str, sockets: list[Any]) -> list[dict[str, Any]]:
+    connectors: list[dict[str, Any]] = []
+    for socket_index, socket in enumerate(sockets):
+        item = require_object(socket, f"{asset_id}.sockets[{socket_index}]")
+        connectors.append(
+            {
+                "connector_id": require_string(item.get("socket_id"), f"{asset_id}.sockets[{socket_index}].socket_id"),
+                "connector_term": require_string(item.get("connector_term"), f"{asset_id}.sockets[{socket_index}].connector_term"),
+                "position_m": finite_vector(item.get("position_m"), f"{asset_id}.sockets[{socket_index}].position_m"),
+                "direction": validate_unit_direction(item.get("direction"), f"{asset_id}.sockets[{socket_index}].direction"),
+                "role": require_string(item.get("role"), f"{asset_id}.sockets[{socket_index}].role"),
+            }
+        )
+    return connectors
+
+
+def bounds_mismatch_warnings(asset_id: str, declared_bounds: dict[str, list[float]], mesh_bounds: dict[str, list[float]]) -> list[dict[str, Any]]:
+    if declared_bounds == mesh_bounds:
+        return []
+    return [
+        {
+            "code": "proof_primitive_bounds_differ_from_declared_bounds",
+            "message": f"{asset_id} proof primitive mesh bounds differ from source bounds_m; source bounds_m remain placement extents.",
+            "declared_bounds_m": declared_bounds,
+            "mesh_bounds_m": mesh_bounds,
+        }
+    ]
+
+
 def require_asset_core(asset: dict[str, Any]) -> None:
     for field in (
         "asset_id",
@@ -363,7 +721,7 @@ def require_asset_core(asset: dict[str, Any]) -> None:
     validate_claims(asset)
 
 
-def compile_asset(asset: dict[str, Any], compiled: dict[str, dict[str, Any]]) -> dict[str, Any]:
+def compile_asset(asset: dict[str, Any], compiled: dict[str, dict[str, Any]], source_schema: str = SIMPLE_BUNDLE_SCHEMA) -> dict[str, Any]:
     require_asset_core(asset)
     asset_id = require_string(asset["asset_id"], "asset_id")
     operation = require_string(asset["operation"], f"{asset_id}.operation")
@@ -398,6 +756,7 @@ def compile_asset(asset: dict[str, Any], compiled: dict[str, dict[str, Any]]) ->
     return {
         "schema": "gameguy_asset_v0",
         "asset_id": asset_id,
+        "source_schema": source_schema,
         "source_operation": operation,
         "asset_kind": asset["asset_kind"],
         "architectural_role": asset["architectural_role"],
@@ -410,24 +769,99 @@ def compile_asset(asset: dict[str, Any], compiled: dict[str, dict[str, Any]]) ->
         "dimensions_m": dimensions(bounds_m),
         "mesh": {
             "coordinate_space": "local_xyz_m",
+            "parts": [],
             "vertices": mesh.vertices,
             "faces": mesh.faces,
         },
+        "source_refs": [],
+        "source_terms": base_source_terms(asset),
+        "validation_expectations": {},
         "no_claims": asset["no_claims"],
     }
 
 
+def role_from_asset_id(asset_id: str, source_version: str) -> str:
+    suffix = f"_{source_version}"
+    name = asset_id
+    if name.startswith("measured_"):
+        name = name[len("measured_") :]
+    if name.endswith(suffix):
+        name = name[: -len(suffix)]
+    return name.replace("_", " ")
+
+
+def measured_architectural_role(asset: dict[str, Any]) -> str:
+    ratio_basis = asset.get("ratio_basis")
+    if isinstance(ratio_basis, dict) and isinstance(ratio_basis.get("module"), str) and ratio_basis["module"]:
+        return ratio_basis["module"]
+    return role_from_asset_id(require_string(asset.get("asset_id"), "asset_id"), require_string(asset.get("source_version"), "source_version"))
+
+
+def compile_measured_asset(asset: dict[str, Any], source_schema: str) -> dict[str, Any]:
+    asset_id = require_string(asset.get("asset_id"), "asset_id")
+    source_version = require_string(asset.get("source_version"), f"{asset_id}.source_version")
+    dims = validate_dimensions_object(asset.get("dimensions_m"), f"{asset_id}.dimensions_m")
+    declared_bounds = validate_bounds_object(asset.get("bounds_m"), f"{asset_id}.bounds_m")
+    primitives = require_list(asset.get("proof_primitives"), f"{asset_id}.proof_primitives")
+    mesh, parts = proof_primitives_mesh(asset_id, primitives)
+    mesh_bounds = bounds(mesh.vertices)
+    warnings = bounds_mismatch_warnings(asset_id, declared_bounds, mesh_bounds)
+
+    generated: dict[str, Any] = {
+        "schema": "gameguy_asset_v0",
+        "asset_id": asset_id,
+        "source_schema": source_schema,
+        "source_operation": "proof_primitives",
+        "asset_kind": "measured_component",
+        "architectural_role": measured_architectural_role(asset),
+        "generation_use": ["measured_component_blockout"],
+        "semantic_tags": require_list(asset.get("semantic_roles"), f"{asset_id}.semantic_roles"),
+        "child_slots": [],
+        "connectors": measured_connectors(asset_id, require_list(asset.get("sockets"), f"{asset_id}.sockets")),
+        "components": [],
+        "bounds_m": declared_bounds,
+        "dimensions_m": dims,
+        "mesh": {
+            "coordinate_space": "local_xyz_m",
+            "parts": parts,
+            "bounds_m": mesh_bounds,
+            "vertices": mesh.vertices,
+            "faces": mesh.faces,
+        },
+        "source_refs": require_list(asset.get("source_measurement_refs"), f"{asset_id}.source_measurement_refs"),
+        "source_terms": {
+            "geometry": require_list(asset.get("geometry_terms_used"), f"{asset_id}.geometry_terms_used"),
+            "profiles": require_list(asset.get("profile_terms"), f"{asset_id}.profile_terms"),
+            "operators": require_list(asset.get("operations"), f"{asset_id}.operations"),
+        },
+        "validation_expectations": require_object(asset.get("validation_expectations", {}), f"{asset_id}.validation_expectations"),
+        "no_claims": require_false_claims(
+            asset.get("no_claims"),
+            f"{asset_id}.no_claims",
+            {"production_approval", "structural_safety", "fabrication_ready", "gym_museum_approval", "historical_accuracy"},
+        ),
+        "source_version": source_version,
+        "source_script": require_string(asset.get("source_script"), f"{asset_id}.source_script"),
+    }
+    for optional_field in ("ratio_basis", "uncertainty", "notes"):
+        if optional_field in asset:
+            generated[optional_field] = asset[optional_field]
+    if warnings:
+        generated["validation_warnings"] = warnings
+    return generated
+
+
 def load_bundle(path: Path) -> dict[str, Any]:
     bundle = load_json(path)
-    if bundle.get("schema") != "asset_mill_recipe_bundle_v0":
-        fail("bundle schema must be asset_mill_recipe_bundle_v0")
+    if bundle.get("schema") not in {SIMPLE_BUNDLE_SCHEMA, MEASURED_BUNDLE_SCHEMA}:
+        fail(f"bundle schema must be {SIMPLE_BUNDLE_SCHEMA} or {MEASURED_BUNDLE_SCHEMA}")
     assets = require_list(bundle.get("assets"), "assets")
     if not assets:
         fail("bundle assets must not be empty")
     return bundle
 
 
-def write_outputs(compiled: dict[str, dict[str, Any]], out_root: Path, source_bundle: Path) -> None:
+def write_outputs(compiled: dict[str, dict[str, Any]], out_root: Path, source_bundle: Path, source_bundle_schema: str) -> None:
     asset_dir = out_root / "assets"
     asset_dir.mkdir(parents=True, exist_ok=True)
     manifest_assets = []
@@ -448,6 +882,8 @@ def write_outputs(compiled: dict[str, dict[str, Any]], out_root: Path, source_bu
     manifest = {
         "schema": "gameguy_asset_pump_manifest_v0",
         "source_bundle": repo_display_path(source_bundle),
+        "source_bundle_schema": source_bundle_schema,
+        "asset_schema": "gameguy_asset_v0",
         "asset_count": len(compiled),
         "assets": manifest_assets,
         "rules": {
@@ -490,7 +926,14 @@ def main() -> None:
         fail(f"output folder is not empty: {out_root}. Use --clean for /tmp outputs or choose a new folder.")
 
     bundle = load_bundle(bundle_path)
-    validate_recipe_terms(bundle, load_geometry_terms())
+    source_schema = require_string(bundle.get("schema"), "bundle.schema")
+    geometry_terms = load_geometry_terms()
+    if source_schema == SIMPLE_BUNDLE_SCHEMA:
+        validate_recipe_terms(bundle, geometry_terms)
+    elif source_schema == MEASURED_BUNDLE_SCHEMA:
+        validate_measured_bundle_terms(bundle, geometry_terms)
+    else:
+        fail(f"unsupported bundle schema: {source_schema}")
     compiled: dict[str, dict[str, Any]] = {}
     seen: set[str] = set()
     for asset in require_list(bundle["assets"], "assets"):
@@ -499,9 +942,12 @@ def main() -> None:
         if asset_id in seen:
             fail(f"duplicate asset_id: {asset_id}")
         seen.add(asset_id)
-        compiled[asset_id] = compile_asset(asset, compiled)
+        if source_schema == SIMPLE_BUNDLE_SCHEMA:
+            compiled[asset_id] = compile_asset(asset, compiled, source_schema)
+        else:
+            compiled[asset_id] = compile_measured_asset(asset, source_schema)
 
-    write_outputs(compiled, out_root, bundle_path)
+    write_outputs(compiled, out_root, bundle_path, source_schema)
     total_vertices = sum(len(asset["mesh"]["vertices"]) for asset in compiled.values())
     total_faces = sum(len(asset["mesh"]["faces"]) for asset in compiled.values())
     print(f"pumped assets={len(compiled)} vertices={total_vertices} faces={total_faces} out={out_root}")

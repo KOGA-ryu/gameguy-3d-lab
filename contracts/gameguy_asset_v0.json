@@ -6,6 +6,7 @@
   "producer": "scripts/asset_pump_v0.py",
   "source_inputs": [
     "data/architecture/asset_mill/recipes/simple_solids_v0.json",
+    "data/architecture/asset_mill/recipes/measured_components_v0.json",
     "geometry_dictionary/"
   ],
   "coordinate_model": {
@@ -20,6 +21,7 @@
   "required_fields": [
     "schema",
     "asset_id",
+    "source_schema",
     "source_operation",
     "asset_kind",
     "architectural_role",
@@ -31,12 +33,16 @@
     "bounds_m",
     "dimensions_m",
     "mesh",
+    "source_refs",
+    "source_terms",
+    "validation_expectations",
     "no_claims"
   ],
   "field_contracts": {
     "schema": "Must equal gameguy_asset_v0.",
     "asset_id": "Stable source asset identifier.",
-    "source_operation": "Profile or composition operation used by the pump.",
+    "source_schema": "Schema identifier of the source bundle consumed by the pump.",
+    "source_operation": "Profile, composition, or proof-primitive operation path used by the pump.",
     "asset_kind": "Source asset class such as primitive, loft, or compound.",
     "architectural_role": "Human-readable source role from the recipe.",
     "generation_use": "List of intended gameplay or generation uses.",
@@ -47,6 +53,9 @@
     "bounds_m": "Local min/max coordinate bounds in abstract meters.",
     "dimensions_m": "Width, depth, and height derived from bounds_m.",
     "mesh": "Deterministic local mesh JSON with vertices and polygon faces.",
+    "source_refs": "List of source measurement, local document, or other provenance refs preserved from source recipes.",
+    "source_terms": "Geometry dictionary source vocabulary preserved from source recipes.",
+    "validation_expectations": "Source acceptance rules preserved for downstream validators.",
     "no_claims": "Required false-claim block copied from source recipe."
   },
   "connector_contract": {
@@ -69,12 +78,24 @@
   "mesh_contract": {
     "required_fields": [
       "coordinate_space",
+      "parts",
       "vertices",
       "faces"
     ],
     "coordinate_space": "Must equal local_xyz_m.",
+    "parts": "Optional named part ranges when generated from component proof primitives.",
     "vertices": "List of [x, y, z] finite numeric coordinates rounded by the pump.",
     "faces": "List of polygon faces using zero-based vertex indices."
+  },
+  "source_terms_contract": {
+    "required_fields": [
+      "geometry",
+      "profiles",
+      "operators"
+    ],
+    "geometry": "Dictionary terms used by the source record.",
+    "profiles": "Profile primitive terms used by the source record.",
+    "operators": "Mesh, composition, or transform operator terms used by the source record."
   },
   "determinism_rules": {
     "same_source_same_json": true,

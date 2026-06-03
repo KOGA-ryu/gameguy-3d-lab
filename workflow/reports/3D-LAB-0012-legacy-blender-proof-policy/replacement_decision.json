@@ -3,7 +3,7 @@
   "packet_id": "3D-LAB-0012",
   "decision": "DEMOTE_LEGACY_BLENDER_PROOFS_TO_REFERENCE_ONLY",
   "safe_to_delete_now": false,
-  "reason": "Legacy blender_*.py files are proof scripts, not active engine/source logic. Active Blender work should be done through export_blender_* adapters that consume deterministic generated JSON or promoted source JSON.",
+  "reason": "Legacy blender_*.py files are proof scripts, not active engine/source logic. Active Blender work should be done through export_blender_* adapters that consume deterministic generated JSON.",
   "canonical_adapters": [
     "scripts/export_blender_asset_preview_v0.py",
     "scripts/export_blender_measured_components_preview_v0.py"
@@ -41,7 +41,7 @@
   "preserved_value": [
     "Legacy proof scripts remain in the repo for historical comparison.",
     "No files are deleted or moved.",
-    "Future adapter work must start from source data or deterministic generated JSON, not by treating old Blender scripts as source."
+    "Future adapter work must start from deterministic generated JSON, not by treating old Blender scripts as source."
   ],
   "not_preserved_by_design": [
     {

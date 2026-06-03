@@ -16,6 +16,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 PUMP = ROOT / "scripts" / "asset_pump_v0.py"
 ASSET_CONTRACT = ROOT / "contracts" / "gameguy_asset_v0.json"
+MEASURED_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "measured_components_v0.json"
 FALSE_CLAIMS = {
     "production_approval": False,
     "structural_safety": False,
@@ -27,6 +28,16 @@ FALSE_CLAIMS = {
 def run_pump(out_root: Path) -> None:
     subprocess.run(
         [sys.executable, str(PUMP), "--out", str(out_root)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
+def run_measured_pump(out_root: Path) -> None:
+    subprocess.run(
+        [sys.executable, str(PUMP), "--bundle", str(MEASURED_BUNDLE), "--out", str(out_root)],
         cwd=ROOT,
         check=True,
         capture_output=True,
@@ -127,6 +138,70 @@ class AssetPumpTests(unittest.TestCase):
         self.assertGreater(len(railing["mesh"]["vertices"]), 8)
         self.assertGreater(len(railing["mesh"]["faces"]), 6)
 
+    def test_measured_bundle_maps_source_fields_to_asset_schema(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "pump"
+            run_measured_pump(out_root)
+            manifest = load_json(out_root / "manifest.json")
+            wall = load_json(out_root / "assets" / "measured_rectangular_wall_block_v1.json")
+
+        self.assertEqual(manifest["source_bundle_schema"], "asset_mill_measured_component_bundle_v0")
+        self.assertEqual(manifest["asset_schema"], "gameguy_asset_v0")
+        self.assertEqual(manifest["asset_count"], 22)
+        self.assertEqual(wall["schema"], "gameguy_asset_v0")
+        self.assertEqual(wall["source_schema"], "asset_mill_measured_component_bundle_v0")
+        self.assertEqual(wall["source_operation"], "proof_primitives")
+        self.assertEqual(wall["asset_kind"], "measured_component")
+        self.assertEqual(wall["dimensions_m"], {"width": 2.2, "depth": 0.34, "height": 1.6})
+        self.assertEqual(wall["bounds_m"], {"min": [-1.1, -0.17, 0.0], "max": [1.1, 0.17, 1.6]})
+        self.assertEqual(wall["semantic_tags"], ["blocked", "cover", "line_of_sight_blocker", "collision_proxy"])
+        self.assertEqual(
+            wall["connectors"][0],
+            {
+                "connector_id": "floor_anchor",
+                "connector_term": "floor",
+                "position_m": [0.0, 0.0, 0.0],
+                "direction": [0.0, 0.0, -1.0],
+                "role": "placement",
+            },
+        )
+        self.assertEqual(
+            wall["mesh"]["parts"],
+            [
+                {
+                    "part_id": "wall_block",
+                    "source_primitive": "cube",
+                    "vertex_range": [0, 7],
+                    "face_range": [0, 5],
+                    "material_role": "stone",
+                }
+            ],
+        )
+        self.assertEqual(len(wall["mesh"]["vertices"]), 8)
+        self.assertEqual(len(wall["mesh"]["faces"]), 6)
+        self.assertEqual(wall["source_refs"][0]["ref"], "habs_tn181_splayed_support_opening_ratio_v0")
+        self.assertEqual(wall["source_terms"]["profiles"], ["rectangle"])
+        self.assertEqual(wall["source_terms"]["operators"], ["extrude", "bevel_edges"])
+        self.assertEqual(wall["validation_expectations"]["socket_count_min"], 2)
+        self.assertFalse(wall["no_claims"]["historical_accuracy"])
+        self.assert_mesh_is_well_formed(wall)
+
+    def test_measured_cylinder_and_curve_primitives_generate_parts(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "pump"
+            run_measured_pump(out_root)
+            column = load_json(out_root / "assets" / "measured_round_column_v1.json")
+            arch = load_json(out_root / "assets" / "measured_pointed_arch_doorway_v1.json")
+
+        self.assertEqual(column["mesh"]["parts"][0]["source_primitive"], "cylinder")
+        self.assertEqual(len(column["mesh"]["vertices"]), 64)
+        self.assertEqual(len(column["mesh"]["faces"]), 34)
+        self.assertEqual([part["source_primitive"] for part in arch["mesh"]["parts"]], ["cube", "cube", "cube", "curve"])
+        self.assertGreater(len(arch["mesh"]["vertices"]), 24)
+        self.assertGreater(len(arch["mesh"]["faces"]), 18)
+        self.assertIn("validation_warnings", arch)
+        self.assertEqual(arch["validation_warnings"][0]["mesh_bounds_m"], arch["mesh"]["bounds_m"])
+
     def test_output_is_deterministic_across_runs(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             out_a = Path(tmp) / "pump_a"
@@ -172,6 +247,20 @@ class AssetPumpTests(unittest.TestCase):
         self.assertIn("unsupported pump connector: socket", result.stderr)
         self.assertFalse((out_root / "manifest.json").exists())
 
+    def test_measured_unknown_semantic_role_fails_before_output(self) -> None:
+        source_bundle = load_json(MEASURED_BUNDLE)
+        source_bundle["assets"][0]["semantic_roles"] = ["blocked", "made_up_semantic"]
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            bundle_path = Path(tmp) / "bad_measured_bundle.json"
+            out_root = Path(tmp) / "pump"
+            bundle_path.write_text(json.dumps(source_bundle, indent=2) + "\n", encoding="utf-8")
+            result = run_pump_with_bundle(bundle_path, out_root)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("unknown geometry dictionary term `made_up_semantic`", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
+
     def assert_mesh_is_well_formed(self, asset: dict[str, Any]) -> None:
         vertices = asset["mesh"]["vertices"]
         faces = asset["mesh"]["faces"]
@@ -199,6 +288,11 @@ class AssetPumpTests(unittest.TestCase):
             self.assertIn("connector_id", connector)
             assert_finite_vector(self, connector["position_m"], 3)
             assert_finite_vector(self, connector["direction"], 3)
+
+        self.assertIn("source_schema", asset)
+        self.assertIn("source_refs", asset)
+        self.assertIn("source_terms", asset)
+        self.assertIn("validation_expectations", asset)
 
 
 if __name__ == "__main__":

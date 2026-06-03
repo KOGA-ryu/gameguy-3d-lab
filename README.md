@@ -40,6 +40,15 @@ python3 scripts/asset_pump_v0.py --clean --out /tmp/gameguy_asset_pump_v0
 
 It reads `data/architecture/asset_mill/recipes/simple_solids_v0.json` and writes a compact asset manifest plus per-asset geometry JSON. It does not write workflow reports, receipts, Blender files, renders, exported mesh files, or repo-local generated folders.
 
+Measured components use the same pump contract:
+
+```bash
+python3 scripts/asset_pump_v0.py \
+  --bundle data/architecture/asset_mill/recipes/measured_components_v0.json \
+  --clean \
+  --out /tmp/gameguy_measured_asset_pump_v0
+```
+
 The pump rejects recipe operations, profile types, connector IDs, and semantic tags that are not present in `geometry_dictionary/`.
 
 The first stable generated asset schema is:
@@ -54,6 +63,14 @@ The first adapter is:
 
 ```bash
 python3 scripts/export_blender_asset_preview_v0.py --manifest /tmp/gameguy_asset_pump_v0/manifest.json --validate-only
+```
+
+The measured component adapter also consumes generated asset JSON:
+
+```bash
+python3 scripts/export_blender_measured_components_preview_v0.py \
+  --manifest /tmp/gameguy_measured_asset_pump_v0/manifest.json \
+  --validate-only
 ```
 
 Measurement-source registries and research notes are reference material until they feed concrete asset dissection records or recipe inputs.
@@ -80,7 +97,8 @@ python3 scripts/validate_tiny_fixture_v0.py
 python3 scripts/validate_measured_component_source_v0.py
 python3 scripts/asset_pump_v0.py --clean --out /tmp/gameguy_asset_pump_v0
 python3 scripts/export_blender_asset_preview_v0.py --manifest /tmp/gameguy_asset_pump_v0/manifest.json --validate-only
-python3 scripts/export_blender_measured_components_preview_v0.py --validate-only
+python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/measured_components_v0.json --clean --out /tmp/gameguy_measured_asset_pump_v0
+python3 scripts/export_blender_measured_components_preview_v0.py --manifest /tmp/gameguy_measured_asset_pump_v0/manifest.json --validate-only
 python3 scripts/audit_script_orbit_v0.py
 test ! -d pattern_lab_2d
 find . -path '*pattern_lab_2d*' -print
@@ -95,7 +113,7 @@ Expected current checks:
 - Tiny source fixture validation passes.
 - Measured component source validation passes.
 - Blender adapter validation consumes generated asset JSON.
-- Measured component Blender adapter validation consumes promoted source JSON.
+- Measured component Blender adapter validation consumes generated measured asset JSON.
 - Script orbit audit runs without deleting or moving files.
 - No `pattern_lab_2d` paths.
 - No media, render, mesh, or Blender proof output files.

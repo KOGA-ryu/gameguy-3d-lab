@@ -64,7 +64,7 @@ Supported v0 behavior:
 | --- | --- |
 | `cube` | Emit box mesh from `location_m` and `dimensions_m`. |
 | `cylinder` | Emit low-poly cylinder mesh from `location_m`, radius/diameter or dimensions, and segment count/default. |
-| `curve` | Defer unless the record provides enough path/profile data to sweep a tube or strip. |
+| `curve` | Emit a deterministic blockout strip when span, spring line, rise, y offset, curve kind, and bevel depth are present. |
 
 Rules:
 - Every proof primitive becomes a named mesh part.
@@ -72,6 +72,7 @@ Rules:
 - `material_role` is preserved as metadata, not render material.
 - Primitive bounds must be nonzero.
 - Primitive geometry must fit inside `bounds_m` unless the recipe explicitly marks it as an exterior attachment or overhang.
+- If proof primitive mesh bounds differ from declared source bounds, the pump must emit an explicit validation warning and preserve source `bounds_m` as placement extents.
 
 Generated part shape:
 
@@ -194,7 +195,7 @@ Do not solve these in this design note:
 - real Blender object creation
 - glTF export
 - boolean-heavy cutouts
-- curve sweep for underspecified `curve` primitives
+- curve sweep for underspecified future `curve` primitives
 - physics/collision engine integration
 
 V0 should produce useful blockout asset geometry first.
