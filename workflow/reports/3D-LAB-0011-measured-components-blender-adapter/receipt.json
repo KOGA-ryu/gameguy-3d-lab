@@ -1,0 +1,29 @@
+{
+  "schema": "workflow_receipt_v0",
+  "packet_id": "3D-LAB-0011",
+  "result": "measured_component_blender_proofs_demoted_to_reference_only",
+  "files_changed": [
+    "README.md",
+    "scripts/audit_script_orbit_v0.py",
+    "scripts/export_blender_measured_components_preview_v0.py",
+    "tests/test_audit_script_orbit_v0.py",
+    "tests/test_export_blender_measured_components_preview_v0.py",
+    "tests/test_measured_components_blender_adapter_decision_v0.py",
+    "workflow/reports/3D-LAB-0011-measured-components-blender-adapter/replacement_decision.json",
+    "workflow/reports/3D-LAB-0011-measured-components-blender-adapter/report.md",
+    "workflow/reports/3D-LAB-0011-measured-components-blender-adapter/receipt.json"
+  ],
+  "validation": [
+    "measured component adapter validate-only passes",
+    "adapter reports 22 assets, 52 proof primitives, and 74 sockets",
+    "script orbit audit demotes old measured Blender proof scripts to REFERENCE_ONLY"
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

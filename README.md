@@ -74,6 +74,7 @@ python3 scripts/validate_tiny_fixture_v0.py
 python3 scripts/validate_measured_component_source_v0.py
 python3 scripts/asset_pump_v0.py --clean --out /tmp/gameguy_asset_pump_v0
 python3 scripts/export_blender_asset_preview_v0.py --manifest /tmp/gameguy_asset_pump_v0/manifest.json --validate-only
+python3 scripts/export_blender_measured_components_preview_v0.py --validate-only
 python3 scripts/audit_script_orbit_v0.py
 test ! -d pattern_lab_2d
 find . -path '*pattern_lab_2d*' -print
@@ -88,6 +89,7 @@ Expected current checks:
 - Tiny source fixture validation passes.
 - Measured component source validation passes.
 - Blender adapter validation consumes generated asset JSON.
+- Measured component Blender adapter validation consumes promoted source JSON.
 - Script orbit audit runs without deleting or moving files.
 - No `pattern_lab_2d` paths.
 - No media, render, mesh, or Blender proof output files.
