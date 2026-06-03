@@ -24,6 +24,30 @@ The source repo remains the historical prototype/reference. This repo is a flatt
 
 2D Pattern Lab, ornament generation, 2D contact sheets, 2D media outputs, and proof render/mesh artifacts are intentionally excluded.
 
+## Core Rebuild Direction
+
+The durable core of this repo is:
+
+```text
+source asset recipe -> profile/operation compiler -> deterministic asset geometry JSON
+```
+
+The first lean command is:
+
+```bash
+python3 scripts/asset_pump_v0.py --clean --out /tmp/gameguy_asset_pump_v0
+```
+
+It reads `data/architecture/asset_mill/recipes/simple_solids_v0.json` and writes a compact asset manifest plus per-asset geometry JSON. It does not write workflow reports, receipts, Blender files, renders, exported mesh files, or repo-local generated folders.
+
+Measurement sources for future asset dissection live at:
+
+```text
+data/architecture/taxonomy/source_measurements/asset_dissection_measurement_sources_v0.json
+```
+
+That registry ranks source types by usefulness for extracting part measurements, curves, ratios, and operator-chain inputs.
+
 ## Current Language
 
 The current implementation language is Python prototype scripts. A future C++ port is planned, but this repo does not claim a completed C++ implementation.

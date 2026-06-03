@@ -1,0 +1,309 @@
+{
+  "schema": "asset_dissection_measurement_sources_v0",
+  "purpose": "Compact source registry for turning references into measured asset dissection records and operator chains.",
+  "source_quality_order": [
+    "measured_drawing",
+    "survey_record",
+    "scan_dataset",
+    "technical_standard",
+    "treatise_ratio",
+    "image_only_reference"
+  ],
+  "hard_rules": [
+    "Prefer sources with explicit dimensions, scales, drawings, field notes, or point-cloud data.",
+    "Do not extract geometry from image-only references unless a scale reference is visible and recorded.",
+    "Treat treatises as ratio sources, not exact dimension sources.",
+    "Treat accessibility and building standards as gameplay scale references, not production compliance claims.",
+    "Do not copy protected artwork, drawings, scans, photos, or plates into the repo.",
+    "Every extracted measurement must keep source_id, source_url, extraction_method, confidence, and uncertainty note."
+  ],
+  "accepted_extraction_outputs": [
+    "overall_width",
+    "overall_height",
+    "depth",
+    "radius",
+    "diameter",
+    "springline_height",
+    "apex_height",
+    "bay_spacing",
+    "jamb_width",
+    "molding_width",
+    "threshold_height",
+    "rise_run_ratio",
+    "profile_points",
+    "curve_control_points",
+    "part_count",
+    "symmetry_axis"
+  ],
+  "sources": [
+    {
+      "source_id": "nps_heritage_documentation_programs",
+      "source_title": "Heritage Documentation Programs",
+      "source_url": "https://www.nps.gov/subjects/heritagedocumentation/",
+      "institution": "U.S. National Park Service",
+      "source_type": "survey_program",
+      "quality_tier": "survey_record",
+      "why_it_matters": "Program source for HABS, HAER, and HALS measured documentation standards and records.",
+      "best_for": [
+        "measured_drawings",
+        "field_notes",
+        "plans",
+        "sections",
+        "elevations",
+        "building_part_dimensions"
+      ],
+      "asset_factory_targets": [
+        "walls",
+        "doors",
+        "windows",
+        "stairs",
+        "bridges",
+        "structural bays",
+        "foundations"
+      ],
+      "extraction_method": "Use individual records and measured drawing sheets only when dimensions or scale references are available.",
+      "confidence_default": "high"
+    },
+    {
+      "source_id": "nps_habs_haer_hals_collection",
+      "source_title": "HABS/HAER/HALS Collection",
+      "source_url": "https://home.nps.gov/subjects/heritagedocumentation/collection.htm",
+      "institution": "U.S. National Park Service / Library of Congress",
+      "source_type": "archive_collection",
+      "quality_tier": "measured_drawing",
+      "why_it_matters": "Collection description identifies measured and interpretive drawings, photographs, written data, and field notes.",
+      "best_for": [
+        "archive_measured_drawings",
+        "written_dimensions",
+        "field_note_dimensions"
+      ],
+      "asset_factory_targets": [
+        "arch_bays",
+        "porches",
+        "railings",
+        "stairs",
+        "wall_sections",
+        "roof_sections"
+      ],
+      "extraction_method": "Pull dimensions from specific record sheets or written data pages; do not reuse imagery.",
+      "confidence_default": "high"
+    },
+    {
+      "source_id": "loc_habs_haer_hals_collection",
+      "source_title": "HABS / HAER / HALS Collection",
+      "source_url": "https://www.loc.gov/pictures/collection/hh/",
+      "institution": "Library of Congress",
+      "source_type": "archive_collection",
+      "quality_tier": "measured_drawing",
+      "why_it_matters": "Large public archive of historic architecture, engineering, and landscape documentation.",
+      "best_for": [
+        "individual_measured_drawing_records",
+        "plans",
+        "sections",
+        "elevations"
+      ],
+      "asset_factory_targets": [
+        "building_part_taxonomy",
+        "part_ratios",
+        "profile_dissection",
+        "operator_chain_inputs"
+      ],
+      "extraction_method": "Use specific record pages with measurements, sheet scales, or written data. Collection landing page is not enough by itself.",
+      "confidence_default": "high"
+    },
+    {
+      "source_id": "historic_england_archive_plans",
+      "source_title": "Archive Collections: Plans, Drawings and Documents",
+      "source_url": "https://historicengland.org.uk/images-books/archive/collections/plans/",
+      "institution": "Historic England Archive",
+      "source_type": "archive_collection",
+      "quality_tier": "survey_record",
+      "why_it_matters": "Contains architectural drawings, plans, reports, notes, drawings, and photographs for historic environment records.",
+      "best_for": [
+        "uk_historic_plans",
+        "survey_reports",
+        "architectural_drawings",
+        "archway_records"
+      ],
+      "asset_factory_targets": [
+        "gothic_bays",
+        "archways",
+        "window_tracery",
+        "wall_sections",
+        "courtyard_plans"
+      ],
+      "extraction_method": "Use only records with visible scale, published dimensions, or report text. Otherwise classify as inspiration-only.",
+      "confidence_default": "medium"
+    },
+    {
+      "source_id": "riba_collections",
+      "source_title": "RIBA Collections",
+      "source_url": "https://www.riba.org/explore/riba-collections/",
+      "institution": "Royal Institute of British Architects",
+      "source_type": "archive_collection",
+      "quality_tier": "survey_record",
+      "why_it_matters": "Architectural drawing collection includes sketches, preliminary designs, presentation drawings, and technical drawings.",
+      "best_for": [
+        "architectural_drawings",
+        "technical_drawings",
+        "design_ratios",
+        "part_naming"
+      ],
+      "asset_factory_targets": [
+        "facade_bays",
+        "doors",
+        "windows",
+        "columns",
+        "moldings",
+        "ornamental_panels"
+      ],
+      "extraction_method": "Use as a candidate source pool; extract only when dimension, scale, or technical drawing context is available.",
+      "confidence_default": "medium"
+    },
+    {
+      "source_id": "uk_national_archives_architectural_drawings",
+      "source_title": "Architectural drawings research guide",
+      "source_url": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/architectural-drawings/",
+      "institution": "The National Archives",
+      "source_type": "archive_guide",
+      "quality_tier": "survey_record",
+      "why_it_matters": "Guide for finding architectural drawings and related records across UK archival holdings.",
+      "best_for": [
+        "source_discovery",
+        "drawing_record_location",
+        "plan_archive_routing"
+      ],
+      "asset_factory_targets": [
+        "research_queue_generation",
+        "source_targeting",
+        "measurement_fetch_tasks"
+      ],
+      "extraction_method": "Use as a locator for stronger primary records, not as a direct measurement source.",
+      "confidence_default": "medium"
+    },
+    {
+      "source_id": "openheritage3d_data",
+      "source_title": "Open Heritage 3D Data",
+      "source_url": "https://openheritage3d.org/data",
+      "institution": "Open Heritage 3D",
+      "source_type": "scan_dataset_repository",
+      "quality_tier": "scan_dataset",
+      "why_it_matters": "Open repository for primary 3D cultural heritage data and scan-derived datasets.",
+      "best_for": [
+        "point_cloud_measurement",
+        "profile_extraction",
+        "curve_sampling",
+        "surface_depth_measurement"
+      ],
+      "asset_factory_targets": [
+        "irregular_profiles",
+        "vault_curves",
+        "stone_surfaces",
+        "terrain_architecture_intersections"
+      ],
+      "extraction_method": "Use point-cloud or mesh-derived measurements only after recording dataset license and processing method.",
+      "confidence_default": "high"
+    },
+    {
+      "source_id": "cyark_open_access",
+      "source_title": "Open Access to 3D Data",
+      "source_url": "https://www.cyark.org/whatwedo/openaccess/",
+      "institution": "CyArk",
+      "source_type": "scan_dataset_repository",
+      "quality_tier": "scan_dataset",
+      "why_it_matters": "CyArk open access program provides cultural heritage point cloud and photogrammetry access through Open Heritage 3D.",
+      "best_for": [
+        "scan_dataset_discovery",
+        "heritage_geometry_measurement",
+        "large_structure_profiles"
+      ],
+      "asset_factory_targets": [
+        "arches",
+        "columns",
+        "ruins",
+        "vault_fragments",
+        "site-scale measurements"
+      ],
+      "extraction_method": "Use as scan-source discovery; measurement extraction should happen from the specific hosted dataset.",
+      "confidence_default": "high"
+    },
+    {
+      "source_id": "project_gutenberg_vitruvius",
+      "source_title": "The Ten Books on Architecture",
+      "source_url": "https://www.gutenberg.org/ebooks/20239",
+      "institution": "Project Gutenberg",
+      "source_type": "architectural_treatise",
+      "quality_tier": "treatise_ratio",
+      "why_it_matters": "Classical source for proportional architectural reasoning and named construction relationships.",
+      "best_for": [
+        "column_order_ratios",
+        "proportion_rules",
+        "terminology"
+      ],
+      "asset_factory_targets": [
+        "columns",
+        "bases",
+        "capitals",
+        "temple_like_modules",
+        "proportion_defaults"
+      ],
+      "extraction_method": "Extract ratios and named proportional rules only; do not treat as modern measurement standard.",
+      "confidence_default": "medium"
+    },
+    {
+      "source_id": "loc_palladio_four_books",
+      "source_title": "I quattro libri dell'architettura",
+      "source_url": "https://www.loc.gov/item/47044047/",
+      "institution": "Library of Congress",
+      "source_type": "architectural_treatise",
+      "quality_tier": "treatise_ratio",
+      "why_it_matters": "Primary record for Palladio's architectural treatise and proportional design language.",
+      "best_for": [
+        "classical_order_ratios",
+        "villa_plan_ratios",
+        "facade_bay_proportion"
+      ],
+      "asset_factory_targets": [
+        "columns",
+        "facade_bays",
+        "pediments",
+        "porticos",
+        "room_proportions"
+      ],
+      "extraction_method": "Extract reusable ratios and construction relationships; do not copy plates or artwork.",
+      "confidence_default": "medium"
+    },
+    {
+      "source_id": "us_access_board_ada_standards",
+      "source_title": "ADA Accessibility Standards",
+      "source_url": "https://www.access-board.gov/ada/",
+      "institution": "U.S. Access Board",
+      "source_type": "technical_standard",
+      "quality_tier": "technical_standard",
+      "why_it_matters": "Gives movement-relevant dimensions and slope constraints useful for gameplay-friendly paths, ramps, thresholds, and landings.",
+      "best_for": [
+        "ramp_slope_reference",
+        "landing_reference",
+        "clearance_reference",
+        "human_scale_movement"
+      ],
+      "asset_factory_targets": [
+        "ramps",
+        "stairs",
+        "thresholds",
+        "pathways",
+        "door_clearances"
+      ],
+      "extraction_method": "Use as a gameplay/human-scale reference only; do not claim compliance or production approval.",
+      "confidence_default": "high"
+    }
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "artwork_reused": false
+  }
+}
