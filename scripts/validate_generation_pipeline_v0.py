@@ -33,6 +33,7 @@ SECTION_STACK_ASSET_OUT = Path("/tmp/gameguy_section_stack_asset_pump_v0")
 BLOCKY_COLUMN_ASSET_OUT = Path("/tmp/gameguy_blocky_column_asset_pump_v0")
 BLOCKY_SHAPE_ASSET_OUT = Path("/tmp/gameguy_blocky_shape_grammar_asset_pump_v0")
 SACRED_GRAPH_OUT = Path("/tmp/gameguy_sacred_graph_v0")
+CONSTRUCTION_CELL_SELECTION_OUT = Path("/tmp/gameguy_construction_cell_selection_v0")
 FORBIDDEN_OUTPUT_SUFFIXES = {
     ".png",
     ".jpg",
@@ -140,6 +141,17 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
         CommandStep("railing_detail_profile_validate", python_script("scripts/validate_railing_detail_profiles_v0.py")),
         CommandStep("construction_geometry_taxonomy_validate", python_script("scripts/validate_construction_geometry_taxonomy_v0.py")),
         CommandStep("sacred_graph_compile", python_script("scripts/compile_sacred_graph_v0.py", "--clean", "--out", SACRED_GRAPH_OUT)),
+        CommandStep(
+            "construction_cell_selection_compile",
+            python_script(
+                "scripts/compile_construction_cell_selection_v0.py",
+                "--clean",
+                "--graph-manifest",
+                SACRED_GRAPH_OUT / "manifest.json",
+                "--out",
+                CONSTRUCTION_CELL_SELECTION_OUT,
+            ),
+        ),
     ]
     if not skip_unit_tests:
         steps.append(CommandStep("unit_tests", [sys.executable, "-m", "unittest", "discover", "-s", "tests"]))

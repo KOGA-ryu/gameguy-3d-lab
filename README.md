@@ -56,6 +56,17 @@ python3 scripts/compile_sacred_graph_v0.py \
 
 The first graph bundle is `data/architecture/sacred_geometry/sacred_graph_recipes_v0.json`. It compiles `sacred_22_star_construction_graph_v0` into `89` named points, `220` named edges, an SVG construction preview, and named selections for the center boss, radial ribs, and primary star-step trace. It deliberately does not emit a derived column profile; this layer is now a clean construction field for later cell, rib, and vault selection.
 
+Cell selection is now the next source layer. It consumes the compiled sacred graph, derives closed adjacent ring-band cells, and names selected cell groups before any 3D lifting or Blender execution:
+
+```bash
+python3 scripts/compile_construction_cell_selection_v0.py \
+  --clean \
+  --graph-manifest /tmp/gameguy_sacred_graph_v0/manifest.json \
+  --out /tmp/gameguy_construction_cell_selection_v0
+```
+
+The first cell-selection bundle is `data/architecture/sacred_geometry/construction_cell_selection_recipes_v0.json`. It compiles `sacred_22_star_radial_cell_selection_v0` into `66` closed cells across `3` adjacent ring bands, with named selections for vault web cells, outer tracery opening cells, and railing recess panel cells.
+
 The first lean command is:
 
 ```bash
@@ -253,6 +264,7 @@ python3 scripts/validate_measured_molding_profiles_v0.py
 python3 scripts/validate_railing_detail_profiles_v0.py
 python3 scripts/validate_construction_geometry_taxonomy_v0.py
 python3 scripts/compile_sacred_graph_v0.py --clean --out /tmp/gameguy_sacred_graph_v0
+python3 scripts/compile_construction_cell_selection_v0.py --clean --graph-manifest /tmp/gameguy_sacred_graph_v0/manifest.json --out /tmp/gameguy_construction_cell_selection_v0
 python3 scripts/compile_blender_tool_plan_v0.py --validate-only
 python3 scripts/compile_blender_tool_plan_v0.py --clean --out /tmp/gameguy_blender_tool_plan_v0
 python3 scripts/validate_gameguy_tool_plan_v0.py --manifest /tmp/gameguy_blender_tool_plan_v0/manifest.json
@@ -337,6 +349,7 @@ Expected current checks:
 - Railing detail profile validation proves 2D detail shape placement, detail roles, application methods, and Blender tool stage order before the next geometry pass.
 - Construction geometry taxonomy validation proves the source-language terms for construction fields, selection/omission, role promotion, motif orbits, tracery, muqarnas cell plans, and lift/fold/sweep/thicken/bevel operations.
 - Sacred graph compilation proves a source-owned 22-division construction graph with named point, edge, and star-trace selections before 3D lifting/folding.
+- Construction cell selection compilation proves `66` closed ring-band cells and named cell selections for vault webs, tracery openings, and railing recess panels before 3D lifting/folding/sweeping.
 - JSON parses.
 - Python scripts compile.
 - Asset pump tests pass.

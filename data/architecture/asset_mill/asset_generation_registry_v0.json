@@ -145,6 +145,16 @@
       "pipeline_labels": ["sacred_graph_compile"]
     }
   ],
+  "source_cell_selection_bundles": [
+    {
+      "bundle_id": "construction_cell_selection_recipes_v0",
+      "path": "data/architecture/sacred_geometry/construction_cell_selection_recipes_v0.json",
+      "schema": "construction_cell_selection_recipe_bundle_v0",
+      "expected_selection_set_count": 1,
+      "compiler": "scripts/compile_construction_cell_selection_v0.py",
+      "pipeline_labels": ["construction_cell_selection_compile"]
+    }
+  ],
   "source_taxonomy_bundles": [
     {
       "bundle_id": "construction_geometry_taxonomy_v0",

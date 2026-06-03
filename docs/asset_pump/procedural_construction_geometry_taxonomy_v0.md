@@ -106,21 +106,24 @@ construction_field
 - Do not claim structural safety, fabrication readiness, or building-code compliance.
 - Do not generate final meshes until source selection, promotion, and operation order are explicit.
 
-## Next Compiler Slice
+## Current Compiler Slice
 
-The next implementation should add cell selection:
+`3D-LAB-0050 construction_cell_selection_v0` adds the first cell-selection compiler:
 
-```text
-3D-LAB-0050 construction_cell_selection_v0
+```bash
+python3 scripts/compile_construction_cell_selection_v0.py \
+  --clean \
+  --graph-manifest /tmp/gameguy_sacred_graph_v0/manifest.json \
+  --out /tmp/gameguy_construction_cell_selection_v0
 ```
 
-Minimum useful behavior:
+It reads the existing sacred graph output, derives simple closed cells between adjacent radial divisions and rings, selects cells by ring band and radial orbit, labels them with roles such as `vault_web_cell`, `tracery_opening_cell`, and `railing_panel_face`, previews selected cells in SVG, and emits JSON only.
 
-- read the existing sacred graph output
-- derive simple closed cells between adjacent radial divisions and rings
-- let the recipe select cells by ring band, radial index, or symmetry orbit
-- label selected cells with roles such as `vault_web_cell`, `recess_panel_cell`, or `opening_cell`
-- preview selected cells in SVG
-- emit JSON only
+The next compiler should promote those selected cells into operation stacks:
 
-No Blender is needed for that slice.
+```text
+selected construction cells
+-> role promotion records
+-> lift/fold/sweep/thicken/chamfer operations
+-> railing panel or vault-web prototype
+```

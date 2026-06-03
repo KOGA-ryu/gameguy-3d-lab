@@ -309,6 +309,38 @@ def validate_source_graph_bundle(item: Any, index: int, known_labels: set[str]) 
     }
 
 
+def validate_source_cell_selection_bundle(item: Any, index: int, known_labels: set[str]) -> dict[str, Any]:
+    bundle_ref = require_object(item, f"source_cell_selection_bundles[{index}]")
+    path = repo_path(bundle_ref.get("path"), f"source_cell_selection_bundles[{index}].path")
+    bundle = load_json(path)
+    expected_schema = require_string(bundle_ref.get("schema"), f"source_cell_selection_bundles[{index}].schema")
+    if bundle.get("schema") != expected_schema:
+        fail(f"{display_path(path)} schema must be {expected_schema}")
+    bundle_id = require_string(bundle_ref.get("bundle_id"), f"source_cell_selection_bundles[{index}].bundle_id")
+    if bundle.get("bundle_id") != bundle_id:
+        fail(f"{display_path(path)} bundle_id must be {bundle_id}")
+    expected_count = require_int(
+        bundle_ref.get("expected_selection_set_count"),
+        f"source_cell_selection_bundles[{index}].expected_selection_set_count",
+        minimum=1,
+    )
+    selection_sets = require_list(bundle.get("selection_sets"), f"source_cell_selection_bundles[{index}].selection_sets")
+    if len(selection_sets) != expected_count:
+        fail(f"source_cell_selection_bundles[{index}].expected_selection_set_count must match selection_sets length")
+    if bundle.get("selection_set_count") != expected_count:
+        fail(f"source_cell_selection_bundles[{index}].expected_selection_set_count must match bundle selection_set_count")
+    compiler = script_path(bundle_ref.get("compiler"), f"source_cell_selection_bundles[{index}].compiler")
+    assert_no_blender_import(compiler, f"source_cell_selection_bundles[{index}].compiler")
+    labels = validate_pipeline_labels(bundle_ref.get("pipeline_labels"), known_labels, f"source_cell_selection_bundles[{index}].pipeline_labels")
+    return {
+        "bundle_id": bundle_id,
+        "path": display_path(path),
+        "schema": expected_schema,
+        "selection_set_count": expected_count,
+        "pipeline_label_count": len(labels),
+    }
+
+
 def validate_source_taxonomy_bundle(item: Any, index: int, known_labels: set[str]) -> dict[str, Any]:
     bundle_ref = require_object(item, f"source_taxonomy_bundles[{index}]")
     path = repo_path(bundle_ref.get("path"), f"source_taxonomy_bundles[{index}].path")
@@ -398,6 +430,13 @@ def validate_registry(path: Path) -> dict[str, Any]:
     source_graph_paths = {result["path"] for result in source_graph_results}
     if len(source_graph_paths) != len(source_graph_results):
         fail("source_graph_bundles paths must be unique")
+    source_cell_selection_results = [
+        validate_source_cell_selection_bundle(item, index, known_labels)
+        for index, item in enumerate(require_list(registry.get("source_cell_selection_bundles"), "source_cell_selection_bundles"))
+    ]
+    source_cell_selection_paths = {result["path"] for result in source_cell_selection_results}
+    if len(source_cell_selection_paths) != len(source_cell_selection_results):
+        fail("source_cell_selection_bundles paths must be unique")
     source_taxonomy_results = [
         validate_source_taxonomy_bundle(item, index, known_labels)
         for index, item in enumerate(require_list(registry.get("source_taxonomy_bundles"), "source_taxonomy_bundles"))
@@ -405,7 +444,14 @@ def validate_registry(path: Path) -> dict[str, Any]:
     source_taxonomy_paths = {result["path"] for result in source_taxonomy_results}
     if len(source_taxonomy_paths) != len(source_taxonomy_results):
         fail("source_taxonomy_bundles paths must be unique")
-    canonical_paths = geometry_paths | {tool_plan_result["path"]} | source_profile_paths | source_graph_paths | source_taxonomy_paths
+    canonical_paths = (
+        geometry_paths
+        | {tool_plan_result["path"]}
+        | source_profile_paths
+        | source_graph_paths
+        | source_cell_selection_paths
+        | source_taxonomy_paths
+    )
     reference_results = [
         validate_reference_recipe(item, index, canonical_paths)
         for index, item in enumerate(require_list(registry.get("reference_only_recipe_bundles"), "reference_only_recipe_bundles"))
@@ -433,6 +479,8 @@ def validate_registry(path: Path) -> dict[str, Any]:
         "source_profile_count": sum(result["profile_count"] for result in source_profile_results),
         "source_graph_bundle_count": len(source_graph_results),
         "source_graph_count": sum(result["graph_count"] for result in source_graph_results),
+        "source_cell_selection_bundle_count": len(source_cell_selection_results),
+        "source_cell_selection_set_count": sum(result["selection_set_count"] for result in source_cell_selection_results),
         "source_taxonomy_bundle_count": len(source_taxonomy_results),
         "source_taxonomy_term_count": sum(result["term_count"] for result in source_taxonomy_results),
         "reference_only_recipe_count": len(reference_results),
@@ -447,6 +495,7 @@ def validate_registry(path: Path) -> dict[str, Any]:
             "validates_pipeline_label_coverage": True,
             "validates_source_profile_boundaries": True,
             "validates_source_graph_boundaries": True,
+            "validates_source_cell_selection_boundaries": True,
             "validates_source_taxonomy_boundaries": True,
             "validates_reference_only_boundaries": True,
         },
@@ -474,6 +523,7 @@ def main(argv: list[str] | None = None) -> int:
         f"geometry_assets={result['canonical_geometry_asset_count']} "
         f"source_profiles={result['source_profile_count']} "
         f"source_graphs={result['source_graph_count']} "
+        f"source_cell_selections={result['source_cell_selection_set_count']} "
         f"source_taxonomies={result['source_taxonomy_term_count']} "
         f"reference_only={result['reference_only_recipe_count']}"
     )

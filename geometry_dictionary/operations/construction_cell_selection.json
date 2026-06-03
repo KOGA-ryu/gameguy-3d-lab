@@ -1,0 +1,36 @@
+{
+  "term_id": "construction_cell_selection",
+  "category": "composition_operation",
+  "plain_name": "Construction Cell Selection",
+  "description": "Derives closed 2D cells from a construction graph and selects named cell subsets for later architectural role promotion.",
+  "required_inputs": {
+    "source_graph": "construction_graph_2d",
+    "cell_derivation": "cell_derivation_rule",
+    "selections": "construction_cell_selection[]"
+  },
+  "outputs": {
+    "type": "construction_cell_selection_2d",
+    "coordinate_space": "local_xy",
+    "selection_ready": true
+  },
+  "constraints": {
+    "source_graph_must_have_ordered_rings": true,
+    "source_graph_must_have_radial_divisions": true,
+    "cells_must_be_closed": true,
+    "cell_ids_must_be_stable": true,
+    "selections_reference_existing_cells": true
+  },
+  "common_uses": [
+    "vault web cell selection",
+    "railing panel recess selection",
+    "tracery opening selection",
+    "muqarnas cell planning",
+    "rose window cell planning"
+  ],
+  "blender_method": "Blender does not derive or choose cells; adapters consume promoted cell selections after source recipes declare roles and operations.",
+  "validation": [
+    "closed_profile",
+    "nonzero_area",
+    "scale_within_bounds"
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "schema": "construction_cell_selection_recipe_bundle_v0",
+  "bundle_id": "construction_cell_selection_recipes_v0",
+  "purpose": "Source recipes for deriving selectable closed 2D cells from sacred construction graphs before lift, fold, sweep, thicken, or Blender work.",
+  "source_graph_bundle": "data/architecture/sacred_geometry/sacred_graph_recipes_v0.json",
+  "units": "abstract_meter",
+  "rules": {
+    "source_lane": true,
+    "deterministic_output": true,
+    "no_blender_logic": true,
+    "no_mesh_output": true,
+    "no_generated_outputs": true,
+    "cells_are_selection_source": true
+  },
+  "selection_set_count": 1,
+  "selection_sets": [
+    {
+      "selection_set_id": "sacred_22_star_radial_cell_selection_v0",
+      "source_graph_id": "sacred_22_star_construction_graph_v0",
+      "geometry_operation": "construction_cell_selection",
+      "description": "First closed-cell proof from the 22-division sacred graph: adjacent ring-band cells selected for vault webs, tracery openings, and railing recess panels.",
+      "cell_derivation": {
+        "kind": "ring_band_radial_cells",
+        "ring_band_mode": "adjacent_rings",
+        "include_center_fan": false
+      },
+      "selections": [
+        {
+          "selection_id": "vault_web_cells_primary",
+          "selection_type": "cells",
+          "selector": {
+            "kind": "cell_orbit",
+            "band_id": "inner_cell_to_shaft_valley",
+            "start_index": 0,
+            "step": 2,
+            "count": 11
+          },
+          "architectural_roles": ["vault_web_cell", "recess_panel_cell"],
+          "cascade_order": {
+            "kind": "radial_index_ascending",
+            "tier_start": 1,
+            "tier_step": 1
+          }
+        },
+        {
+          "selection_id": "outer_tracery_opening_cells",
+          "selection_type": "cells",
+          "selector": {
+            "kind": "cell_orbit",
+            "band_id": "shaft_valley_to_outer_tip",
+            "start_index": 1,
+            "step": 2,
+            "count": 11
+          },
+          "architectural_roles": ["tracery_opening_cell", "rose_window_void_candidate"],
+          "cascade_order": {
+            "kind": "radial_index_ascending",
+            "tier_start": 2,
+            "tier_step": 1
+          }
+        },
+        {
+          "selection_id": "railing_recess_panel_cells",
+          "selection_type": "cells",
+          "selector": {
+            "kind": "cell_indices",
+            "band_id": "boss_to_inner_cell",
+            "indices": [2, 7, 13, 18]
+          },
+          "architectural_roles": ["railing_panel_face", "recess_panel_cell"],
+          "cascade_order": {
+            "kind": "listed_order",
+            "tier_start": 1,
+            "tier_step": 1
+          }
+        }
+      ],
+      "validation_expectations": {
+        "band_count": 3,
+        "cell_count": 66,
+        "selection_count": 3,
+        "selected_cell_reference_count": 26,
+        "unique_selected_cell_count": 26
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "building_code_compliance": false,
+        "game_engine_integration": false
+      }
+    }
+  ]
+}

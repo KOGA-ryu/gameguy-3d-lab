@@ -1,0 +1,66 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0050-construction-cell-selection-v0",
+  "created_utc": "2026-06-03T00:00:00Z",
+  "summary": "Added a source-only construction cell-selection compiler that derives closed ring-band radial cells from the sacred graph and emits named selected cells before any 3D lifting or Blender execution.",
+  "source_inputs": {
+    "cell_selection_bundle": "data/architecture/sacred_geometry/construction_cell_selection_recipes_v0.json",
+    "source_graph_bundle": "data/architecture/sacred_geometry/sacred_graph_recipes_v0.json",
+    "geometry_operation": "geometry_dictionary/operations/construction_cell_selection.json",
+    "compiler": "scripts/compile_construction_cell_selection_v0.py"
+  },
+  "compiled_cell_selection": {
+    "selection_set_id": "sacred_22_star_radial_cell_selection_v0",
+    "source_graph_id": "sacred_22_star_construction_graph_v0",
+    "band_count": 3,
+    "cell_count": 66,
+    "selection_count": 3,
+    "selected_cell_reference_count": 26,
+    "unique_selected_cell_count": 26,
+    "manifest_path": "/tmp/gameguy_construction_cell_selection_v0_0050/manifest.json",
+    "cell_selection_path": "/tmp/gameguy_construction_cell_selection_v0_0050/cell_sets/sacred_22_star_radial_cell_selection_v0.json",
+    "svg_preview_path": "/tmp/gameguy_construction_cell_selection_v0_0050/svg/sacred_22_star_radial_cell_selection_v0.svg",
+    "png_preview_path": "/tmp/gameguy_construction_cell_selection_v0_0050_preview/sacred_22_star_radial_cell_selection_v0.svg.png"
+  },
+  "validation": {
+    "construction_cell_selection_validate_only": {
+      "command": "python3 scripts/compile_construction_cell_selection_v0.py --validate-only",
+      "result": "compiled construction cell selections=1 cells=66 out=<validate-only>"
+    },
+    "construction_cell_selection_compile": {
+      "command": "python3 scripts/compile_construction_cell_selection_v0.py --clean --graph-manifest /tmp/gameguy_sacred_graph_v0_0050/manifest.json --out /tmp/gameguy_construction_cell_selection_v0_0050",
+      "result": "compiled construction cell selections=1 cells=66 selected=26 out=/tmp/gameguy_construction_cell_selection_v0_0050"
+    },
+    "unit_tests": {
+      "command": "python3 -m unittest discover -s tests",
+      "result": "OK",
+      "test_count": 143
+    },
+    "asset_generation_registry": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS asset generation registry validation: geometry_bundles=5 geometry_assets=40 source_profiles=19 source_graphs=1 source_cell_selections=1 source_taxonomies=23 reference_only=3"
+    },
+    "generation_pipeline": {
+      "non_blender": {
+        "command": "python3 scripts/validate_generation_pipeline_v0.py --json-report /tmp/gameguy_pipeline_0050_final.json",
+        "result": "PASS generation pipeline validation: commands=37 json=250 include_blender=false",
+        "command_count": 37,
+        "json_file_count": 250
+      },
+      "full_blender": {
+        "command": "python3 scripts/validate_generation_pipeline_v0.py --include-blender --json-report /tmp/gameguy_pipeline_blender_0050_final.json",
+        "result": "PASS generation pipeline validation: commands=51 json=250 include_blender=true",
+        "command_count": 51,
+        "json_file_count": 250
+      }
+    }
+  },
+  "rules": {
+    "source_cells_only": true,
+    "selected_cells_named": true,
+    "blender_is_adapter_layer": true,
+    "generated_outputs_stay_under_tmp": true,
+    "no_production_or_structural_claims": true
+  },
+  "recommended_next_goal": "Add role-promotion operation stacks that lift/fold/sweep/thicken selected construction cells into one railing or vault prototype."
+}
