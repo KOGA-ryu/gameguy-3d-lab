@@ -22,7 +22,7 @@
     "material_texture",
     "validation_export"
   ],
-  "asset_family_policy_count": 6,
+  "asset_family_policy_count": 7,
   "asset_family_policies": [
     {
       "asset_family": "column",
@@ -205,6 +205,52 @@
       },
       "required_tools": ["primitive_cube_add", "join_objects", "modifier_bevel", "modifier_weighted_normal", "uv_smart_project", "material_principled_shader", "calculate_bounds", "validate_non_manifold", "create_collision_proxy", "create_lod_variant", "render_workbench_preview", "export_gltf"],
       "forbidden_tools": ["object_duplicate_radial", "modifier_boolean", "sculpt_draw", "sculpt_smooth"],
+      "tool_order_constraints": [
+        {"before": "join_objects", "after": "modifier_bevel"},
+        {"before": "modifier_bevel", "after": "modifier_weighted_normal"},
+        {"before": "mark_seam", "after": "uv_smart_project"},
+        {"before": "uv_smart_project", "after": "uv_pack_islands"},
+        {"before": "material_principled_shader", "after": "procedural_noise_texture"},
+        {"before": "procedural_noise_texture", "after": "procedural_bump_map"},
+        {"before": "calculate_bounds", "after": "validate_non_manifold"},
+        {"before": "validate_non_manifold", "after": "export_gltf"}
+      ]
+    },
+    {
+      "asset_family": "guard_panel",
+      "dictionary_family_tags": ["guard_panel", "panel", "stone", "all"],
+      "allowed_features": [
+        "gothic_panel_guard_blocks",
+        "finish_tool_stack",
+        "hard_edge_bevels",
+        "weighted_normals",
+        "smart_uvs",
+        "stone_surface_material",
+        "collision_and_lod_proxy",
+        "preview_and_export_plan"
+      ],
+      "required_stage_coverage": [
+        "base_form",
+        "assembly",
+        "shape_refinement",
+        "sculpt_detail",
+        "retopo_cleanup",
+        "uv_mapping",
+        "material_texture",
+        "validation_export"
+      ],
+      "allowed_tools_by_stage": {
+        "base_form": ["primitive_cube_add", "primitive_cylinder_add", "mesh_from_pydata", "bmesh_create", "extrude_region"],
+        "assembly": ["join_objects", "transform_apply", "modifier_nodes", "gn_join_geometry", "gn_realize_instances", "gn_transform_geometry"],
+        "shape_refinement": ["bevel_mesh_edges", "mark_sharp", "modifier_bevel", "modifier_weighted_normal"],
+        "sculpt_detail": ["modifier_displace"],
+        "retopo_cleanup": ["fill_holes", "merge_vertices", "remove_doubles", "dissolve_limited", "recalc_normals", "modifier_weld"],
+        "uv_mapping": ["mark_seam", "uv_smart_project", "uv_unwrap", "uv_pack_islands"],
+        "material_texture": ["gn_store_named_attribute", "gn_set_material", "material_slot_add", "material_assign_by_part", "material_principled_shader", "procedural_noise_texture", "procedural_bump_map"],
+        "validation_export": ["origin_set", "calculate_bounds", "validate_non_manifold", "create_collision_proxy", "create_lod_variant", "render_workbench_preview", "export_gltf"]
+      },
+      "required_tools": ["primitive_cube_add", "mesh_from_pydata", "join_objects", "modifier_bevel", "modifier_weighted_normal", "uv_smart_project", "material_principled_shader", "calculate_bounds", "validate_non_manifold", "create_collision_proxy", "create_lod_variant", "render_workbench_preview", "export_gltf"],
+      "forbidden_tools": ["object_duplicate_radial", "modifier_boolean", "modifier_array", "modifier_mirror", "sculpt_draw", "sculpt_smooth"],
       "tool_order_constraints": [
         {"before": "join_objects", "after": "modifier_bevel"},
         {"before": "modifier_bevel", "after": "modifier_weighted_normal"},

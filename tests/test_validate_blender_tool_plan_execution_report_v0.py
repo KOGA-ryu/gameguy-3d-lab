@@ -302,6 +302,56 @@ def valid_door_frame_report() -> dict[str, Any]:
     return report
 
 
+def valid_guard_panel_report() -> dict[str, Any]:
+    report = valid_report()
+    report.update(
+        {
+            "source_plan": "/tmp/gameguy_blender_tool_plan_v0/plans/gothic_panel_guard_tool_plan_v0_compiled.json",
+            "plan_id": "gothic_panel_guard_tool_plan_v0_compiled",
+            "asset_id": "gothic_panel_guard_tool_plan_v0",
+            "asset_family": "guard_panel",
+            "step_count": 46,
+            "supported_step_count": 46,
+            "unique_tool_count": 5,
+            "unique_tools": ["join_objects", "material_assign_by_part", "mesh_from_pydata", "primitive_cube_add", "validate_non_manifold"],
+            "executed_step_count": 46,
+            "bounds_m": {"min": [-0.995, -0.168, 0.004], "max": [0.997, 0.167, 1.151]},
+            "material_regions": {
+                "material_slot_count": 9,
+                "face_counts_by_role": {
+                    "base": 216,
+                    "cap": 108,
+                    "collar": 108,
+                    "coping": 54,
+                    "finial": 212,
+                    "panel": 108,
+                    "pier": 108,
+                    "recess": 102,
+                    "trim": 458
+                },
+                "material_slots": [],
+            },
+            "socket_pass": {},
+            "quality_pass": {
+                "asset_family_quality_profile": "guard_panel",
+                "material_regions_preserved": True,
+                "explicit_socket_boolean_targets": False,
+                "socket_cutters_removed": False,
+                "socket_boolean_not_required": True,
+                "topology_cleanup_attempted": True,
+            },
+            "final_object": {
+                "name": "gothic_panel_guard_tool_plan_v0",
+                "vertex_count": 1536,
+                "edge_count": 2960,
+                "face_count": 1474,
+                "material_slot_count": 9,
+            },
+        }
+    )
+    return report
+
+
 def write_report(path: Path, report: dict[str, Any]) -> None:
     path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 
@@ -398,6 +448,20 @@ class BlenderToolPlanExecutionReportValidatorTests(unittest.TestCase):
         self.assertIn("PASS Blender tool-plan execution quality validation", result.stdout)
         self.assertEqual(validation["asset_id"], "gothic_stone_door_frame_tool_plan_v0")
         self.assertEqual(validation["material_role_count"], 1)
+        self.assertEqual(validation["socket_shadow_panel_count"], 0)
+
+    def test_accepts_guard_panel_quality_execution_report(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            report_path = Path(tmp) / "tool_plan_execution_report.json"
+            json_report = Path(tmp) / "quality_validation.json"
+            write_report(report_path, valid_guard_panel_report())
+            result = run_validator(report_path, json_report)
+            validation = json.loads(json_report.read_text(encoding="utf-8"))
+
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("PASS Blender tool-plan execution quality validation", result.stdout)
+        self.assertEqual(validation["asset_id"], "gothic_panel_guard_tool_plan_v0")
+        self.assertEqual(validation["material_role_count"], 9)
         self.assertEqual(validation["socket_shadow_panel_count"], 0)
 
     def test_rejects_nonzero_non_manifold_count(self) -> None:

@@ -30,6 +30,7 @@ SUPPORTED_TOOLS = {
     "mark_sharp",
     "material_assign_by_part",
     "material_principled_shader",
+    "mesh_from_pydata",
     "modifier_bevel",
     "modifier_boolean",
     "modifier_displace",
@@ -53,10 +54,17 @@ ROLE_MATERIAL_COLORS: dict[str, tuple[float, float, float, float]] = {
     "base": (0.38, 0.36, 0.31, 1.0),
     "cap": (0.55, 0.52, 0.44, 1.0),
     "connector": (0.22, 0.23, 0.24, 1.0),
+    "collar": (0.34, 0.32, 0.28, 1.0),
     "transition": (0.44, 0.42, 0.36, 1.0),
     "shaft": (0.47, 0.45, 0.38, 1.0),
     "rib": (0.58, 0.55, 0.46, 1.0),
     "frame": (0.50, 0.48, 0.40, 1.0),
+    "pier": (0.46, 0.44, 0.37, 1.0),
+    "panel": (0.42, 0.40, 0.34, 1.0),
+    "coping": (0.56, 0.53, 0.45, 1.0),
+    "trim": (0.60, 0.57, 0.48, 1.0),
+    "recess": (0.16, 0.17, 0.18, 1.0),
+    "finial": (0.52, 0.50, 0.42, 1.0),
     "socket": (0.20, 0.22, 0.24, 1.0),
     "socket_shadow": (0.10, 0.11, 0.12, 1.0),
     "collision": (0.12, 0.35, 0.90, 0.25),
@@ -309,6 +317,8 @@ def execute_step(bpy: Any, mathutils: Any, plan: dict[str, Any], step: dict[str,
         execute_primitive_cube_add(bpy, step, context)
     elif tool_id == "primitive_cylinder_add":
         execute_primitive_cylinder_add(bpy, step, context)
+    elif tool_id == "mesh_from_pydata":
+        execute_mesh_from_pydata(bpy, step, context)
     elif tool_id == "object_duplicate_radial":
         execute_object_duplicate_radial(step, context)
     elif tool_id == "modifier_boolean":
@@ -434,6 +444,37 @@ def execute_primitive_cylinder_add(bpy: Any, step: dict[str, Any], context: dict
         context["groups"]["cap"].append(alias)
     elif role == "base":
         context["groups"]["base"].append(alias)
+    context["groups"]["visible"].append(alias)
+
+
+def execute_mesh_from_pydata(bpy: Any, step: dict[str, Any], context: dict[str, Any]) -> None:
+    params = step["params"]
+    raw_vertices = require_list(params.get("vertices"), f"{step['step_id']}.params.vertices")
+    raw_faces = require_list(params.get("faces"), f"{step['step_id']}.params.faces")
+    vertices = [require_vector(item, f"{step['step_id']}.params.vertices[{index}]", 3) for index, item in enumerate(raw_vertices)]
+    faces: list[list[int]] = []
+    for face_index, item in enumerate(raw_faces):
+        raw_face = require_list(item, f"{step['step_id']}.params.faces[{face_index}]")
+        if len(raw_face) < 3:
+            fail(f"{step['step_id']}.params.faces[{face_index}] must contain at least three vertex indexes")
+        face = []
+        for index, value in enumerate(raw_face):
+            if not isinstance(value, int) or isinstance(value, bool) or value < 0 or value >= len(vertices):
+                fail(f"{step['step_id']}.params.faces[{face_index}][{index}] must be a valid vertex index")
+            face.append(value)
+        faces.append(face)
+    mesh = bpy.data.meshes.new(f"{step['step_id']}_mesh")
+    mesh.from_pydata(vertices, [], faces)
+    mesh.update(calc_edges=True)
+    alias = alias_from_step_id(step["step_id"])
+    obj = bpy.data.objects.new(alias, mesh)
+    bpy.context.collection.objects.link(obj)
+    role = str(params.get("material_role") or material_role_for_alias(alias))
+    obj["tool_plan_step_id"] = step["step_id"]
+    obj["tool_id"] = step["tool_id"]
+    obj["material_role"] = role
+    obj.data.materials.append(context["materials"].get(role, context["materials"]["default"]))
+    context["objects"][alias] = obj
     context["groups"]["visible"].append(alias)
 
 

@@ -100,9 +100,9 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(policy["schema"], "asset_family_tool_sequence_policy_v0")
         self.assertEqual(policy["tool_dictionary"], dictionary["dictionary_id"])
         self.assertEqual(policy["stage_order"], dictionary["stages"])
-        self.assertEqual(policy["asset_family_policy_count"], 6)
+        self.assertEqual(policy["asset_family_policy_count"], 7)
         families = {item["asset_family"]: item for item in policy["asset_family_policies"]}
-        self.assertEqual(set(families), {"column", "banister_post", "fence_post", "rail_segment", "window_frame", "door_frame"})
+        self.assertEqual(set(families), {"column", "banister_post", "fence_post", "rail_segment", "guard_panel", "window_frame", "door_frame"})
 
         for family, item in families.items():
             self.assertIn("finish_tool_stack", item["allowed_features"], family)
@@ -141,7 +141,7 @@ class BlenderToolPlanTests(unittest.TestCase):
 
         self.assertEqual(manifest["schema"], "gameguy_tool_plan_manifest_v0")
         self.assertEqual(manifest["tool_sequence_policy"], "asset_family_tool_sequence_policy_v0")
-        self.assertEqual(manifest["plan_count"], 6)
+        self.assertEqual(manifest["plan_count"], 7)
         self.assertEqual(manifest["plans"][0]["step_count"], 32)
         self.assertEqual(manifest["plans"][0]["unique_tool_count"], 24)
         self.assertEqual(plan["asset_family"], "banister_post")
@@ -327,6 +327,57 @@ class BlenderToolPlanTests(unittest.TestCase):
             },
         )
 
+    def test_gothic_panel_guard_recipe_compiles_from_reference_packet(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "plans"
+            run_compiler(out_root)
+            plan = plan_by_asset(out_root, "gothic_panel_guard_tool_plan_v0")
+
+        self.assertEqual(plan["asset_family"], "guard_panel")
+        self.assertEqual(plan["asset_family_policy"], "guard_panel")
+        self.assertEqual(plan["style"], "gothic_stone")
+        self.assertEqual(plan["features"], ["gothic_panel_guard_blocks", "finish_tool_stack"])
+        self.assertTrue(FINISH_FEATURES.isdisjoint(plan["features"]))
+        self.assertEqual(plan["summary"]["step_count"], 46)
+        self.assertEqual(plan["summary"]["unique_tool_count"], 24)
+        self.assertEqual(plan["summary"]["covered_stages"], plan["stage_order"])
+        self.assertIn("mesh_from_pydata", plan["summary"]["unique_tools"])
+        self.assertIn("primitive_cylinder_add", plan["summary"]["unique_tools"])
+        self.assertNotIn("modifier_boolean", plan["summary"]["unique_tools"])
+        self.assertNotIn("object_duplicate_radial", plan["summary"]["unique_tools"])
+        self.assertEqual(
+            plan["source_terms"]["reference_packet"],
+            "data/architecture/asset_mill/reference_packets/gothic_panel_guard_reference_v0.json",
+        )
+        self.assertEqual(plan["source_terms"]["profiles"], ["rectangle", "pointed_arch_profile"])
+
+        by_step = {step["step_id"]: step for step in plan["steps"]}
+        self.assertEqual(by_step["create_left_pier_core"]["params"]["size_m"], [0.22, 0.23, 0.76])
+        self.assertEqual(by_step["create_left_finial"]["params"]["vertices"], 8)
+        self.assertEqual(by_step["create_center_guard_panel"]["params"]["material_role"], "panel")
+        self.assertEqual(by_step["create_top_coping_rail"]["params"]["material_role"], "coping")
+        self.assertEqual(by_step["create_left_panel_socket_collar"]["params"]["material_role"], "collar")
+        self.assertEqual(by_step["create_left_pier_arch_recess_shadow"]["tool_id"], "mesh_from_pydata")
+        self.assertEqual(by_step["create_left_pier_arch_recess_shadow"]["params"]["material_role"], "recess")
+        self.assertEqual(by_step["create_left_pier_arch_recess_shadow"]["params"]["source_profile"], "pointed_arch_profile")
+        self.assertEqual(by_step["join_gothic_panel_guard_blocks"]["params"]["source_component_count"], 9)
+        self.assertTrue(by_step["join_gothic_panel_guard_blocks"]["params"]["socket_collar_composition"])
+        self.assertEqual(
+            by_step["assign_material_regions"]["params"]["material_map"],
+            {
+                "pier": "gothic_stone_pier",
+                "base": "gothic_stone_dark",
+                "cap": "gothic_stone_cap",
+                "panel": "gothic_stone_panel",
+                "coping": "gothic_stone_coping",
+                "trim": "gothic_stone_trim",
+                "recess": "gothic_stone_recess",
+                "finial": "gothic_stone_finial",
+                "collar": "gothic_stone_collar",
+                "default": "gothic_stone",
+            },
+        )
+
     def test_window_frame_recipe_compiles_to_different_tool_sequence(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             out_root = Path(tmp) / "plans"
@@ -403,7 +454,7 @@ class BlenderToolPlanTests(unittest.TestCase):
                 text=True,
             )
 
-        self.assertIn("compiled tool plans=6 steps=173 tools=97 out=<validate-only>", result.stdout)
+        self.assertIn("compiled tool plans=7 steps=219 tools=97 out=<validate-only>", result.stdout)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_unknown_feature_fails_before_output(self) -> None:

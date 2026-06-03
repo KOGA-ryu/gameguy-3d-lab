@@ -49,7 +49,7 @@
       ]
     }
   ],
-  "asset_count": 6,
+  "asset_count": 7,
   "assets": [
     {
       "asset_id": "gothic_stone_banister_post_tool_plan_v0",
@@ -192,6 +192,89 @@
         "stone_noise_scale": 39.0,
         "uv_margin": 0.018,
         "lod_decimate_ratio": 0.6
+      },
+      "required_stage_coverage": [
+        "base_form",
+        "assembly",
+        "shape_refinement",
+        "sculpt_detail",
+        "retopo_cleanup",
+        "uv_mapping",
+        "material_texture",
+        "validation_export"
+      ],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false
+      }
+    },
+    {
+      "asset_id": "gothic_panel_guard_tool_plan_v0",
+      "asset_family": "guard_panel",
+      "style": "gothic_stone",
+      "detail_level": "medium",
+      "target_readiness": "reference_led_near_finished_procedural_asset",
+      "dimensions_m": {
+        "width": 1.85,
+        "depth": 0.34,
+        "height": 1.16
+      },
+      "features": [
+        "gothic_panel_guard_blocks",
+        "finish_tool_stack"
+      ],
+      "finish_tool_stack": "gothic_stone_finish_stack_v0",
+      "style_parameters": {
+        "reference_packet": "data/architecture/asset_mill/reference_packets/gothic_panel_guard_reference_v0.json",
+        "pier_center_x_m": 0.78,
+        "pier_core_size_m": [0.22, 0.23, 0.76],
+        "pier_core_location_z_m": 0.54,
+        "pier_base_foot_size_m": [0.42, 0.34, 0.08],
+        "pier_base_foot_location_z_m": 0.04,
+        "pier_base_step_size_m": [0.34, 0.30, 0.06],
+        "pier_base_step_location_z_m": 0.11,
+        "pier_cap_slab_size_m": [0.44, 0.34, 0.09],
+        "pier_cap_slab_location_z_m": 0.98,
+        "finial_vertices": 8,
+        "finial_radius_m": 0.07,
+        "finial_depth_m": 0.12,
+        "finial_location_z_m": 1.095,
+        "center_guard_panel_size_m": [1.18, 0.14, 0.43],
+        "center_guard_panel_location_z_m": 0.56,
+        "top_coping_rail_size_m": [1.40, 0.26, 0.11],
+        "top_coping_rail_location_z_m": 0.84,
+        "lower_molding_primary_size_m": [1.28, 0.20, 0.06],
+        "lower_molding_primary_location_z_m": 0.28,
+        "lower_molding_secondary_size_m": [1.10, 0.18, 0.04],
+        "lower_molding_secondary_location_z_m": 0.34,
+        "panel_socket_collar_size_m": [0.10, 0.18, 0.38],
+        "panel_socket_collar_center_x_m": 0.63,
+        "panel_socket_collar_location_z_m": 0.55,
+        "front_inner_panel_size_m": [0.76, 0.034, 0.24],
+        "front_inner_panel_surface_y_m": -0.087,
+        "front_inner_panel_location_z_m": 0.56,
+        "inner_panel_trim_horizontal_size_m": [0.82, 0.034, 0.04],
+        "inner_panel_trim_top_location_z_m": 0.69,
+        "inner_panel_trim_bottom_location_z_m": 0.43,
+        "side_ornament_strip_size_m": [0.05, 0.034, 0.34],
+        "side_ornament_strip_center_x_m": 0.55,
+        "side_ornament_strip_surface_y_m": -0.089,
+        "side_ornament_strip_location_z_m": 0.56,
+        "pier_recess_depth_y_m": 0.028,
+        "pier_recess_surface_y_m": -0.129,
+        "pier_recess_width_m": 0.13,
+        "pier_recess_base_z_m": 0.38,
+        "pier_recess_shoulder_z_m": 0.72,
+        "pier_recess_apex_z_m": 0.84,
+        "pier_recess_trim_width_m": 0.026,
+        "bevel_width_m": 0.012,
+        "stone_noise_scale": 43.0,
+        "uv_margin": 0.018,
+        "lod_decimate_ratio": 0.62
       },
       "required_stage_coverage": [
         "base_form",

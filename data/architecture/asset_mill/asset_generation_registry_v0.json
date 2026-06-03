@@ -63,14 +63,14 @@
     "bundle_id": "architectural_tool_plan_recipes_v0",
     "path": "data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json",
     "schema": "asset_mill_tool_plan_recipe_bundle_v0",
-    "expected_asset_count": 6,
+    "expected_asset_count": 7,
     "tool_dictionary": "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json",
     "tool_dictionary_schema": "blender_tool_dictionary_v0",
     "expected_tool_count": 97,
     "sequence_policy": "data/architecture/asset_mill/blender_tools/asset_family_tool_sequence_policy_v0.json",
     "sequence_policy_schema": "asset_family_tool_sequence_policy_v0",
     "geometry_dictionary": "geometry_dictionary",
-    "expected_asset_family_policy_count": 6,
+    "expected_asset_family_policy_count": 7,
     "compiler": "scripts/compile_blender_tool_plan_v0.py",
     "validator": "scripts/validate_gameguy_tool_plan_v0.py",
     "adapter": "scripts/execute_blender_tool_plan_v0.py",
@@ -79,6 +79,7 @@
       "gothic_stone_banister_post_tool_plan_v0_compiled",
       "gothic_stone_fence_post_tool_plan_v0_compiled",
       "gothic_stone_rail_segment_tool_plan_v0_compiled",
+      "gothic_panel_guard_tool_plan_v0_compiled",
       "gothic_stone_column_tool_plan_v0_compiled",
       "gothic_stone_window_frame_tool_plan_v0_compiled",
       "gothic_stone_door_frame_tool_plan_v0_compiled"
@@ -93,6 +94,7 @@
       "column_blender_adapter_validate_only",
       "window_frame_blender_adapter_validate_only",
       "door_frame_blender_adapter_validate_only",
+      "guard_panel_blender_adapter_validate_only",
       "blender_execute_tool_plan",
       "blender_execution_report_validate",
       "blender_execute_fence_post_tool_plan",
@@ -104,7 +106,9 @@
       "blender_execute_window_frame_tool_plan",
       "window_frame_blender_execution_report_validate",
       "blender_execute_door_frame_tool_plan",
-      "door_frame_blender_execution_report_validate"
+      "door_frame_blender_execution_report_validate",
+      "blender_execute_guard_panel_tool_plan",
+      "guard_panel_blender_execution_report_validate"
     ]
   },
   "reference_only_recipe_bundles": [

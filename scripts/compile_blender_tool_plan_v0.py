@@ -526,6 +526,23 @@ def vector_param(params: dict[str, Any], name: str, default: list[float]) -> lis
     return result
 
 
+def flat_profile_prism(profile_points_xz: list[list[float]], y_center: float, depth_y: float) -> dict[str, list[list[float]]]:
+    if len(profile_points_xz) < 3:
+        fail("flat profile prism requires at least three points")
+    half_depth = depth_y * 0.5
+    vertices = []
+    for x, z in profile_points_xz:
+        vertices.append([round(x, 6), round(y_center - half_depth, 6), round(z, 6)])
+    for x, z in profile_points_xz:
+        vertices.append([round(x, 6), round(y_center + half_depth, 6), round(z, 6)])
+    point_count = len(profile_points_xz)
+    faces: list[list[float]] = [list(range(point_count)), list(range(point_count * 2 - 1, point_count - 1, -1))]
+    for index in range(point_count):
+        next_index = (index + 1) % point_count
+        faces.append([index, next_index, point_count + next_index, point_count + index])
+    return {"vertices": vertices, "faces": faces}
+
+
 def rail_segment_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
     params = style_params(asset)
     body_size = vector_param(params, "rail_body_size_m", [1.08, 0.16, 0.14])
@@ -602,6 +619,270 @@ def rail_segment_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
             },
         },
     ]
+
+
+def gothic_panel_guard_mesh_step(
+    step_id: str,
+    purpose: str,
+    points_xz: list[list[float]],
+    *,
+    y_center: float,
+    depth_y: float,
+    material_role: str,
+) -> dict[str, Any]:
+    mesh = flat_profile_prism(points_xz, y_center, depth_y)
+    return {
+        "step_id": step_id,
+        "tool_id": "mesh_from_pydata",
+        "purpose": purpose,
+        "params": {
+            "vertices": mesh["vertices"],
+            "faces": mesh["faces"],
+            "material_role": material_role,
+            "source_profile": "pointed_arch_profile",
+        },
+    }
+
+
+def gothic_panel_guard_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
+    params = style_params(asset)
+    pier_x = number_param(params, "pier_center_x_m", 0.78)
+    pier_core_size = vector_param(params, "pier_core_size_m", [0.22, 0.23, 0.76])
+    pier_core_z = number_param(params, "pier_core_location_z_m", 0.54)
+    base_foot_size = vector_param(params, "pier_base_foot_size_m", [0.42, 0.34, 0.08])
+    base_foot_z = number_param(params, "pier_base_foot_location_z_m", 0.04)
+    base_step_size = vector_param(params, "pier_base_step_size_m", [0.34, 0.30, 0.06])
+    base_step_z = number_param(params, "pier_base_step_location_z_m", 0.11)
+    cap_slab_size = vector_param(params, "pier_cap_slab_size_m", [0.44, 0.34, 0.09])
+    cap_slab_z = number_param(params, "pier_cap_slab_location_z_m", 0.98)
+    finial_vertices = int_param(params, "finial_vertices", 8, minimum=4)
+    finial_radius = number_param(params, "finial_radius_m", 0.07)
+    finial_depth = number_param(params, "finial_depth_m", 0.12)
+    finial_z = number_param(params, "finial_location_z_m", 1.095)
+    panel_size = vector_param(params, "center_guard_panel_size_m", [1.18, 0.14, 0.43])
+    panel_z = number_param(params, "center_guard_panel_location_z_m", 0.56)
+    coping_size = vector_param(params, "top_coping_rail_size_m", [1.40, 0.26, 0.11])
+    coping_z = number_param(params, "top_coping_rail_location_z_m", 0.84)
+    molding_primary_size = vector_param(params, "lower_molding_primary_size_m", [1.28, 0.20, 0.06])
+    molding_primary_z = number_param(params, "lower_molding_primary_location_z_m", 0.28)
+    molding_secondary_size = vector_param(params, "lower_molding_secondary_size_m", [1.10, 0.18, 0.04])
+    molding_secondary_z = number_param(params, "lower_molding_secondary_location_z_m", 0.34)
+    collar_size = vector_param(params, "panel_socket_collar_size_m", [0.10, 0.18, 0.38])
+    collar_x = number_param(params, "panel_socket_collar_center_x_m", 0.63)
+    collar_z = number_param(params, "panel_socket_collar_location_z_m", 0.55)
+    inner_panel_size = vector_param(params, "front_inner_panel_size_m", [0.76, 0.034, 0.24])
+    inner_panel_y = number_param(params, "front_inner_panel_surface_y_m", -0.087)
+    inner_panel_z = number_param(params, "front_inner_panel_location_z_m", 0.56)
+    horizontal_trim_size = vector_param(params, "inner_panel_trim_horizontal_size_m", [0.82, 0.034, 0.04])
+    horizontal_trim_top_z = number_param(params, "inner_panel_trim_top_location_z_m", 0.69)
+    horizontal_trim_bottom_z = number_param(params, "inner_panel_trim_bottom_location_z_m", 0.43)
+    side_strip_size = vector_param(params, "side_ornament_strip_size_m", [0.05, 0.034, 0.34])
+    side_strip_x = number_param(params, "side_ornament_strip_center_x_m", 0.55)
+    side_strip_y = number_param(params, "side_ornament_strip_surface_y_m", -0.089)
+    side_strip_z = number_param(params, "side_ornament_strip_location_z_m", 0.56)
+    recess_depth_y = number_param(params, "pier_recess_depth_y_m", 0.028)
+    recess_y = number_param(params, "pier_recess_surface_y_m", -0.129)
+    recess_width = number_param(params, "pier_recess_width_m", 0.13)
+    recess_base_z = number_param(params, "pier_recess_base_z_m", 0.38)
+    recess_shoulder_z = number_param(params, "pier_recess_shoulder_z_m", 0.72)
+    recess_apex_z = number_param(params, "pier_recess_apex_z_m", 0.84)
+    recess_trim_width = number_param(params, "pier_recess_trim_width_m", 0.026)
+
+    steps: list[dict[str, Any]] = []
+    for side, sign in (("left", -1.0), ("right", 1.0)):
+        x = round(sign * pier_x, 6)
+        steps.extend(
+            [
+                {
+                    "step_id": f"create_{side}_base_foot",
+                    "tool_id": "primitive_cube_add",
+                    "purpose": f"Create the {side} pier bottom square foot block.",
+                    "params": {"size_m": base_foot_size, "location_m": [x, 0.0, base_foot_z], "material_role": "base"},
+                },
+                {
+                    "step_id": f"create_{side}_base_step",
+                    "tool_id": "primitive_cube_add",
+                    "purpose": f"Create the {side} pier stepped plinth block.",
+                    "params": {"size_m": base_step_size, "location_m": [x, 0.0, base_step_z], "material_role": "base"},
+                },
+                {
+                    "step_id": f"create_{side}_pier_core",
+                    "tool_id": "primitive_cube_add",
+                    "purpose": f"Create the {side} square pier mass.",
+                    "params": {"size_m": pier_core_size, "location_m": [x, 0.0, pier_core_z], "material_role": "pier"},
+                },
+                {
+                    "step_id": f"create_{side}_cap_slab",
+                    "tool_id": "primitive_cube_add",
+                    "purpose": f"Create the {side} heavy cap slab.",
+                    "params": {"size_m": cap_slab_size, "location_m": [x, 0.0, cap_slab_z], "material_role": "cap"},
+                },
+                {
+                    "step_id": f"create_{side}_finial",
+                    "tool_id": "primitive_cylinder_add",
+                    "purpose": f"Create the {side} low-poly top finial.",
+                    "params": {
+                        "vertices": finial_vertices,
+                        "radius_m": finial_radius,
+                        "depth_m": finial_depth,
+                        "location_m": [x, 0.0, finial_z],
+                        "material_role": "finial",
+                    },
+                },
+            ]
+        )
+
+    steps.extend(
+        [
+            {
+                "step_id": "create_left_panel_socket_collar",
+                "tool_id": "primitive_cube_add",
+                "purpose": "Create the left thick collar where the solid panel enters the pier.",
+                "params": {"size_m": collar_size, "location_m": [-collar_x, 0.0, collar_z], "material_role": "collar"},
+            },
+            {
+                "step_id": "create_right_panel_socket_collar",
+                "tool_id": "primitive_cube_add",
+                "purpose": "Create the right thick collar where the solid panel enters the pier.",
+                "params": {"size_m": collar_size, "location_m": [collar_x, 0.0, collar_z], "material_role": "collar"},
+            },
+            {
+                "step_id": "create_center_guard_panel",
+                "tool_id": "primitive_cube_add",
+                "purpose": "Create the solid rectangular guard panel between the piers.",
+                "params": {"size_m": panel_size, "location_m": [0.0, 0.0, panel_z], "material_role": "panel"},
+            },
+            {
+                "step_id": "create_top_coping_rail",
+                "tool_id": "primitive_cube_add",
+                "purpose": "Create the thick top coping rail crossing the panel span.",
+                "params": {"size_m": coping_size, "location_m": [0.0, 0.0, coping_z], "material_role": "coping"},
+            },
+            {
+                "step_id": "create_lower_molding_primary",
+                "tool_id": "primitive_cube_add",
+                "purpose": "Create the lower primary molding band below the guard panel.",
+                "params": {"size_m": molding_primary_size, "location_m": [0.0, 0.0, molding_primary_z], "material_role": "trim"},
+            },
+            {
+                "step_id": "create_lower_molding_secondary",
+                "tool_id": "primitive_cube_add",
+                "purpose": "Create the second lower molding band below the guard panel.",
+                "params": {"size_m": molding_secondary_size, "location_m": [0.0, 0.0, molding_secondary_z], "material_role": "trim"},
+            },
+            {
+                "step_id": "create_front_inner_panel",
+                "tool_id": "primitive_cube_add",
+                "purpose": "Create a raised center face panel on the reference-facing side.",
+                "params": {"size_m": inner_panel_size, "location_m": [0.0, inner_panel_y, inner_panel_z], "material_role": "panel"},
+            },
+            {
+                "step_id": "create_front_inner_panel_top_trim",
+                "tool_id": "primitive_cube_add",
+                "purpose": "Create the top trim bar around the raised center panel.",
+                "params": {"size_m": horizontal_trim_size, "location_m": [0.0, inner_panel_y, horizontal_trim_top_z], "material_role": "trim"},
+            },
+            {
+                "step_id": "create_front_inner_panel_bottom_trim",
+                "tool_id": "primitive_cube_add",
+                "purpose": "Create the bottom trim bar around the raised center panel.",
+                "params": {"size_m": horizontal_trim_size, "location_m": [0.0, inner_panel_y, horizontal_trim_bottom_z], "material_role": "trim"},
+            },
+            {
+                "step_id": "create_left_panel_side_strip",
+                "tool_id": "primitive_cube_add",
+                "purpose": "Create the left repeated side ornament strip beside the panel.",
+                "params": {"size_m": side_strip_size, "location_m": [-side_strip_x, side_strip_y, side_strip_z], "material_role": "trim"},
+            },
+            {
+                "step_id": "create_right_panel_side_strip",
+                "tool_id": "primitive_cube_add",
+                "purpose": "Create the right repeated side ornament strip beside the panel.",
+                "params": {"size_m": side_strip_size, "location_m": [side_strip_x, side_strip_y, side_strip_z], "material_role": "trim"},
+            },
+        ]
+    )
+
+    trim_half = recess_trim_width * 0.5
+    for side, sign in (("left", -1.0), ("right", 1.0)):
+        center_x = round(sign * pier_x, 6)
+        half_recess = recess_width * 0.5
+        recess_points = [
+            [center_x - half_recess, recess_base_z],
+            [center_x + half_recess, recess_base_z],
+            [center_x + half_recess, recess_shoulder_z],
+            [center_x, recess_apex_z],
+            [center_x - half_recess, recess_shoulder_z],
+        ]
+        trim_points = [
+            [center_x - half_recess - trim_half, recess_base_z - trim_half],
+            [center_x + half_recess + trim_half, recess_base_z - trim_half],
+            [center_x + half_recess + trim_half, recess_shoulder_z + trim_half],
+            [center_x, recess_apex_z + trim_half],
+            [center_x - half_recess - trim_half, recess_shoulder_z + trim_half],
+        ]
+        steps.extend(
+            [
+                gothic_panel_guard_mesh_step(
+                    f"create_{side}_pier_arch_recess_shadow",
+                    f"Create the {side} shallow pointed-arch recess as a low-vertex shadow prism.",
+                    recess_points,
+                    y_center=recess_y,
+                    depth_y=recess_depth_y,
+                    material_role="recess",
+                ),
+                gothic_panel_guard_mesh_step(
+                    f"create_{side}_pier_arch_raised_trim",
+                    f"Create the {side} raised pointed-arch trim as a low-vertex outline plate.",
+                    trim_points,
+                    y_center=round(recess_y - recess_depth_y, 6),
+                    depth_y=recess_depth_y,
+                    material_role="trim",
+                ),
+            ]
+        )
+
+    join_objects = [
+        "left_base_foot",
+        "left_base_step",
+        "left_pier_core",
+        "left_cap_slab",
+        "left_finial",
+        "right_base_foot",
+        "right_base_step",
+        "right_pier_core",
+        "right_cap_slab",
+        "right_finial",
+        "left_panel_socket_collar",
+        "right_panel_socket_collar",
+        "center_guard_panel",
+        "top_coping_rail",
+        "lower_molding_primary",
+        "lower_molding_secondary",
+        "front_inner_panel",
+        "front_inner_panel_top_trim",
+        "front_inner_panel_bottom_trim",
+        "left_panel_side_strip",
+        "right_panel_side_strip",
+        "left_pier_arch_recess_shadow",
+        "left_pier_arch_raised_trim",
+        "right_pier_arch_recess_shadow",
+        "right_pier_arch_raised_trim",
+    ]
+    steps.append(
+        {
+            "step_id": "join_gothic_panel_guard_blocks",
+            "tool_id": "join_objects",
+            "purpose": "Join piers, collars, panel, coping, molding, trim, and recess plates into one reference-led guard asset.",
+            "params": {
+                "objects": join_objects,
+                "reference_packet": require_string(params.get("reference_packet"), f"{asset['asset_id']}.style_parameters.reference_packet"),
+                "source_component_count": 9,
+                "socket_collar_composition": True,
+            },
+        }
+    )
+    return steps
 
 
 def rectangular_frame_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
@@ -856,6 +1137,8 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
         return rectangular_frame_steps(asset)
     if feature == "rail_segment_blocks":
         return rail_segment_steps(asset)
+    if feature == "gothic_panel_guard_blocks":
+        return gothic_panel_guard_steps(asset)
     if feature in {"east_west_rail_sockets", "rail_sockets"}:
         socket_size = vector_param(params, "rail_socket_size_m", [0.16, 0.22, params.get("rail_socket_height_m", 0.26)])
         socket_x = number_param(params, "rail_socket_x_m", 0.18)
@@ -928,6 +1211,19 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
                 "rib": "gothic_stone_highlight",
                 "default": "gothic_stone",
             }
+        if asset.get("asset_family") == "guard_panel":
+            material_map = {
+                "pier": "gothic_stone_pier",
+                "base": "gothic_stone_dark",
+                "cap": "gothic_stone_cap",
+                "panel": "gothic_stone_panel",
+                "coping": "gothic_stone_coping",
+                "trim": "gothic_stone_trim",
+                "recess": "gothic_stone_recess",
+                "finial": "gothic_stone_finial",
+                "collar": "gothic_stone_collar",
+                "default": "gothic_stone",
+            }
         return [
             {"step_id": "add_stone_displacement", "tool_id": "modifier_displace", "purpose": "Add restrained procedural stone surface variation.", "params": {"strength_m": 0.006, "texture": "stone_noise"}},
             {"step_id": "create_stone_material", "tool_id": "material_principled_shader", "purpose": "Create the base gothic stone material.", "params": {"base_color": [0.48, 0.46, 0.39], "roughness": 0.82, "metallic": 0.0}},
@@ -980,6 +1276,12 @@ def source_terms_for_asset(asset: dict[str, Any]) -> dict[str, Any]:
             "axis": require_string(stack.get("axis"), f"{asset_id}.profile_operation_stack.axis"),
             "sequence": require_string_list(stack.get("sequence"), f"{asset_id}.profile_operation_stack.sequence"),
         }
+    if "gothic_panel_guard_blocks" in features:
+        params = style_params(asset)
+        result["reference_packet"] = require_string(params.get("reference_packet"), f"{asset_id}.style_parameters.reference_packet")
+        append_unique("geometry", ["rectangle", "pointed_arch_profile", "extrude", "compound_asset", "bevel_edges"])
+        append_unique("profiles", ["rectangle", "pointed_arch_profile"])
+        append_unique("operators", ["extrude", "compound_asset", "bevel_edges"])
     if "finish_tool_stack" in features:
         finish_stack = resolved_finish_tool_stack(asset)
         append_unique("geometry", require_string_list(finish_stack.get("geometry_terms_used"), f"{asset_id}.finish_tool_stack.geometry_terms_used"))

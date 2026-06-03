@@ -64,6 +64,7 @@ class GenerationPipelineValidatorTests(unittest.TestCase):
         self.assertIn("column_blender_adapter_validate_only", labels)
         self.assertIn("window_frame_blender_adapter_validate_only", labels)
         self.assertIn("door_frame_blender_adapter_validate_only", labels)
+        self.assertIn("guard_panel_blender_adapter_validate_only", labels)
         self.assertIn("simple_asset_validate", labels)
         self.assertIn("measured_asset_adapter_validate", labels)
         self.assertIn("script_orbit_audit", labels)
@@ -77,6 +78,7 @@ class GenerationPipelineValidatorTests(unittest.TestCase):
         self.assertIn("column_blender_execution_report_validate", blender_labels)
         self.assertIn("window_frame_blender_execution_report_validate", blender_labels)
         self.assertIn("door_frame_blender_execution_report_validate", blender_labels)
+        self.assertIn("guard_panel_blender_execution_report_validate", blender_labels)
 
     def test_forbidden_output_guard_detects_media_and_mesh_files(self) -> None:
         module = load_pipeline_module()
