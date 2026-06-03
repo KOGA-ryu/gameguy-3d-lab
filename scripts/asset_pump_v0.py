@@ -708,9 +708,18 @@ def section_stack_mesh(stack: dict[str, Any]) -> tuple[Mesh, dict[str, Any], lis
         )
 
     assert ring_size is not None
-    faces: list[list[int]] = [list(reversed(range(ring_size)))]
     last_start = (len(rings) - 1) * ring_size
-    faces.append(list(range(last_start, last_start + ring_size)))
+    bottom_center_index = len(vertices)
+    vertices.append(ring_center(vertices[0:ring_size]))
+    top_center_index = len(vertices)
+    vertices.append(ring_center(vertices[last_start : last_start + ring_size]))
+    faces: list[list[int]] = []
+    for vertex_index in range(ring_size):
+        nxt = (vertex_index + 1) % ring_size
+        faces.append([bottom_center_index, nxt, vertex_index])
+    for vertex_index in range(ring_size):
+        nxt = (vertex_index + 1) % ring_size
+        faces.append([top_center_index, last_start + vertex_index, last_start + nxt])
     for ring_index in range(len(rings) - 1):
         start = ring_index * ring_size
         next_start = (ring_index + 1) * ring_size
@@ -730,8 +739,20 @@ def section_stack_mesh(stack: dict[str, Any]) -> tuple[Mesh, dict[str, Any], lis
         "axis": axis,
         "ring_count": len(rings),
         "rings": rings,
+        "cap_triangulation": "center_fan",
+        "bottom_center_vertex": bottom_center_index,
+        "top_center_vertex": top_center_index,
     }
     return Mesh(vertices=vertices, faces=faces), metadata, parts
+
+
+def ring_center(ring: list[list[float]]) -> list[float]:
+    if not ring:
+        fail("cannot calculate center for empty ring")
+    return [
+        round(sum(vertex[axis] for vertex in ring) / len(ring), 6)
+        for axis in range(3)
+    ]
 
 
 def bounds(vertices: list[list[float]]) -> dict[str, list[float]]:

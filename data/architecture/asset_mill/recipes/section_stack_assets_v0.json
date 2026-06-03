@@ -68,10 +68,10 @@
               "type": "star_polygon",
               "params": {
                 "points": 22,
-                "outer_radius_x": 0.48,
-                "outer_radius_y": 0.38,
-                "inner_radius_x": 0.41,
-                "inner_radius_y": 0.31,
+                "outer_radius_x": 0.43,
+                "outer_radius_y": 0.34,
+                "inner_radius_x": 0.368,
+                "inner_radius_y": 0.277,
                 "flat_edge_ratio": 0.35
               }
             }
@@ -83,10 +83,10 @@
               "type": "star_polygon",
               "params": {
                 "points": 22,
-                "outer_radius_x": 0.4128,
-                "outer_radius_y": 0.3268,
-                "inner_radius_x": 0.3526,
-                "inner_radius_y": 0.2666,
+                "outer_radius_x": 0.4,
+                "outer_radius_y": 0.316,
+                "inner_radius_x": 0.342,
+                "inner_radius_y": 0.257,
                 "flat_edge_ratio": 0.35
               }
             }
@@ -98,10 +98,10 @@
               "type": "star_polygon",
               "params": {
                 "points": 22,
-                "outer_radius_x": 0.3456,
-                "outer_radius_y": 0.2736,
-                "inner_radius_x": 0.2952,
-                "inner_radius_y": 0.2232,
+                "outer_radius_x": 0.37,
+                "outer_radius_y": 0.292,
+                "inner_radius_x": 0.316,
+                "inner_radius_y": 0.237,
                 "flat_edge_ratio": 0.35
               }
             }
@@ -113,10 +113,10 @@
               "type": "star_polygon",
               "params": {
                 "points": 22,
-                "outer_radius_x": 0.3936,
-                "outer_radius_y": 0.3116,
-                "inner_radius_x": 0.3362,
-                "inner_radius_y": 0.2542,
+                "outer_radius_x": 0.39,
+                "outer_radius_y": 0.308,
+                "inner_radius_x": 0.333,
+                "inner_radius_y": 0.25,
                 "flat_edge_ratio": 0.35
               }
             }
@@ -128,10 +128,10 @@
               "type": "star_polygon",
               "params": {
                 "points": 22,
-                "outer_radius_x": 0.3072,
-                "outer_radius_y": 0.2432,
-                "inner_radius_x": 0.2624,
-                "inner_radius_y": 0.1984,
+                "outer_radius_x": 0.365,
+                "outer_radius_y": 0.288,
+                "inner_radius_x": 0.312,
+                "inner_radius_y": 0.234,
                 "flat_edge_ratio": 0.35
               }
             }
@@ -143,10 +143,10 @@
               "type": "star_polygon",
               "params": {
                 "points": 22,
-                "outer_radius_x": 0.3648,
-                "outer_radius_y": 0.2888,
-                "inner_radius_x": 0.3116,
-                "inner_radius_y": 0.2356,
+                "outer_radius_x": 0.4,
+                "outer_radius_y": 0.316,
+                "inner_radius_x": 0.342,
+                "inner_radius_y": 0.257,
                 "flat_edge_ratio": 0.35
               }
             }
@@ -158,10 +158,10 @@
               "type": "star_polygon",
               "params": {
                 "points": 22,
-                "outer_radius_x": 0.48,
-                "outer_radius_y": 0.38,
-                "inner_radius_x": 0.41,
-                "inner_radius_y": 0.31,
+                "outer_radius_x": 0.43,
+                "outer_radius_y": 0.34,
+                "inner_radius_x": 0.368,
+                "inner_radius_y": 0.277,
                 "flat_edge_ratio": 0.35
               }
             }

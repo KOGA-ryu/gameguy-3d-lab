@@ -226,17 +226,17 @@ class AssetPumpTests(unittest.TestCase):
         self.assertEqual(column["source_schema"], "asset_mill_section_stack_bundle_v0")
         self.assertEqual(column["source_operation"], "section_stack")
         self.assertEqual(column["asset_kind"], "section_stack")
-        self.assertEqual(column["dimensions_m"], {"width": 0.958802, "depth": 0.756728, "height": 2.46})
-        self.assertEqual(len(column["mesh"]["vertices"]), 462)
-        self.assertEqual(len(column["mesh"]["faces"]), 398)
+        self.assertEqual(column["dimensions_m"], {"width": 0.858926, "depth": 0.677072, "height": 2.46})
+        self.assertEqual(len(column["mesh"]["vertices"]), 464)
+        self.assertEqual(len(column["mesh"]["faces"]), 528)
         self.assertEqual(
             column["mesh"]["parts"],
             [
                 {
                     "part_id": "section_stack_body",
                     "source_primitive": "section_stack",
-                    "vertex_range": [0, 461],
-                    "face_range": [0, 397],
+                    "vertex_range": [0, 463],
+                    "face_range": [0, 527],
                 }
             ],
         )
@@ -244,6 +244,11 @@ class AssetPumpTests(unittest.TestCase):
         self.assertEqual(column["mesh"]["section_stack"]["ring_count"], 7)
         self.assertEqual(column["mesh"]["section_stack"]["rings"][0]["ring_id"], "base_foot")
         self.assertEqual(column["mesh"]["section_stack"]["rings"][-1]["vertex_range"], [396, 461])
+        self.assertEqual(column["mesh"]["section_stack"]["cap_triangulation"], "center_fan")
+        self.assertEqual(column["mesh"]["section_stack"]["bottom_center_vertex"], 462)
+        self.assertEqual(column["mesh"]["section_stack"]["top_center_vertex"], 463)
+        self.assertEqual(sum(1 for face in column["mesh"]["faces"] if len(face) == 3), 132)
+        self.assertEqual(sum(1 for face in column["mesh"]["faces"] if len(face) == 4), 396)
         self.assertEqual(column["source_terms"]["profiles"], ["star_polygon"])
         self.assertEqual(column["source_terms"]["operators"], ["section_stack", "loft_sections"])
         self.assert_mesh_is_well_formed(column)

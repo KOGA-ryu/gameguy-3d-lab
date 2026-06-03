@@ -61,10 +61,43 @@ class BlenderAssetPreviewAdapterTests(unittest.TestCase):
         self.assertEqual(report["total_vertices"], 280)
         self.assertEqual(report["total_faces"], 186)
         self.assertFalse(report["generated_outputs_created"])
+        self.assertFalse(report["connector_markers_hidden"])
         self.assertTrue(report["rules"]["consumes_deterministic_asset_json"])
         self.assertFalse(report["rules"]["reads_source_recipes"])
         self.assertFalse(report["rules"]["runs_asset_pump"])
         self.assertFalse(report["rules"]["source_design_logic"])
+
+    def test_validate_only_records_hidden_connector_setting(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "pump"
+            report_path = Path(tmp) / "adapter_report.json"
+            subprocess.run(
+                [sys.executable, str(PUMP), "--out", str(out_root)],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(ADAPTER),
+                    "--manifest",
+                    str(out_root / "manifest.json"),
+                    "--validate-only",
+                    "--hide-connectors",
+                    "--json-report",
+                    str(report_path),
+                ],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            report = load_json(report_path)
+
+        self.assertTrue(report["connector_markers_hidden"])
+        self.assertFalse(report["generated_outputs_created"])
 
     def test_validate_only_rejects_non_asset_schema(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:

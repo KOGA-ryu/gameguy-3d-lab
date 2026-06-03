@@ -126,7 +126,14 @@ def load_assets_from_manifest(manifest_path: Path) -> tuple[dict[str, Any], list
     return manifest, assets
 
 
-def make_report(manifest_path: Path, manifest: dict[str, Any], assets: list[tuple[Path, dict[str, Any]]], *, generated: bool) -> dict[str, Any]:
+def make_report(
+    manifest_path: Path,
+    manifest: dict[str, Any],
+    assets: list[tuple[Path, dict[str, Any]]],
+    *,
+    generated: bool,
+    hide_connectors: bool,
+) -> dict[str, Any]:
     total_vertices = sum(len(asset["mesh"]["vertices"]) for _, asset in assets)
     total_faces = sum(len(asset["mesh"]["faces"]) for _, asset in assets)
     return {
@@ -139,6 +146,7 @@ def make_report(manifest_path: Path, manifest: dict[str, Any], assets: list[tupl
         "total_vertices": total_vertices,
         "total_faces": total_faces,
         "generated_outputs_created": generated,
+        "connector_markers_hidden": hide_connectors,
         "rules": {
             "consumes_deterministic_asset_json": True,
             "reads_source_recipes": False,
@@ -163,7 +171,7 @@ def material_key(asset: dict[str, Any]) -> str:
     return "default"
 
 
-def run_blender_export(assets: list[tuple[Path, dict[str, Any]]], out_root: Path, report: dict[str, Any], render: bool) -> None:
+def run_blender_export(assets: list[tuple[Path, dict[str, Any]]], out_root: Path, report: dict[str, Any], render: bool, hide_connectors: bool) -> None:
     try:
         import bpy  # type: ignore
         import mathutils  # type: ignore
@@ -192,8 +200,9 @@ def run_blender_export(assets: list[tuple[Path, dict[str, Any]]], out_root: Path
         col = index % columns
         offset = mathutils.Vector((col * spacing, row * spacing, 0.0))
         created.append(create_asset_object(bpy, asset, offset, materials[material_key(asset)]))
-        for connector in asset["connectors"]:
-            create_connector_marker(bpy, asset["asset_id"], connector, offset, materials["connector"])
+        if not hide_connectors:
+            for connector in asset["connectors"]:
+                create_connector_marker(bpy, asset["asset_id"], connector, offset, materials["connector"])
 
     add_scene_context(bpy, mathutils)
     blend_path = out_root / "asset_preview_v0.blend"
@@ -304,6 +313,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--validate-only", action="store_true", help="Validate asset JSON without importing bpy or writing outputs.")
     parser.add_argument("--render", action="store_true", help="Write a Workbench PNG render in Blender mode.")
+    parser.add_argument("--hide-connectors", action="store_true", help="Do not create connector marker objects in Blender export mode.")
     parser.add_argument("--json-report", type=Path, help="Optional validation report path for validate-only mode.")
     return parser.parse_args(argv)
 
@@ -312,7 +322,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(sys.argv[1:] if argv is None else argv)
     manifest_path = args.manifest if args.manifest.is_absolute() else ROOT / args.manifest
     manifest, assets = load_assets_from_manifest(manifest_path)
-    report = make_report(manifest_path, manifest, assets, generated=False)
+    report = make_report(manifest_path, manifest, assets, generated=False, hide_connectors=args.hide_connectors)
 
     if args.validate_only:
         if args.json_report:
@@ -326,7 +336,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     out_root = args.out if args.out.is_absolute() else ROOT / args.out
-    run_blender_export(assets, out_root, report, args.render)
+    run_blender_export(assets, out_root, report, args.render, args.hide_connectors)
     return 0
 
 
