@@ -40,6 +40,8 @@ python3 scripts/asset_pump_v0.py --clean --out /tmp/gameguy_asset_pump_v0
 
 It reads `data/architecture/asset_mill/recipes/simple_solids_v0.json` and writes a compact asset manifest plus per-asset geometry JSON. It does not write workflow reports, receipts, Blender files, renders, exported mesh files, or repo-local generated folders.
 
+The pump rejects recipe operations, profile types, connector IDs, and semantic tags that are not present in `geometry_dictionary/`.
+
 The first stable generated asset schema is:
 
 ```text

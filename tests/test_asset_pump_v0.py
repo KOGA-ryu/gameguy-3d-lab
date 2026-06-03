@@ -34,6 +34,15 @@ def run_pump(out_root: Path) -> None:
     )
 
 
+def run_pump_with_bundle(bundle: Path, out_root: Path) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, str(PUMP), "--bundle", str(bundle), "--out", str(out_root)],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+
+
 def load_json(path: Path) -> dict[str, Any]:
     data = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
@@ -70,6 +79,7 @@ class AssetPumpTests(unittest.TestCase):
                     "no_blender": True,
                     "no_media": True,
                     "no_mesh_export_files": True,
+                    "geometry_dictionary_terms_enforced": True,
                 },
             )
 
@@ -132,6 +142,34 @@ class AssetPumpTests(unittest.TestCase):
                     (out_b / rel_path).read_text(encoding="utf-8"),
                     msg=f"non-deterministic output for {rel_path}",
                 )
+
+    def test_unknown_dictionary_terms_fail_before_output(self) -> None:
+        source_bundle = load_json(ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "simple_solids_v0.json")
+        source_bundle["assets"][0]["semantic_tags"] = ["walkable", "made_up_semantic"]
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            bundle_path = Path(tmp) / "bad_bundle.json"
+            out_root = Path(tmp) / "pump"
+            bundle_path.write_text(json.dumps(source_bundle, indent=2) + "\n", encoding="utf-8")
+            result = run_pump_with_bundle(bundle_path, out_root)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("unknown geometry dictionary semantic tag `made_up_semantic`", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
+
+    def test_dictionary_valid_but_unsupported_pump_connector_fails(self) -> None:
+        source_bundle = load_json(ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "simple_solids_v0.json")
+        source_bundle["assets"][0]["connectors"] = ["socket"]
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            bundle_path = Path(tmp) / "bad_bundle.json"
+            out_root = Path(tmp) / "pump"
+            bundle_path.write_text(json.dumps(source_bundle, indent=2) + "\n", encoding="utf-8")
+            result = run_pump_with_bundle(bundle_path, out_root)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("unsupported pump connector: socket", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
 
     def assert_mesh_is_well_formed(self, asset: dict[str, Any]) -> None:
         vertices = asset["mesh"]["vertices"]

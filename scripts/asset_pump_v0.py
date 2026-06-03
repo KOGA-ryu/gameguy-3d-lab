@@ -24,6 +24,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "simple_solids_v0.json"
 DEFAULT_OUT = Path("/tmp/gameguy_asset_pump_v0")
+DICTIONARY_ROOT = ROOT / "geometry_dictionary"
 FALSE_CLAIMS = {
     "production_approval": False,
     "structural_safety": False,
@@ -102,6 +103,89 @@ def require_object(value: Any, field: str) -> dict[str, Any]:
 def validate_claims(asset: dict[str, Any]) -> None:
     if asset.get("no_claims") != FALSE_CLAIMS:
         fail(f"{asset.get('asset_id', '<unknown>')} no_claims must exactly match false claim flags")
+
+
+def load_geometry_terms() -> dict[str, set[str]]:
+    terms = {
+        "profile_primitive": set(),
+        "mesh_operation": set(),
+        "composition_operation": set(),
+        "transform": set(),
+        "connector": set(),
+        "semantic_geometry": set(),
+    }
+    for path in sorted(DICTIONARY_ROOT.rglob("*.json")):
+        if "schemas" in path.parts:
+            continue
+        term = load_json(path)
+        term_id = term.get("term_id")
+        category = term.get("category")
+        if not isinstance(term_id, str) or not term_id:
+            fail(f"{repo_display_path(path)} term_id must be a non-empty string")
+        if category in terms:
+            if term_id in terms[category]:
+                fail(f"duplicate geometry dictionary term `{term_id}` in category `{category}`")
+            terms[category].add(term_id)
+    for category, ids in terms.items():
+        if not ids:
+            fail(f"geometry dictionary category `{category}` has no terms")
+    return terms
+
+
+def operation_terms(terms: dict[str, set[str]]) -> set[str]:
+    return terms["mesh_operation"] | terms["composition_operation"] | terms["transform"]
+
+
+def validate_profile_terms(profile: Any, terms: dict[str, set[str]], field: str) -> None:
+    profile_obj = require_object(profile, field)
+    profile_type = require_string(profile_obj.get("type"), f"{field}.type")
+    if profile_type not in terms["profile_primitive"]:
+        fail(f"{field}.type uses unknown geometry dictionary profile `{profile_type}`")
+    require_object(profile_obj.get("params", {}), f"{field}.params")
+
+
+def validate_recipe_terms(bundle: dict[str, Any], terms: dict[str, set[str]]) -> None:
+    assets = require_list(bundle.get("assets"), "assets")
+    seen_asset_ids: set[str] = set()
+    for asset_index, item in enumerate(assets):
+        asset = require_object(item, f"assets[{asset_index}]")
+        asset_id = require_string(asset.get("asset_id"), f"assets[{asset_index}].asset_id")
+        if asset_id in seen_asset_ids:
+            fail(f"duplicate asset_id: {asset_id}")
+        seen_asset_ids.add(asset_id)
+
+        operation = require_string(asset.get("operation"), f"{asset_id}.operation")
+        if operation not in operation_terms(terms):
+            fail(f"{asset_id}.operation uses unknown geometry dictionary operation `{operation}`")
+
+        for connector_index, connector in enumerate(require_list(asset.get("connectors"), f"{asset_id}.connectors")):
+            connector_id = require_string(connector, f"{asset_id}.connectors[{connector_index}]")
+            if connector_id not in terms["connector"]:
+                fail(f"{asset_id}.connectors[{connector_index}] uses unknown geometry dictionary connector `{connector_id}`")
+
+        for tag_index, tag in enumerate(require_list(asset.get("semantic_tags"), f"{asset_id}.semantic_tags")):
+            semantic_tag = require_string(tag, f"{asset_id}.semantic_tags[{tag_index}]")
+            if semantic_tag not in terms["semantic_geometry"]:
+                fail(f"{asset_id}.semantic_tags[{tag_index}] uses unknown geometry dictionary semantic tag `{semantic_tag}`")
+
+        if operation == "extrude":
+            validate_profile_terms(asset.get("profile"), terms, f"{asset_id}.profile")
+        elif operation == "loft_sections":
+            sections = require_list(asset.get("sections"), f"{asset_id}.sections")
+            if len(sections) < 2:
+                fail(f"{asset_id}.sections requires at least two sections")
+            for section_index, section in enumerate(sections):
+                section_obj = require_object(section, f"{asset_id}.sections[{section_index}]")
+                validate_profile_terms(section_obj.get("profile"), terms, f"{asset_id}.sections[{section_index}].profile")
+        elif operation == "compound_asset":
+            components = require_list(asset.get("components"), f"{asset_id}.components")
+            if not components:
+                fail(f"{asset_id}.components must not be empty")
+            for component_index, component in enumerate(components):
+                component_obj = require_object(component, f"{asset_id}.components[{component_index}]")
+                ref = require_string(component_obj.get("asset_ref"), f"{asset_id}.components[{component_index}].asset_ref")
+                if ref not in seen_asset_ids:
+                    fail(f"{asset_id} references unknown or later asset_ref `{ref}`")
 
 
 def polygon_points(sides: int, radius: float) -> list[list[float]]:
@@ -238,7 +322,7 @@ def connector_points(bounds_m: dict[str, list[float]], names: list[str]) -> list
     connectors: list[dict[str, Any]] = []
     for name in names:
         if name not in table:
-            continue
+            fail(f"unsupported pump connector: {name}")
         position, direction = table[name]
         connectors.append(
             {
@@ -368,6 +452,7 @@ def write_outputs(compiled: dict[str, dict[str, Any]], out_root: Path, source_bu
             "no_blender": True,
             "no_media": True,
             "no_mesh_export_files": True,
+            "geometry_dictionary_terms_enforced": True,
         },
     }
     (out_root / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
@@ -401,6 +486,7 @@ def main() -> None:
         fail(f"output folder is not empty: {out_root}. Use --clean for /tmp outputs or choose a new folder.")
 
     bundle = load_bundle(bundle_path)
+    validate_recipe_terms(bundle, load_geometry_terms())
     compiled: dict[str, dict[str, Any]] = {}
     seen: set[str] = set()
     for asset in require_list(bundle["assets"], "assets"):
