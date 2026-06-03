@@ -67,6 +67,15 @@ python3 scripts/asset_pump_v0.py \
   --out /tmp/gameguy_blocky_column_asset_pump_v0
 ```
 
+The reusable blocky shape grammar generalizes that idea for columns, banister posts, fence posts, frame parts, sockets, and other adjustable architectural blockouts:
+
+```bash
+python3 scripts/asset_pump_v0.py \
+  --bundle data/architecture/asset_mill/recipes/blocky_shape_grammar_assets_v0.json \
+  --clean \
+  --out /tmp/gameguy_blocky_shape_grammar_asset_pump_v0
+```
+
 The pump rejects recipe operations, profile types, connector IDs, and semantic tags that are not present in `geometry_dictionary/`.
 
 The first stable generated asset schema is:
@@ -123,6 +132,8 @@ python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/s
 python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_section_stack_asset_pump_v0/manifest.json
 python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/blocky_column_assets_v0.json --clean --out /tmp/gameguy_blocky_column_asset_pump_v0
 python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_blocky_column_asset_pump_v0/manifest.json
+python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/blocky_shape_grammar_assets_v0.json --clean --out /tmp/gameguy_blocky_shape_grammar_asset_pump_v0
+python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_blocky_shape_grammar_asset_pump_v0/manifest.json
 python3 scripts/audit_script_orbit_v0.py
 test ! -d pattern_lab_2d
 find . -path '*pattern_lab_2d*' -print
@@ -136,7 +147,7 @@ Expected current checks:
 - Asset pump tests pass.
 - Tiny source fixture validation passes.
 - Measured component source validation passes.
-- Generated `gameguy_asset_v0` validation passes for simple, measured, section-stack, and blocky-column pump output.
+- Generated `gameguy_asset_v0` validation passes for simple, measured, section-stack, blocky-column, and blocky-shape grammar pump output.
 - Blender adapter validation consumes generated asset JSON.
 - Measured component Blender adapter validation consumes generated measured asset JSON.
 - Script orbit audit runs without deleting or moving files.

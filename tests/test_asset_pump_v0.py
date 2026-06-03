@@ -19,6 +19,7 @@ ASSET_CONTRACT = ROOT / "contracts" / "gameguy_asset_v0.json"
 MEASURED_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "measured_components_v0.json"
 SECTION_STACK_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "section_stack_assets_v0.json"
 BLOCKY_COLUMN_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "blocky_column_assets_v0.json"
+BLOCKY_SHAPE_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "blocky_shape_grammar_assets_v0.json"
 FALSE_CLAIMS = {
     "production_approval": False,
     "structural_safety": False,
@@ -60,6 +61,16 @@ def run_section_stack_pump(out_root: Path) -> None:
 def run_blocky_column_pump(out_root: Path) -> None:
     subprocess.run(
         [sys.executable, str(PUMP), "--bundle", str(BLOCKY_COLUMN_BUNDLE), "--out", str(out_root)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
+def run_blocky_shape_pump(out_root: Path) -> None:
+    subprocess.run(
+        [sys.executable, str(PUMP), "--bundle", str(BLOCKY_SHAPE_BUNDLE), "--out", str(out_root)],
         cwd=ROOT,
         check=True,
         capture_output=True,
@@ -302,6 +313,53 @@ class AssetPumpTests(unittest.TestCase):
         self.assertEqual(column["validation_expectations"]["rib_depth_m"], 0.04)
         self.assert_mesh_is_well_formed(column)
 
+    def test_blocky_shape_grammar_bundle_generates_column_and_fence_post(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "pump"
+            run_blocky_shape_pump(out_root)
+            manifest = load_json(out_root / "manifest.json")
+            column = load_json(out_root / "assets" / "grammar_ribbed_column_v0.json")
+            post = load_json(out_root / "assets" / "blocky_fence_post_v0.json")
+
+        self.assertEqual(manifest["source_bundle_schema"], "asset_mill_blocky_shape_grammar_bundle_v0")
+        self.assertEqual(manifest["asset_count"], 2)
+
+        self.assertEqual(column["schema"], "gameguy_asset_v0")
+        self.assertEqual(column["source_schema"], "asset_mill_blocky_shape_grammar_bundle_v0")
+        self.assertEqual(column["source_operation"], "blocky_shape")
+        self.assertEqual(column["asset_kind"], "blocky_shape_column")
+        self.assertEqual(column["dimensions_m"], {"width": 0.92, "depth": 0.92, "height": 2.46})
+        self.assertEqual(len(column["mesh"]["vertices"]), 264)
+        self.assertEqual(len(column["mesh"]["faces"]), 186)
+        self.assertEqual(len(column["mesh"]["parts"]), 27)
+        self.assertEqual(column["mesh"]["parts"][3]["part_id"], "vertical_rib_00")
+        self.assertEqual(column["mesh"]["blocky_shape"]["grammar"], "blocky_shape_v0")
+        self.assertEqual(column["mesh"]["blocky_shape"]["source_part_count"], 6)
+        self.assertEqual(column["mesh"]["blocky_shape"]["expanded_part_count"], 27)
+        self.assertEqual(column["mesh"]["blocky_shape"]["part_types"], ["box", "cylinder", "cylinder", "radial_box_array", "cylinder", "box"])
+        self.assertEqual(column["mesh"]["blocky_shape"]["radial_arrays"][0]["count"], 22)
+        self.assertEqual(column["mesh"]["blocky_shape"]["radial_arrays"][0]["rib_depth_m"], 0.04)
+        self.assertEqual(column["source_terms"]["operators"], ["blocky_shape", "compound_asset", "extrude", "array_radial"])
+        self.assert_mesh_is_well_formed(column)
+
+        self.assertEqual(post["schema"], "gameguy_asset_v0")
+        self.assertEqual(post["source_schema"], "asset_mill_blocky_shape_grammar_bundle_v0")
+        self.assertEqual(post["source_operation"], "blocky_shape")
+        self.assertEqual(post["asset_kind"], "blocky_shape_post")
+        self.assertEqual(post["dimensions_m"], {"width": 0.5, "depth": 0.5, "height": 1.24})
+        self.assertEqual(len(post["mesh"]["vertices"]), 56)
+        self.assertEqual(len(post["mesh"]["faces"]), 42)
+        self.assertEqual(len(post["mesh"]["parts"]), 7)
+        self.assertEqual([part["part_id"] for part in post["mesh"]["parts"][3:5]], ["rail_socket_east", "rail_socket_west"])
+        self.assertEqual(post["mesh"]["blocky_shape"]["source_part_count"], 7)
+        self.assertEqual(post["mesh"]["blocky_shape"]["expanded_part_count"], 7)
+        self.assertEqual(post["mesh"]["blocky_shape"]["source_parts"][3]["center_xy"], [0.18, 0.0])
+        self.assertEqual(post["mesh"]["blocky_shape"]["source_parts"][4]["center_xy"], [-0.18, 0.0])
+        self.assertEqual(post["source_terms"]["profiles"], ["square", "rectangle"])
+        self.assertEqual(post["source_terms"]["operators"], ["blocky_shape", "compound_asset", "extrude"])
+        self.assertEqual(post["validation_expectations"]["side_socket_count"], 2)
+        self.assert_mesh_is_well_formed(post)
+
     def test_output_is_deterministic_across_runs(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             out_a = Path(tmp) / "pump_a"
@@ -401,6 +459,20 @@ class AssetPumpTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("blocky_column.ribs.rib_depth_m must be positive", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
+
+    def test_blocky_shape_rejects_unknown_part_type_before_output(self) -> None:
+        source_bundle = load_json(BLOCKY_SHAPE_BUNDLE)
+        source_bundle["assets"][1]["blocky_shape"]["parts"][0]["part_type"] = "spline_magic"
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            bundle_path = Path(tmp) / "bad_blocky_shape_bundle.json"
+            out_root = Path(tmp) / "pump"
+            bundle_path.write_text(json.dumps(source_bundle, indent=2) + "\n", encoding="utf-8")
+            result = run_pump_with_bundle(bundle_path, out_root)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("unsupported blocky_shape part_type `spline_magic`", result.stderr)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def assert_mesh_is_well_formed(self, asset: dict[str, Any]) -> None:

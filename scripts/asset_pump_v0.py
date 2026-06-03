@@ -29,6 +29,7 @@ SIMPLE_BUNDLE_SCHEMA = "asset_mill_recipe_bundle_v0"
 MEASURED_BUNDLE_SCHEMA = "asset_mill_measured_component_bundle_v0"
 SECTION_STACK_BUNDLE_SCHEMA = "asset_mill_section_stack_bundle_v0"
 BLOCKY_COLUMN_BUNDLE_SCHEMA = "asset_mill_blocky_column_bundle_v0"
+BLOCKY_SHAPE_BUNDLE_SCHEMA = "asset_mill_blocky_shape_grammar_bundle_v0"
 FALSE_CLAIMS = {
     "production_approval": False,
     "structural_safety": False,
@@ -368,6 +369,8 @@ def validate_blocky_box_part(value: Any, field: str) -> None:
     require_string(part.get("part_id"), f"{field}.part_id")
     positive_vector(part.get("size_m"), f"{field}.size_m", 2)
     increasing_range(part.get("z_range"), f"{field}.z_range")
+    if "center_xy" in part:
+        finite_vector(part.get("center_xy"), f"{field}.center_xy", 2)
     if "material_role" in part:
         require_string(part.get("material_role"), f"{field}.material_role")
 
@@ -378,6 +381,8 @@ def validate_blocky_cylinder_part(value: Any, field: str) -> None:
     positive_float(part.get("radius_m"), f"{field}.radius_m")
     integer_at_least(part.get("segments"), 3, f"{field}.segments")
     increasing_range(part.get("z_range"), f"{field}.z_range")
+    if "center_xy" in part:
+        finite_vector(part.get("center_xy"), f"{field}.center_xy", 2)
     if "material_role" in part:
         require_string(part.get("material_role"), f"{field}.material_role")
 
@@ -408,6 +413,39 @@ def validate_blocky_column_source(value: Any, field: str) -> None:
     validate_blocky_box_part(column.get("cap"), f"{field}.cap")
 
 
+def validate_blocky_shape_part(value: Any, field: str) -> list[str]:
+    part = require_object(value, field)
+    part_type = require_string(part.get("part_type"), f"{field}.part_type")
+    if part_type == "box":
+        validate_blocky_box_part(part, field)
+        return [require_string(part.get("part_id"), f"{field}.part_id")]
+    if part_type == "cylinder":
+        validate_blocky_cylinder_part(part, field)
+        return [require_string(part.get("part_id"), f"{field}.part_id")]
+    if part_type == "radial_box_array":
+        validate_blocky_ribs(part, field)
+        part_prefix = require_string(part.get("part_prefix"), f"{field}.part_prefix")
+        count = integer_at_least(part.get("count"), 1, f"{field}.count")
+        return [f"{part_prefix}_{index:02d}" for index in range(count)]
+    fail(f"unsupported blocky_shape part_type `{part_type}` at {field}")
+
+
+def validate_blocky_shape_source(value: Any, field: str) -> None:
+    shape = require_object(value, field)
+    axis = require_string(shape.get("axis"), f"{field}.axis")
+    if axis != "z":
+        fail(f"{field}.axis only supports z in v0")
+    parts = require_list(shape.get("parts"), f"{field}.parts")
+    if not parts:
+        fail(f"{field}.parts must not be empty")
+    seen_part_ids: set[str] = set()
+    for part_index, item in enumerate(parts):
+        for part_id in validate_blocky_shape_part(item, f"{field}.parts[{part_index}]"):
+            if part_id in seen_part_ids:
+                fail(f"{field}.parts duplicate expanded part_id: {part_id}")
+            seen_part_ids.add(part_id)
+
+
 def validate_blocky_column_bundle_terms(bundle: dict[str, Any], terms: dict[str, set[str]]) -> None:
     assets = require_list(bundle.get("assets"), "assets")
     if not assets:
@@ -428,6 +466,42 @@ def validate_blocky_column_bundle_terms(bundle: dict[str, Any], terms: dict[str,
         if operation not in operation_terms(terms):
             fail(f"{asset_id}.operation uses unknown geometry dictionary operation `{operation}`")
         validate_blocky_column_source(asset.get("blocky_column"), f"{asset_id}.blocky_column")
+        require_known_terms(asset.get("geometry_terms_used"), known_terms, f"{asset_id}.geometry_terms_used")
+        require_known_terms(asset.get("profile_terms"), terms["profile_primitive"], f"{asset_id}.profile_terms")
+        require_known_terms(asset.get("operations"), operation_terms(terms), f"{asset_id}.operations")
+        for connector_index, connector in enumerate(require_list(asset.get("connectors"), f"{asset_id}.connectors")):
+            connector_id = require_string(connector, f"{asset_id}.connectors[{connector_index}]")
+            if connector_id not in terms["connector"]:
+                fail(f"{asset_id}.connectors[{connector_index}] uses unknown geometry dictionary connector `{connector_id}`")
+        for tag_index, tag in enumerate(require_list(asset.get("semantic_tags"), f"{asset_id}.semantic_tags")):
+            semantic_tag = require_string(tag, f"{asset_id}.semantic_tags[{tag_index}]")
+            if semantic_tag not in terms["semantic_geometry"]:
+                fail(f"{asset_id}.semantic_tags[{tag_index}] uses unknown geometry dictionary semantic tag `{semantic_tag}`")
+        for slot_index, slot in enumerate(require_list(asset.get("child_slots"), f"{asset_id}.child_slots")):
+            require_string(slot, f"{asset_id}.child_slots[{slot_index}]")
+        validate_claims(asset)
+
+
+def validate_blocky_shape_bundle_terms(bundle: dict[str, Any], terms: dict[str, set[str]]) -> None:
+    assets = require_list(bundle.get("assets"), "assets")
+    if not assets:
+        fail("bundle assets must not be empty")
+    if bundle.get("asset_count") != len(assets):
+        fail("bundle asset_count must match assets length")
+    known_terms = all_terms(terms)
+    seen_asset_ids: set[str] = set()
+    for asset_index, item in enumerate(assets):
+        asset = require_object(item, f"assets[{asset_index}]")
+        asset_id = require_string(asset.get("asset_id"), f"assets[{asset_index}].asset_id")
+        if asset_id in seen_asset_ids:
+            fail(f"duplicate asset_id: {asset_id}")
+        seen_asset_ids.add(asset_id)
+        operation = require_string(asset.get("operation"), f"{asset_id}.operation")
+        if operation != "blocky_shape":
+            fail(f"{asset_id}.operation must be blocky_shape")
+        if operation not in operation_terms(terms):
+            fail(f"{asset_id}.operation uses unknown geometry dictionary operation `{operation}`")
+        validate_blocky_shape_source(asset.get("blocky_shape"), f"{asset_id}.blocky_shape")
         require_known_terms(asset.get("geometry_terms_used"), known_terms, f"{asset_id}.geometry_terms_used")
         require_known_terms(asset.get("profile_terms"), terms["profile_primitive"], f"{asset_id}.profile_terms")
         require_known_terms(asset.get("operations"), operation_terms(terms), f"{asset_id}.operations")
@@ -951,16 +1025,24 @@ def append_mesh_part(parts_mesh: list[Mesh], mesh_parts: list[dict[str, Any]], p
     )
 
 
+def part_center_xy(part: dict[str, Any], field: str) -> list[float]:
+    if "center_xy" not in part:
+        return [0.0, 0.0]
+    return finite_vector(part.get("center_xy"), f"{field}.center_xy", 2)
+
+
 def blocky_box_part_mesh(part: dict[str, Any], field: str) -> Mesh:
     size_xy = positive_vector(part.get("size_m"), f"{field}.size_m", 2)
     z_range = increasing_range(part.get("z_range"), f"{field}.z_range")
-    return box_mesh([0.0, 0.0, z_range_center(z_range)], [size_xy[0], size_xy[1], z_range_height(z_range)])
+    center_xy = part_center_xy(part, field)
+    return box_mesh([center_xy[0], center_xy[1], z_range_center(z_range)], [size_xy[0], size_xy[1], z_range_height(z_range)])
 
 
 def blocky_cylinder_part_mesh(part: dict[str, Any], field: str) -> Mesh:
     z_range = increasing_range(part.get("z_range"), f"{field}.z_range")
+    center_xy = part_center_xy(part, field)
     return cylinder_mesh(
-        [0.0, 0.0, z_range_center(z_range)],
+        [center_xy[0], center_xy[1], z_range_center(z_range)],
         positive_float(part.get("radius_m"), f"{field}.radius_m"),
         z_range_height(z_range),
         integer_at_least(part.get("segments"), 3, f"{field}.segments"),
@@ -973,6 +1055,107 @@ def z_overlap(left: list[float], right: list[float]) -> list[float] | None:
     if start >= end:
         return None
     return [start, end]
+
+
+def append_radial_box_array(parts_mesh: list[Mesh], mesh_parts: list[dict[str, Any]], ribs: dict[str, Any], field: str) -> dict[str, Any]:
+    rib_count = integer_at_least(ribs.get("count"), 1, f"{field}.count")
+    rib_depth = positive_float(ribs.get("rib_depth_m"), f"{field}.rib_depth_m")
+    rib_width = positive_float(ribs.get("rib_width_m"), f"{field}.rib_width_m")
+    core_radius = positive_float(ribs.get("core_radius_m"), f"{field}.core_radius_m")
+    rib_z_range = increasing_range(ribs.get("z_range"), f"{field}.z_range")
+    rib_center_radius = round(core_radius + rib_depth * 0.5, 6)
+    start_angle = finite_float(ribs.get("start_angle_degrees", 0.0), f"{field}.start_angle_degrees")
+    part_prefix = require_string(ribs.get("part_prefix"), f"{field}.part_prefix")
+    for rib_index in range(rib_count):
+        angle = math.radians(start_angle + 360.0 * rib_index / rib_count)
+        radial = [math.cos(angle), math.sin(angle), 0.0]
+        tangent = [-math.sin(angle), math.cos(angle), 0.0]
+        center = [
+            round(radial[0] * rib_center_radius, 6),
+            round(radial[1] * rib_center_radius, 6),
+            z_range_center(rib_z_range),
+        ]
+        append_mesh_part(
+            parts_mesh,
+            mesh_parts,
+            f"{part_prefix}_{rib_index:02d}",
+            "oriented_box",
+            ribs.get("material_role"),
+            oriented_box_mesh(center, radial, tangent, [rib_depth, rib_width, z_range_height(rib_z_range)]),
+        )
+    return {
+        "part_prefix": part_prefix,
+        "count": rib_count,
+        "core_radius_m": core_radius,
+        "rib_depth_m": rib_depth,
+        "rib_width_m": rib_width,
+        "rib_center_radius_m": rib_center_radius,
+        "z_range": rib_z_range,
+        "start_angle_degrees": start_angle,
+    }
+
+
+def append_blocky_shape_part(parts_mesh: list[Mesh], mesh_parts: list[dict[str, Any]], part: dict[str, Any], field: str) -> dict[str, Any]:
+    part_type = require_string(part.get("part_type"), f"{field}.part_type")
+    if part_type == "box":
+        part_id = require_string(part.get("part_id"), f"{field}.part_id")
+        append_mesh_part(parts_mesh, mesh_parts, part_id, "box", part.get("material_role"), blocky_box_part_mesh(part, field))
+        return {
+            "part_type": "box",
+            "part_id": part_id,
+            "z_range": increasing_range(part.get("z_range"), f"{field}.z_range"),
+            "center_xy": part_center_xy(part, field),
+        }
+    if part_type == "cylinder":
+        part_id = require_string(part.get("part_id"), f"{field}.part_id")
+        append_mesh_part(parts_mesh, mesh_parts, part_id, "cylinder", part.get("material_role"), blocky_cylinder_part_mesh(part, field))
+        return {
+            "part_type": "cylinder",
+            "part_id": part_id,
+            "z_range": increasing_range(part.get("z_range"), f"{field}.z_range"),
+            "center_xy": part_center_xy(part, field),
+            "segments": integer_at_least(part.get("segments"), 3, f"{field}.segments"),
+        }
+    if part_type == "radial_box_array":
+        array = append_radial_box_array(parts_mesh, mesh_parts, part, field)
+        return {"part_type": "radial_box_array", **array}
+    fail(f"unsupported blocky_shape part_type `{part_type}` at {field}")
+
+
+def blocky_shape_mesh(shape: dict[str, Any]) -> tuple[Mesh, dict[str, Any], list[dict[str, Any]]]:
+    axis = require_string(shape.get("axis"), "blocky_shape.axis")
+    if axis != "z":
+        fail("blocky_shape.axis only supports z in v0")
+
+    parts_source = require_list(shape.get("parts"), "blocky_shape.parts")
+    if not parts_source:
+        fail("blocky_shape.parts must not be empty")
+
+    parts_mesh: list[Mesh] = []
+    mesh_parts: list[dict[str, Any]] = []
+    source_parts: list[dict[str, Any]] = []
+    radial_arrays: list[dict[str, Any]] = []
+    part_types: list[str] = []
+    for part_index, item in enumerate(parts_source):
+        part = require_object(item, f"blocky_shape.parts[{part_index}]")
+        part_type = require_string(part.get("part_type"), f"blocky_shape.parts[{part_index}].part_type")
+        part_types.append(part_type)
+        compiled_part = append_blocky_shape_part(parts_mesh, mesh_parts, part, f"blocky_shape.parts[{part_index}]")
+        source_parts.append(compiled_part)
+        if part_type == "radial_box_array":
+            radial_arrays.append(compiled_part)
+
+    metadata = {
+        "axis": axis,
+        "grammar": "blocky_shape_v0",
+        "assembly": "ordered_simple_parts",
+        "source_part_count": len(parts_source),
+        "expanded_part_count": len(mesh_parts),
+        "part_types": part_types,
+        "radial_arrays": radial_arrays,
+        "source_parts": source_parts,
+    }
+    return merged_mesh(parts_mesh), metadata, mesh_parts
 
 
 def blocky_column_mesh(column: dict[str, Any]) -> tuple[Mesh, dict[str, Any], list[dict[str, Any]]]:
@@ -1014,31 +1197,8 @@ def blocky_column_mesh(column: dict[str, Any]) -> tuple[Mesh, dict[str, Any], li
         blocky_cylinder_part_mesh(shaft_core, "blocky_column.shaft_core"),
     )
 
-    rib_count = integer_at_least(ribs.get("count"), 1, "blocky_column.ribs.count")
-    rib_depth = positive_float(ribs.get("rib_depth_m"), "blocky_column.ribs.rib_depth_m")
-    rib_width = positive_float(ribs.get("rib_width_m"), "blocky_column.ribs.rib_width_m")
-    core_radius = positive_float(ribs.get("core_radius_m"), "blocky_column.ribs.core_radius_m")
     rib_z_range = increasing_range(ribs.get("z_range"), "blocky_column.ribs.z_range")
-    rib_center_radius = round(core_radius + rib_depth * 0.5, 6)
-    start_angle = finite_float(ribs.get("start_angle_degrees", 0.0), "blocky_column.ribs.start_angle_degrees")
-    part_prefix = require_string(ribs.get("part_prefix"), "blocky_column.ribs.part_prefix")
-    for rib_index in range(rib_count):
-        angle = math.radians(start_angle + 360.0 * rib_index / rib_count)
-        radial = [math.cos(angle), math.sin(angle), 0.0]
-        tangent = [-math.sin(angle), math.cos(angle), 0.0]
-        center = [
-            round(radial[0] * rib_center_radius, 6),
-            round(radial[1] * rib_center_radius, 6),
-            z_range_center(rib_z_range),
-        ]
-        append_mesh_part(
-            parts_mesh,
-            mesh_parts,
-            f"{part_prefix}_{rib_index:02d}",
-            "oriented_box",
-            ribs.get("material_role"),
-            oriented_box_mesh(center, radial, tangent, [rib_depth, rib_width, z_range_height(rib_z_range)]),
-        )
+    rib_metadata = append_radial_box_array(parts_mesh, mesh_parts, ribs, "blocky_column.ribs")
 
     append_mesh_part(
         parts_mesh,
@@ -1079,10 +1239,10 @@ def blocky_column_mesh(column: dict[str, Any]) -> tuple[Mesh, dict[str, Any], li
         "axis": axis,
         "assembly": "simple_parts",
         "part_count": len(mesh_parts),
-        "rib_count": rib_count,
-        "rib_depth_m": rib_depth,
-        "rib_width_m": rib_width,
-        "rib_center_radius_m": rib_center_radius,
+        "rib_count": rib_metadata["count"],
+        "rib_depth_m": rib_metadata["rib_depth_m"],
+        "rib_width_m": rib_metadata["rib_width_m"],
+        "rib_center_radius_m": rib_metadata["rib_center_radius_m"],
         "shaft_core_radius_m": positive_float(shaft_core.get("radius_m"), "blocky_column.shaft_core.radius_m"),
         "covered_seams": covered_seams,
     }
@@ -1112,6 +1272,8 @@ def source_profile_terms(asset: dict[str, Any]) -> list[str]:
                 terms.append(profile_type)
         return terms
     if operation == "blocky_column":
+        return ["square", "circle", "rectangle"]
+    if operation == "blocky_shape":
         return ["square", "circle", "rectangle"]
     return []
 
@@ -1260,6 +1422,9 @@ def compile_asset(asset: dict[str, Any], compiled: dict[str, dict[str, Any]], so
     elif operation == "blocky_column":
         mesh, column_metadata, mesh_parts = blocky_column_mesh(require_object(asset.get("blocky_column"), f"{asset_id}.blocky_column"))
         mesh_extra["blocky_column"] = column_metadata
+    elif operation == "blocky_shape":
+        mesh, shape_metadata, mesh_parts = blocky_shape_mesh(require_object(asset.get("blocky_shape"), f"{asset_id}.blocky_shape"))
+        mesh_extra["blocky_shape"] = shape_metadata
     elif operation == "compound_asset":
         parts: list[Mesh] = []
         for component in require_list(asset.get("components"), f"{asset_id}.components"):
@@ -1384,8 +1549,15 @@ def compile_measured_asset(asset: dict[str, Any], source_schema: str) -> dict[st
 
 def load_bundle(path: Path) -> dict[str, Any]:
     bundle = load_json(path)
-    if bundle.get("schema") not in {SIMPLE_BUNDLE_SCHEMA, MEASURED_BUNDLE_SCHEMA, SECTION_STACK_BUNDLE_SCHEMA, BLOCKY_COLUMN_BUNDLE_SCHEMA}:
-        fail(f"bundle schema must be {SIMPLE_BUNDLE_SCHEMA}, {MEASURED_BUNDLE_SCHEMA}, {SECTION_STACK_BUNDLE_SCHEMA}, or {BLOCKY_COLUMN_BUNDLE_SCHEMA}")
+    supported_schemas = {
+        SIMPLE_BUNDLE_SCHEMA,
+        MEASURED_BUNDLE_SCHEMA,
+        SECTION_STACK_BUNDLE_SCHEMA,
+        BLOCKY_COLUMN_BUNDLE_SCHEMA,
+        BLOCKY_SHAPE_BUNDLE_SCHEMA,
+    }
+    if bundle.get("schema") not in supported_schemas:
+        fail(f"bundle schema must be one of: {', '.join(sorted(supported_schemas))}")
     assets = require_list(bundle.get("assets"), "assets")
     if not assets:
         fail("bundle assets must not be empty")
@@ -1467,6 +1639,8 @@ def main() -> None:
         validate_section_stack_bundle_terms(bundle, geometry_terms)
     elif source_schema == BLOCKY_COLUMN_BUNDLE_SCHEMA:
         validate_blocky_column_bundle_terms(bundle, geometry_terms)
+    elif source_schema == BLOCKY_SHAPE_BUNDLE_SCHEMA:
+        validate_blocky_shape_bundle_terms(bundle, geometry_terms)
     else:
         fail(f"unsupported bundle schema: {source_schema}")
     compiled: dict[str, dict[str, Any]] = {}
@@ -1477,7 +1651,7 @@ def main() -> None:
         if asset_id in seen:
             fail(f"duplicate asset_id: {asset_id}")
         seen.add(asset_id)
-        if source_schema in {SIMPLE_BUNDLE_SCHEMA, SECTION_STACK_BUNDLE_SCHEMA, BLOCKY_COLUMN_BUNDLE_SCHEMA}:
+        if source_schema in {SIMPLE_BUNDLE_SCHEMA, SECTION_STACK_BUNDLE_SCHEMA, BLOCKY_COLUMN_BUNDLE_SCHEMA, BLOCKY_SHAPE_BUNDLE_SCHEMA}:
             compiled[asset_id] = compile_asset(asset, compiled, source_schema)
         else:
             compiled[asset_id] = compile_measured_asset(asset, source_schema)

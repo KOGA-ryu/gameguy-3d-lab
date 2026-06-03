@@ -18,6 +18,7 @@ VALIDATOR = ROOT / "scripts" / "validate_gameguy_asset_v0.py"
 MEASURED_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "measured_components_v0.json"
 SECTION_STACK_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "section_stack_assets_v0.json"
 BLOCKY_COLUMN_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "blocky_column_assets_v0.json"
+BLOCKY_SHAPE_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "blocky_shape_grammar_assets_v0.json"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -27,7 +28,7 @@ def load_json(path: Path) -> dict[str, Any]:
     return data
 
 
-def run_pump(out_root: Path, *, measured: bool = False, section_stack: bool = False, blocky_column: bool = False) -> None:
+def run_pump(out_root: Path, *, measured: bool = False, section_stack: bool = False, blocky_column: bool = False, blocky_shape: bool = False) -> None:
     cmd = [sys.executable, str(PUMP)]
     if measured:
         cmd.extend(["--bundle", str(MEASURED_BUNDLE)])
@@ -35,6 +36,8 @@ def run_pump(out_root: Path, *, measured: bool = False, section_stack: bool = Fa
         cmd.extend(["--bundle", str(SECTION_STACK_BUNDLE)])
     if blocky_column:
         cmd.extend(["--bundle", str(BLOCKY_COLUMN_BUNDLE)])
+    if blocky_shape:
+        cmd.extend(["--bundle", str(BLOCKY_SHAPE_BUNDLE)])
     cmd.extend(["--out", str(out_root)])
     subprocess.run(cmd, cwd=ROOT, check=True, capture_output=True, text=True)
 
@@ -112,6 +115,22 @@ class GameguyAssetValidatorTests(unittest.TestCase):
         self.assertEqual(report["total_vertices"], 264)
         self.assertEqual(report["total_faces"], 186)
         self.assertEqual(report["total_parts"], 27)
+
+    def test_validates_blocky_shape_grammar_asset_pump_manifest(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "pump"
+            report_path = Path(tmp) / "asset_report.json"
+            run_pump(out_root, blocky_shape=True)
+            result = run_validator(out_root / "manifest.json", report_path)
+            report = load_json(report_path)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(report["source_bundle_schema"], "asset_mill_blocky_shape_grammar_bundle_v0")
+        self.assertEqual(report["asset_count"], 2)
+        self.assertEqual(report["measured_asset_count"], 0)
+        self.assertEqual(report["total_vertices"], 320)
+        self.assertEqual(report["total_faces"], 228)
+        self.assertEqual(report["total_parts"], 34)
 
     def test_rejects_invalid_mesh_face_index(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:

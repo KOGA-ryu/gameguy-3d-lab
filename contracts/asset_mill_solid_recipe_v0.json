@@ -64,6 +64,10 @@
     "blocky_column": {
       "required_fields": ["blocky_column"],
       "output": "named simple mesh parts assembled into a blocky architectural column"
+    },
+    "blocky_shape": {
+      "required_fields": ["blocky_shape"],
+      "output": "ordered simple mesh parts assembled into reusable blocky architectural assets"
     }
   },
   "required_asset_fields": [

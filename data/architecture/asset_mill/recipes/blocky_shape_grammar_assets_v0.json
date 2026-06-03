@@ -1,0 +1,264 @@
+{
+  "schema": "asset_mill_blocky_shape_grammar_bundle_v0",
+  "bundle_id": "blocky_shape_grammar_assets_v0",
+  "purpose": "Reusable blocky shape grammar recipes that assemble complex-looking architectural assets from simple mesh parts.",
+  "units": "abstract_meter",
+  "rules": {
+    "source_lane": true,
+    "deterministic_output": true,
+    "no_blender_logic": true,
+    "no_generated_outputs": true,
+    "no_wall_clock_fields": true
+  },
+  "asset_count": 2,
+  "assets": [
+    {
+      "asset_id": "grammar_ribbed_column_v0",
+      "asset_kind": "blocky_shape_column",
+      "operation": "blocky_shape",
+      "architectural_role": "grammar_fixture_square_base_round_collar_ribbed_shaft_square_cap",
+      "generation_use": [
+        "column",
+        "support_marker",
+        "landmark",
+        "grammar_fixture"
+      ],
+      "semantic_tags": [
+        "support",
+        "blocked",
+        "collision_proxy",
+        "landmark"
+      ],
+      "connectors": [
+        "floor",
+        "ceiling",
+        "radial"
+      ],
+      "child_slots": [
+        "plinth_face",
+        "collar_band",
+        "vertical_rib",
+        "cap_face"
+      ],
+      "geometry_terms_used": [
+        "blocky_shape",
+        "compound_asset",
+        "extrude",
+        "array_radial",
+        "square",
+        "circle",
+        "rectangle",
+        "floor",
+        "ceiling",
+        "radial",
+        "support",
+        "blocked",
+        "collision_proxy",
+        "landmark"
+      ],
+      "profile_terms": [
+        "square",
+        "circle",
+        "rectangle"
+      ],
+      "operations": [
+        "blocky_shape",
+        "compound_asset",
+        "extrude",
+        "array_radial"
+      ],
+      "blocky_shape": {
+        "axis": "z",
+        "parts": [
+          {
+            "part_type": "box",
+            "part_id": "square_plinth",
+            "size_m": [0.92, 0.92],
+            "z_range": [0.0, 0.24],
+            "material_role": "plinth"
+          },
+          {
+            "part_type": "cylinder",
+            "part_id": "lower_round_collar",
+            "radius_m": 0.38,
+            "segments": 12,
+            "z_range": [0.2, 0.4],
+            "material_role": "collar"
+          },
+          {
+            "part_type": "cylinder",
+            "part_id": "shaft_core",
+            "radius_m": 0.29,
+            "segments": 12,
+            "z_range": [0.36, 2.1],
+            "material_role": "shaft"
+          },
+          {
+            "part_type": "radial_box_array",
+            "part_prefix": "vertical_rib",
+            "count": 22,
+            "core_radius_m": 0.3,
+            "rib_depth_m": 0.04,
+            "rib_width_m": 0.04,
+            "z_range": [0.36, 2.06],
+            "start_angle_degrees": 0.0,
+            "material_role": "rib"
+          },
+          {
+            "part_type": "cylinder",
+            "part_id": "upper_round_necking",
+            "radius_m": 0.38,
+            "segments": 12,
+            "z_range": [2.02, 2.22],
+            "material_role": "collar"
+          },
+          {
+            "part_type": "box",
+            "part_id": "square_abacus",
+            "size_m": [0.9, 0.9],
+            "z_range": [2.18, 2.46],
+            "material_role": "abacus"
+          }
+        ]
+      },
+      "validation_expectations": {
+        "source_part_count": 6,
+        "expanded_part_count": 27,
+        "radial_array_count": 1,
+        "rib_count": 22,
+        "rib_depth_m": 0.04,
+        "nonzero_bounds": true,
+        "known_geometry_terms": true
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false
+      }
+    },
+    {
+      "asset_id": "blocky_fence_post_v0",
+      "asset_kind": "blocky_shape_post",
+      "operation": "blocky_shape",
+      "architectural_role": "grammar_fixture_square_post_with_side_rail_sockets_and_stepped_cap",
+      "generation_use": [
+        "fence_post",
+        "banister_post",
+        "rail_anchor",
+        "grammar_fixture"
+      ],
+      "semantic_tags": [
+        "support",
+        "barrier",
+        "rail",
+        "collision_proxy"
+      ],
+      "connectors": [
+        "floor",
+        "ceiling",
+        "east",
+        "west"
+      ],
+      "child_slots": [
+        "lower_step_band",
+        "side_rail_socket",
+        "upper_step_band",
+        "cap_face"
+      ],
+      "geometry_terms_used": [
+        "blocky_shape",
+        "compound_asset",
+        "extrude",
+        "square",
+        "rectangle",
+        "floor",
+        "ceiling",
+        "east",
+        "west",
+        "support",
+        "barrier",
+        "rail",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "square",
+        "rectangle"
+      ],
+      "operations": [
+        "blocky_shape",
+        "compound_asset",
+        "extrude"
+      ],
+      "blocky_shape": {
+        "axis": "z",
+        "parts": [
+          {
+            "part_type": "box",
+            "part_id": "square_foot",
+            "size_m": [0.48, 0.48],
+            "z_range": [0.0, 0.12],
+            "material_role": "base"
+          },
+          {
+            "part_type": "box",
+            "part_id": "lower_step_band",
+            "size_m": [0.38, 0.38],
+            "z_range": [0.1, 0.16],
+            "material_role": "band"
+          },
+          {
+            "part_type": "box",
+            "part_id": "post_core",
+            "size_m": [0.28, 0.28],
+            "z_range": [0.14, 1.05],
+            "material_role": "shaft"
+          },
+          {
+            "part_type": "box",
+            "part_id": "rail_socket_east",
+            "size_m": [0.1, 0.26],
+            "center_xy": [0.18, 0.0],
+            "z_range": [0.52, 0.74],
+            "material_role": "socket"
+          },
+          {
+            "part_type": "box",
+            "part_id": "rail_socket_west",
+            "size_m": [0.1, 0.26],
+            "center_xy": [-0.18, 0.0],
+            "z_range": [0.52, 0.74],
+            "material_role": "socket"
+          },
+          {
+            "part_type": "box",
+            "part_id": "upper_step_band",
+            "size_m": [0.38, 0.38],
+            "z_range": [1.02, 1.12],
+            "material_role": "band"
+          },
+          {
+            "part_type": "box",
+            "part_id": "square_cap",
+            "size_m": [0.5, 0.5],
+            "z_range": [1.1, 1.24],
+            "material_role": "cap"
+          }
+        ]
+      },
+      "validation_expectations": {
+        "source_part_count": 7,
+        "expanded_part_count": 7,
+        "side_socket_count": 2,
+        "nonzero_bounds": true,
+        "known_geometry_terms": true
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false
+      }
+    }
+  ]
+}

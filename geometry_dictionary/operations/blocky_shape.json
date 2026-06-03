@@ -1,0 +1,41 @@
+{
+  "term_id": "blocky_shape",
+  "category": "composition_operation",
+  "plain_name": "Blocky Shape",
+  "description": "Assembles reusable architectural blockouts from an ordered list of simple mesh parts such as boxes, low-poly cylinders, and radial box arrays.",
+  "required_inputs": {
+    "axis": "z",
+    "parts": "ordered simple part list"
+  },
+  "outputs": {
+    "type": "mesh"
+  },
+  "constraints": {
+    "axis": "z",
+    "parts_must_not_be_empty": true,
+    "expanded_part_ids_must_be_unique": true,
+    "parts_remain_simple_meshes": true,
+    "deterministic_expansion_order": true
+  },
+  "part_types": {
+    "box": "Axis-aligned box with size_m, z_range, and optional center_xy.",
+    "cylinder": "Low-poly cylinder with radius_m, segments, z_range, and optional center_xy.",
+    "radial_box_array": "Radial repetition of oriented boxes using count, core_radius_m, rib_depth_m, rib_width_m, and z_range."
+  },
+  "common_uses": [
+    "column",
+    "banister post",
+    "fence post",
+    "window frame blockout",
+    "door frame blockout",
+    "socketed architectural trim"
+  ],
+  "blender_method": "adapter consumes generated mesh vertices and faces; Blender does not assemble source parts",
+  "validation": [
+    "component_ranges_resolve",
+    "bounds_update_is_valid",
+    "nonzero_volume",
+    "source_parts_are_named",
+    "expanded_part_ids_are_unique"
+  ]
+}

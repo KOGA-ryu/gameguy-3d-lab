@@ -1,0 +1,70 @@
+{
+  "schema": "blocky_shape_grammar_receipt_v0",
+  "packet_id": "3D-LAB-0018",
+  "decision": "ADD_REUSABLE_BLOCKY_SHAPE_GRAMMAR_SOURCE_AND_PUMP_SUPPORT",
+  "source_recipe": "data/architecture/asset_mill/recipes/blocky_shape_grammar_assets_v0.json",
+  "operation_term": "geometry_dictionary/operations/blocky_shape.json",
+  "source_contract": "contracts/asset_mill_solid_recipe_v0.json",
+  "generated_contract": "contracts/gameguy_asset_v0.json",
+  "generator": "scripts/asset_pump_v0.py",
+  "validator": "scripts/validate_gameguy_asset_v0.py",
+  "generated_schema": "gameguy_asset_v0",
+  "assets": [
+    {
+      "asset_id": "grammar_ribbed_column_v0",
+      "source_operation": "blocky_shape",
+      "grammar": "blocky_shape_v0",
+      "source_part_count": 6,
+      "expanded_part_count": 27,
+      "radial_array_count": 1,
+      "rib_count": 22,
+      "rib_depth_m": 0.04,
+      "vertex_count": 264,
+      "face_count": 186,
+      "dimensions_m": {
+        "width": 0.92,
+        "depth": 0.92,
+        "height": 2.46
+      }
+    },
+    {
+      "asset_id": "blocky_fence_post_v0",
+      "source_operation": "blocky_shape",
+      "grammar": "blocky_shape_v0",
+      "source_part_count": 7,
+      "expanded_part_count": 7,
+      "side_socket_count": 2,
+      "vertex_count": 56,
+      "face_count": 42,
+      "dimensions_m": {
+        "width": 0.5,
+        "depth": 0.5,
+        "height": 1.24
+      }
+    }
+  ],
+  "aggregate": {
+    "asset_count": 2,
+    "total_vertices": 320,
+    "total_faces": 228,
+    "total_parts": 34
+  },
+  "rules": {
+    "source_recipe_first": true,
+    "pump_emits_deterministic_json": true,
+    "complexity_from_simple_parts": true,
+    "parts_are_ordered": true,
+    "blender_adapter_added": false,
+    "blender_reads_source_recipes": false,
+    "retired_asset_mill_scripts_touched": false,
+    "generated_outputs_in_repo": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}
