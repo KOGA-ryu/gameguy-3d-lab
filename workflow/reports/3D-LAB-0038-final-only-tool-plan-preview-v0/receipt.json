@@ -1,0 +1,51 @@
+{
+  "schema": "final_only_tool_plan_preview_receipt_v0",
+  "packet_id": "3D-LAB-0038",
+  "decision": "HIDE_VALIDATION_HELPERS_FROM_REVIEW_PREVIEWS",
+  "source_recipe": "data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json",
+  "compiler": "scripts/compile_blender_tool_plan_v0.py",
+  "adapter": "scripts/execute_blender_tool_plan_v0.py",
+  "execution_report_validator": "scripts/validate_blender_tool_plan_execution_report_v0.py",
+  "tests": [
+    "tests/test_blender_tool_plan_v0.py",
+    "tests/test_validate_blender_tool_plan_execution_report_v0.py",
+    "tests/test_execute_blender_tool_plan_v0.py"
+  ],
+  "preview_contract": {
+    "source_visibility_mode": "final_asset_only",
+    "hide_validation_helpers": true,
+    "hidden_helper_roles": [
+      "collision_proxy",
+      "lod_variant"
+    ],
+    "helpers_still_generated_for_validation": true
+  },
+  "validation_summary": {
+    "compiled_plan_count": 7,
+    "compiled_step_count": 219,
+    "compiled_unique_tool_count": 26,
+    "guard_panel_execution_step_count": 46,
+    "guard_panel_hidden_helper_count": 2,
+    "guard_panel_non_manifold_edge_count": 0,
+    "json_file_count": 230,
+    "non_blender_command_count": 29,
+    "full_blender_command_count": 43,
+    "repo_media_mesh_output_count": 0
+  },
+  "rules": {
+    "preview_visibility_source_owned": true,
+    "blender_does_not_choose_design_shape": true,
+    "validation_helpers_remain_generated": true,
+    "final_review_preview_hides_helpers": true,
+    "generated_outputs_in_repo": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false,
+    "building_code_compliance": false
+  }
+}

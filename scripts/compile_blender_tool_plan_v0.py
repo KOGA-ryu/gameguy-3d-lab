@@ -415,6 +415,12 @@ def validate_finish_tool_stacks(
         operations = require_known_terms(stack.get("operations"), operation_terms(geometry_terms), f"finish_tool_stacks[{stack_index}].operations")
         if "finish_tool_stack" not in geometry or "finish_tool_stack" not in operations:
             fail(f"finish_tool_stacks[{stack_index}] must declare finish_tool_stack operation term")
+        if "preview" in stack:
+            preview = require_object(stack.get("preview"), f"finish_tool_stacks[{stack_index}].preview")
+            visibility = require_string(preview.get("visibility"), f"finish_tool_stacks[{stack_index}].preview.visibility")
+            if visibility not in {"final_asset_only", "scene_with_validation_helpers"}:
+                fail(f"finish_tool_stacks[{stack_index}].preview.visibility uses unsupported mode `{visibility}`")
+            require_bool(preview.get("hide_validation_helpers"), f"finish_tool_stacks[{stack_index}].preview.hide_validation_helpers")
         sequence = require_list(stack.get("sequence"), f"finish_tool_stacks[{stack_index}].sequence")
         if not sequence:
             fail(f"finish_tool_stacks[{stack_index}].sequence must not be empty")
@@ -1248,8 +1254,28 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
             {"step_id": "create_lod1_variant", "tool_id": "create_lod_variant", "purpose": "Create a lower-cost display variant for distance views.", "params": {"decimate_ratio": params.get("lod_decimate_ratio", 0.55)}},
         ]
     if feature == "preview_and_export_plan":
+        preview = {}
+        if "_resolved_finish_tool_stack" in asset:
+            finish_stack = resolved_finish_tool_stack(asset)
+            preview = require_object(finish_stack.get("preview", {}), f"{asset['asset_id']}.finish_tool_stack.preview")
+        visibility = params.get("preview_visibility", preview.get("visibility", "scene_with_validation_helpers"))
+        if not isinstance(visibility, str) or visibility not in {"final_asset_only", "scene_with_validation_helpers"}:
+            fail(f"{asset['asset_id']}.preview_visibility uses unsupported mode `{visibility}`")
+        hide_helpers = params.get("hide_validation_helpers", preview.get("hide_validation_helpers", visibility == "final_asset_only"))
+        if not isinstance(hide_helpers, bool):
+            fail(f"{asset['asset_id']}.hide_validation_helpers must be a boolean")
         return [
-            {"step_id": "render_workbench_asset_preview", "tool_id": "render_workbench_preview", "purpose": "Render a neutral preview after execution.", "params": {"resolution": [1600, 1100], "hide_connectors": False}},
+            {
+                "step_id": "render_workbench_asset_preview",
+                "tool_id": "render_workbench_preview",
+                "purpose": "Render a neutral final-asset preview after execution.",
+                "params": {
+                    "resolution": [1600, 1100],
+                    "hide_connectors": False,
+                    "preview_visibility": visibility,
+                    "hide_validation_helpers": hide_helpers,
+                },
+            },
             {"step_id": "export_game_ready_glb", "tool_id": "export_gltf", "purpose": "Export the executed asset as GLB when export is requested.", "params": {"format": "GLB", "apply_modifiers": True}},
         ]
     fail(f"{asset['asset_id']} uses unknown feature `{feature}`")

@@ -257,6 +257,8 @@ def run_blender_execution(plan: dict[str, Any], steps: list[dict[str, Any]], out
     final_obj = context.get("final_object")
     if final_obj is None:
         fail("tool plan execution did not create a final object")
+    if context.get("render_path"):
+        apply_preview_visibility_for_render(bpy, context)
     add_scene_context(bpy, mathutils)
     if context.get("render_path"):
         setup_render_from_params(bpy, context.get("render_params", {}), Path(context["render_path"]))
@@ -277,6 +279,7 @@ def run_blender_execution(plan: dict[str, Any], steps: list[dict[str, Any]], out
     report["material_regions"] = context["material_regions"]
     report["socket_pass"] = context["socket_pass"]
     report["topology_cleanup"] = context["topology_cleanup"]
+    report["preview_visibility"] = context.get("preview_visibility", {})
     face_counts_by_role = context["material_regions"].get("face_counts_by_role", {})
     material_regions_preserved = len(face_counts_by_role) > 1
     if plan.get("asset_family") in {"window_frame", "door_frame"}:
@@ -943,6 +946,7 @@ def execute_create_collision_proxy(bpy: Any, step: dict[str, Any], context: dict
     obj.display_type = "WIRE"
     obj.hide_render = True
     obj["tool_plan_step_id"] = step["step_id"]
+    obj["tool_plan_helper_role"] = "collision_proxy"
 
 
 def execute_create_lod_variant(bpy: Any, step: dict[str, Any], context: dict[str, Any]) -> None:
@@ -952,6 +956,8 @@ def execute_create_lod_variant(bpy: Any, step: dict[str, Any], context: dict[str
     duplicate.name = f"{source.name}_LOD1"
     source.users_collection[0].objects.link(duplicate)
     duplicate.location.x += 0.72
+    duplicate["tool_plan_step_id"] = step["step_id"]
+    duplicate["tool_plan_helper_role"] = "lod_variant"
     duplicate.data.materials.clear()
     duplicate.data.materials.append(context["materials"]["lod"])
     modifier = duplicate.modifiers.new(name=step["step_id"], type="DECIMATE")
@@ -963,6 +969,33 @@ def execute_create_lod_variant(bpy: Any, step: dict[str, Any], context: dict[str
     except RuntimeError:
         duplicate.modifiers.remove(modifier)
     duplicate.select_set(False)
+
+
+def object_is_preview_helper(obj: Any) -> bool:
+    helper_role = obj.get("tool_plan_helper_role")
+    return bool(helper_role) or obj.name == "collision_proxy" or obj.name.endswith("_LOD1")
+
+
+def apply_preview_visibility_for_render(bpy: Any, context: dict[str, Any]) -> None:
+    params = require_object(context.get("render_params", {}), "render_params")
+    visibility = str(params.get("preview_visibility", "scene_with_validation_helpers"))
+    hide_helpers = bool(params.get("hide_validation_helpers", visibility == "final_asset_only"))
+    hidden_helpers: list[str] = []
+    if visibility == "final_asset_only" or hide_helpers:
+        final_obj = require_final_object(context)
+        for obj in bpy.context.scene.objects:
+            if obj.name == final_obj.name:
+                continue
+            if object_is_preview_helper(obj):
+                obj.hide_viewport = True
+                obj.hide_render = True
+                hidden_helpers.append(obj.name)
+    context["preview_visibility"] = {
+        "mode": visibility,
+        "hide_validation_helpers": hide_helpers,
+        "hidden_helper_count": len(hidden_helpers),
+        "hidden_helpers": hidden_helpers,
+    }
 
 
 def setup_render_from_params(bpy: Any, params: dict[str, Any], render_path: Path) -> None:

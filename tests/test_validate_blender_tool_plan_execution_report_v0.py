@@ -340,6 +340,12 @@ def valid_guard_panel_report() -> dict[str, Any]:
                 "socket_boolean_not_required": True,
                 "topology_cleanup_attempted": True,
             },
+            "preview_visibility": {
+                "mode": "final_asset_only",
+                "hide_validation_helpers": True,
+                "hidden_helper_count": 2,
+                "hidden_helpers": ["collision_proxy", "gothic_panel_guard_tool_plan_v0_LOD1"],
+            },
             "final_object": {
                 "name": "gothic_panel_guard_tool_plan_v0",
                 "vertex_count": 1536,

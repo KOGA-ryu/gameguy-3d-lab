@@ -21,6 +21,10 @@
       "operations": [
         "finish_tool_stack"
       ],
+      "preview": {
+        "visibility": "final_asset_only",
+        "hide_validation_helpers": true
+      },
       "sequence": [
         {
           "feature": "hard_edge_bevels",

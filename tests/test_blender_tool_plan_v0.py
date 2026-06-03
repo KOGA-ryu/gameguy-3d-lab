@@ -178,6 +178,9 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertIn("socket_shadows", by_step["join_visible_post_parts"]["params"]["objects"])
         material_map = by_step["assign_material_regions"]["params"]["material_map"]
         self.assertEqual(material_map["socket_shadow"], "gothic_stone_shadow")
+        preview_params = by_step["render_workbench_asset_preview"]["params"]
+        self.assertEqual(preview_params["preview_visibility"], "final_asset_only")
+        self.assertTrue(preview_params["hide_validation_helpers"])
         self.assertEqual(by_step["weld_close_vertices"]["params"]["merge_distance_m"], 0.0)
         topology_validation = by_step["validate_topology_non_manifold"]["params"]
         self.assertEqual(topology_validation["cleanup_merge_distance_m"], 0.0)
@@ -362,6 +365,8 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(by_step["create_left_pier_arch_recess_shadow"]["params"]["source_profile"], "pointed_arch_profile")
         self.assertEqual(by_step["join_gothic_panel_guard_blocks"]["params"]["source_component_count"], 9)
         self.assertTrue(by_step["join_gothic_panel_guard_blocks"]["params"]["socket_collar_composition"])
+        self.assertEqual(by_step["render_workbench_asset_preview"]["params"]["preview_visibility"], "final_asset_only")
+        self.assertTrue(by_step["render_workbench_asset_preview"]["params"]["hide_validation_helpers"])
         self.assertEqual(
             by_step["assign_material_regions"]["params"]["material_map"],
             {

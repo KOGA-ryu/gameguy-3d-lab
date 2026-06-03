@@ -124,7 +124,7 @@ This reads `data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v
 
 The column source now uses `profile_operation_stack` to declare a square-to-circle-to-fluted-to-circle-to-square profile sequence from legal `geometry_dictionary/` terms. The compiler preserves those terms in `source_terms`, and the tool-plan validator rejects unknown profile or operator terms before Blender sees the plan.
 
-The default architectural tool-plan bundle also uses `finish_tool_stack` to share a source-owned finishing sequence across the banister post, fence post, rail segment, column, window frame, and door frame. That stack declares bevels, weighted normals, procedural stone material/detail, UV projection/packing, cleanup, collision/LOD, preview, and export as source recipe intent; the compiler expands it into deterministic Blender tool steps.
+The default architectural tool-plan bundle also uses `finish_tool_stack` to share a source-owned finishing sequence across the banister post, fence post, rail segment, guard panel, column, window frame, and door frame. That stack declares bevels, weighted normals, procedural stone material/detail, UV projection/packing, cleanup, collision/LOD, final-only preview visibility, and export as source recipe intent; the compiler expands it into deterministic Blender tool steps.
 
 Validate compiled tool-plan JSON before adapter execution with:
 
@@ -144,7 +144,7 @@ The first execution adapter consumes the compiled tool plan and runs supported d
   --export
 ```
 
-This writes its report, preview, `.blend`, and optional `.glb` under `/tmp`, not the repo.
+This writes its report, preview, `.blend`, and optional `.glb` under `/tmp`, not the repo. The preview render hides validation helper objects such as collision proxies and LOD variants when the source finish stack requests `final_asset_only` visibility; those helpers still exist in the execution report and exported scene evidence.
 
 The execution report includes `material_regions`, `socket_pass`, `topology_cleanup`, and `quality_pass` evidence. The current banister-post run preserves role material regions, applies two explicit socket booleans with cutter cleanup, creates two socket shadow panels, and reports `0` non-manifold edges after validation.
 

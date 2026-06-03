@@ -138,6 +138,20 @@ def validate_no_repo_generated_outputs(report: dict[str, Any]) -> None:
             fail(f"{field} must not point inside the repo")
 
 
+def validate_preview_visibility(report: dict[str, Any]) -> None:
+    if "preview_visibility" not in report:
+        return
+    preview = require_object(report.get("preview_visibility"), "preview_visibility")
+    mode = require_string(preview.get("mode"), "preview_visibility.mode")
+    if mode not in {"final_asset_only", "scene_with_validation_helpers"}:
+        fail(f"preview_visibility.mode uses unsupported mode `{mode}`")
+    require_bool(preview.get("hide_validation_helpers"), "preview_visibility.hide_validation_helpers")
+    hidden_count = require_int(preview.get("hidden_helper_count"), "preview_visibility.hidden_helper_count")
+    hidden_helpers = require_string_list(preview.get("hidden_helpers"), "preview_visibility.hidden_helpers")
+    if hidden_count != len(hidden_helpers):
+        fail("preview_visibility.hidden_helper_count must match hidden_helpers length")
+
+
 def validate_rules(report: dict[str, Any]) -> None:
     rules = require_object(report.get("rules"), "rules")
     for key, expected in REQUIRED_RULES.items():
@@ -319,6 +333,7 @@ def validate_report(report_path: Path, *, max_non_manifold_edges: int, min_mater
         fail(f"unsupported asset_family quality profile `{asset_family}`")
     validate_topology(report, max_non_manifold_edges)
     validate_final_object(report)
+    validate_preview_visibility(report)
     validate_no_repo_generated_outputs(report)
     return {
         "schema": "blender_tool_plan_execution_quality_validation_v0",
