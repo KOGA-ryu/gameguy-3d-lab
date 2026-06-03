@@ -40,6 +40,7 @@ class ScriptOrbitAuditTests(unittest.TestCase):
         self.assertIn("PASS script orbit audit", result.stdout)
         self.assertEqual(report["schema"], "script_orbit_audit_v0")
         self.assertEqual(rows["scripts/asset_pump_v0.py"]["bucket"], "KEEP_CANONICAL")
+        self.assertEqual(rows["scripts/compile_blender_tool_plan_v0.py"]["bucket"], "KEEP_CANONICAL")
         self.assertEqual(rows["scripts/validate_gameguy_asset_v0.py"]["bucket"], "KEEP_CANONICAL")
         self.assertEqual(rows["scripts/export_blender_asset_preview_v0.py"]["bucket"], "KEEP_CANONICAL")
         self.assertEqual(rows["scripts/export_blender_measured_components_preview_v0.py"]["bucket"], "KEEP_CANONICAL")

@@ -1,0 +1,67 @@
+{
+  "schema": "gameguy_tool_plan_contract_v0",
+  "generated_schema": "gameguy_tool_plan_v0",
+  "status": "first_stable_blender_tool_plan_schema",
+  "purpose": "Define deterministic staged Blender-capable tool sequences emitted before Blender execution.",
+  "producer": "scripts/compile_blender_tool_plan_v0.py",
+  "source_inputs": [
+    "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json",
+    "data/architecture/asset_mill/tool_plan_recipes/banister_post_tool_plan_recipe_v0.json"
+  ],
+  "stage_order": [
+    "base_form",
+    "assembly",
+    "shape_refinement",
+    "sculpt_detail",
+    "retopo_cleanup",
+    "uv_mapping",
+    "material_texture",
+    "validation_export"
+  ],
+  "required_fields": [
+    "schema",
+    "plan_id",
+    "source_schema",
+    "tool_dictionary",
+    "asset_family",
+    "style",
+    "detail_level",
+    "features",
+    "stage_order",
+    "steps",
+    "summary",
+    "rules",
+    "no_claims"
+  ],
+  "step_required_fields": [
+    "order",
+    "step_id",
+    "stage",
+    "tool_id",
+    "category",
+    "execution_lane",
+    "deterministic",
+    "purpose",
+    "params",
+    "inputs",
+    "outputs",
+    "preconditions",
+    "postconditions"
+  ],
+  "rules": {
+    "steps_must_use_known_tool_ids": true,
+    "steps_must_follow_stage_order": true,
+    "steps_must_have_stable_order_indexes": true,
+    "compiler_does_not_execute_blender": true,
+    "blender_execution_adapter_must_consume_tool_plan": true,
+    "generated_media_or_mesh_outputs_are_not_written_by_compiler": true
+  },
+  "required_no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

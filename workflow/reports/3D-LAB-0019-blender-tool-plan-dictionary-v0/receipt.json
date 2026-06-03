@@ -1,0 +1,42 @@
+{
+  "schema": "blender_tool_plan_dictionary_receipt_v0",
+  "packet_id": "3D-LAB-0019",
+  "decision": "ADD_BLENDER_TOOL_DICTIONARY_AND_TOOL_PLAN_COMPILER",
+  "tool_dictionary": "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json",
+  "source_recipe": "data/architecture/asset_mill/tool_plan_recipes/banister_post_tool_plan_recipe_v0.json",
+  "generated_contract": "contracts/gameguy_tool_plan_v0.json",
+  "compiler": "scripts/compile_blender_tool_plan_v0.py",
+  "generated_schema": "gameguy_tool_plan_v0",
+  "compiled_plan": {
+    "plan_id": "gothic_stone_banister_post_tool_plan_v0_compiled",
+    "asset_family": "banister_post",
+    "style": "gothic_stone",
+    "detail_level": "medium",
+    "step_count": 32,
+    "unique_tool_count": 24,
+    "covered_stage_count": 8,
+    "non_deterministic_step_count": 0
+  },
+  "tool_dictionary_summary": {
+    "tool_count": 97,
+    "stage_count": 8,
+    "execution_lane_count": 5
+  },
+  "rules": {
+    "compiler_imports_bpy": false,
+    "compiler_executes_blender": false,
+    "writes_generated_media_or_mesh": false,
+    "tool_ids_validated": true,
+    "stage_order_validated": true,
+    "future_blender_adapter_must_consume_plan": true,
+    "retired_asset_mill_scripts_touched": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

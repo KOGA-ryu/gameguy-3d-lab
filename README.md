@@ -84,6 +84,22 @@ The first stable generated asset schema is:
 contracts/gameguy_asset_v0.json
 ```
 
+The repo now also has a tool-planning layer for near-finished Blender-capable asset construction:
+
+```text
+asset intent recipe -> staged Blender tool-plan compiler -> deterministic gameguy_tool_plan_v0 JSON
+```
+
+The first tool dictionary and plan compiler are:
+
+```bash
+python3 scripts/compile_blender_tool_plan_v0.py \
+  --clean \
+  --out /tmp/gameguy_blender_tool_plan_v0
+```
+
+This reads `data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json` and `data/architecture/asset_mill/tool_plan_recipes/banister_post_tool_plan_recipe_v0.json`. It does not execute Blender, write media, write mesh exports, or make render artifacts. A later Blender adapter should consume `gameguy_tool_plan_v0` and execute the staged operations.
+
 Blender scripts should be adapters for viewing or exporting deterministic asset JSON. If a Blender script contains source design decisions, move those decisions into source recipes or the asset pump.
 
 The first adapter is:
@@ -120,6 +136,8 @@ Run from the repo root:
 find data contracts docs geometry_dictionary workflow -name '*.json' -print0 | xargs -0 -n 1 python3 -m json.tool >/dev/null
 python3 -m py_compile scripts/*.py
 python3 -m unittest discover -s tests
+python3 scripts/compile_blender_tool_plan_v0.py --validate-only
+python3 scripts/compile_blender_tool_plan_v0.py --clean --out /tmp/gameguy_blender_tool_plan_v0
 python3 scripts/validate_tiny_fixture_v0.py
 python3 scripts/validate_measured_component_source_v0.py
 python3 scripts/asset_pump_v0.py --clean --out /tmp/gameguy_asset_pump_v0
@@ -145,6 +163,7 @@ Expected current checks:
 - JSON parses.
 - Python scripts compile.
 - Asset pump tests pass.
+- Blender tool-plan compiler validates a `97`-tool dictionary and compiles a `32`-step banister-post plan.
 - Tiny source fixture validation passes.
 - Measured component source validation passes.
 - Generated `gameguy_asset_v0` validation passes for simple, measured, section-stack, blocky-column, and blocky-shape grammar pump output.
