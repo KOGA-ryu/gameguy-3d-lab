@@ -1,0 +1,38 @@
+{
+  "schema": "gameguy_tool_plan_validator_receipt_v0",
+  "packet_id": "3D-LAB-0023",
+  "decision": "ADD_GAMEGUY_TOOL_PLAN_VALIDATOR",
+  "validator": "scripts/validate_gameguy_tool_plan_v0.py",
+  "validated_manifest": "/tmp/gameguy_blender_tool_plan_v0/manifest.json",
+  "validation_summary": {
+    "manifest_schema": "gameguy_tool_plan_manifest_v0",
+    "plan_schema": "gameguy_tool_plan_v0",
+    "plan_count": 1,
+    "total_steps": 32,
+    "unique_tool_count": 24,
+    "generated_outputs_created": false
+  },
+  "rules_validated": {
+    "known_tool_ids": true,
+    "stage_order": true,
+    "stable_step_order": true,
+    "deterministic_steps": true,
+    "compiler_imports_blender": false,
+    "compiler_executes_blender": false,
+    "writes_generated_media_or_mesh": false
+  },
+  "validator_rules": {
+    "imports_blender": false,
+    "runs_tool_plan_compiler": false,
+    "reads_source_intent_recipe": false,
+    "creates_media_or_mesh": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

@@ -100,6 +100,13 @@ python3 scripts/compile_blender_tool_plan_v0.py \
 
 This reads `data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json` and `data/architecture/asset_mill/tool_plan_recipes/banister_post_tool_plan_recipe_v0.json`. It does not execute Blender, write media, write mesh exports, or make render artifacts. The Blender execution adapter consumes `gameguy_tool_plan_v0` and executes the staged operations.
 
+Validate compiled tool-plan JSON before adapter execution with:
+
+```bash
+python3 scripts/validate_gameguy_tool_plan_v0.py \
+  --manifest /tmp/gameguy_blender_tool_plan_v0/manifest.json
+```
+
 The first execution adapter consumes the compiled tool plan and runs supported deterministic steps in Blender:
 
 ```bash
@@ -160,6 +167,7 @@ python3 -m py_compile scripts/*.py
 python3 -m unittest discover -s tests
 python3 scripts/compile_blender_tool_plan_v0.py --validate-only
 python3 scripts/compile_blender_tool_plan_v0.py --clean --out /tmp/gameguy_blender_tool_plan_v0
+python3 scripts/validate_gameguy_tool_plan_v0.py --manifest /tmp/gameguy_blender_tool_plan_v0/manifest.json
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_banister_post_tool_plan_v0_compiled.json --validate-only
 /Applications/Blender.app/Contents/MacOS/Blender --background \
   --python scripts/execute_blender_tool_plan_v0.py -- \
@@ -194,6 +202,7 @@ Expected current checks:
 - Python scripts compile.
 - Asset pump tests pass.
 - Blender tool-plan compiler validates a `97`-tool dictionary and compiles a `32`-step banister-post plan.
+- `gameguy_tool_plan_v0` validation proves manifest shape, known tool IDs, stable step order, stage order, deterministic steps, false claims, and no compiler media/mesh output.
 - Blender tool-plan execution adapter validation consumes the compiled `32`-step plan.
 - Blender tool-plan execution report validation proves adapter boundary rules, material-region preservation, socket boolean evidence, topology count, and no repo-local generated outputs.
 - Blender tool-plan execution quality evidence is recorded in `workflow/reports/3D-LAB-0021-execution-quality-pass-v0/`.
