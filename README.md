@@ -58,6 +58,12 @@ python3 scripts/export_blender_asset_preview_v0.py --manifest /tmp/gameguy_asset
 
 Measurement-source registries and research notes are reference material until they feed concrete asset dissection records or recipe inputs.
 
+Measured component field mapping into `gameguy_asset_v0` is defined at:
+
+```text
+docs/asset_pump/measured_component_pump_design_v0.md
+```
+
 ## Current Language
 
 The current implementation language is Python prototype scripts. A future C++ port is planned, but this repo does not claim a completed C++ implementation.
