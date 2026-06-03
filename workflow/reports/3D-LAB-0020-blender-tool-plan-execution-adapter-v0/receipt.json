@@ -1,0 +1,46 @@
+{
+  "schema": "blender_tool_plan_execution_adapter_receipt_v0",
+  "packet_id": "3D-LAB-0020",
+  "decision": "ADD_BLENDER_TOOL_PLAN_EXECUTION_ADAPTER",
+  "source_plan_schema": "gameguy_tool_plan_v0",
+  "adapter": "scripts/execute_blender_tool_plan_v0.py",
+  "input_plan": "/tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_banister_post_tool_plan_v0_compiled.json",
+  "execution_report": "/tmp/gameguy_blender_tool_plan_execution_v0/tool_plan_execution_v0_report.json",
+  "execution_summary": {
+    "plan_id": "gothic_stone_banister_post_tool_plan_v0_compiled",
+    "asset_family": "banister_post",
+    "style": "gothic_stone",
+    "step_count": 32,
+    "supported_step_count": 32,
+    "unique_tool_count": 24,
+    "executed_step_count": 32,
+    "skipped_step_count": 0,
+    "mesh_object_count": 5,
+    "final_object_vertex_count": 1309,
+    "final_object_face_count": 1261,
+    "non_manifold_edge_count_reported": 30
+  },
+  "outputs": {
+    "out_root": "/tmp/gameguy_blender_tool_plan_execution_v0",
+    "preview_png": "/tmp/gameguy_blender_tool_plan_execution_v0/tool_plan_execution_v0_workbench.png",
+    "blend": "/tmp/gameguy_blender_tool_plan_execution_v0/tool_plan_execution_v0.blend",
+    "glb": "/tmp/gameguy_blender_tool_plan_execution_v0/tool_plan_execution_v0.glb"
+  },
+  "rules": {
+    "consumes_gameguy_tool_plan_v0": true,
+    "reads_source_intent_recipe": false,
+    "runs_tool_plan_compiler": false,
+    "imports_asset_pump": false,
+    "executes_only_supported_deterministic_steps": true,
+    "source_design_logic": false,
+    "generated_outputs_in_repo": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

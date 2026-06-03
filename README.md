@@ -100,6 +100,19 @@ python3 scripts/compile_blender_tool_plan_v0.py \
 
 This reads `data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json` and `data/architecture/asset_mill/tool_plan_recipes/banister_post_tool_plan_recipe_v0.json`. It does not execute Blender, write media, write mesh exports, or make render artifacts. A later Blender adapter should consume `gameguy_tool_plan_v0` and execute the staged operations.
 
+The first execution adapter consumes the compiled tool plan and runs supported deterministic steps in Blender:
+
+```bash
+/Applications/Blender.app/Contents/MacOS/Blender --background \
+  --python scripts/execute_blender_tool_plan_v0.py -- \
+  --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_banister_post_tool_plan_v0_compiled.json \
+  --out /tmp/gameguy_blender_tool_plan_execution_v0 \
+  --render \
+  --export
+```
+
+This writes its report, preview, `.blend`, and optional `.glb` under `/tmp`, not the repo.
+
 Blender scripts should be adapters for viewing or exporting deterministic asset JSON. If a Blender script contains source design decisions, move those decisions into source recipes or the asset pump.
 
 The first adapter is:
@@ -138,6 +151,7 @@ python3 -m py_compile scripts/*.py
 python3 -m unittest discover -s tests
 python3 scripts/compile_blender_tool_plan_v0.py --validate-only
 python3 scripts/compile_blender_tool_plan_v0.py --clean --out /tmp/gameguy_blender_tool_plan_v0
+python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_banister_post_tool_plan_v0_compiled.json --validate-only
 python3 scripts/validate_tiny_fixture_v0.py
 python3 scripts/validate_measured_component_source_v0.py
 python3 scripts/asset_pump_v0.py --clean --out /tmp/gameguy_asset_pump_v0
@@ -164,6 +178,7 @@ Expected current checks:
 - Python scripts compile.
 - Asset pump tests pass.
 - Blender tool-plan compiler validates a `97`-tool dictionary and compiles a `32`-step banister-post plan.
+- Blender tool-plan execution adapter validation consumes the compiled `32`-step plan.
 - Tiny source fixture validation passes.
 - Measured component source validation passes.
 - Generated `gameguy_asset_v0` validation passes for simple, measured, section-stack, blocky-column, and blocky-shape grammar pump output.
