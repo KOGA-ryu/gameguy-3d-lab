@@ -20,6 +20,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BLENDER = Path("/Applications/Blender.app/Contents/MacOS/Blender")
 TOOL_PLAN_OUT = Path("/tmp/gameguy_blender_tool_plan_v0")
+ASSET_POLISH_TOOL_PLAN_OUT = Path("/tmp/gameguy_asset_polish_tool_plan_v0")
 TOOL_PLAN_EXECUTION_OUT = Path("/tmp/gameguy_blender_tool_plan_execution_v0")
 FENCE_POST_TOOL_PLAN_EXECUTION_OUT = Path("/tmp/gameguy_blender_fence_post_tool_plan_execution_v0")
 RAIL_SEGMENT_TOOL_PLAN_EXECUTION_OUT = Path("/tmp/gameguy_blender_rail_segment_tool_plan_execution_v0")
@@ -174,6 +175,15 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
             CommandStep("tool_plan_compile_validate_only", python_script("scripts/compile_blender_tool_plan_v0.py", "--validate-only")),
             CommandStep("tool_plan_compile", python_script("scripts/compile_blender_tool_plan_v0.py", "--clean", "--out", TOOL_PLAN_OUT)),
             CommandStep("tool_plan_validate", python_script("scripts/validate_gameguy_tool_plan_v0.py", "--manifest", TOOL_PLAN_OUT / "manifest.json")),
+            CommandStep("asset_polish_tool_plan_compile_validate_only", python_script("scripts/compile_asset_polish_tool_plan_v0.py", "--validate-only")),
+            CommandStep(
+                "asset_polish_tool_plan_compile",
+                python_script("scripts/compile_asset_polish_tool_plan_v0.py", "--clean", "--out", ASSET_POLISH_TOOL_PLAN_OUT),
+            ),
+            CommandStep(
+                "asset_polish_tool_plan_validate",
+                python_script("scripts/validate_asset_polish_tool_plan_v0.py", "--manifest", ASSET_POLISH_TOOL_PLAN_OUT / "manifest.json"),
+            ),
             CommandStep("blender_adapter_validate_only", python_script("scripts/execute_blender_tool_plan_v0.py", "--plan", plan_path, "--validate-only")),
             CommandStep("fence_post_blender_adapter_validate_only", python_script("scripts/execute_blender_tool_plan_v0.py", "--plan", fence_post_plan_path, "--validate-only")),
             CommandStep("rail_segment_blender_adapter_validate_only", python_script("scripts/execute_blender_tool_plan_v0.py", "--plan", rail_segment_plan_path, "--validate-only")),

@@ -1,0 +1,76 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0058-asset-polish-tool-plan-schema-v0",
+  "created_utc": "2026-06-03T21:38:54Z",
+  "summary": "Added a source-owned asset polish tool-plan lane with recipe JSON, geometry dictionary term, compiler, validator, registry wiring, pipeline labels, and focused tests.",
+  "source_inputs": {
+    "operation_term": "geometry_dictionary/operations/asset_polish_tool_plan.json",
+    "recipe_bundle": "data/architecture/asset_mill/polish_recipes/asset_polish_tool_plan_recipes_v0.json",
+    "compiler": "scripts/compile_asset_polish_tool_plan_v0.py",
+    "validator": "scripts/validate_asset_polish_tool_plan_v0.py",
+    "terminology_reference": "docs/asset_pump/asset_polish_terminology_reference_v0.md"
+  },
+  "compiled_output": {
+    "out": "/tmp/gameguy_asset_polish_tool_plan_v0",
+    "manifest_schema": "asset_polish_tool_plan_manifest_v0",
+    "plan_schema": "asset_polish_tool_plan_v0",
+    "plan_count": 1,
+    "target_count": 8,
+    "step_count": 10,
+    "unique_tool_count": 8,
+    "source_asset_id": "blocky_fence_post_v0",
+    "source_asset_schema": "gameguy_asset_v0"
+  },
+  "registry": {
+    "source_asset_polish_plan_bundle_count": 1,
+    "source_asset_polish_plan_count": 1,
+    "pipeline_labels": [
+      "asset_polish_tool_plan_compile_validate_only",
+      "asset_polish_tool_plan_compile",
+      "asset_polish_tool_plan_validate"
+    ]
+  },
+  "validation": {
+    "python_compile": {
+      "command": "python3 -m py_compile scripts/compile_asset_polish_tool_plan_v0.py scripts/validate_asset_polish_tool_plan_v0.py scripts/validate_asset_generation_registry_v0.py scripts/validate_generation_pipeline_v0.py scripts/audit_script_orbit_v0.py",
+      "result": "PASS"
+    },
+    "targeted_tests": {
+      "command": "python3 -m unittest tests/test_asset_polish_tool_plan_v0.py tests/test_validate_asset_generation_registry_v0.py tests/test_audit_script_orbit_v0.py tests/test_asset_mill_retirement_readiness_v0.py",
+      "result": "OK",
+      "test_count": 20
+    },
+    "asset_polish_compile": {
+      "command": "python3 scripts/compile_asset_polish_tool_plan_v0.py --clean --out /tmp/gameguy_asset_polish_tool_plan_v0",
+      "result": "PASS asset polish tool-plan compile: plans=1 steps=10 targets=8 out=/tmp/gameguy_asset_polish_tool_plan_v0"
+    },
+    "asset_polish_validate": {
+      "command": "python3 scripts/validate_asset_polish_tool_plan_v0.py --manifest /tmp/gameguy_asset_polish_tool_plan_v0/manifest.json --json-report /tmp/gameguy_asset_polish_tool_plan_0058.json",
+      "result": "PASS asset polish tool-plan validation: plans=1 steps=10 targets=8"
+    },
+    "asset_generation_registry": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py --json-report /tmp/gameguy_registry_0058.json",
+      "result": "PASS asset generation registry validation: geometry_bundles=5 geometry_assets=40 source_profiles=19 source_asset_polish_plans=1 source_graphs=1 source_cell_selections=1 source_pattern_fields=1 source_pattern_segments=1 source_taxonomies=23 reference_only=3"
+    },
+    "script_orbit_audit": {
+      "command": "python3 scripts/audit_script_orbit_v0.py --json-report /tmp/gameguy_script_orbit_0058.json",
+      "result": "PASS script orbit audit: scripts=84 KEEP_CANONICAL=25, CONVERT_TO_ADAPTER=0, REPLACE_BY_PUMP=0, REFERENCE_ONLY=59, DELETE_LATER=0"
+    },
+    "generation_pipeline_non_blender_skip_unit_tests": {
+      "command": "python3 scripts/validate_generation_pipeline_v0.py --skip-unit-tests --json-report /tmp/gameguy_pipeline_0058_asset_polish_tool_plan_final.json",
+      "result": "PASS generation pipeline validation: commands=41 json=264 include_blender=false",
+      "command_count": 41,
+      "json_file_count": 264
+    }
+  },
+  "rules": {
+    "source_recipe_owns_design_decisions": true,
+    "compiler_executes_blender": false,
+    "validator_executes_blender": false,
+    "generated_outputs_stay_under_tmp": true,
+    "no_blender_validation_for_source_compiler_slice": true,
+    "no_mesh_output": true,
+    "no_media_output": true
+  },
+  "recommended_next_goal": "Review the compiled asset_polish_tool_plan_v0 output, then add a Blender adapter only as an executor of the compiled plan."
+}

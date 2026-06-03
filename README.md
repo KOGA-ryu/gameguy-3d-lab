@@ -104,6 +104,19 @@ docs/asset_pump/asset_polish_terminology_reference_v0.md
 
 Use it to map architectural words such as plinth, arris, fielded panel, tracery, mullion, rib, boss, ogee, cavetto, and weighted normals into recipe targets and Blender tool-plan operations.
 
+The first asset polish plan compiler is:
+
+```bash
+python3 scripts/compile_asset_polish_tool_plan_v0.py \
+  --clean \
+  --out /tmp/gameguy_asset_polish_tool_plan_v0
+
+python3 scripts/validate_asset_polish_tool_plan_v0.py \
+  --manifest /tmp/gameguy_asset_polish_tool_plan_v0/manifest.json
+```
+
+It reads `data/architecture/asset_mill/polish_recipes/asset_polish_tool_plan_recipes_v0.json` and emits `asset_polish_tool_plan_v0` JSON. The first plan targets `blocky_fence_post_v0` with plinth arrises, fielded panels, shaft lips, rail-socket reveals, cap ogee lip, material slots, weighted normals, and UV hints. It does not run Blender.
+
 The first lean command is:
 
 ```bash

@@ -1,0 +1,307 @@
+{
+  "schema": "asset_polish_tool_plan_recipe_bundle_v0",
+  "bundle_id": "asset_polish_tool_plan_recipes_v0",
+  "purpose": "Source-owned asset polish plans that map architectural terminology to named targets and deterministic Blender-capable tool operations.",
+  "units": "abstract_meter",
+  "tool_dictionary": "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json",
+  "terminology_reference": "docs/asset_pump/asset_polish_terminology_reference_v0.md",
+  "rules": {
+    "source_recipe_only": true,
+    "deterministic_compiler": true,
+    "no_blender_execution": true,
+    "no_generated_media": true,
+    "no_mesh_export": true,
+    "blender_adapter_executes_compiled_plan_only": true
+  },
+  "plan_count": 1,
+  "plans": [
+    {
+      "schema": "asset_polish_tool_plan_recipe_v0",
+      "recipe_id": "blocky_fence_post_polish_recipe_v0",
+      "plan_id": "blocky_fence_post_asset_polish_plan_v0",
+      "source_asset": {
+        "asset_schema": "gameguy_asset_v0",
+        "asset_id": "blocky_fence_post_v0",
+        "source_bundle": "data/architecture/asset_mill/recipes/blocky_shape_grammar_assets_v0.json",
+        "source_bundle_schema": "asset_mill_blocky_shape_grammar_bundle_v0",
+        "source_asset_kind": "blocky_shape_post"
+      },
+      "asset_family": "newel_post",
+      "style": "gothic_stone",
+      "target_readiness": "polished_source_plan_prototype",
+      "dimensions_m": {
+        "width": 0.5,
+        "depth": 0.5,
+        "height": 1.24
+      },
+      "geometry_terms_used": [
+        "asset_polish_tool_plan",
+        "relief_stack",
+        "bevel_edges",
+        "offset_profile",
+        "boolean_cut",
+        "finish_tool_stack",
+        "square",
+        "rectangle",
+        "support",
+        "barrier",
+        "rail"
+      ],
+      "operations": [
+        "asset_polish_tool_plan",
+        "relief_stack",
+        "bevel_edges",
+        "offset_profile",
+        "boolean_cut",
+        "finish_tool_stack"
+      ],
+      "terminology_terms": [
+        "newel_post",
+        "plinth",
+        "arris",
+        "fielded_panel",
+        "reveal",
+        "bead",
+        "ogee",
+        "shaft",
+        "rail_socket",
+        "cap_block",
+        "weighted_normals"
+      ],
+      "targets": [
+        {
+          "target_id": "newel.plinth.outer_arrises",
+          "architectural_terms": ["plinth", "arris", "chamfer"],
+          "source_part_ids": ["square_foot", "lower_step_band"],
+          "selector": {
+            "kind": "edge_role",
+            "edge_role": "outer_vertical_edges"
+          },
+          "material_role": "base"
+        },
+        {
+          "target_id": "newel.plinth.panel_faces",
+          "architectural_terms": ["fielded_panel", "reveal", "plinth"],
+          "source_part_ids": ["square_foot"],
+          "selector": {
+            "kind": "side_faces",
+            "faces": ["front", "back", "left", "right"]
+          },
+          "material_role": "panel"
+        },
+        {
+          "target_id": "newel.shaft.side_panels",
+          "architectural_terms": ["shaft", "fielded_panel", "reveal"],
+          "source_part_ids": ["post_core"],
+          "selector": {
+            "kind": "side_faces",
+            "faces": ["front", "back", "left", "right"]
+          },
+          "material_role": "shaft"
+        },
+        {
+          "target_id": "newel.shaft.panel_lips",
+          "architectural_terms": ["bead", "reveal", "raised"],
+          "source_part_ids": ["post_core"],
+          "selector": {
+            "kind": "face_border",
+            "from_target": "newel.shaft.side_panels"
+          },
+          "material_role": "trim"
+        },
+        {
+          "target_id": "newel.rail_sockets.east_west",
+          "architectural_terms": ["rail_socket", "reveal"],
+          "source_part_ids": ["rail_socket_east", "rail_socket_west"],
+          "selector": {
+            "kind": "part_ids",
+            "part_ids": ["rail_socket_east", "rail_socket_west"]
+          },
+          "material_role": "socket_shadow"
+        },
+        {
+          "target_id": "newel.cap.ogee_lip",
+          "architectural_terms": ["cap_block", "ogee", "cyma_reversa", "bead"],
+          "source_part_ids": ["upper_step_band", "square_cap"],
+          "selector": {
+            "kind": "edge_band",
+            "band": "cap_lower_outer_band"
+          },
+          "material_role": "cap"
+        },
+        {
+          "target_id": "newel.all.hard_edges",
+          "architectural_terms": ["arris", "bevel"],
+          "source_part_ids": ["square_foot", "lower_step_band", "post_core", "upper_step_band", "square_cap"],
+          "selector": {
+            "kind": "all_visible_hard_edges"
+          },
+          "material_role": "stone"
+        },
+        {
+          "target_id": "newel.all.visible_parts",
+          "architectural_terms": ["assembly", "material_slot", "uv_unwrap"],
+          "source_part_ids": ["square_foot", "lower_step_band", "post_core", "upper_step_band", "square_cap"],
+          "selector": {
+            "kind": "all_visible_mesh_parts"
+          },
+          "material_role": "stone"
+        }
+      ],
+      "material_slots": [
+        {"slot_id": "gothic_stone_base", "material_role": "base"},
+        {"slot_id": "gothic_stone_panel_shadow", "material_role": "panel"},
+        {"slot_id": "gothic_stone_trim_highlight", "material_role": "trim"},
+        {"slot_id": "gothic_stone_socket_shadow", "material_role": "socket_shadow"},
+        {"slot_id": "gothic_stone_cap", "material_role": "cap"},
+        {"slot_id": "gothic_stone_body", "material_role": "stone"}
+      ],
+      "sequence": [
+        {
+          "step_id": "chamfer_plinth_outer_arrises",
+          "operation": "chamfer_edges",
+          "tool_id": "modifier_bevel",
+          "target": "newel.plinth.outer_arrises",
+          "params": {
+            "width_m": 0.012,
+            "segments": 1,
+            "profile": 0.5,
+            "harden_normals": true
+          }
+        },
+        {
+          "step_id": "inset_plinth_fielded_panels",
+          "operation": "inset_faces",
+          "tool_id": "inset_faces",
+          "target": "newel.plinth.panel_faces",
+          "params": {
+            "inset_m": 0.035,
+            "depth_m": -0.012,
+            "panel_mode": "fielded_recess",
+            "apply_to_faces": ["front", "back", "left", "right"]
+          }
+        },
+        {
+          "step_id": "inset_shaft_side_panels",
+          "operation": "inset_faces",
+          "tool_id": "inset_faces",
+          "target": "newel.shaft.side_panels",
+          "params": {
+            "inset_m": 0.026,
+            "depth_m": -0.01,
+            "panel_mode": "recessed_reveal",
+            "apply_to_faces": ["front", "back", "left", "right"]
+          }
+        },
+        {
+          "step_id": "raise_shaft_panel_beads",
+          "operation": "extrude_along_normals",
+          "tool_id": "extrude_faces",
+          "target": "newel.shaft.panel_lips",
+          "params": {
+            "depth_m": 0.014,
+            "lip_width_m": 0.008,
+            "lip_profile": "small_bead"
+          }
+        },
+        {
+          "step_id": "define_east_west_socket_reveals",
+          "operation": "boolean_cut",
+          "tool_id": "modifier_boolean",
+          "target": "newel.rail_sockets.east_west",
+          "params": {
+            "solver": "EXACT",
+            "cut_depth_m": 0.026,
+            "leave_shadow_panel": true,
+            "cleanup_cutters": true
+          }
+        },
+        {
+          "step_id": "sweep_cap_ogee_lip",
+          "operation": "sweep_profile",
+          "tool_id": "curve_bevel_profile",
+          "target": "newel.cap.ogee_lip",
+          "params": {
+            "profile": "small_ogee_over_bead",
+            "projection_m": 0.018,
+            "height_m": 0.032,
+            "fill_caps": true
+          }
+        },
+        {
+          "step_id": "bevel_all_visible_hard_edges",
+          "operation": "bevel_edges",
+          "tool_id": "modifier_bevel",
+          "target": "newel.all.hard_edges",
+          "params": {
+            "width_m": 0.006,
+            "segments": 1,
+            "profile": 0.5,
+            "harden_normals": true
+          }
+        },
+        {
+          "step_id": "assign_gothic_stone_material_slots",
+          "operation": "material_assign",
+          "tool_id": "material_assign_by_part",
+          "target": "newel.all.visible_parts",
+          "params": {
+            "material_map": {
+              "base": "gothic_stone_base",
+              "panel": "gothic_stone_panel_shadow",
+              "trim": "gothic_stone_trim_highlight",
+              "socket_shadow": "gothic_stone_socket_shadow",
+              "cap": "gothic_stone_cap",
+              "stone": "gothic_stone_body"
+            }
+          }
+        },
+        {
+          "step_id": "apply_weighted_normals",
+          "operation": "weighted_normals",
+          "tool_id": "modifier_weighted_normal",
+          "target": "newel.all.visible_parts",
+          "params": {
+            "keep_sharp": true,
+            "weight": 50
+          }
+        },
+        {
+          "step_id": "smart_uv_unwrap_visible_parts",
+          "operation": "uv_unwrap",
+          "tool_id": "uv_smart_project",
+          "target": "newel.all.visible_parts",
+          "params": {
+            "method": "smart_uv_project",
+            "island_margin": 0.018,
+            "angle_limit_degrees": 66.0
+          }
+        }
+      ],
+      "validation_expectations": {
+        "target_count": 8,
+        "step_count": 10,
+        "material_slot_count": 6,
+        "required_operations": [
+          "chamfer_edges",
+          "inset_faces",
+          "extrude_along_normals",
+          "boolean_cut",
+          "sweep_profile",
+          "bevel_edges",
+          "material_assign",
+          "weighted_normals",
+          "uv_unwrap"
+        ]
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false
+      }
+    }
+  ]
+}

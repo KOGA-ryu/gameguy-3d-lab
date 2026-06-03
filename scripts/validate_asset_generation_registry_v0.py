@@ -253,6 +253,52 @@ def validate_tool_plan_bundle(item: Any, known_labels: set[str]) -> dict[str, An
     }
 
 
+def validate_source_asset_polish_bundle(item: Any, index: int, known_labels: set[str]) -> dict[str, Any]:
+    bundle_ref = require_object(item, f"source_asset_polish_plan_bundles[{index}]")
+    path = repo_path(bundle_ref.get("path"), f"source_asset_polish_plan_bundles[{index}].path")
+    bundle = load_json(path)
+    expected_schema = require_string(bundle_ref.get("schema"), f"source_asset_polish_plan_bundles[{index}].schema")
+    if bundle.get("schema") != expected_schema:
+        fail(f"{display_path(path)} schema must be {expected_schema}")
+    bundle_id = require_string(bundle_ref.get("bundle_id"), f"source_asset_polish_plan_bundles[{index}].bundle_id")
+    if bundle.get("bundle_id") != bundle_id:
+        fail(f"{display_path(path)} bundle_id must be {bundle_id}")
+    expected_count = require_int(
+        bundle_ref.get("expected_plan_count"),
+        f"source_asset_polish_plan_bundles[{index}].expected_plan_count",
+        minimum=1,
+    )
+    plans = require_list(bundle.get("plans"), f"source_asset_polish_plan_bundles[{index}].plans")
+    if len(plans) != expected_count:
+        fail(f"source_asset_polish_plan_bundles[{index}].expected_plan_count must match plans length")
+    if bundle.get("plan_count") != expected_count:
+        fail(f"source_asset_polish_plan_bundles[{index}].expected_plan_count must match bundle plan_count")
+    dictionary_path = repo_path(bundle_ref.get("tool_dictionary"), f"source_asset_polish_plan_bundles[{index}].tool_dictionary")
+    dictionary = load_json(dictionary_path)
+    expected_dictionary_schema = require_string(
+        bundle_ref.get("tool_dictionary_schema"),
+        f"source_asset_polish_plan_bundles[{index}].tool_dictionary_schema",
+    )
+    if dictionary.get("schema") != expected_dictionary_schema:
+        fail(f"{display_path(dictionary_path)} schema must be {expected_dictionary_schema}")
+    geometry_dictionary_path = repo_path(bundle_ref.get("geometry_dictionary"), f"source_asset_polish_plan_bundles[{index}].geometry_dictionary")
+    if not (geometry_dictionary_path / "operations" / "asset_polish_tool_plan.json").exists():
+        fail("source_asset_polish_plan_bundles geometry_dictionary must contain operations/asset_polish_tool_plan.json")
+    compiler = script_path(bundle_ref.get("compiler"), f"source_asset_polish_plan_bundles[{index}].compiler")
+    validator = script_path(bundle_ref.get("validator"), f"source_asset_polish_plan_bundles[{index}].validator")
+    assert_no_blender_import(compiler, f"source_asset_polish_plan_bundles[{index}].compiler")
+    assert_no_blender_import(validator, f"source_asset_polish_plan_bundles[{index}].validator")
+    labels = validate_pipeline_labels(bundle_ref.get("pipeline_labels"), known_labels, f"source_asset_polish_plan_bundles[{index}].pipeline_labels")
+    return {
+        "bundle_id": bundle_id,
+        "path": display_path(path),
+        "schema": expected_schema,
+        "plan_count": expected_count,
+        "tool_dictionary": display_path(dictionary_path),
+        "pipeline_label_count": len(labels),
+    }
+
+
 def validate_source_profile_bundle(item: Any, index: int, known_labels: set[str]) -> dict[str, Any]:
     bundle_ref = require_object(item, f"source_profile_bundles[{index}]")
     path = repo_path(bundle_ref.get("path"), f"source_profile_bundles[{index}].path")
@@ -480,6 +526,13 @@ def validate_registry(path: Path) -> dict[str, Any]:
     if len(geometry_paths) != len(geometry_results):
         fail("canonical_geometry_bundles paths must be unique")
     tool_plan_result = validate_tool_plan_bundle(registry.get("canonical_tool_plan_bundle"), known_labels)
+    source_asset_polish_results = [
+        validate_source_asset_polish_bundle(item, index, known_labels)
+        for index, item in enumerate(require_list(registry.get("source_asset_polish_plan_bundles"), "source_asset_polish_plan_bundles"))
+    ]
+    source_asset_polish_paths = {result["path"] for result in source_asset_polish_results}
+    if len(source_asset_polish_paths) != len(source_asset_polish_results):
+        fail("source_asset_polish_plan_bundles paths must be unique")
     source_profile_results = [
         validate_source_profile_bundle(item, index, known_labels)
         for index, item in enumerate(require_list(registry.get("source_profile_bundles"), "source_profile_bundles"))
@@ -525,6 +578,7 @@ def validate_registry(path: Path) -> dict[str, Any]:
     canonical_paths = (
         geometry_paths
         | {tool_plan_result["path"]}
+        | source_asset_polish_paths
         | source_profile_paths
         | source_graph_paths
         | source_cell_selection_paths
@@ -555,6 +609,8 @@ def validate_registry(path: Path) -> dict[str, Any]:
         "canonical_geometry_bundle_count": len(geometry_results),
         "canonical_geometry_asset_count": sum(result["asset_count"] for result in geometry_results),
         "canonical_tool_plan_bundle": tool_plan_result,
+        "source_asset_polish_plan_bundle_count": len(source_asset_polish_results),
+        "source_asset_polish_plan_count": sum(result["plan_count"] for result in source_asset_polish_results),
         "source_profile_bundle_count": len(source_profile_results),
         "source_profile_count": sum(result["profile_count"] for result in source_profile_results),
         "source_graph_bundle_count": len(source_graph_results),
@@ -577,6 +633,7 @@ def validate_registry(path: Path) -> dict[str, Any]:
             "imports_blender": False,
             "creates_media_or_mesh": False,
             "validates_pipeline_label_coverage": True,
+            "validates_source_asset_polish_plan_boundaries": True,
             "validates_source_profile_boundaries": True,
             "validates_source_graph_boundaries": True,
             "validates_source_cell_selection_boundaries": True,
@@ -608,6 +665,7 @@ def main(argv: list[str] | None = None) -> int:
         f"geometry_bundles={result['canonical_geometry_bundle_count']} "
         f"geometry_assets={result['canonical_geometry_asset_count']} "
         f"source_profiles={result['source_profile_count']} "
+        f"source_asset_polish_plans={result['source_asset_polish_plan_count']} "
         f"source_graphs={result['source_graph_count']} "
         f"source_cell_selections={result['source_cell_selection_set_count']} "
         f"source_pattern_fields={result['source_pattern_field_count']} "

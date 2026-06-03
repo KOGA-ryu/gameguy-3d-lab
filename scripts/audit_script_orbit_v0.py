@@ -25,6 +25,7 @@ BUCKETS = (
 
 OVERRIDES: dict[str, tuple[str, str]] = {
     "asset_pump_v0.py": ("KEEP_CANONICAL", "canonical source recipe to deterministic asset JSON generator"),
+    "compile_asset_polish_tool_plan_v0.py": ("KEEP_CANONICAL", "canonical source asset polish recipe to deterministic asset_polish_tool_plan_v0 JSON compiler"),
     "compile_blender_tool_plan_v0.py": ("KEEP_CANONICAL", "canonical source intent to staged Blender tool-plan JSON compiler"),
     "compile_construction_cell_selection_v0.py": ("KEEP_CANONICAL", "canonical construction graph cell-selection compiler before asset lifting, folding, or Blender adapter work"),
     "compile_pattern_field_v0.py": ("KEEP_CANONICAL", "canonical multi-center pattern field source compiler before selection refinement, asset lifting, or Blender adapter work"),
@@ -36,6 +37,7 @@ OVERRIDES: dict[str, tuple[str, str]] = {
     "validate_generation_pipeline_v0.py": ("KEEP_CANONICAL", "orchestrates canonical deterministic 3D generation validation gates"),
     "validate_reference_dissection_packet_v0.py": ("KEEP_CANONICAL", "guards reference-led shape and Blender tool dissection packets before geometry generation"),
     "validate_asset_generation_registry_v0.py": ("KEEP_CANONICAL", "guards the declared canonical generation recipe/tool-plan surface and reference-only boundaries"),
+    "validate_asset_polish_tool_plan_v0.py": ("KEEP_CANONICAL", "guards deterministic asset_polish_tool_plan_v0 compiler output before Blender adapter execution"),
     "validate_blender_tool_plan_execution_report_v0.py": ("KEEP_CANONICAL", "guards Blender execution quality reports without importing Blender or source recipes"),
     "validate_gameguy_tool_plan_v0.py": ("KEEP_CANONICAL", "guards deterministic gameguy_tool_plan_v0 compiler output before Blender adapter execution"),
     "validate_geometry_dictionary.py": ("KEEP_CANONICAL", "guards legal geometry vocabulary used by recipes and pump"),

@@ -1,0 +1,42 @@
+{
+  "term_id": "asset_polish_tool_plan",
+  "category": "composition_operation",
+  "plain_name": "Asset Polish Tool Plan",
+  "description": "Declares named architectural polish targets and an ordered tool sequence that turns deterministic asset geometry into a near-finished Blender-executable plan without letting Blender choose design intent.",
+  "required_inputs": {
+    "source_asset_id": "gameguy_asset_v0 asset_id",
+    "targets": "named architectural target[]",
+    "sequence": "polish_operation[]",
+    "tool_ids": "blender_tool_dictionary tool_id[]"
+  },
+  "outputs": {
+    "type": "asset_polish_tool_plan_v0"
+  },
+  "constraints": {
+    "source_asset_must_be_declared": true,
+    "targets_must_be_named": true,
+    "sequence_must_not_be_empty": true,
+    "step_targets_must_exist": true,
+    "tool_ids_must_exist_in_tool_dictionary": true,
+    "compiler_does_not_import_blender": true,
+    "blender_adapter_consumes_compiled_plan_only": true
+  },
+  "common_uses": [
+    "fielded panels",
+    "beveled arrises",
+    "ogee and bead lips",
+    "rail sockets",
+    "tracery bars",
+    "weighted normals and material slots",
+    "UV and proxy hints"
+  ],
+  "blender_method": "compile source-owned target and operation records into deterministic tool-plan JSON; a Blender adapter may execute the compiled plan later",
+  "validation": [
+    "known_tool_ids",
+    "known_target_ids",
+    "non_empty_sequence",
+    "deterministic_steps",
+    "no_blender_import",
+    "no_media_or_mesh_output"
+  ]
+}
