@@ -69,6 +69,7 @@
     "expected_tool_count": 97,
     "sequence_policy": "data/architecture/asset_mill/blender_tools/asset_family_tool_sequence_policy_v0.json",
     "sequence_policy_schema": "asset_family_tool_sequence_policy_v0",
+    "geometry_dictionary": "geometry_dictionary",
     "expected_asset_family_policy_count": 5,
     "compiler": "scripts/compile_blender_tool_plan_v0.py",
     "validator": "scripts/validate_gameguy_tool_plan_v0.py",

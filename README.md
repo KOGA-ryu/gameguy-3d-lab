@@ -114,6 +114,8 @@ python3 scripts/compile_blender_tool_plan_v0.py \
 
 This reads `data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json`, `data/architecture/asset_mill/blender_tools/asset_family_tool_sequence_policy_v0.json`, and `data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json`. It currently compiles separate staged plans for a banister post, fence post, column, window frame, and door frame, while the policy defines legal tool sequences for columns, banister posts, fence posts, window frames, and door frames. It does not execute Blender, write media, write mesh exports, or make render artifacts. The Blender execution adapter consumes `gameguy_tool_plan_v0` and executes the staged operations.
 
+The column source now uses `profile_operation_stack` to declare a square-to-circle-to-fluted-to-circle-to-square profile sequence from legal `geometry_dictionary/` terms. The compiler preserves those terms in `source_terms`, and the tool-plan validator rejects unknown profile or operator terms before Blender sees the plan.
+
 Validate compiled tool-plan JSON before adapter execution with:
 
 ```bash

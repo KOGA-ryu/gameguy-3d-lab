@@ -139,10 +139,7 @@
         "height": 1.38
       },
       "features": [
-        "stepped_square_base",
-        "round_transition_ring",
-        "star_or_fluted_shaft",
-        "square_top_cap",
+        "profile_operation_stack",
         "hard_edge_bevels",
         "weighted_normals",
         "stone_surface_material",
@@ -151,36 +148,143 @@
         "preview_and_export_plan"
       ],
       "style_parameters": {
-        "include_cap_blocks": false,
-        "base_step_count": 3,
-        "base_foot_size_m": [0.56, 0.56, 0.10],
-        "base_mid_size_m": [0.46, 0.46, 0.06],
-        "base_top_size_m": [0.36, 0.36, 0.06],
-        "bottom_transition_vertices": 8,
-        "bottom_transition_radius_m": 0.24,
-        "bottom_transition_depth_m": 0.08,
-        "bottom_transition_location_z_m": 0.26,
-        "shaft_vertices": 8,
-        "shaft_radius_m": 0.17,
-        "shaft_height_m": 0.82,
-        "shaft_location_z_m": 0.71,
-        "column_rib_count": 8,
-        "column_rib_source_size_m": [0.025, 0.04, 0.80],
-        "column_rib_radius_m": 0.21,
-        "column_rib_location_z_m": 0.71,
-        "top_transition_vertices": 8,
-        "top_transition_radius_m": 0.24,
-        "top_transition_depth_m": 0.08,
-        "top_transition_location_z_m": 1.16,
-        "post_core_height_m": 0.98,
-        "cap_neck_size_m": [0.36, 0.36, 0.06],
-        "cap_neck_location_z_m": 1.23,
-        "cap_top_size_m": [0.54, 0.54, 0.12],
-        "cap_top_location_z_m": 1.32,
         "bevel_width_m": 0.014,
         "stone_noise_scale": 36.0,
         "uv_margin": 0.018,
         "lod_decimate_ratio": 0.58
+      },
+      "profile_operation_stack": {
+        "schema": "profile_operation_stack_v0",
+        "grammar_id": "square_circle_fluted_column_stack_v0",
+        "axis": "z",
+        "geometry_terms_used": [
+          "profile_operation_stack",
+          "compound_asset",
+          "extrude",
+          "array_radial",
+          "square",
+          "circle",
+          "rectangle"
+        ],
+        "profile_terms": [
+          "square",
+          "circle",
+          "rectangle"
+        ],
+        "operations": [
+          "profile_operation_stack",
+          "compound_asset",
+          "extrude",
+          "array_radial"
+        ],
+        "sequence": [
+          "square_base",
+          "circle_transition",
+          "fluted_shaft",
+          "circle_transition",
+          "square_cap"
+        ],
+        "parts": [
+          {
+            "part_id": "base_foot",
+            "profile": "square",
+            "operation": "extrude",
+            "size_m": [0.56, 0.56, 0.10],
+            "location_m": [0.0, 0.0, 0.05],
+            "material_role": "base"
+          },
+          {
+            "part_id": "base_mid_step",
+            "profile": "square",
+            "operation": "extrude",
+            "size_m": [0.46, 0.46, 0.06],
+            "location_m": [0.0, 0.0, 0.13],
+            "material_role": "base"
+          },
+          {
+            "part_id": "base_top_step",
+            "profile": "square",
+            "operation": "extrude",
+            "size_m": [0.36, 0.36, 0.06],
+            "location_m": [0.0, 0.0, 0.19],
+            "material_role": "base"
+          },
+          {
+            "part_id": "bottom_transition_ring",
+            "profile": "circle",
+            "operation": "extrude",
+            "vertices": 8,
+            "radius_m": 0.24,
+            "depth_m": 0.08,
+            "location_m": [0.0, 0.0, 0.26],
+            "material_role": "transition"
+          },
+          {
+            "part_id": "top_transition_ring",
+            "profile": "circle",
+            "operation": "extrude",
+            "vertices": 8,
+            "radius_m": 0.24,
+            "depth_m": 0.08,
+            "location_m": [0.0, 0.0, 1.16],
+            "material_role": "transition"
+          },
+          {
+            "part_id": "column_shaft_core",
+            "profile": "circle",
+            "operation": "extrude",
+            "vertices": 8,
+            "radius_m": 0.17,
+            "depth_m": 0.82,
+            "location_m": [0.0, 0.0, 0.71],
+            "material_role": "shaft"
+          },
+          {
+            "part_id": "column_ribs",
+            "source_part_id": "column_single_rib_source",
+            "profile": "rectangle",
+            "operation": "array_radial",
+            "source_size_m": [0.025, 0.04, 0.80],
+            "source_location_m": [0.21, 0.0, 0.71],
+            "count": 8,
+            "radius_m": 0.21,
+            "material_role": "rib"
+          },
+          {
+            "part_id": "cap_neck",
+            "profile": "square",
+            "operation": "extrude",
+            "size_m": [0.36, 0.36, 0.06],
+            "location_m": [0.0, 0.0, 1.23],
+            "material_role": "cap"
+          },
+          {
+            "part_id": "cap_top",
+            "profile": "square",
+            "operation": "extrude",
+            "size_m": [0.54, 0.54, 0.12],
+            "location_m": [0.0, 0.0, 1.32],
+            "material_role": "cap"
+          }
+        ],
+        "join": {
+          "step_id": "join_column_parts",
+          "objects": [
+            "base",
+            "bottom_transition_ring",
+            "column_shaft_core",
+            "ribs",
+            "top_transition_ring",
+            "cap"
+          ],
+          "profile_transition_sequence": [
+            "square_base",
+            "circle_ring",
+            "fluted_shaft",
+            "circle_ring",
+            "square_cap"
+          ]
+        }
       },
       "required_stage_coverage": [
         "base_form",

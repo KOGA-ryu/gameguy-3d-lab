@@ -7,7 +7,8 @@
   "source_inputs": [
     "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json",
     "data/architecture/asset_mill/blender_tools/asset_family_tool_sequence_policy_v0.json",
-    "data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json"
+    "data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json",
+    "geometry_dictionary/"
   ],
   "stage_order": [
     "base_form",
@@ -30,6 +31,7 @@
     "style",
     "detail_level",
     "features",
+    "source_terms",
     "stage_order",
     "steps",
     "summary",
@@ -58,7 +60,19 @@
     "compiler_does_not_execute_blender": true,
     "blender_execution_adapter_must_consume_tool_plan": true,
     "generated_media_or_mesh_outputs_are_not_written_by_compiler": true,
-    "asset_family_sequence_policy_must_be_enforced": true
+    "asset_family_sequence_policy_must_be_enforced": true,
+    "geometry_dictionary_source_terms_must_be_valid": true
+  },
+  "source_terms_contract": {
+    "required_fields": [
+      "geometry",
+      "profiles",
+      "operators"
+    ],
+    "geometry": "Geometry dictionary terms used by the source recipe.",
+    "profiles": "Profile primitive terms from geometry_dictionary.",
+    "operators": "Operation terms from geometry_dictionary.",
+    "profile_operation_stack": "Optional profile-operation grammar metadata when the asset uses a profile_operation_stack feature."
   },
   "required_no_claims": {
     "production_approval": false,

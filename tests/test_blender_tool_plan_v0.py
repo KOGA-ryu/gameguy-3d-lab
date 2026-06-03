@@ -205,12 +205,27 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(plan["asset_family"], "column")
         self.assertEqual(plan["asset_family_policy"], "column")
         self.assertEqual(plan["style"], "gothic_stone")
+        self.assertEqual(plan["features"][0], "profile_operation_stack")
+        self.assertNotIn("stepped_square_base", plan["features"])
+        self.assertNotIn("round_transition_ring", plan["features"])
+        self.assertNotIn("star_or_fluted_shaft", plan["features"])
+        self.assertNotIn("square_top_cap", plan["features"])
         self.assertEqual(plan["summary"]["step_count"], 31)
         self.assertEqual(plan["summary"]["unique_tool_count"], 24)
         self.assertEqual(plan["summary"]["covered_stages"], plan["stage_order"])
         self.assertIn("primitive_cylinder_add", plan["summary"]["unique_tools"])
         self.assertIn("object_duplicate_radial", plan["summary"]["unique_tools"])
         self.assertNotIn("modifier_boolean", plan["summary"]["unique_tools"])
+        self.assertEqual(plan["source_terms"]["profiles"], ["square", "circle", "rectangle"])
+        self.assertEqual(
+            plan["source_terms"]["operators"],
+            ["profile_operation_stack", "compound_asset", "extrude", "array_radial"],
+        )
+        self.assertEqual(plan["source_terms"]["profile_operation_stack"]["grammar_id"], "square_circle_fluted_column_stack_v0")
+        self.assertEqual(
+            plan["source_terms"]["profile_operation_stack"]["sequence"],
+            ["square_base", "circle_transition", "fluted_shaft", "circle_transition", "square_cap"],
+        )
 
         by_step = {step["step_id"]: step for step in plan["steps"]}
         self.assertEqual(by_step["create_base_foot"]["params"]["size_m"], [0.56, 0.56, 0.1])
@@ -367,6 +382,27 @@ class BlenderToolPlanTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("side members must leave a center opening", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
+
+    def test_profile_operation_stack_rejects_unknown_profile_term_before_output(self) -> None:
+        source = load_json(DEFAULT_RECIPE)
+        column = asset_by_id(source, "gothic_stone_column_tool_plan_v0")
+        column["profile_operation_stack"]["profile_terms"].append("fake_profile")
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            recipe_path = Path(tmp) / "bad_recipe.json"
+            out_root = Path(tmp) / "plans"
+            recipe_path.write_text(json.dumps(source, indent=2) + "\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(COMPILER), "--recipe", str(recipe_path), "--out", str(out_root)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("profile_operation_stack.profile_terms", result.stderr)
+        self.assertIn("unknown geometry dictionary term `fake_profile`", result.stderr)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_tool_count_mismatch_fails_before_output(self) -> None:

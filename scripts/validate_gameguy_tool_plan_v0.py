@@ -20,6 +20,7 @@ DEFAULT_MANIFEST = Path("/tmp/gameguy_blender_tool_plan_v0/manifest.json")
 DEFAULT_CONTRACT = ROOT / "contracts" / "gameguy_tool_plan_v0.json"
 DEFAULT_DICTIONARY = ROOT / "data" / "architecture" / "asset_mill" / "blender_tools" / "blender_tool_dictionary_v0.json"
 DEFAULT_SEQUENCE_POLICY = ROOT / "data" / "architecture" / "asset_mill" / "blender_tools" / "asset_family_tool_sequence_policy_v0.json"
+GEOMETRY_DICTIONARY_ROOT = ROOT / "geometry_dictionary"
 PLAN_SCHEMA = "gameguy_tool_plan_v0"
 MANIFEST_SCHEMA = "gameguy_tool_plan_manifest_v0"
 CONTRACT_SCHEMA = "gameguy_tool_plan_contract_v0"
@@ -56,6 +57,46 @@ def load_json(path: Path) -> dict[str, Any]:
     if not isinstance(data, dict):
         fail(f"JSON must be an object: {path}")
     return data
+
+
+def load_geometry_terms() -> dict[str, set[str]]:
+    terms = {
+        "profile_primitive": set(),
+        "mesh_operation": set(),
+        "composition_operation": set(),
+        "transform": set(),
+        "connector": set(),
+        "semantic_geometry": set(),
+        "measurement": set(),
+        "validation_term": set(),
+    }
+    for path in sorted(GEOMETRY_DICTIONARY_ROOT.rglob("*.json")):
+        if "schemas" in path.parts:
+            continue
+        term = load_json(path)
+        term_id = term.get("term_id")
+        category = term.get("category")
+        if not isinstance(term_id, str) or not term_id:
+            fail(f"{path} term_id must be a non-empty string")
+        if category in terms:
+            if term_id in terms[category]:
+                fail(f"duplicate geometry dictionary term `{term_id}` in category `{category}`")
+            terms[category].add(term_id)
+    for category, ids in terms.items():
+        if not ids:
+            fail(f"geometry dictionary category `{category}` has no terms")
+    return terms
+
+
+def operation_terms(terms: dict[str, set[str]]) -> set[str]:
+    return terms["mesh_operation"] | terms["composition_operation"] | terms["transform"]
+
+
+def all_geometry_terms(terms: dict[str, set[str]]) -> set[str]:
+    result: set[str] = set()
+    for ids in terms.values():
+        result.update(ids)
+    return result
 
 
 def require_string(value: Any, field: str) -> str:
@@ -104,6 +145,15 @@ def require_string_list(value: Any, field: str, *, allow_empty: bool = False) ->
     result = []
     for index, item in enumerate(items):
         result.append(require_string(item, f"{field}[{index}]"))
+    return result
+
+
+def require_known_terms(values: Any, known: set[str], field: str, *, allow_empty: bool = True) -> list[str]:
+    result = []
+    for index, item in enumerate(require_string_list(values, field, allow_empty=allow_empty)):
+        if item not in known:
+            fail(f"{field}[{index}] uses unknown geometry dictionary term `{item}`")
+        result.append(item)
     return result
 
 
@@ -285,6 +335,7 @@ def validate_contract(contract: dict[str, Any], stages: list[str]) -> tuple[list
             "blender_execution_adapter_must_consume_tool_plan": True,
             "generated_media_or_mesh_outputs_are_not_written_by_compiler": True,
             "asset_family_sequence_policy_must_be_enforced": True,
+            "geometry_dictionary_source_terms_must_be_valid": True,
         },
     )
     return required_fields, step_required_fields, required_claims
@@ -359,6 +410,24 @@ def validate_step(
     return step_id, tool_id
 
 
+def validate_source_terms(plan: dict[str, Any], geometry_terms: dict[str, set[str]]) -> None:
+    source_terms = require_object(plan.get("source_terms"), "source_terms")
+    geometry = require_known_terms(source_terms.get("geometry"), all_geometry_terms(geometry_terms), "source_terms.geometry")
+    profiles = require_known_terms(source_terms.get("profiles"), geometry_terms["profile_primitive"], "source_terms.profiles")
+    operators = require_known_terms(source_terms.get("operators"), operation_terms(geometry_terms), "source_terms.operators")
+    if "profile_operation_stack" not in require_string_list(plan.get("features"), "features"):
+        return
+    if "profile_operation_stack" not in geometry or "profile_operation_stack" not in operators:
+        fail("source_terms must declare profile_operation_stack for profile_operation_stack features")
+    if not profiles:
+        fail("source_terms.profiles must not be empty for profile_operation_stack features")
+    stack = require_object(source_terms.get("profile_operation_stack"), "source_terms.profile_operation_stack")
+    require_string(stack.get("grammar_id"), "source_terms.profile_operation_stack.grammar_id")
+    if require_string(stack.get("axis"), "source_terms.profile_operation_stack.axis") != "z":
+        fail("source_terms.profile_operation_stack.axis only supports z in v0")
+    require_string_list(stack.get("sequence"), "source_terms.profile_operation_stack.sequence")
+
+
 def enforce_plan_sequence_policy(
     plan: dict[str, Any],
     steps: list[dict[str, Any]],
@@ -415,6 +484,7 @@ def validate_plan(
     dictionary: dict[str, Any],
     sequence_policy: dict[str, Any],
     policy_map: dict[str, dict[str, Any]],
+    geometry_terms: dict[str, set[str]],
 ) -> dict[str, Any]:
     for field in required_fields:
         if field not in plan:
@@ -432,6 +502,7 @@ def validate_plan(
     require_string(plan.get("detail_level"), "detail_level")
     require_string_list(plan.get("features"), "features")
     require_object(plan.get("style_parameters", {}), "style_parameters")
+    validate_source_terms(plan, geometry_terms)
     validate_dimensions(plan.get("dimensions_m"), "dimensions_m")
     if require_string_list(plan.get("stage_order"), "stage_order") != stages:
         fail("stage_order must match tool dictionary stages")
@@ -447,6 +518,7 @@ def validate_plan(
             "tool_ids_validated": True,
             "stage_order_validated": True,
             "asset_family_sequence_policy_validated": True,
+            "geometry_dictionary_source_terms_validated": True,
         },
     )
 
@@ -515,6 +587,7 @@ def validate_manifest_plans(
     dictionary: dict[str, Any],
     sequence_policy: dict[str, Any],
     policy_map: dict[str, dict[str, Any]],
+    geometry_terms: dict[str, set[str]],
 ) -> list[dict[str, Any]]:
     manifest_root = manifest_path.parent
     results = []
@@ -541,6 +614,7 @@ def validate_manifest_plans(
             dictionary,
             sequence_policy,
             policy_map,
+            geometry_terms,
         )
         if result["plan_id"] != plan_id:
             fail(f"manifest.plans[{index}].plan_id must match plan.plan_id")
@@ -559,6 +633,7 @@ def validate_tool_plan_output(manifest_path: Path, contract_path: Path, dictiona
     contract = load_json(contract_path)
     dictionary = load_json(dictionary_path)
     sequence_policy = load_json(sequence_policy_path)
+    geometry_terms = load_geometry_terms()
     tool_map, stages, _lanes = validate_tool_dictionary(dictionary)
     policy_map = validate_sequence_policy(sequence_policy, dictionary, tool_map, stages)
     required_fields, step_required_fields, required_claims = validate_contract(contract, stages)
@@ -575,6 +650,7 @@ def validate_tool_plan_output(manifest_path: Path, contract_path: Path, dictiona
         dictionary,
         sequence_policy,
         policy_map,
+        geometry_terms,
     )
     total_steps = sum(plan["step_count"] for plan in plan_results)
     unique_tools = sorted({tool_id for result in plan_results for tool_id in result["unique_tools"]})
@@ -603,6 +679,7 @@ def validate_tool_plan_output(manifest_path: Path, contract_path: Path, dictiona
             "validates_stage_order": True,
             "validates_stable_step_order": True,
             "validates_asset_family_sequence_policy": True,
+            "validates_geometry_dictionary_terms": True,
         },
     }
 

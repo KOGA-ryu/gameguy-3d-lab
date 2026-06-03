@@ -1,0 +1,38 @@
+{
+  "term_id": "profile_operation_stack",
+  "category": "composition_operation",
+  "plain_name": "Profile Operation Stack",
+  "description": "Assembles an ordered architectural asset shape from declared profile primitives and operations before backend-specific tool-plan emission.",
+  "required_inputs": {
+    "axis": "z",
+    "parts": "ordered profile_operation_part[]",
+    "profile_terms": "profile_primitive[]",
+    "operations": "mesh_or_composition_operation[]"
+  },
+  "outputs": {
+    "type": "deterministic_tool_or_geometry_plan"
+  },
+  "constraints": {
+    "axis": "z",
+    "parts_must_not_be_empty": true,
+    "part_ids_must_be_unique": true,
+    "profile_terms_must_exist_in_dictionary": true,
+    "operation_terms_must_exist_in_dictionary": true,
+    "deterministic_expansion_order": true
+  },
+  "common_uses": [
+    "columns",
+    "banister posts",
+    "fence posts",
+    "door frames",
+    "window frames",
+    "architectural trim"
+  ],
+  "blender_method": "compile source profile/operation parts to deterministic gameguy_tool_plan_v0 steps; Blender consumes the compiled plan only",
+  "validation": [
+    "closed_profile",
+    "nonzero_volume",
+    "scale_within_bounds",
+    "outward_normals"
+  ]
+}

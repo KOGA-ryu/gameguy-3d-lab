@@ -45,7 +45,7 @@ python3 scripts/validate_generation_pipeline_v0.py --include-blender
 Expected output:
 
 ```text
-PASS generation pipeline validation: commands=36 json=221 include_blender=true
+PASS generation pipeline validation: commands=36 json=223 include_blender=true
 ```
 
 Relevant command evidence:

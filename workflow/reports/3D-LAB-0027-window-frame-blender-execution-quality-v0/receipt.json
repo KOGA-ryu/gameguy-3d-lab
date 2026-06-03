@@ -56,7 +56,7 @@
   ],
   "full_pipeline": {
     "command_count": 36,
-    "json_file_count": 221,
+    "json_file_count": 223,
     "include_blender": true,
     "status": "pass"
   },

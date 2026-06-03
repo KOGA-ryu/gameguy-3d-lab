@@ -28,6 +28,7 @@
       "asset_family": "column",
       "dictionary_family_tags": ["column", "post", "stone", "all"],
       "allowed_features": [
+        "profile_operation_stack",
         "stepped_square_base",
         "round_transition_ring",
         "ribbed_column_core",

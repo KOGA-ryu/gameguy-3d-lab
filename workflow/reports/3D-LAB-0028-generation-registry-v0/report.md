@@ -28,8 +28,8 @@ This validator checks registry paths, schemas, asset counts, expected tool count
 
 ```text
 PASS asset generation registry validation: geometry_bundles=5 geometry_assets=40 reference_only=3
-PASS generation pipeline validation: commands=26 json=221 include_blender=false
-PASS generation pipeline validation: commands=36 json=221 include_blender=true
+PASS generation pipeline validation: commands=26 json=223 include_blender=false
+PASS generation pipeline validation: commands=36 json=223 include_blender=true
 PASS script orbit audit: scripts=73 KEEP_CANONICAL=15, CONVERT_TO_ADAPTER=0, REPLACE_BY_PUMP=0, REFERENCE_ONLY=58, DELETE_LATER=0
 ```
 

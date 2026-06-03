@@ -4,7 +4,7 @@
   "decision": "ADD_GENERATION_PIPELINE_VALIDATOR",
   "validator": "scripts/validate_generation_pipeline_v0.py",
   "validation_summary": {
-      "json_file_count": 221,
+      "json_file_count": 223,
       "non_blender_command_count": 26,
       "full_blender_command_count": 36,
       "asset_family_policy_count": 5,

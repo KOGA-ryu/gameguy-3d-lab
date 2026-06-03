@@ -21,6 +21,7 @@ DEFAULT_DICTIONARY = ROOT / "data" / "architecture" / "asset_mill" / "blender_to
 DEFAULT_SEQUENCE_POLICY = ROOT / "data" / "architecture" / "asset_mill" / "blender_tools" / "asset_family_tool_sequence_policy_v0.json"
 DEFAULT_RECIPE = ROOT / "data" / "architecture" / "asset_mill" / "tool_plan_recipes" / "architectural_tool_plan_recipes_v0.json"
 DEFAULT_OUT = Path("/tmp/gameguy_blender_tool_plan_v0")
+GEOMETRY_DICTIONARY_ROOT = ROOT / "geometry_dictionary"
 SEQUENCE_POLICY_SCHEMA = "asset_family_tool_sequence_policy_v0"
 FALSE_CLAIMS = {
     "production_approval": False,
@@ -54,6 +55,56 @@ def load_json(path: Path) -> dict[str, Any]:
     if not isinstance(data, dict):
         fail(f"JSON must be an object: {path}")
     return data
+
+
+def load_geometry_terms() -> dict[str, set[str]]:
+    terms = {
+        "profile_primitive": set(),
+        "mesh_operation": set(),
+        "composition_operation": set(),
+        "transform": set(),
+        "connector": set(),
+        "semantic_geometry": set(),
+        "measurement": set(),
+        "validation_term": set(),
+    }
+    for path in sorted(GEOMETRY_DICTIONARY_ROOT.rglob("*.json")):
+        if "schemas" in path.parts:
+            continue
+        term = load_json(path)
+        term_id = term.get("term_id")
+        category = term.get("category")
+        if not isinstance(term_id, str) or not term_id:
+            fail(f"{repo_display_path(path)} term_id must be a non-empty string")
+        if category in terms:
+            if term_id in terms[category]:
+                fail(f"duplicate geometry dictionary term `{term_id}` in category `{category}`")
+            terms[category].add(term_id)
+    for category, ids in terms.items():
+        if not ids:
+            fail(f"geometry dictionary category `{category}` has no terms")
+    return terms
+
+
+def operation_terms(terms: dict[str, set[str]]) -> set[str]:
+    return terms["mesh_operation"] | terms["composition_operation"] | terms["transform"]
+
+
+def all_geometry_terms(terms: dict[str, set[str]]) -> set[str]:
+    result: set[str] = set()
+    for ids in terms.values():
+        result.update(ids)
+    return result
+
+
+def require_known_terms(values: Any, known: set[str], field: str) -> list[str]:
+    result = []
+    for index, item in enumerate(require_list(values, field)):
+        term_id = require_string(item, f"{field}[{index}]")
+        if term_id not in known:
+            fail(f"{field}[{index}] uses unknown geometry dictionary term `{term_id}`")
+        result.append(term_id)
+    return result
 
 
 def require_string(value: Any, field: str) -> str:
@@ -104,6 +155,29 @@ def positive_number(value: Any, field: str) -> float:
     if not math.isfinite(number) or number <= 0.0:
         fail(f"{field} must be a positive number")
     return round(number, 6)
+
+
+def finite_number(value: Any, field: str) -> float:
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
+        fail(f"{field} must be a finite number")
+    number = float(value)
+    if not math.isfinite(number):
+        fail(f"{field} must be a finite number")
+    return round(number, 6)
+
+
+def finite_vector(value: Any, field: str, length: int) -> list[float]:
+    if not isinstance(value, list) or len(value) != length:
+        fail(f"{field} must be a {length}-number list")
+    return [finite_number(item, f"{field}[{index}]") for index, item in enumerate(value)]
+
+
+def positive_vector(value: Any, field: str, length: int) -> list[float]:
+    vector = finite_vector(value, field, length)
+    for index, item in enumerate(vector):
+        if item <= 0.0:
+            fail(f"{field}[{index}] must be positive")
+    return vector
 
 
 def validate_tool_dictionary(dictionary: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -232,7 +306,72 @@ def validate_sequence_policy(policy: dict[str, Any], dictionary: dict[str, Any],
     return result
 
 
-def validate_recipe_bundle(bundle: dict[str, Any], stages: list[str]) -> list[dict[str, Any]]:
+def validate_profile_operation_stack(asset: dict[str, Any], terms: dict[str, set[str]]) -> None:
+    asset_id = require_string(asset.get("asset_id"), "asset_id")
+    stack = require_object(asset.get("profile_operation_stack"), f"{asset_id}.profile_operation_stack")
+    if stack.get("schema") != "profile_operation_stack_v0":
+        fail(f"{asset_id}.profile_operation_stack.schema must be profile_operation_stack_v0")
+    require_string(stack.get("grammar_id"), f"{asset_id}.profile_operation_stack.grammar_id")
+    if require_string(stack.get("axis"), f"{asset_id}.profile_operation_stack.axis") != "z":
+        fail(f"{asset_id}.profile_operation_stack.axis only supports z in v0")
+    geometry_terms = require_known_terms(stack.get("geometry_terms_used"), all_geometry_terms(terms), f"{asset_id}.profile_operation_stack.geometry_terms_used")
+    profile_terms = require_known_terms(stack.get("profile_terms"), terms["profile_primitive"], f"{asset_id}.profile_operation_stack.profile_terms")
+    operations = require_known_terms(stack.get("operations"), operation_terms(terms), f"{asset_id}.profile_operation_stack.operations")
+    if "profile_operation_stack" not in operations or "profile_operation_stack" not in geometry_terms:
+        fail(f"{asset_id}.profile_operation_stack must declare profile_operation_stack operation term")
+    parts = require_list(stack.get("parts"), f"{asset_id}.profile_operation_stack.parts")
+    if not parts:
+        fail(f"{asset_id}.profile_operation_stack.parts must not be empty")
+    seen_part_ids: set[str] = set()
+    seen_expanded_ids: set[str] = set()
+    for part_index, item in enumerate(parts):
+        part = require_object(item, f"{asset_id}.profile_operation_stack.parts[{part_index}]")
+        part_id = require_string(part.get("part_id"), f"{asset_id}.profile_operation_stack.parts[{part_index}].part_id")
+        if part_id in seen_part_ids:
+            fail(f"{asset_id}.profile_operation_stack duplicate part_id `{part_id}`")
+        seen_part_ids.add(part_id)
+        profile = require_string(part.get("profile"), f"{asset_id}.profile_operation_stack.parts[{part_index}].profile")
+        if profile not in profile_terms:
+            fail(f"{asset_id}.profile_operation_stack.parts[{part_index}].profile must be declared in profile_terms")
+        operation = require_string(part.get("operation"), f"{asset_id}.profile_operation_stack.parts[{part_index}].operation")
+        if operation not in operations:
+            fail(f"{asset_id}.profile_operation_stack.parts[{part_index}].operation must be declared in operations")
+        if operation == "extrude":
+            if profile in {"square", "rectangle"}:
+                positive_vector(part.get("size_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].size_m", 3)
+                finite_vector(part.get("location_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].location_m", 3)
+            elif profile == "circle":
+                int_value = part.get("vertices")
+                if not isinstance(int_value, int) or isinstance(int_value, bool) or int_value < 4:
+                    fail(f"{asset_id}.profile_operation_stack.parts[{part_index}].vertices must be an integer >= 4")
+                positive_number(part.get("radius_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].radius_m")
+                positive_number(part.get("depth_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].depth_m")
+                finite_vector(part.get("location_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].location_m", 3)
+            else:
+                fail(f"{asset_id}.profile_operation_stack.parts[{part_index}] uses unsupported extrude profile `{profile}`")
+            seen_expanded_ids.add(part_id)
+        elif operation == "array_radial":
+            source_part_id = require_string(part.get("source_part_id"), f"{asset_id}.profile_operation_stack.parts[{part_index}].source_part_id")
+            if source_part_id in seen_expanded_ids:
+                fail(f"{asset_id}.profile_operation_stack duplicate expanded source_part_id `{source_part_id}`")
+            seen_expanded_ids.add(source_part_id)
+            positive_vector(part.get("source_size_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].source_size_m", 3)
+            finite_vector(part.get("source_location_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].source_location_m", 3)
+            count = part.get("count")
+            if not isinstance(count, int) or isinstance(count, bool) or count < 2:
+                fail(f"{asset_id}.profile_operation_stack.parts[{part_index}].count must be an integer >= 2")
+            positive_number(part.get("radius_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].radius_m")
+        else:
+            fail(f"{asset_id}.profile_operation_stack.parts[{part_index}] uses unsupported operation `{operation}`")
+        if "material_role" in part:
+            require_string(part.get("material_role"), f"{asset_id}.profile_operation_stack.parts[{part_index}].material_role")
+    join = require_object(stack.get("join"), f"{asset_id}.profile_operation_stack.join")
+    require_string(join.get("step_id"), f"{asset_id}.profile_operation_stack.join.step_id")
+    require_string_list(join.get("objects"), f"{asset_id}.profile_operation_stack.join.objects")
+    require_string_list(join.get("profile_transition_sequence"), f"{asset_id}.profile_operation_stack.join.profile_transition_sequence")
+
+
+def validate_recipe_bundle(bundle: dict[str, Any], stages: list[str], geometry_terms: dict[str, set[str]]) -> list[dict[str, Any]]:
     if bundle.get("schema") != "asset_mill_tool_plan_recipe_bundle_v0":
         fail("recipe bundle schema must be asset_mill_tool_plan_recipe_bundle_v0")
     assets = require_list(bundle.get("assets"), "assets")
@@ -253,6 +392,8 @@ def validate_recipe_bundle(bundle: dict[str, Any], stages: list[str]) -> list[di
         require_string(asset.get("detail_level"), f"{asset_id}.detail_level")
         if not require_list(asset.get("features"), f"{asset_id}.features"):
             fail(f"{asset_id}.features must not be empty")
+        if "profile_operation_stack" in asset.get("features", []):
+            validate_profile_operation_stack(asset, geometry_terms)
         for stage_index, stage in enumerate(require_list(asset.get("required_stage_coverage"), f"{asset_id}.required_stage_coverage")):
             stage_id = require_string(stage, f"{asset_id}.required_stage_coverage[{stage_index}]")
             if stage_id not in stages:
@@ -342,8 +483,110 @@ def rectangular_frame_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
     ]
 
 
+def profile_operation_stack_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
+    asset_id = require_string(asset.get("asset_id"), "asset_id")
+    stack = require_object(asset.get("profile_operation_stack"), f"{asset_id}.profile_operation_stack")
+    steps: list[dict[str, Any]] = []
+    for part_index, item in enumerate(require_list(stack.get("parts"), f"{asset_id}.profile_operation_stack.parts")):
+        part = require_object(item, f"{asset_id}.profile_operation_stack.parts[{part_index}]")
+        part_id = require_string(part.get("part_id"), f"{asset_id}.profile_operation_stack.parts[{part_index}].part_id")
+        profile = require_string(part.get("profile"), f"{asset_id}.profile_operation_stack.parts[{part_index}].profile")
+        operation = require_string(part.get("operation"), f"{asset_id}.profile_operation_stack.parts[{part_index}].operation")
+        if operation == "extrude" and profile in {"square", "rectangle"}:
+            steps.append(
+                {
+                    "step_id": f"create_{part_id}",
+                    "tool_id": "primitive_cube_add",
+                    "purpose": f"Create `{part_id}` from a {profile} profile extrusion.",
+                    "params": {
+                        "size_m": positive_vector(part.get("size_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].size_m", 3),
+                        "location_m": finite_vector(part.get("location_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].location_m", 3),
+                        "source_profile": profile,
+                        "source_operation": operation,
+                        "material_role": part.get("material_role", "default"),
+                    },
+                }
+            )
+        elif operation == "extrude" and profile == "circle":
+            vertices = part.get("vertices")
+            if not isinstance(vertices, int) or isinstance(vertices, bool):
+                fail(f"{asset_id}.profile_operation_stack.parts[{part_index}].vertices must be an integer")
+            steps.append(
+                {
+                    "step_id": f"create_{part_id}",
+                    "tool_id": "primitive_cylinder_add",
+                    "purpose": f"Create `{part_id}` from a low-vertex circle profile extrusion.",
+                    "params": {
+                        "vertices": vertices,
+                        "radius_m": positive_number(part.get("radius_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].radius_m"),
+                        "depth_m": positive_number(part.get("depth_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].depth_m"),
+                        "location_m": finite_vector(part.get("location_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].location_m", 3),
+                        "source_profile": profile,
+                        "source_operation": operation,
+                        "material_role": part.get("material_role", "default"),
+                    },
+                }
+            )
+        elif operation == "array_radial":
+            source_part_id = require_string(part.get("source_part_id"), f"{asset_id}.profile_operation_stack.parts[{part_index}].source_part_id")
+            count = part.get("count")
+            if not isinstance(count, int) or isinstance(count, bool):
+                fail(f"{asset_id}.profile_operation_stack.parts[{part_index}].count must be an integer")
+            steps.extend(
+                [
+                    {
+                        "step_id": f"create_{source_part_id}",
+                        "tool_id": "primitive_cube_add",
+                        "purpose": f"Create `{source_part_id}` before radial profile-operation expansion.",
+                        "params": {
+                            "size_m": positive_vector(part.get("source_size_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].source_size_m", 3),
+                            "location_m": finite_vector(part.get("source_location_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].source_location_m", 3),
+                            "source_profile": profile,
+                            "source_operation": operation,
+                            "material_role": part.get("material_role", "default"),
+                        },
+                    },
+                    {
+                        "step_id": f"duplicate_{part_id}_radially",
+                        "tool_id": "object_duplicate_radial",
+                        "purpose": f"Expand `{source_part_id}` with deterministic radial operation `{part_id}`.",
+                        "params": {
+                            "source_object": source_part_id,
+                            "count": count,
+                            "axis": require_string(stack.get("axis"), f"{asset_id}.profile_operation_stack.axis"),
+                            "radius_m": positive_number(part.get("radius_m"), f"{asset_id}.profile_operation_stack.parts[{part_index}].radius_m"),
+                            "source_profile": profile,
+                            "source_operation": operation,
+                        },
+                    },
+                ]
+            )
+        else:
+            fail(f"{asset_id}.profile_operation_stack.parts[{part_index}] uses unsupported profile/operation pair `{profile}/{operation}`")
+    join = require_object(stack.get("join"), f"{asset_id}.profile_operation_stack.join")
+    steps.append(
+        {
+            "step_id": require_string(join.get("step_id"), f"{asset_id}.profile_operation_stack.join.step_id"),
+            "tool_id": "join_objects",
+            "purpose": "Join profile-operation stack parts into one deterministic asset.",
+            "params": {
+                "objects": require_string_list(join.get("objects"), f"{asset_id}.profile_operation_stack.join.objects"),
+                "profile_transition_sequence": require_string_list(
+                    join.get("profile_transition_sequence"),
+                    f"{asset_id}.profile_operation_stack.join.profile_transition_sequence",
+                ),
+                "source_operation": "profile_operation_stack",
+                "grammar_id": require_string(stack.get("grammar_id"), f"{asset_id}.profile_operation_stack.grammar_id"),
+            },
+        }
+    )
+    return steps
+
+
 def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
     params = style_params(asset)
+    if feature == "profile_operation_stack":
+        return profile_operation_stack_steps(asset)
     if feature == "stepped_square_base":
         base_foot_size = vector_param(params, "base_foot_size_m", [0.52, 0.52, 0.10])
         base_mid_size = vector_param(params, "base_mid_size_m", [0.44, 0.44, 0.06])
@@ -526,6 +769,23 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
     fail(f"{asset['asset_id']} uses unknown feature `{feature}`")
 
 
+def source_terms_for_asset(asset: dict[str, Any]) -> dict[str, Any]:
+    asset_id = require_string(asset.get("asset_id"), "asset_id")
+    if "profile_operation_stack" not in require_list(asset.get("features"), f"{asset_id}.features"):
+        return {"geometry": [], "profiles": [], "operators": []}
+    stack = require_object(asset.get("profile_operation_stack"), f"{asset_id}.profile_operation_stack")
+    return {
+        "geometry": require_string_list(stack.get("geometry_terms_used"), f"{asset_id}.profile_operation_stack.geometry_terms_used"),
+        "profiles": require_string_list(stack.get("profile_terms"), f"{asset_id}.profile_operation_stack.profile_terms"),
+        "operators": require_string_list(stack.get("operations"), f"{asset_id}.profile_operation_stack.operations"),
+        "profile_operation_stack": {
+            "grammar_id": require_string(stack.get("grammar_id"), f"{asset_id}.profile_operation_stack.grammar_id"),
+            "axis": require_string(stack.get("axis"), f"{asset_id}.profile_operation_stack.axis"),
+            "sequence": require_string_list(stack.get("sequence"), f"{asset_id}.profile_operation_stack.sequence"),
+        },
+    }
+
+
 def true_or_false(value: bool) -> bool:
     return bool(value)
 
@@ -662,6 +922,7 @@ def compile_asset_plan(
         "dimensions_m": require_object(asset.get("dimensions_m"), f"{asset['asset_id']}.dimensions_m"),
         "features": require_list(asset.get("features"), f"{asset['asset_id']}.features"),
         "style_parameters": style_params(asset),
+        "source_terms": source_terms_for_asset(asset),
         "stage_order": stage_order,
         "steps": steps,
         "summary": {
@@ -680,6 +941,7 @@ def compile_asset_plan(
             "tool_ids_validated": True,
             "stage_order_validated": True,
             "asset_family_sequence_policy_validated": True,
+            "geometry_dictionary_source_terms_validated": True,
         },
         "no_claims": validate_false_claims(asset.get("no_claims"), f"{asset['asset_id']}.no_claims"),
     }
@@ -751,9 +1013,10 @@ def main() -> int:
     sequence_policy_path = args.sequence_policy if args.sequence_policy.is_absolute() else ROOT / args.sequence_policy
     sequence_policy = load_json(sequence_policy_path)
     recipe = load_json(recipe_path)
+    geometry_terms = load_geometry_terms()
     tool_map = validate_tool_dictionary(dictionary)
     policy_map = validate_sequence_policy(sequence_policy, dictionary, tool_map)
-    assets = validate_recipe_bundle(recipe, [str(stage) for stage in require_list(dictionary.get("stages"), "dictionary.stages")])
+    assets = validate_recipe_bundle(recipe, [str(stage) for stage in require_list(dictionary.get("stages"), "dictionary.stages")], geometry_terms)
     plans = [compile_asset_plan(asset, tool_map, dictionary, sequence_policy, policy_map, recipe_path) for asset in assets]
     if not args.validate_only:
         write_outputs(plans, out_root, recipe_path, sequence_policy)

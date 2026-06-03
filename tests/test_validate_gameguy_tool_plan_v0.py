@@ -88,6 +88,7 @@ class GameguyToolPlanValidatorTests(unittest.TestCase):
         self.assertTrue(report["rules"]["validates_known_tool_ids"])
         self.assertTrue(report["rules"]["validates_stage_order"])
         self.assertTrue(report["rules"]["validates_asset_family_sequence_policy"])
+        self.assertTrue(report["rules"]["validates_geometry_dictionary_terms"])
 
     def test_rejects_unknown_tool_id(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
@@ -160,6 +161,19 @@ class GameguyToolPlanValidatorTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("generated media/mesh output is not allowed", result.stderr)
+
+    def test_rejects_unknown_geometry_dictionary_source_term(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            manifest_path = compile_plan(Path(tmp) / "plans")
+            plan_path = plan_path_by_asset(manifest_path, "gothic_stone_column_tool_plan_v0")
+            plan = load_json(plan_path)
+            plan["source_terms"]["operators"].append("fake_operator")
+            plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
+            result = run_validator(manifest_path)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("source_terms.operators", result.stderr)
+        self.assertIn("unknown geometry dictionary term `fake_operator`", result.stderr)
 
 
 if __name__ == "__main__":

@@ -212,6 +212,12 @@ def validate_tool_plan_bundle(item: Any, known_labels: set[str]) -> dict[str, An
         fail("canonical_tool_plan_bundle.sequence_policy stage_order must match tool dictionary")
     if sequence_policy.get("no_claims") != FALSE_CLAIMS:
         fail("canonical_tool_plan_bundle.sequence_policy no_claims must match required false claim flags")
+    geometry_dictionary_path = repo_path(bundle_ref.get("geometry_dictionary"), "canonical_tool_plan_bundle.geometry_dictionary")
+    if not geometry_dictionary_path.is_dir():
+        fail("canonical_tool_plan_bundle.geometry_dictionary must reference the geometry_dictionary directory")
+    profile_stack_term = geometry_dictionary_path / "operations" / "profile_operation_stack.json"
+    if not profile_stack_term.exists():
+        fail("canonical_tool_plan_bundle.geometry_dictionary must contain operations/profile_operation_stack.json")
     expected_family_policy_count = require_int(
         bundle_ref.get("expected_asset_family_policy_count"),
         "canonical_tool_plan_bundle.expected_asset_family_policy_count",
@@ -239,6 +245,7 @@ def validate_tool_plan_bundle(item: Any, known_labels: set[str]) -> dict[str, An
         "schema": expected_schema,
         "asset_count": expected_count,
         "tool_count": expected_tool_count,
+        "geometry_dictionary": display_path(geometry_dictionary_path),
         "asset_family_policy_count": expected_family_policy_count,
         "default_plan_count": len(plan_ids),
         "pipeline_label_count": len(labels),

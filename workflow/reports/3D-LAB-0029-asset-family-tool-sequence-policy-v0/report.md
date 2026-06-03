@@ -46,8 +46,8 @@ The generation registry now declares the sequence policy as part of the canonica
 compiled tool plans=5 steps=145 tools=97 out=<validate-only>
 PASS gameguy_tool_plan_v0 validation: 5 plans, 145 steps, 25 tools
 PASS asset generation registry validation: geometry_bundles=5 geometry_assets=40 reference_only=3
-PASS generation pipeline validation: commands=26 json=221 include_blender=false
-PASS generation pipeline validation: commands=36 json=221 include_blender=true
+PASS generation pipeline validation: commands=26 json=223 include_blender=false
+PASS generation pipeline validation: commands=36 json=223 include_blender=true
 ```
 
 Focused tests prove:
