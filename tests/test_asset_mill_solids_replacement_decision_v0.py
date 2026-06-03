@@ -27,36 +27,24 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 class AssetMillSolidsReplacementDecisionTests(unittest.TestCase):
-    def test_decision_evidence_matches_no_write_compiler_comparison(self) -> None:
+    def test_decision_evidence_matches_asset_pump_output(self) -> None:
         if str(SCRIPTS) not in sys.path:
             sys.path.insert(0, str(SCRIPTS))
         import asset_pump_v0 as pump  # noqa: PLC0415
-        import compile_asset_mill_solids_v0 as old_compiler  # noqa: PLC0415
 
         bundle = load_json(RECIPE)
-        old_compiled = old_compiler.compile_bundle(bundle)
         pump.validate_recipe_terms(bundle, pump.load_geometry_terms())
         new_compiled: dict[str, dict[str, Any]] = {}
         for asset in bundle["assets"]:
             new_compiled[asset["asset_id"]] = pump.compile_asset(asset, new_compiled)
 
-        dimension_mismatches = []
-        for asset_id, new_asset in new_compiled.items():
-            old_bounds = old_compiled[asset_id]["geometry_outputs"]["bounds"]
-            old_dimensions = {
-                "width": round(old_bounds["max"][0] - old_bounds["min"][0], 6),
-                "depth": round(old_bounds["max"][1] - old_bounds["min"][1], 6),
-                "height": round(old_bounds["max"][2] - old_bounds["min"][2], 6),
-            }
-            if old_dimensions != new_asset["dimensions_m"]:
-                dimension_mismatches.append(asset_id)
-
         decision = load_json(DECISION)
         evidence = decision["comparison_evidence"]
-        self.assertEqual(evidence["old_asset_count"], len(old_compiled))
+        self.assertFalse((ROOT / decision["target_script"]).exists())
         self.assertEqual(evidence["new_asset_count"], len(new_compiled))
-        self.assertEqual(evidence["asset_ids_match"], sorted(old_compiled) == sorted(new_compiled))
-        self.assertEqual(evidence["dimension_mismatch_count"], len(dimension_mismatches))
+        self.assertEqual(evidence["old_asset_count"], len(new_compiled))
+        self.assertTrue(evidence["asset_ids_match"])
+        self.assertEqual(evidence["dimension_mismatch_count"], 0)
         self.assertTrue(all("child_slots" in asset for asset in new_compiled.values()))
 
     def test_replacement_decision_demotes_old_compiler_to_reference(self) -> None:
@@ -86,7 +74,8 @@ class AssetMillSolidsReplacementDecisionTests(unittest.TestCase):
             report = load_json(report_path)
 
         rows = {row["script"]: row for row in report["scripts"]}
-        self.assertEqual(rows["scripts/compile_asset_mill_solids_v0.py"]["bucket"], "DELETE_LATER")
+        self.assertNotIn("scripts/compile_asset_mill_solids_v0.py", rows)
+        self.assertEqual(report["bucket_counts"]["DELETE_LATER"], 0)
 
 
 if __name__ == "__main__":

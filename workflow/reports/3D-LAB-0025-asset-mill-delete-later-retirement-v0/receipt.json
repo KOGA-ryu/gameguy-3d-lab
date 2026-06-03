@@ -1,0 +1,61 @@
+{
+  "schema": "asset_mill_delete_later_retirement_receipt_v0",
+  "packet_id": "3D-LAB-0025",
+  "decision": "REMOVE_REPLACED_ASSET_MILL_DELETE_LATER_SCRIPTS",
+  "removed_scripts": [
+    "scripts/compile_asset_mill_solids_v0.py",
+    "scripts/blender_asset_mill_smoke_test_v0.py",
+    "scripts/compile_asset_mill_measured_components_v1.py",
+    "scripts/compile_asset_mill_measured_components_v2.py",
+    "scripts/blender_asset_mill_measured_components_v1.py",
+    "scripts/blender_asset_mill_measured_components_v2.py"
+  ],
+  "replacement_paths": {
+    "simple_assets": [
+      "data/architecture/asset_mill/recipes/simple_solids_v0.json",
+      "scripts/asset_pump_v0.py",
+      "scripts/validate_gameguy_asset_v0.py",
+      "scripts/export_blender_asset_preview_v0.py"
+    ],
+    "measured_assets": [
+      "data/architecture/asset_mill/recipes/measured_components_v0.json",
+      "scripts/validate_measured_component_source_v0.py",
+      "scripts/asset_pump_v0.py",
+      "scripts/validate_gameguy_asset_v0.py",
+      "scripts/export_blender_measured_components_preview_v0.py"
+    ],
+    "tool_plan_assets": [
+      "data/architecture/asset_mill/tool_plan_recipes/banister_post_tool_plan_recipe_v0.json",
+      "scripts/compile_blender_tool_plan_v0.py",
+      "scripts/validate_gameguy_tool_plan_v0.py",
+      "scripts/execute_blender_tool_plan_v0.py",
+      "scripts/validate_blender_tool_plan_execution_report_v0.py"
+    ],
+    "pipeline_gate": "scripts/validate_generation_pipeline_v0.py"
+  },
+  "script_orbit_after": {
+    "script_count": 72,
+    "KEEP_CANONICAL": 14,
+    "CONVERT_TO_ADAPTER": 0,
+    "REPLACE_BY_PUMP": 0,
+    "REFERENCE_ONLY": 58,
+    "DELETE_LATER": 0
+  },
+  "rules": {
+    "deleted_source_recipes": false,
+    "deleted_contracts": false,
+    "deleted_geometry_dictionary_terms": false,
+    "deleted_canonical_pumps_or_validators": false,
+    "deleted_blender_json_adapters": false,
+    "active_source_script_keys_removed": true,
+    "generated_outputs_in_repo": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

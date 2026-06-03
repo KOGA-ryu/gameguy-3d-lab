@@ -418,7 +418,7 @@ def main() -> None:
     COMPILED_DIR.mkdir(parents=True, exist_ok=True)
     solids = {path.stem: load_json(path) for path in sorted(SOLID_DIR.glob("*.json"))}
     if not solids:
-        fail("no Asset Mill solids found; run compile_asset_mill_solids_v0.py first")
+        fail("no Asset Mill solids found; run asset_pump_v0.py with simple_solids_v0.json first")
 
     rows: list[dict[str, Any]] = []
     for path in sorted(SITE_DIR.glob("*.json")):

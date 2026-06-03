@@ -76,7 +76,7 @@ class BlenderAssetMillSmokeTestDemotionTests(unittest.TestCase):
         self.assertFalse(report["rules"]["reads_source_recipes"])
         self.assertFalse(report["rules"]["source_design_logic"])
 
-    def test_script_orbit_demotes_old_smoke_test(self) -> None:
+    def test_script_orbit_no_longer_lists_old_smoke_test(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             report_path = Path(tmp) / "script_orbit.json"
             subprocess.run(
@@ -89,8 +89,9 @@ class BlenderAssetMillSmokeTestDemotionTests(unittest.TestCase):
             report = load_json(report_path)
 
         rows = {row["script"]: row for row in report["scripts"]}
-        self.assertEqual(rows["scripts/blender_asset_mill_smoke_test_v0.py"]["bucket"], "DELETE_LATER")
+        self.assertNotIn("scripts/blender_asset_mill_smoke_test_v0.py", rows)
         self.assertEqual(report["bucket_counts"]["CONVERT_TO_ADAPTER"], 0)
+        self.assertEqual(report["bucket_counts"]["DELETE_LATER"], 0)
 
 
 if __name__ == "__main__":

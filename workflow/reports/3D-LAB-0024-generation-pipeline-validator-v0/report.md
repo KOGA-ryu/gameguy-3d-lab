@@ -59,7 +59,7 @@ The full run includes:
 - `gameguy_tool_plan_v0`: `1` plan, `32` steps, `24` tools
 - Blender execution: `32` steps
 - Execution report validation: non-manifold `0`, material roles `5`, socket panels `2`
-- Script orbit: `78` scripts, `14` canonical, `6` `DELETE_LATER`
+- Script orbit after Asset Mill retirement: `72` scripts, `14` canonical, `0` `DELETE_LATER`
 
 Generated outputs remain under `/tmp`; the validator rejects generated media/mesh files inside the repo.
 

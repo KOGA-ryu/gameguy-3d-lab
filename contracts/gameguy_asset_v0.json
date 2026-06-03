@@ -59,7 +59,8 @@
     "source_refs": "List of source measurement, local document, or other provenance refs preserved from source recipes.",
     "source_terms": "Geometry dictionary source vocabulary preserved from source recipes.",
     "validation_expectations": "Source acceptance rules preserved for downstream validators.",
-    "no_claims": "Required false-claim block copied from source recipe."
+    "no_claims": "Required false-claim block copied from source recipe.",
+    "source_provenance": "Optional lineage metadata for promoted source records. Retired script paths may appear only as legacy provenance, not active source logic."
   },
   "connector_contract": {
     "required_fields": [

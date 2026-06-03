@@ -24,7 +24,7 @@
     "Dimensions, bounds, ratio_basis, uncertainty, sockets, semantic roles, validation expectations, and proof primitives.",
     "Local measurement, ratio document, source quality, geometry link, and semantic link references.",
     "No-claims blocks and explicit non-production/non-structural/non-fabrication/non-historical posture.",
-    "Version provenance through source_version and source_script fields."
+    "Version provenance through source_version and legacy_source_script fields."
   ],
   "not_preserved_by_design": [
     {

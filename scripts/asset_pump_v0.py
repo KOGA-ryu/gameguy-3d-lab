@@ -561,7 +561,9 @@ def validate_measured_bundle_terms(bundle: dict[str, Any], terms: dict[str, set[
         source_version = require_string(asset.get("source_version"), f"{asset_id}.source_version")
         if source_version not in {"v1", "v2"}:
             fail(f"{asset_id}.source_version must be v1 or v2")
-        require_string(asset.get("source_script"), f"{asset_id}.source_script")
+        if "source_script" in asset:
+            fail(f"{asset_id}.source_script is retired; use legacy_source_script for provenance")
+        require_string(asset.get("legacy_source_script"), f"{asset_id}.legacy_source_script")
         dims = validate_dimensions_object(asset.get("dimensions_m"), f"{asset_id}.dimensions_m")
         bounds_m = validate_bounds_object(asset.get("bounds_m"), f"{asset_id}.bounds_m")
         validate_bounds_match_dimensions(bounds_m, dims, asset_id)
@@ -1537,7 +1539,11 @@ def compile_measured_asset(asset: dict[str, Any], source_schema: str) -> dict[st
             {"production_approval", "structural_safety", "fabrication_ready", "gym_museum_approval", "historical_accuracy"},
         ),
         "source_version": source_version,
-        "source_script": require_string(asset.get("source_script"), f"{asset_id}.source_script"),
+        "source_provenance": {
+            "source_version": source_version,
+            "legacy_source_script": require_string(asset.get("legacy_source_script"), f"{asset_id}.legacy_source_script"),
+            "legacy_source_script_removed": True,
+        },
     }
     for optional_field in ("ratio_basis", "uncertainty", "notes"):
         if optional_field in asset:

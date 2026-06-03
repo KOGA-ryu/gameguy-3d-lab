@@ -1,9 +1,9 @@
 {
   "schema": "asset_mill_retirement_readiness_decision_v0",
   "packet_id": "3D-LAB-0013",
-  "decision": "MARK_REPLACED_ASSET_MILL_SCRIPTS_DELETE_LATER",
-  "safe_to_delete_now": false,
-  "reason": "The canonical source-to-geometry path now preserves the useful value of the old Asset Mill compilers and Blender proof scripts. They are marked DELETE_LATER to make replacement explicit, but actual deletion remains a separate task.",
+  "decision": "DELETE_REPLACED_ASSET_MILL_SCRIPTS",
+  "safe_to_delete_now": true,
+  "reason": "The canonical source-to-geometry path preserves the useful value of the old Asset Mill compilers and Blender proof scripts. The six replaced scripts have been removed from scripts/ after pipeline validation proved their replacements.",
   "canonical_path": {
     "simple_source_recipe": "data/architecture/asset_mill/recipes/simple_solids_v0.json",
     "measured_source_recipe": "data/architecture/asset_mill/recipes/measured_components_v0.json",
@@ -20,7 +20,7 @@
   "retirement_candidates": [
     {
       "script": "scripts/compile_asset_mill_solids_v0.py",
-      "bucket": "DELETE_LATER",
+      "bucket": "REMOVED",
       "replaced_by": [
         "data/architecture/asset_mill/recipes/simple_solids_v0.json",
         "scripts/asset_pump_v0.py",
@@ -34,7 +34,7 @@
     },
     {
       "script": "scripts/blender_asset_mill_smoke_test_v0.py",
-      "bucket": "DELETE_LATER",
+      "bucket": "REMOVED",
       "replaced_by": [
         "scripts/asset_pump_v0.py",
         "scripts/validate_gameguy_asset_v0.py",
@@ -48,7 +48,7 @@
     },
     {
       "script": "scripts/compile_asset_mill_measured_components_v1.py",
-      "bucket": "DELETE_LATER",
+      "bucket": "REMOVED",
       "replaced_by": [
         "data/architecture/asset_mill/recipes/measured_components_v0.json",
         "scripts/validate_measured_component_source_v0.py",
@@ -65,7 +65,7 @@
     },
     {
       "script": "scripts/compile_asset_mill_measured_components_v2.py",
-      "bucket": "DELETE_LATER",
+      "bucket": "REMOVED",
       "replaced_by": [
         "data/architecture/asset_mill/recipes/measured_components_v0.json",
         "scripts/validate_measured_component_source_v0.py",
@@ -82,7 +82,7 @@
     },
     {
       "script": "scripts/blender_asset_mill_measured_components_v1.py",
-      "bucket": "DELETE_LATER",
+      "bucket": "REMOVED",
       "replaced_by": [
         "scripts/asset_pump_v0.py",
         "scripts/validate_gameguy_asset_v0.py",
@@ -98,7 +98,7 @@
     },
     {
       "script": "scripts/blender_asset_mill_measured_components_v2.py",
-      "bucket": "DELETE_LATER",
+      "bucket": "REMOVED",
       "replaced_by": [
         "scripts/asset_pump_v0.py",
         "scripts/validate_gameguy_asset_v0.py",
@@ -118,12 +118,12 @@
     "CONVERT_TO_ADAPTER": 0,
     "REPLACE_BY_PUMP": 0,
     "REFERENCE_ONLY": 58,
-    "DELETE_LATER": 6
+    "DELETE_LATER": 0
   },
   "follow_up": [
-    "Do not run these six scripts as active source, generator, or adapter logic.",
-    "Keep them only until a separate deletion task removes them or moves them into an explicit archive.",
-    "Run the source validators, asset pump, gameguy asset validator, and Blender adapters before any deletion commit."
+    "Do not reintroduce these six scripts as active source, generator, or adapter logic.",
+    "Use the canonical pump, generated asset validator, tool-plan validator, Blender adapters, and pipeline validator instead.",
+    "Treat historical workflow packets as replacement evidence, not as active script requirements."
   ],
   "no_claims": {
     "production_approval": false,

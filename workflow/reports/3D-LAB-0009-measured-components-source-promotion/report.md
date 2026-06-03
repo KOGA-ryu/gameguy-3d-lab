@@ -32,7 +32,7 @@ scripts/validate_measured_component_source_v0.py
 
 - Asset IDs, dimensions, bounds, ratio basis, uncertainty, sockets, semantic roles, validation expectations, and proof primitives.
 - Local measurement and research refs that exist in the source repo.
-- Version provenance via `source_version` and `source_script`.
+- Version provenance via `source_version` and `legacy_source_script`.
 - Explicit no-claims posture.
 
 ## Not Preserved

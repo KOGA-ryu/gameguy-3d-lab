@@ -51,6 +51,8 @@ class MeasuredComponentSourceValidatorTests(unittest.TestCase):
 
         self.assertNotIn("goal/", text)
         self.assertNotIn("created_at_utc", text)
+        self.assertNotIn('"source_script"', text)
+        self.assertIn('"legacy_source_script"', text)
         self.assertEqual(bundle["asset_count"], len(bundle["assets"]))
         self.assertEqual(bundle["v1_asset_count"], sum(1 for asset in bundle["assets"] if asset["source_version"] == "v1"))
         self.assertEqual(bundle["v2_asset_count"], sum(1 for asset in bundle["assets"] if asset["source_version"] == "v2"))
@@ -73,6 +75,23 @@ class MeasuredComponentSourceValidatorTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("must not reference generated goal output", result.stderr)
+
+    def test_retired_source_script_key_fails_validation(self) -> None:
+        bundle = load_json(BUNDLE)
+        bundle["assets"][0]["source_script"] = bundle["assets"][0].pop("legacy_source_script")
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            bad_bundle = Path(tmp) / "bad_measured_components.json"
+            bad_bundle.write_text(json.dumps(bundle, indent=2) + "\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "--bundle", str(bad_bundle)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("source_script is retired; use legacy_source_script", result.stderr)
 
 
 if __name__ == "__main__":

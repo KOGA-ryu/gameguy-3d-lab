@@ -171,11 +171,13 @@ def validate_asset(asset: Any, index: int, terms: dict[str, dict[str, Any]], mea
     expected_schema = f"asset_mill_measured_component_recipe_{source_version}"
     if item.get("schema") != expected_schema:
         fail(f"{asset_id}.schema must be {expected_schema}")
-    if require_string(item.get("source_script"), f"{asset_id}.source_script") not in {
+    if "source_script" in item:
+        fail(f"{asset_id}.source_script is retired; use legacy_source_script for provenance")
+    if require_string(item.get("legacy_source_script"), f"{asset_id}.legacy_source_script") not in {
         "scripts/compile_asset_mill_measured_components_v1.py",
         "scripts/compile_asset_mill_measured_components_v2.py",
     }:
-        fail(f"{asset_id}.source_script must reference an original measured compiler")
+        fail(f"{asset_id}.legacy_source_script must reference an original measured compiler")
     validate_dimensions(item, asset_id)
     if item.get("bounds_m") != bounds_from_dimensions(item["dimensions_m"]):
         fail(f"{asset_id}.bounds_m must match dimensions_m")
@@ -235,6 +237,14 @@ def validate_bundle(path: Path) -> dict[str, Any]:
         fail("bundle schema must be asset_mill_measured_component_bundle_v0")
     if bundle.get("bundle_id") != "measured_components_v0":
         fail("bundle_id must be measured_components_v0")
+    if "source_scripts" in bundle:
+        fail("bundle source_scripts is retired; use legacy_source_scripts for provenance")
+    legacy_source_scripts = require_list(bundle.get("legacy_source_scripts"), "legacy_source_scripts")
+    if legacy_source_scripts != [
+        "scripts/compile_asset_mill_measured_components_v1.py",
+        "scripts/compile_asset_mill_measured_components_v2.py",
+    ]:
+        fail("legacy_source_scripts must record the original measured compilers")
     if bundle.get("no_claims") != FALSE_CLAIMS:
         fail("bundle no_claims must match required false claims")
     terms = load_terms()

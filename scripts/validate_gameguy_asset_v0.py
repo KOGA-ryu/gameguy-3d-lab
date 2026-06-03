@@ -293,7 +293,14 @@ def validate_asset(asset: dict[str, Any], path: Path, required_fields: list[str]
             fail(f"{asset_id}.source_refs must be non-empty for measured assets")
         if asset.get("source_version") not in {"v1", "v2"}:
             fail(f"{asset_id}.source_version must be v1 or v2 for measured assets")
-        require_string(asset.get("source_script"), f"{asset_id}.source_script")
+        if "source_script" in asset:
+            fail(f"{asset_id}.source_script is retired; use source_provenance.legacy_source_script")
+        provenance = require_object(asset.get("source_provenance"), f"{asset_id}.source_provenance")
+        if provenance.get("source_version") != asset["source_version"]:
+            fail(f"{asset_id}.source_provenance.source_version must match source_version")
+        require_string(provenance.get("legacy_source_script"), f"{asset_id}.source_provenance.legacy_source_script")
+        if provenance.get("legacy_source_script_removed") is not True:
+            fail(f"{asset_id}.source_provenance.legacy_source_script_removed must be true")
         for connector_index, connector in enumerate(asset["connectors"]):
             require_string(connector.get("connector_term"), f"{asset_id}.connectors[{connector_index}].connector_term")
             require_string(connector.get("role"), f"{asset_id}.connectors[{connector_index}].role")

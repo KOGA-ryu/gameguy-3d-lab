@@ -155,6 +155,19 @@ class GameguyAssetValidatorTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("generated media/mesh output is not allowed", result.stderr)
 
+    def test_rejects_retired_measured_source_script_key(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "pump"
+            run_pump(out_root, measured=True)
+            asset_path = out_root / "assets" / "measured_rectangular_wall_block_v1.json"
+            asset = load_json(asset_path)
+            asset["source_script"] = asset["source_provenance"]["legacy_source_script"]
+            asset_path.write_text(json.dumps(asset, indent=2) + "\n", encoding="utf-8")
+            result = run_validator(out_root / "manifest.json")
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("source_script is retired; use source_provenance.legacy_source_script", result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

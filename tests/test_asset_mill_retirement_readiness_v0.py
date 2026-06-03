@@ -30,17 +30,17 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 class AssetMillRetirementReadinessTests(unittest.TestCase):
-    def test_packet_marks_only_replaced_scripts_delete_later(self) -> None:
+    def test_packet_records_removed_replaced_scripts(self) -> None:
         decision = load_json(DECISION)
         candidates = decision["retirement_candidates"]
 
         self.assertEqual(decision["schema"], "asset_mill_retirement_readiness_decision_v0")
-        self.assertEqual(decision["decision"], "MARK_REPLACED_ASSET_MILL_SCRIPTS_DELETE_LATER")
-        self.assertFalse(decision["safe_to_delete_now"])
+        self.assertEqual(decision["decision"], "DELETE_REPLACED_ASSET_MILL_SCRIPTS")
+        self.assertTrue(decision["safe_to_delete_now"])
         self.assertEqual(len(candidates), 6)
         for candidate in candidates:
-            self.assertEqual(candidate["bucket"], "DELETE_LATER")
-            self.assertTrue((ROOT / candidate["script"]).exists(), candidate["script"])
+            self.assertEqual(candidate["bucket"], "REMOVED")
+            self.assertFalse((ROOT / candidate["script"]).exists(), candidate["script"])
             for replacement in candidate["replaced_by"]:
                 self.assertTrue((ROOT / replacement).exists(), replacement)
 
@@ -62,7 +62,7 @@ class AssetMillRetirementReadinessTests(unittest.TestCase):
 
         self.assertEqual(report["bucket_counts"], expected_counts)
         for candidate in decision["retirement_candidates"]:
-            self.assertEqual(rows[candidate["script"]]["bucket"], "DELETE_LATER")
+            self.assertNotIn(candidate["script"], rows)
 
     def test_replacement_outputs_match_packet_evidence(self) -> None:
         decision = load_json(DECISION)

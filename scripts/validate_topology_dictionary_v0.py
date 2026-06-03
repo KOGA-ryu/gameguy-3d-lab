@@ -211,7 +211,7 @@ def main() -> None:
     if not assemblies:
         fail("no building assemblies found; run compile_floor_plans_to_assemblies_v0.py first")
     if not solids:
-        fail("no Asset Mill solids found; run compile_asset_mill_solids_v0.py first")
+        fail("no Asset Mill solids found; run asset_pump_v0.py with simple_solids_v0.json first")
 
     site_rows = [validate_site(path, terms, assemblies, solids) for path in sorted(SITE_DIR.glob("*.json"))]
     if not site_rows:

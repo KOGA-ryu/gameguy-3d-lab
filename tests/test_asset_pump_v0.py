@@ -217,6 +217,15 @@ class AssetPumpTests(unittest.TestCase):
         self.assertEqual(wall["source_terms"]["operators"], ["extrude", "bevel_edges"])
         self.assertEqual(wall["validation_expectations"]["socket_count_min"], 2)
         self.assertFalse(wall["no_claims"]["historical_accuracy"])
+        self.assertNotIn("source_script", wall)
+        self.assertEqual(
+            wall["source_provenance"],
+            {
+                "source_version": "v1",
+                "legacy_source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+                "legacy_source_script_removed": True,
+            },
+        )
         self.assert_mesh_is_well_formed(wall)
 
     def test_measured_cylinder_and_curve_primitives_generate_parts(self) -> None:

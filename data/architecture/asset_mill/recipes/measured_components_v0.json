@@ -3,7 +3,7 @@
   "bundle_id": "measured_components_v0",
   "purpose": "Promoted source catalog for measured Asset Mill component recipes formerly embedded in v1/v2 compiler scripts.",
   "units": "abstract_meter",
-  "source_scripts": [
+  "legacy_source_scripts": [
     "scripts/compile_asset_mill_measured_components_v1.py",
     "scripts/compile_asset_mill_measured_components_v2.py"
   ],
@@ -202,7 +202,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v1.py",
       "source_version": "v1"
     },
     {
@@ -368,7 +368,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v1.py",
       "source_version": "v1"
     },
     {
@@ -509,7 +509,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v1.py",
       "source_version": "v1"
     },
     {
@@ -661,7 +661,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v1.py",
       "source_version": "v1"
     },
     {
@@ -813,7 +813,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v1.py",
       "source_version": "v1"
     },
     {
@@ -946,7 +946,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v1.py",
       "source_version": "v1"
     },
     {
@@ -1080,7 +1080,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v1.py",
       "source_version": "v1"
     },
     {
@@ -1305,7 +1305,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v1.py",
       "source_version": "v1"
     },
     {
@@ -1542,7 +1542,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v1.py",
       "source_version": "v1"
     },
     {
@@ -1731,7 +1731,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v1.py",
       "source_version": "v1"
     },
     {
@@ -1932,7 +1932,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v1.py",
       "source_version": "v1"
     },
     {
@@ -2133,7 +2133,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v1.py",
       "source_version": "v1"
     },
     {
@@ -2343,7 +2343,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v2.py",
       "source_version": "v2"
     },
     {
@@ -2549,7 +2549,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v2.py",
       "source_version": "v2"
     },
     {
@@ -2774,7 +2774,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v2.py",
       "source_version": "v2"
     },
     {
@@ -2998,7 +2998,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v2.py",
       "source_version": "v2"
     },
     {
@@ -3170,7 +3170,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v2.py",
       "source_version": "v2"
     },
     {
@@ -3341,7 +3341,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v2.py",
       "source_version": "v2"
     },
     {
@@ -3528,7 +3528,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v2.py",
       "source_version": "v2"
     },
     {
@@ -3715,7 +3715,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v2.py",
       "source_version": "v2"
     },
     {
@@ -3871,7 +3871,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v2.py",
       "source_version": "v2"
     },
     {
@@ -4065,7 +4065,7 @@
         "gym_museum_approval": false,
         "historical_accuracy": false
       },
-      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "legacy_source_script": "scripts/compile_asset_mill_measured_components_v2.py",
       "source_version": "v2"
     }
   ],

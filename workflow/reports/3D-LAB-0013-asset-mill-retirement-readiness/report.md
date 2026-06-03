@@ -1,6 +1,6 @@
 # Asset Mill Retirement Readiness
 
-This packet marks six replaced Asset Mill scripts as `DELETE_LATER` without deleting or moving files.
+This packet originally marked six replaced Asset Mill scripts as `DELETE_LATER`. They have now been removed from `scripts/` after canonical replacement validation.
 
 The replacement path is now:
 
@@ -17,4 +17,4 @@ Retirement candidates:
 - `scripts/blender_asset_mill_measured_components_v1.py`
 - `scripts/blender_asset_mill_measured_components_v2.py`
 
-They remain in the repo for now. Actual deletion should be a separate explicit task after running the current source validators, pump, generated-asset validator, and Blender adapter validation.
+Their useful value is preserved by source recipes, `asset_pump_v0.py`, generated `gameguy_asset_v0`, the tool-plan validator, Blender adapters, and the generation pipeline validator.

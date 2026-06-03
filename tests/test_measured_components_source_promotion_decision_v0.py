@@ -55,8 +55,9 @@ class MeasuredComponentsSourcePromotionDecisionTests(unittest.TestCase):
 
         rows = {row["script"]: row for row in report["scripts"]}
         self.assertEqual(report["bucket_counts"]["REPLACE_BY_PUMP"], 0)
-        self.assertEqual(rows["scripts/compile_asset_mill_measured_components_v1.py"]["bucket"], "DELETE_LATER")
-        self.assertEqual(rows["scripts/compile_asset_mill_measured_components_v2.py"]["bucket"], "DELETE_LATER")
+        self.assertNotIn("scripts/compile_asset_mill_measured_components_v1.py", rows)
+        self.assertNotIn("scripts/compile_asset_mill_measured_components_v2.py", rows)
+        self.assertEqual(report["bucket_counts"]["DELETE_LATER"], 0)
 
 
 if __name__ == "__main__":

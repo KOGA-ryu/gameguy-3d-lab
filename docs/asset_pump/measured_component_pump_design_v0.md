@@ -15,6 +15,7 @@ source_measurement_refs
 geometry_terms_used
 profile_terms
 operations
+legacy_source_script
 ```
 
 The pump should translate those fields into deterministic asset geometry JSON. It should not create Blender files, renders, receipts, or repo-local generated folders.
@@ -36,6 +37,7 @@ Measured component recipes are source records. `gameguy_asset_v0` is the generat
 | `operations` | `source_terms.operators` | Preserve intended operator vocabulary. |
 | `validation_expectations` | `validation_expectations` | Preserve source acceptance rules. |
 | `no_claims` | `no_claims` | Preserve non-production/non-structural flags. |
+| `legacy_source_script` | `source_provenance.legacy_source_script` | Preserve retired compiler lineage only. This is not active source logic. |
 
 ## `dimensions_m`
 `dimensions_m` controls intended footprint and placement scale.
@@ -170,6 +172,11 @@ support -> support-looking role, not structural claim
     "geometry": [],
     "profiles": [],
     "operators": []
+  },
+  "source_provenance": {
+    "source_version": "v1",
+    "legacy_source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+    "legacy_source_script_removed": true
   },
   "validation_expectations": {},
   "no_claims": {}
