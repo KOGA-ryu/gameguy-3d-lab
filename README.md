@@ -124,7 +124,7 @@ The current bundle is `data/architecture/asset_mill/profile_sources/railing_deta
 
 The gothic guard-panel tool-plan recipe now selects six of those profiles as a source-owned `railing_detail_profile_stack`. The compiler expands them into a 57-step guard-panel plan with pointed-arch and capsule cutters, shadow recess plates, mirrored side details, a linearly arrayed bead strip, ogee trim, tapered socket collars, and the normal shared finish stack. Blender remains an adapter: it consumes the compiled `gameguy_tool_plan_v0` JSON and executes `mesh_from_pydata`, `modifier_boolean`, `modifier_mirror`, and `modifier_array` steps rather than deciding those details itself.
 
-The profiled plinth base is now the first standalone `profile_detail` prototype. Its source recipe uses `railing_plinth_ogee_base_side_profile_v0` to compile one 14-control-point side profile into seven chamfered-square footprint rings, producing a four-sided wrapped `mesh_from_pydata` detail plan before the shared finish stack is applied.
+The profiled plinth base is now the first standalone `profile_detail` prototype. Its source recipe uses `railing_plinth_ogee_base_side_profile_v0` to compile one 14-control-point side profile into fifteen chamfered-square footprint rings with a foot, shadow groove, bead projection, cove slope, neck, and top landing, producing a four-sided wrapped `mesh_from_pydata` detail plan before the shared finish stack is applied.
 
 The repo now also has a tool-planning layer for near-finished Blender-capable asset construction:
 

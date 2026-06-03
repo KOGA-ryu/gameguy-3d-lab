@@ -513,7 +513,7 @@ class BlenderToolPlanTests(unittest.TestCase):
                 "profile_id": "railing_plinth_ogee_base_side_profile_v0",
                 "compile_mode": "wrapped_chamfered_square_ring_mesh_v0",
                 "source_control_point_count": 14,
-                "profile_ring_count": 7,
+                "profile_ring_count": 15,
                 "footprint_point_count": 8,
                 "corner_chamfer_ratio": 0.18,
                 "tool_ids": ["mesh_from_pydata", "join_objects", "modifier_bevel", "modifier_weighted_normal"],
@@ -527,13 +527,13 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(mesh_params["material_role"], "base")
         self.assertEqual(mesh_params["group"], "base")
         self.assertTrue(mesh_params["wraps_all_sides"])
-        self.assertEqual(mesh_params["profile_ring_count"], 7)
+        self.assertEqual(mesh_params["profile_ring_count"], 15)
         self.assertEqual(mesh_params["footprint_point_count"], 8)
         self.assertEqual(mesh_params["corner_chamfer_ratio"], 0.18)
-        self.assertEqual(len(mesh_params["vertices"]), 56)
-        self.assertEqual(len(mesh_params["faces"]), 50)
+        self.assertEqual(len(mesh_params["vertices"]), 120)
+        self.assertEqual(len(mesh_params["faces"]), 114)
         self.assertEqual(by_step["join_profiled_plinth_base_detail"]["params"]["source_control_point_count"], 14)
-        self.assertEqual(by_step["join_profiled_plinth_base_detail"]["params"]["profile_ring_count"], 7)
+        self.assertEqual(by_step["join_profiled_plinth_base_detail"]["params"]["profile_ring_count"], 15)
         self.assertEqual(by_step["join_profiled_plinth_base_detail"]["params"]["footprint_point_count"], 8)
         self.assertEqual(by_step["join_profiled_plinth_base_detail"]["params"]["corner_chamfer_ratio"], 0.18)
         self.assertEqual(by_step["join_profiled_plinth_base_detail"]["params"]["profile_width_m"], 0.62)
