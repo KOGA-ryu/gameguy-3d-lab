@@ -41,6 +41,7 @@ class AssetGenerationRegistryValidatorTests(unittest.TestCase):
         self.assertEqual(report["schema"], "asset_generation_registry_validation_result_v0")
         self.assertEqual(report["canonical_geometry_bundle_count"], 5)
         self.assertEqual(report["canonical_geometry_asset_count"], 40)
+        self.assertEqual(report["canonical_tool_plan_bundle"]["asset_family_policy_count"], 5)
         self.assertEqual(report["canonical_tool_plan_bundle"]["default_plan_count"], 2)
         self.assertEqual(report["reference_only_recipe_count"], 3)
         self.assertFalse(report["generated_outputs_created"])
@@ -80,6 +81,23 @@ class AssetGenerationRegistryValidatorTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("must not also be canonical", result.stderr)
+
+    def test_sequence_policy_count_mismatch_fails(self) -> None:
+        registry = load_json(REGISTRY)
+        registry["canonical_tool_plan_bundle"]["expected_asset_family_policy_count"] = 999
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            registry_path = Path(tmp) / "bad_registry.json"
+            registry_path.write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "--registry", str(registry_path)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("expected_asset_family_policy_count must match sequence policy", result.stderr)
 
 
 if __name__ == "__main__":

@@ -28,8 +28,8 @@ This validator checks registry paths, schemas, asset counts, expected tool count
 
 ```text
 PASS asset generation registry validation: geometry_bundles=5 geometry_assets=40 reference_only=3
-PASS generation pipeline validation: commands=23 json=216 include_blender=false
-PASS generation pipeline validation: commands=27 json=216 include_blender=true
+PASS generation pipeline validation: commands=23 json=218 include_blender=false
+PASS generation pipeline validation: commands=27 json=218 include_blender=true
 PASS script orbit audit: scripts=73 KEEP_CANONICAL=15, CONVERT_TO_ADAPTER=0, REPLACE_BY_PUMP=0, REFERENCE_ONLY=58, DELETE_LATER=0
 ```
 
@@ -40,6 +40,7 @@ The registry records:
 | canonical geometry bundles | 5 |
 | canonical geometry assets | 40 |
 | canonical tool-plan bundle | 1 |
+| asset-family sequence policies | 5 |
 | default compiled tool plans | 2 |
 | reference-only recipe bundles | 3 |
 

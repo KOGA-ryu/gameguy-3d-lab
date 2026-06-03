@@ -6,6 +6,7 @@
   "producer": "scripts/compile_blender_tool_plan_v0.py",
   "source_inputs": [
     "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json",
+    "data/architecture/asset_mill/blender_tools/asset_family_tool_sequence_policy_v0.json",
     "data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json"
   ],
   "stage_order": [
@@ -23,6 +24,8 @@
     "plan_id",
     "source_schema",
     "tool_dictionary",
+    "tool_sequence_policy",
+    "asset_family_policy",
     "asset_family",
     "style",
     "detail_level",
@@ -54,7 +57,8 @@
     "steps_must_have_stable_order_indexes": true,
     "compiler_does_not_execute_blender": true,
     "blender_execution_adapter_must_consume_tool_plan": true,
-    "generated_media_or_mesh_outputs_are_not_written_by_compiler": true
+    "generated_media_or_mesh_outputs_are_not_written_by_compiler": true,
+    "asset_family_sequence_policy_must_be_enforced": true
   },
   "required_no_claims": {
     "production_approval": false,

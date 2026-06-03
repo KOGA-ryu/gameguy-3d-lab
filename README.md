@@ -101,7 +101,7 @@ It names the canonical geometry recipe bundles, canonical tool-plan recipe bundl
 The repo now also has a tool-planning layer for near-finished Blender-capable asset construction:
 
 ```text
-asset intent recipe -> staged Blender tool-plan compiler -> deterministic gameguy_tool_plan_v0 JSON
+asset intent recipe + family sequence policy -> staged Blender tool-plan compiler -> deterministic gameguy_tool_plan_v0 JSON
 ```
 
 The first tool dictionary and plan compiler are:
@@ -112,7 +112,7 @@ python3 scripts/compile_blender_tool_plan_v0.py \
   --out /tmp/gameguy_blender_tool_plan_v0
 ```
 
-This reads `data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json` and `data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json`. It currently compiles separate staged plans for a banister post and a window frame, proving that asset families can choose different tool sequences from the same dictionary. It does not execute Blender, write media, write mesh exports, or make render artifacts. The Blender execution adapter consumes `gameguy_tool_plan_v0` and executes the staged operations.
+This reads `data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json`, `data/architecture/asset_mill/blender_tools/asset_family_tool_sequence_policy_v0.json`, and `data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json`. It currently compiles separate staged plans for a banister post and a window frame, while the policy defines legal tool sequences for columns, banister posts, fence posts, window frames, and door frames. It does not execute Blender, write media, write mesh exports, or make render artifacts. The Blender execution adapter consumes `gameguy_tool_plan_v0` and executes the staged operations.
 
 Validate compiled tool-plan JSON before adapter execution with:
 
@@ -238,8 +238,8 @@ Expected current checks:
 - JSON parses.
 - Python scripts compile.
 - Asset pump tests pass.
-- Blender tool-plan compiler validates a `97`-tool dictionary and compiles two default plans: a `32`-step banister post and a `25`-step window frame.
-- `gameguy_tool_plan_v0` validation proves manifest shape, known tool IDs, stable step order, stage order, deterministic steps, false claims, and no compiler media/mesh output.
+- Blender tool-plan compiler validates a `97`-tool dictionary, a `5`-family sequence policy, and compiles two default plans: a `32`-step banister post and a `25`-step window frame.
+- `gameguy_tool_plan_v0` validation proves manifest shape, known tool IDs, stable step order, stage order, asset-family sequence policy, deterministic steps, false claims, and no compiler media/mesh output.
 - Blender tool-plan execution adapter validation consumes the compiled `32`-step banister plan and the compiled `25`-step window-frame plan.
 - Blender tool-plan execution report validation proves adapter boundary rules, material-region preservation, topology count, and no repo-local generated outputs for both plans. The banister profile also proves socket boolean evidence.
 - Blender tool-plan execution quality evidence is recorded in `workflow/reports/3D-LAB-0021-execution-quality-pass-v0/`.

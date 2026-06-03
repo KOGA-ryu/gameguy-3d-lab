@@ -32,7 +32,7 @@ It orchestrates:
 - Python script compilation.
 - Optional unit test discovery.
 - Asset generation registry validation.
-- Tool-plan compile, `gameguy_tool_plan_v0` validation, and Blender adapter validate-only.
+- Tool-plan compile, asset-family sequence policy enforcement, `gameguy_tool_plan_v0` validation, and Blender adapter validate-only.
 - Optional Blender render/export plus execution report validation.
 - Tiny fixture and measured component source validation.
 - Simple, measured, section-stack, blocky-column, and blocky-shape asset pumps.
@@ -46,18 +46,19 @@ It orchestrates:
 Non-Blender pipeline result:
 
 ```text
-PASS generation pipeline validation: commands=23 json=216 include_blender=false
+PASS generation pipeline validation: commands=23 json=218 include_blender=false
 ```
 
 Full Blender pipeline result:
 
 ```text
-PASS generation pipeline validation: commands=27 json=216 include_blender=true
+PASS generation pipeline validation: commands=27 json=218 include_blender=true
 ```
 
 The full run includes:
 
 - `gameguy_tool_plan_v0`: `2` plans, `57` steps, `24` tools
+- Asset-family sequence policy: `5` target families
 - Blender adapter validate-only: banister post and window frame plans
 - Banister Blender execution: `32` steps
 - Banister execution report validation: non-manifold `0`, material roles `5`, socket panels `2`

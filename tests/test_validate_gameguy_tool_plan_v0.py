@@ -15,6 +15,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 COMPILER = ROOT / "scripts" / "compile_blender_tool_plan_v0.py"
 VALIDATOR = ROOT / "scripts" / "validate_gameguy_tool_plan_v0.py"
+DICTIONARY = ROOT / "data" / "architecture" / "asset_mill" / "blender_tools" / "blender_tool_dictionary_v0.json"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -38,6 +39,25 @@ def compile_plan(out_root: Path) -> Path:
 def first_plan_path(manifest_path: Path) -> Path:
     manifest = load_json(manifest_path)
     return manifest_path.parent / manifest["plans"][0]["path"]
+
+
+def plan_path_by_asset(manifest_path: Path, asset_id: str) -> Path:
+    manifest = load_json(manifest_path)
+    for row in manifest["plans"]:
+        plan_path = manifest_path.parent / row["path"]
+        if load_json(plan_path)["asset_id"] == asset_id:
+            return plan_path
+    raise AssertionError(f"missing plan for {asset_id}")
+
+
+def apply_tool_dictionary_fields(step: dict[str, Any], tool_id: str) -> None:
+    dictionary = load_json(DICTIONARY)
+    tools = {tool["tool_id"]: tool for tool in dictionary["tools"]}
+    tool = tools[tool_id]
+    step["stage"] = tool["stage"]
+    step["tool_id"] = tool_id
+    for field in ("category", "execution_lane", "deterministic", "blender_api", "inputs", "outputs", "preconditions", "postconditions"):
+        step[field] = tool[field]
 
 
 def run_validator(manifest_path: Path, json_report: Path | None = None) -> subprocess.CompletedProcess[str]:
@@ -67,6 +87,7 @@ class GameguyToolPlanValidatorTests(unittest.TestCase):
         self.assertFalse(report["rules"]["runs_tool_plan_compiler"])
         self.assertTrue(report["rules"]["validates_known_tool_ids"])
         self.assertTrue(report["rules"]["validates_stage_order"])
+        self.assertTrue(report["rules"]["validates_asset_family_sequence_policy"])
 
     def test_rejects_unknown_tool_id(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
@@ -103,6 +124,32 @@ class GameguyToolPlanValidatorTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("rules.compiler_executes_blender must be false", result.stderr)
+
+    def test_rejects_tool_outside_asset_family_policy(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            manifest_path = compile_plan(Path(tmp) / "plans")
+            plan_path = plan_path_by_asset(manifest_path, "gothic_stone_window_frame_tool_plan_v0")
+            plan = load_json(plan_path)
+            apply_tool_dictionary_fields(plan["steps"][0], "primitive_cylinder_add")
+            plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
+            result = run_validator(manifest_path)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("outside the window_frame sequence policy", result.stderr)
+
+    def test_rejects_asset_family_tool_order_violation(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            manifest_path = compile_plan(Path(tmp) / "plans")
+            plan_path = plan_path_by_asset(manifest_path, "gothic_stone_banister_post_tool_plan_v0")
+            plan = load_json(plan_path)
+            plan["steps"][9], plan["steps"][10] = plan["steps"][10], plan["steps"][9]
+            plan["steps"][9]["order"] = 10
+            plan["steps"][10]["order"] = 11
+            plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
+            result = run_validator(manifest_path)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("sequence policy requires `object_duplicate_radial` before `modifier_boolean`", result.stderr)
 
     def test_rejects_media_or_mesh_output_in_tool_plan_root(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:

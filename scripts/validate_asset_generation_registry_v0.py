@@ -201,6 +201,27 @@ def validate_tool_plan_bundle(item: Any, known_labels: set[str]) -> dict[str, An
     expected_tool_count = require_int(bundle_ref.get("expected_tool_count"), "canonical_tool_plan_bundle.expected_tool_count", minimum=1)
     if dictionary.get("tool_count") != expected_tool_count:
         fail("canonical_tool_plan_bundle.expected_tool_count must match tool dictionary")
+    sequence_policy_path = repo_path(bundle_ref.get("sequence_policy"), "canonical_tool_plan_bundle.sequence_policy")
+    sequence_policy = load_json(sequence_policy_path)
+    expected_sequence_policy_schema = require_string(bundle_ref.get("sequence_policy_schema"), "canonical_tool_plan_bundle.sequence_policy_schema")
+    if sequence_policy.get("schema") != expected_sequence_policy_schema:
+        fail(f"{display_path(sequence_policy_path)} schema must be {expected_sequence_policy_schema}")
+    if sequence_policy.get("tool_dictionary") != dictionary.get("dictionary_id"):
+        fail("canonical_tool_plan_bundle.sequence_policy must reference the canonical tool dictionary")
+    if sequence_policy.get("stage_order") != dictionary.get("stages"):
+        fail("canonical_tool_plan_bundle.sequence_policy stage_order must match tool dictionary")
+    if sequence_policy.get("no_claims") != FALSE_CLAIMS:
+        fail("canonical_tool_plan_bundle.sequence_policy no_claims must match required false claim flags")
+    expected_family_policy_count = require_int(
+        bundle_ref.get("expected_asset_family_policy_count"),
+        "canonical_tool_plan_bundle.expected_asset_family_policy_count",
+        minimum=1,
+    )
+    family_policies = require_list(sequence_policy.get("asset_family_policies"), "canonical_tool_plan_bundle.sequence_policy.asset_family_policies")
+    if sequence_policy.get("asset_family_policy_count") != expected_family_policy_count:
+        fail("canonical_tool_plan_bundle.expected_asset_family_policy_count must match sequence policy")
+    if len(family_policies) != expected_family_policy_count:
+        fail("canonical_tool_plan_bundle.expected_asset_family_policy_count must match asset_family_policies length")
     compiler = script_path(bundle_ref.get("compiler"), "canonical_tool_plan_bundle.compiler")
     validator = script_path(bundle_ref.get("validator"), "canonical_tool_plan_bundle.validator")
     script_path(bundle_ref.get("adapter"), "canonical_tool_plan_bundle.adapter")
@@ -218,6 +239,7 @@ def validate_tool_plan_bundle(item: Any, known_labels: set[str]) -> dict[str, An
         "schema": expected_schema,
         "asset_count": expected_count,
         "tool_count": expected_tool_count,
+        "asset_family_policy_count": expected_family_policy_count,
         "default_plan_count": len(plan_ids),
         "pipeline_label_count": len(labels),
     }

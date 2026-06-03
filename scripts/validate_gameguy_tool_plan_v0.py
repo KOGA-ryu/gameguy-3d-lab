@@ -19,10 +19,12 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = Path("/tmp/gameguy_blender_tool_plan_v0/manifest.json")
 DEFAULT_CONTRACT = ROOT / "contracts" / "gameguy_tool_plan_v0.json"
 DEFAULT_DICTIONARY = ROOT / "data" / "architecture" / "asset_mill" / "blender_tools" / "blender_tool_dictionary_v0.json"
+DEFAULT_SEQUENCE_POLICY = ROOT / "data" / "architecture" / "asset_mill" / "blender_tools" / "asset_family_tool_sequence_policy_v0.json"
 PLAN_SCHEMA = "gameguy_tool_plan_v0"
 MANIFEST_SCHEMA = "gameguy_tool_plan_manifest_v0"
 CONTRACT_SCHEMA = "gameguy_tool_plan_contract_v0"
 DICTIONARY_SCHEMA = "blender_tool_dictionary_v0"
+SEQUENCE_POLICY_SCHEMA = "asset_family_tool_sequence_policy_v0"
 SOURCE_SCHEMA = "asset_mill_tool_plan_recipe_bundle_v0"
 FORBIDDEN_OUTPUT_SUFFIXES = {
     ".png",
@@ -160,6 +162,107 @@ def validate_tool_dictionary(dictionary: dict[str, Any]) -> tuple[dict[str, dict
     return tool_map, stages, lanes
 
 
+def validate_sequence_policy(
+    policy: dict[str, Any],
+    dictionary: dict[str, Any],
+    tool_map: dict[str, dict[str, Any]],
+    stages: list[str],
+) -> dict[str, dict[str, Any]]:
+    if policy.get("schema") != SEQUENCE_POLICY_SCHEMA:
+        fail(f"sequence policy schema must be {SEQUENCE_POLICY_SCHEMA}")
+    if policy.get("tool_dictionary") != dictionary.get("dictionary_id"):
+        fail("sequence policy tool_dictionary must match dictionary_id")
+    stage_order = require_string_list(policy.get("stage_order"), "sequence_policy.stage_order")
+    if stage_order != stages:
+        fail("sequence policy stage_order must match tool dictionary stages")
+    require_false_rules(
+        policy.get("rules"),
+        "sequence_policy.rules",
+        {
+            "source_policy_only": True,
+            "compiler_enforces_policy": True,
+            "validator_enforces_policy": True,
+            "blender_adapter_reads_compiled_plan_only": True,
+            "policy_does_not_execute_blender": True,
+            "family_tools_must_exist_in_dictionary": True,
+            "stage_order_must_match_dictionary": True,
+        },
+    )
+    required_no_claims = {
+        "production_approval": False,
+        "structural_safety": False,
+        "fabrication_ready": False,
+        "gym_museum_approval": False,
+        "historical_accuracy": False,
+        "game_engine_integration": False,
+    }
+    validate_no_claims(policy.get("no_claims"), required_no_claims, "sequence_policy.no_claims")
+    family_policies = require_list(policy.get("asset_family_policies"), "sequence_policy.asset_family_policies")
+    if policy.get("asset_family_policy_count") != len(family_policies):
+        fail("sequence policy asset_family_policy_count must match asset_family_policies length")
+
+    result: dict[str, dict[str, Any]] = {}
+    for index, item in enumerate(family_policies):
+        family_policy = require_object(item, f"sequence_policy.asset_family_policies[{index}]")
+        asset_family = require_string(family_policy.get("asset_family"), f"sequence_policy.asset_family_policies[{index}].asset_family")
+        if asset_family in result:
+            fail(f"duplicate sequence policy asset_family `{asset_family}`")
+        tags = set(require_string_list(family_policy.get("dictionary_family_tags"), f"{asset_family}.dictionary_family_tags"))
+        allowed_features = set(require_string_list(family_policy.get("allowed_features"), f"{asset_family}.allowed_features"))
+        required_stages = require_string_list(family_policy.get("required_stage_coverage"), f"{asset_family}.required_stage_coverage")
+        for stage in required_stages:
+            if stage not in stages:
+                fail(f"{asset_family}.required_stage_coverage uses unknown stage `{stage}`")
+        allowed_by_stage = require_object(family_policy.get("allowed_tools_by_stage"), f"{asset_family}.allowed_tools_by_stage")
+        allowed_tools: set[str] = set()
+        normalized_allowed_by_stage: dict[str, set[str]] = {}
+        for stage, tools_value in allowed_by_stage.items():
+            if stage not in stages:
+                fail(f"{asset_family}.allowed_tools_by_stage uses unknown stage `{stage}`")
+            tools = require_string_list(tools_value, f"{asset_family}.allowed_tools_by_stage.{stage}")
+            normalized_allowed_by_stage[stage] = set(tools)
+            for tool_id in tools:
+                if tool_id not in tool_map:
+                    fail(f"{asset_family}.allowed_tools_by_stage.{stage} uses unknown tool `{tool_id}`")
+                tool = tool_map[tool_id]
+                if tool["stage"] != stage:
+                    fail(f"{asset_family}.allowed_tools_by_stage.{stage} includes `{tool_id}` from stage `{tool['stage']}`")
+                tool_tags = set(require_string_list(tool.get("asset_families"), f"{tool_id}.asset_families"))
+                if not tool_tags.intersection(tags):
+                    fail(f"{asset_family}.allowed_tools_by_stage.{stage} includes `{tool_id}` without a matching dictionary family tag")
+                allowed_tools.add(tool_id)
+        required_tools = require_string_list(family_policy.get("required_tools", []), f"{asset_family}.required_tools", allow_empty=True)
+        for tool_id in required_tools:
+            if tool_id not in allowed_tools:
+                fail(f"{asset_family}.required_tools includes `{tool_id}` outside allowed tools")
+        forbidden_tools = require_string_list(family_policy.get("forbidden_tools", []), f"{asset_family}.forbidden_tools", allow_empty=True)
+        for tool_id in forbidden_tools:
+            if tool_id not in tool_map:
+                fail(f"{asset_family}.forbidden_tools uses unknown tool `{tool_id}`")
+            if tool_id in allowed_tools:
+                fail(f"{asset_family}.forbidden_tools includes allowed tool `{tool_id}`")
+        constraints = []
+        for constraint_index, constraint_value in enumerate(require_list(family_policy.get("tool_order_constraints"), f"{asset_family}.tool_order_constraints")):
+            constraint = require_object(constraint_value, f"{asset_family}.tool_order_constraints[{constraint_index}]")
+            before = require_string(constraint.get("before"), f"{asset_family}.tool_order_constraints[{constraint_index}].before")
+            after = require_string(constraint.get("after"), f"{asset_family}.tool_order_constraints[{constraint_index}].after")
+            if before not in allowed_tools:
+                fail(f"{asset_family}.tool_order_constraints[{constraint_index}].before is not allowed for the family")
+            if after not in allowed_tools:
+                fail(f"{asset_family}.tool_order_constraints[{constraint_index}].after is not allowed for the family")
+            constraints.append({"before": before, "after": after})
+        result[asset_family] = {
+            "asset_family": asset_family,
+            "allowed_features": allowed_features,
+            "required_stage_coverage": required_stages,
+            "allowed_tools_by_stage": normalized_allowed_by_stage,
+            "required_tools": set(required_tools),
+            "forbidden_tools": set(forbidden_tools),
+            "tool_order_constraints": constraints,
+        }
+    return result
+
+
 def validate_contract(contract: dict[str, Any], stages: list[str]) -> tuple[list[str], list[str], dict[str, Any]]:
     if contract.get("schema") != CONTRACT_SCHEMA:
         fail(f"contract schema must be {CONTRACT_SCHEMA}")
@@ -181,18 +284,21 @@ def validate_contract(contract: dict[str, Any], stages: list[str]) -> tuple[list
             "compiler_does_not_execute_blender": True,
             "blender_execution_adapter_must_consume_tool_plan": True,
             "generated_media_or_mesh_outputs_are_not_written_by_compiler": True,
+            "asset_family_sequence_policy_must_be_enforced": True,
         },
     )
     return required_fields, step_required_fields, required_claims
 
 
-def validate_manifest(manifest: dict[str, Any], manifest_path: Path) -> list[dict[str, Any]]:
+def validate_manifest(manifest: dict[str, Any], manifest_path: Path, sequence_policy: dict[str, Any]) -> list[dict[str, Any]]:
     if manifest.get("schema") != MANIFEST_SCHEMA:
         fail(f"{manifest_path} schema must be {MANIFEST_SCHEMA}")
     if manifest.get("source_schema") != SOURCE_SCHEMA:
         fail("manifest.source_schema must be asset_mill_tool_plan_recipe_bundle_v0")
     if manifest.get("plan_schema") != PLAN_SCHEMA:
         fail(f"manifest.plan_schema must be {PLAN_SCHEMA}")
+    if manifest.get("tool_sequence_policy") != sequence_policy.get("policy_id"):
+        fail("manifest.tool_sequence_policy must match sequence policy")
     plans = require_list(manifest.get("plans"), "manifest.plans")
     if manifest.get("plan_count") != len(plans):
         fail("manifest.plan_count must match plans length")
@@ -205,6 +311,7 @@ def validate_manifest(manifest: dict[str, Any], manifest_path: Path) -> list[dic
             "no_mesh_export_files": True,
             "tool_dictionary_enforced": True,
             "stage_order_enforced": True,
+            "asset_family_sequence_policy_enforced": True,
         },
     )
     if not plans:
@@ -252,6 +359,51 @@ def validate_step(
     return step_id, tool_id
 
 
+def enforce_plan_sequence_policy(
+    plan: dict[str, Any],
+    steps: list[dict[str, Any]],
+    sequence_policy: dict[str, Any],
+    policy_map: dict[str, dict[str, Any]],
+) -> None:
+    plan_id = require_string(plan.get("plan_id"), "plan_id")
+    asset_family = require_string(plan.get("asset_family"), "asset_family")
+    if plan.get("tool_sequence_policy") != sequence_policy.get("policy_id"):
+        fail(f"{plan_id}.tool_sequence_policy must match sequence policy")
+    if plan.get("asset_family_policy") != asset_family:
+        fail(f"{plan_id}.asset_family_policy must match asset_family")
+    if asset_family not in policy_map:
+        fail(f"{plan_id}.asset_family `{asset_family}` has no sequence policy")
+    policy = policy_map[asset_family]
+    for feature_index, feature in enumerate(require_string_list(plan.get("features"), "features")):
+        if feature not in policy["allowed_features"]:
+            fail(f"{plan_id}.features[{feature_index}] `{feature}` is not allowed by the {asset_family} sequence policy")
+
+    observed_stages: list[str] = []
+    tool_positions: dict[str, list[int]] = {}
+    for step in steps:
+        stage = step["stage"]
+        tool_id = step["tool_id"]
+        if stage not in observed_stages:
+            observed_stages.append(stage)
+        if tool_id in policy["forbidden_tools"]:
+            fail(f"{plan_id}.{step['step_id']} uses forbidden {asset_family} tool `{tool_id}`")
+        allowed_tools = policy["allowed_tools_by_stage"].get(stage, set())
+        if tool_id not in allowed_tools:
+            fail(f"{plan_id}.{step['step_id']} uses `{tool_id}` outside the {asset_family} sequence policy")
+        tool_positions.setdefault(tool_id, []).append(step["order"])
+    for stage in policy["required_stage_coverage"]:
+        if stage not in observed_stages:
+            fail(f"{plan_id} missing sequence-policy stage `{stage}`")
+    missing_tools = sorted(tool for tool in policy["required_tools"] if tool not in tool_positions)
+    if missing_tools:
+        fail(f"{plan_id} missing sequence-policy required tools: {missing_tools}")
+    for constraint in policy["tool_order_constraints"]:
+        before = constraint["before"]
+        after = constraint["after"]
+        if before in tool_positions and after in tool_positions and min(tool_positions[before]) >= min(tool_positions[after]):
+            fail(f"{plan_id} sequence policy requires `{before}` before `{after}`")
+
+
 def validate_plan(
     plan: dict[str, Any],
     plan_path: Path,
@@ -261,6 +413,8 @@ def validate_plan(
     step_required_fields: list[str],
     required_claims: dict[str, Any],
     dictionary: dict[str, Any],
+    sequence_policy: dict[str, Any],
+    policy_map: dict[str, dict[str, Any]],
 ) -> dict[str, Any]:
     for field in required_fields:
         if field not in plan:
@@ -292,6 +446,7 @@ def validate_plan(
             "blender_adapter_must_consume_plan": True,
             "tool_ids_validated": True,
             "stage_order_validated": True,
+            "asset_family_sequence_policy_validated": True,
         },
     )
 
@@ -320,6 +475,8 @@ def validate_plan(
         if lane not in observed_lanes:
             observed_lanes.append(lane)
         tool_ids.append(tool_id)
+
+    enforce_plan_sequence_policy(plan, steps, sequence_policy, policy_map)
 
     unique_tools = sorted(set(tool_ids))
     summary = require_object(plan.get("summary"), "summary")
@@ -356,6 +513,8 @@ def validate_manifest_plans(
     step_required_fields: list[str],
     required_claims: dict[str, Any],
     dictionary: dict[str, Any],
+    sequence_policy: dict[str, Any],
+    policy_map: dict[str, dict[str, Any]],
 ) -> list[dict[str, Any]]:
     manifest_root = manifest_path.parent
     results = []
@@ -371,7 +530,18 @@ def validate_manifest_plans(
             fail(f"manifest.plans[{index}].path must be a relative path inside the manifest root")
         plan_path = manifest_root / plan_rel_path
         plan = load_json(plan_path)
-        result = validate_plan(plan, plan_path, tool_map, stages, required_fields, step_required_fields, required_claims, dictionary)
+        result = validate_plan(
+            plan,
+            plan_path,
+            tool_map,
+            stages,
+            required_fields,
+            step_required_fields,
+            required_claims,
+            dictionary,
+            sequence_policy,
+            policy_map,
+        )
         if result["plan_id"] != plan_id:
             fail(f"manifest.plans[{index}].plan_id must match plan.plan_id")
         if row.get("step_count") != result["step_count"]:
@@ -384,13 +554,15 @@ def validate_manifest_plans(
     return results
 
 
-def validate_tool_plan_output(manifest_path: Path, contract_path: Path, dictionary_path: Path) -> dict[str, Any]:
+def validate_tool_plan_output(manifest_path: Path, contract_path: Path, dictionary_path: Path, sequence_policy_path: Path) -> dict[str, Any]:
     manifest = load_json(manifest_path)
     contract = load_json(contract_path)
     dictionary = load_json(dictionary_path)
+    sequence_policy = load_json(sequence_policy_path)
     tool_map, stages, _lanes = validate_tool_dictionary(dictionary)
+    policy_map = validate_sequence_policy(sequence_policy, dictionary, tool_map, stages)
     required_fields, step_required_fields, required_claims = validate_contract(contract, stages)
-    manifest_rows = validate_manifest(manifest, manifest_path)
+    manifest_rows = validate_manifest(manifest, manifest_path, sequence_policy)
     validate_no_generated_media_or_mesh(manifest_path.parent)
     plan_results = validate_manifest_plans(
         manifest_path,
@@ -401,6 +573,8 @@ def validate_tool_plan_output(manifest_path: Path, contract_path: Path, dictiona
         step_required_fields,
         required_claims,
         dictionary,
+        sequence_policy,
+        policy_map,
     )
     total_steps = sum(plan["step_count"] for plan in plan_results)
     unique_tools = sorted({tool_id for result in plan_results for tool_id in result["unique_tools"]})
@@ -414,6 +588,7 @@ def validate_tool_plan_output(manifest_path: Path, contract_path: Path, dictiona
         "manifest": str(manifest_path),
         "contract": str(contract_path),
         "tool_dictionary": dictionary.get("dictionary_id"),
+        "tool_sequence_policy": sequence_policy.get("policy_id"),
         "plan_count": len(plan_results),
         "total_steps": total_steps,
         "unique_tool_count": len(unique_tools),
@@ -427,6 +602,7 @@ def validate_tool_plan_output(manifest_path: Path, contract_path: Path, dictiona
             "validates_known_tool_ids": True,
             "validates_stage_order": True,
             "validates_stable_step_order": True,
+            "validates_asset_family_sequence_policy": True,
         },
     }
 
@@ -436,6 +612,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
     parser.add_argument("--contract", type=Path, default=DEFAULT_CONTRACT)
     parser.add_argument("--dictionary", type=Path, default=DEFAULT_DICTIONARY)
+    parser.add_argument("--sequence-policy", type=Path, default=DEFAULT_SEQUENCE_POLICY)
     parser.add_argument("--json-report", type=Path, help="Optional path for a machine-readable validation report.")
     return parser.parse_args(argv)
 
@@ -445,7 +622,8 @@ def main(argv: list[str] | None = None) -> int:
     manifest_path = args.manifest if args.manifest.is_absolute() else ROOT / args.manifest
     contract_path = args.contract if args.contract.is_absolute() else ROOT / args.contract
     dictionary_path = args.dictionary if args.dictionary.is_absolute() else ROOT / args.dictionary
-    result = validate_tool_plan_output(manifest_path, contract_path, dictionary_path)
+    sequence_policy_path = args.sequence_policy if args.sequence_policy.is_absolute() else ROOT / args.sequence_policy
+    result = validate_tool_plan_output(manifest_path, contract_path, dictionary_path, sequence_policy_path)
     if args.json_report:
         output_path = args.json_report if args.json_report.is_absolute() else ROOT / args.json_report
         output_path.parent.mkdir(parents=True, exist_ok=True)

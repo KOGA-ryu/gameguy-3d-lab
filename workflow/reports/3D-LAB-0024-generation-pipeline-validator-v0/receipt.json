@@ -4,9 +4,10 @@
   "decision": "ADD_GENERATION_PIPELINE_VALIDATOR",
   "validator": "scripts/validate_generation_pipeline_v0.py",
   "validation_summary": {
-      "json_file_count": 216,
+      "json_file_count": 218,
       "non_blender_command_count": 23,
       "full_blender_command_count": 27,
+      "asset_family_policy_count": 5,
       "tool_plan_count": 2,
       "tool_plan_step_count": 57,
       "tool_plan_unique_tool_count": 24,
@@ -24,6 +25,7 @@
     "source_recipes_compile_to_deterministic_json": true,
     "gameguy_asset_v0_validated": true,
     "gameguy_tool_plan_v0_validated": true,
+    "asset_family_sequence_policy_validated": true,
     "blender_remains_adapter": true,
     "quality_validation_gate": true,
     "generated_outputs_in_repo": false

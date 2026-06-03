@@ -15,6 +15,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 COMPILER = ROOT / "scripts" / "compile_blender_tool_plan_v0.py"
 DICTIONARY = ROOT / "data" / "architecture" / "asset_mill" / "blender_tools" / "blender_tool_dictionary_v0.json"
+SEQUENCE_POLICY = ROOT / "data" / "architecture" / "asset_mill" / "blender_tools" / "asset_family_tool_sequence_policy_v0.json"
 DEFAULT_RECIPE = ROOT / "data" / "architecture" / "asset_mill" / "tool_plan_recipes" / "architectural_tool_plan_recipes_v0.json"
 CONTRACT = ROOT / "contracts" / "gameguy_tool_plan_v0.json"
 
@@ -76,6 +77,28 @@ class BlenderToolPlanTests(unittest.TestCase):
             self.assertIn(by_id[expected]["stage"], stages)
             self.assertIn(by_id[expected]["execution_lane"], lanes)
 
+    def test_sequence_policy_covers_target_asset_families(self) -> None:
+        dictionary = load_json(DICTIONARY)
+        policy = load_json(SEQUENCE_POLICY)
+        tools = {tool["tool_id"]: tool for tool in dictionary["tools"]}
+
+        self.assertEqual(policy["schema"], "asset_family_tool_sequence_policy_v0")
+        self.assertEqual(policy["tool_dictionary"], dictionary["dictionary_id"])
+        self.assertEqual(policy["stage_order"], dictionary["stages"])
+        self.assertEqual(policy["asset_family_policy_count"], 5)
+        families = {item["asset_family"]: item for item in policy["asset_family_policies"]}
+        self.assertEqual(set(families), {"column", "banister_post", "fence_post", "window_frame", "door_frame"})
+
+        for family, item in families.items():
+            self.assertIn("calculate_bounds", item["required_tools"], family)
+            self.assertIn("validate_non_manifold", item["required_tools"], family)
+            self.assertIn("export_gltf", item["required_tools"], family)
+            for stage, tool_ids in item["allowed_tools_by_stage"].items():
+                self.assertIn(stage, dictionary["stages"])
+                for tool_id in tool_ids:
+                    self.assertIn(tool_id, tools)
+                    self.assertEqual(tools[tool_id]["stage"], stage)
+
     def test_contract_matches_compiled_plan_shape(self) -> None:
         contract = load_json(CONTRACT)
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
@@ -101,15 +124,19 @@ class BlenderToolPlanTests(unittest.TestCase):
             plan = plan_by_asset(out_root, "gothic_stone_banister_post_tool_plan_v0")
 
         self.assertEqual(manifest["schema"], "gameguy_tool_plan_manifest_v0")
+        self.assertEqual(manifest["tool_sequence_policy"], "asset_family_tool_sequence_policy_v0")
         self.assertEqual(manifest["plan_count"], 2)
         self.assertEqual(manifest["plans"][0]["step_count"], 32)
         self.assertEqual(manifest["plans"][0]["unique_tool_count"], 24)
         self.assertEqual(plan["asset_family"], "banister_post")
+        self.assertEqual(plan["tool_sequence_policy"], "asset_family_tool_sequence_policy_v0")
+        self.assertEqual(plan["asset_family_policy"], "banister_post")
         self.assertEqual(plan["style"], "gothic_stone")
         self.assertEqual(plan["summary"]["covered_stages"], plan["stage_order"])
         self.assertEqual(plan["summary"]["non_deterministic_step_count"], 0)
         self.assertEqual(plan["rules"]["compiler_executes_blender"], False)
         self.assertEqual(plan["rules"]["writes_generated_media_or_mesh"], False)
+        self.assertTrue(plan["rules"]["asset_family_sequence_policy_validated"])
 
         stage_indexes = {stage: index for index, stage in enumerate(plan["stage_order"])}
         observed = [stage_indexes[step["stage"]] for step in plan["steps"]]
@@ -145,6 +172,7 @@ class BlenderToolPlanTests(unittest.TestCase):
             plan = plan_by_asset(out_root, "gothic_stone_window_frame_tool_plan_v0")
 
         self.assertEqual(plan["asset_family"], "window_frame")
+        self.assertEqual(plan["asset_family_policy"], "window_frame")
         self.assertEqual(plan["style"], "gothic_stone")
         self.assertEqual(plan["summary"]["step_count"], 25)
         self.assertEqual(plan["summary"]["unique_tool_count"], 22)
@@ -200,6 +228,25 @@ class BlenderToolPlanTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("unknown feature `floating_magic`", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
+
+    def test_feature_rejected_when_disallowed_by_family_policy(self) -> None:
+        source = load_json(DEFAULT_RECIPE)
+        source["assets"][1]["features"].append("east_west_rail_sockets")
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            recipe_path = Path(tmp) / "bad_recipe.json"
+            out_root = Path(tmp) / "plans"
+            recipe_path.write_text(json.dumps(source, indent=2) + "\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(COMPILER), "--recipe", str(recipe_path), "--out", str(out_root)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("is not allowed by the window_frame sequence policy", result.stderr)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_window_frame_invalid_member_dimensions_fail_before_output(self) -> None:
