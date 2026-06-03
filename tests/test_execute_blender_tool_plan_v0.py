@@ -151,6 +151,36 @@ class BlenderToolPlanExecutionAdapterTests(unittest.TestCase):
         self.assertEqual(report["unique_tool_count"], 24)
         self.assertTrue(report["rules"]["consumes_gameguy_tool_plan_v0"])
 
+    def test_validate_only_accepts_rail_segment_plan(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            tmp_root = Path(tmp)
+            plan_path = compile_plan_for_asset(tmp_root / "plans", "gothic_stone_rail_segment_tool_plan_v0")
+            report_path = tmp_root / "executor_report.json"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(EXECUTOR),
+                    "--plan",
+                    str(plan_path),
+                    "--validate-only",
+                    "--json-report",
+                    str(report_path),
+                ],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            report = load_json(report_path)
+
+        self.assertIn("PASS Blender tool-plan adapter validation", result.stdout)
+        self.assertEqual(report["plan_id"], "gothic_stone_rail_segment_tool_plan_v0_compiled")
+        self.assertEqual(report["asset_family"], "rail_segment")
+        self.assertEqual(report["step_count"], 28)
+        self.assertEqual(report["supported_step_count"], 28)
+        self.assertEqual(report["unique_tool_count"], 22)
+        self.assertTrue(report["rules"]["consumes_gameguy_tool_plan_v0"])
+
     def test_validate_only_accepts_column_plan(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             tmp_root = Path(tmp)

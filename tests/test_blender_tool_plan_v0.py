@@ -100,9 +100,9 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(policy["schema"], "asset_family_tool_sequence_policy_v0")
         self.assertEqual(policy["tool_dictionary"], dictionary["dictionary_id"])
         self.assertEqual(policy["stage_order"], dictionary["stages"])
-        self.assertEqual(policy["asset_family_policy_count"], 5)
+        self.assertEqual(policy["asset_family_policy_count"], 6)
         families = {item["asset_family"]: item for item in policy["asset_family_policies"]}
-        self.assertEqual(set(families), {"column", "banister_post", "fence_post", "window_frame", "door_frame"})
+        self.assertEqual(set(families), {"column", "banister_post", "fence_post", "rail_segment", "window_frame", "door_frame"})
 
         for family, item in families.items():
             self.assertIn("finish_tool_stack", item["allowed_features"], family)
@@ -141,7 +141,7 @@ class BlenderToolPlanTests(unittest.TestCase):
 
         self.assertEqual(manifest["schema"], "gameguy_tool_plan_manifest_v0")
         self.assertEqual(manifest["tool_sequence_policy"], "asset_family_tool_sequence_policy_v0")
-        self.assertEqual(manifest["plan_count"], 5)
+        self.assertEqual(manifest["plan_count"], 6)
         self.assertEqual(manifest["plans"][0]["step_count"], 32)
         self.assertEqual(manifest["plans"][0]["unique_tool_count"], 24)
         self.assertEqual(plan["asset_family"], "banister_post")
@@ -208,6 +208,54 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(by_step["boolean_cut_rail_sockets"]["params"]["cutters"], ["east_socket_cutter", "west_socket_cutter"])
         self.assertEqual(by_step["boolean_cut_rail_sockets"]["params"]["socket_shadow_panels"]["surface_x_m"], 0.1)
         self.assertIn("socket_shadows", by_step["join_visible_post_parts"]["params"]["objects"])
+
+    def test_rail_segment_recipe_compiles_to_modular_connector_piece(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "plans"
+            run_compiler(out_root)
+            plan = plan_by_asset(out_root, "gothic_stone_rail_segment_tool_plan_v0")
+
+        self.assertEqual(plan["asset_family"], "rail_segment")
+        self.assertEqual(plan["asset_family_policy"], "rail_segment")
+        self.assertEqual(plan["style"], "gothic_stone")
+        self.assertEqual(plan["features"], ["rail_segment_blocks", "finish_tool_stack"])
+        self.assertTrue(FINISH_FEATURES.isdisjoint(plan["features"]))
+        self.assertEqual(plan["summary"]["step_count"], 28)
+        self.assertEqual(plan["summary"]["unique_tool_count"], 22)
+        self.assertEqual(plan["summary"]["covered_stages"], plan["stage_order"])
+        self.assertNotIn("modifier_boolean", plan["summary"]["unique_tools"])
+        self.assertNotIn("object_duplicate_radial", plan["summary"]["unique_tools"])
+
+        by_step = {step["step_id"]: step for step in plan["steps"]}
+        self.assertEqual(by_step["create_rail_body"]["params"]["size_m"], [1.08, 0.16, 0.14])
+        self.assertEqual(by_step["create_rail_top_cap"]["params"]["material_role"], "cap")
+        self.assertEqual(by_step["create_left_connector_tab"]["params"]["location_m"], [-0.63, 0.0, 0.16])
+        self.assertEqual(by_step["create_right_connector_tab"]["params"]["location_m"], [0.63, 0.0, 0.16])
+        self.assertEqual(by_step["join_rail_segment_blocks"]["params"]["connector_tab_span_m"], 1.38)
+        self.assertEqual(by_step["join_rail_segment_blocks"]["params"]["socket_match_size_m"], [0.12, 0.12, 0.18])
+        self.assertEqual(
+            by_step["join_rail_segment_blocks"]["params"]["objects"],
+            [
+                "rail_body",
+                "rail_top_cap",
+                "rail_bottom_lip",
+                "left_connector_tab",
+                "right_connector_tab",
+                "front_raised_band",
+                "rear_raised_band",
+            ],
+        )
+        self.assertEqual(
+            by_step["assign_material_regions"]["params"]["material_map"],
+            {
+                "body": "gothic_stone",
+                "base": "gothic_stone_dark",
+                "cap": "gothic_stone_cap",
+                "connector": "gothic_stone_shadow",
+                "rib": "gothic_stone_highlight",
+                "default": "gothic_stone",
+            },
+        )
 
     def test_column_recipe_compiles_to_square_circle_fluted_sequence(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
@@ -355,7 +403,7 @@ class BlenderToolPlanTests(unittest.TestCase):
                 text=True,
             )
 
-        self.assertIn("compiled tool plans=5 steps=145 tools=97 out=<validate-only>", result.stdout)
+        self.assertIn("compiled tool plans=6 steps=173 tools=97 out=<validate-only>", result.stdout)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_unknown_feature_fails_before_output(self) -> None:

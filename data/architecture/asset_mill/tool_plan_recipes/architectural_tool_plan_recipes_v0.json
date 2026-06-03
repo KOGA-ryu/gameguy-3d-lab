@@ -49,7 +49,7 @@
       ]
     }
   ],
-  "asset_count": 5,
+  "asset_count": 6,
   "assets": [
     {
       "asset_id": "gothic_stone_banister_post_tool_plan_v0",
@@ -139,6 +139,59 @@
         "stone_noise_scale": 36.0,
         "uv_margin": 0.018,
         "lod_decimate_ratio": 0.58
+      },
+      "required_stage_coverage": [
+        "base_form",
+        "assembly",
+        "shape_refinement",
+        "sculpt_detail",
+        "retopo_cleanup",
+        "uv_mapping",
+        "material_texture",
+        "validation_export"
+      ],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false
+      }
+    },
+    {
+      "asset_id": "gothic_stone_rail_segment_tool_plan_v0",
+      "asset_family": "rail_segment",
+      "style": "gothic_stone",
+      "detail_level": "medium",
+      "target_readiness": "near_finished_procedural_asset",
+      "dimensions_m": {
+        "width": 1.38,
+        "depth": 0.22,
+        "height": 0.32
+      },
+      "features": [
+        "rail_segment_blocks",
+        "finish_tool_stack"
+      ],
+      "finish_tool_stack": "gothic_stone_finish_stack_v0",
+      "style_parameters": {
+        "rail_body_size_m": [1.08, 0.16, 0.14],
+        "rail_body_location_m": [0.0, 0.0, 0.16],
+        "rail_top_cap_size_m": [1.24, 0.22, 0.07],
+        "rail_top_cap_location_m": [0.0, 0.0, 0.285],
+        "rail_bottom_lip_size_m": [1.12, 0.14, 0.06],
+        "rail_bottom_lip_location_m": [0.0, 0.0, 0.06],
+        "rail_connector_tab_size_m": [0.12, 0.12, 0.18],
+        "rail_connector_tab_center_x_m": 0.63,
+        "rail_connector_tab_location_z_m": 0.16,
+        "rail_raised_band_size_m": [0.82, 0.024, 0.07],
+        "rail_raised_band_surface_y_m": 0.092,
+        "rail_raised_band_location_z_m": 0.16,
+        "bevel_width_m": 0.012,
+        "stone_noise_scale": 39.0,
+        "uv_margin": 0.018,
+        "lod_decimate_ratio": 0.6
       },
       "required_stage_coverage": [
         "base_form",

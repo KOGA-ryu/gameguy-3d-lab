@@ -526,6 +526,84 @@ def vector_param(params: dict[str, Any], name: str, default: list[float]) -> lis
     return result
 
 
+def rail_segment_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
+    params = style_params(asset)
+    body_size = vector_param(params, "rail_body_size_m", [1.08, 0.16, 0.14])
+    body_location = vector_param(params, "rail_body_location_m", [0.0, 0.0, 0.16])
+    top_cap_size = vector_param(params, "rail_top_cap_size_m", [1.24, 0.22, 0.07])
+    top_cap_location = vector_param(params, "rail_top_cap_location_m", [0.0, 0.0, 0.285])
+    bottom_lip_size = vector_param(params, "rail_bottom_lip_size_m", [1.12, 0.14, 0.06])
+    bottom_lip_location = vector_param(params, "rail_bottom_lip_location_m", [0.0, 0.0, 0.06])
+    connector_size = vector_param(params, "rail_connector_tab_size_m", [0.12, 0.12, 0.18])
+    connector_x = number_param(params, "rail_connector_tab_center_x_m", 0.63)
+    connector_z = number_param(params, "rail_connector_tab_location_z_m", 0.16)
+    raised_band_size = vector_param(params, "rail_raised_band_size_m", [0.82, 0.024, 0.07])
+    raised_band_z = number_param(params, "rail_raised_band_location_z_m", 0.16)
+    raised_band_y = number_param(params, "rail_raised_band_surface_y_m", 0.092)
+    return [
+        {
+            "step_id": "create_rail_body",
+            "tool_id": "primitive_cube_add",
+            "purpose": "Create the long stone rail body block.",
+            "params": {"size_m": body_size, "location_m": body_location, "material_role": "body"},
+        },
+        {
+            "step_id": "create_rail_top_cap",
+            "tool_id": "primitive_cube_add",
+            "purpose": "Create the slightly wider top cap that reads as a stone coping.",
+            "params": {"size_m": top_cap_size, "location_m": top_cap_location, "material_role": "cap"},
+        },
+        {
+            "step_id": "create_rail_bottom_lip",
+            "tool_id": "primitive_cube_add",
+            "purpose": "Create the lower rail lip for a stepped stone profile.",
+            "params": {"size_m": bottom_lip_size, "location_m": bottom_lip_location, "material_role": "base"},
+        },
+        {
+            "step_id": "create_left_connector_tab",
+            "tool_id": "primitive_cube_add",
+            "purpose": "Create the left post-socket connector tab.",
+            "params": {"size_m": connector_size, "location_m": [-connector_x, 0.0, connector_z], "material_role": "connector"},
+        },
+        {
+            "step_id": "create_right_connector_tab",
+            "tool_id": "primitive_cube_add",
+            "purpose": "Create the right post-socket connector tab.",
+            "params": {"size_m": connector_size, "location_m": [connector_x, 0.0, connector_z], "material_role": "connector"},
+        },
+        {
+            "step_id": "create_front_raised_band",
+            "tool_id": "primitive_cube_add",
+            "purpose": "Create a simple raised front face band for blocky carved detail.",
+            "params": {"size_m": raised_band_size, "location_m": [0.0, -raised_band_y, raised_band_z], "material_role": "rib"},
+        },
+        {
+            "step_id": "create_rear_raised_band",
+            "tool_id": "primitive_cube_add",
+            "purpose": "Create a matching raised rear face band for reversible placement.",
+            "params": {"size_m": raised_band_size, "location_m": [0.0, raised_band_y, raised_band_z], "material_role": "rib"},
+        },
+        {
+            "step_id": "join_rail_segment_blocks",
+            "tool_id": "join_objects",
+            "purpose": "Join rail blocks and connector tabs into one deterministic modular segment.",
+            "params": {
+                "objects": [
+                    "rail_body",
+                    "rail_top_cap",
+                    "rail_bottom_lip",
+                    "left_connector_tab",
+                    "right_connector_tab",
+                    "front_raised_band",
+                    "rear_raised_band",
+                ],
+                "connector_tab_span_m": round(connector_x * 2.0 + connector_size[0], 6),
+                "socket_match_size_m": connector_size,
+            },
+        },
+    ]
+
+
 def rectangular_frame_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
     params = style_params(asset)
     dims = dimensions(asset)
@@ -776,6 +854,8 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
         ]
     if feature == "rectangular_frame_blocks":
         return rectangular_frame_steps(asset)
+    if feature == "rail_segment_blocks":
+        return rail_segment_steps(asset)
     if feature in {"east_west_rail_sockets", "rail_sockets"}:
         socket_size = vector_param(params, "rail_socket_size_m", [0.16, 0.22, params.get("rail_socket_height_m", 0.26)])
         socket_x = number_param(params, "rail_socket_x_m", 0.18)
@@ -838,6 +918,15 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
             material_map = {
                 "frame": "gothic_stone_frame",
                 "default": "gothic_stone_frame",
+            }
+        if asset.get("asset_family") == "rail_segment":
+            material_map = {
+                "body": "gothic_stone",
+                "base": "gothic_stone_dark",
+                "cap": "gothic_stone_cap",
+                "connector": "gothic_stone_shadow",
+                "rib": "gothic_stone_highlight",
+                "default": "gothic_stone",
             }
         return [
             {"step_id": "add_stone_displacement", "tool_id": "modifier_displace", "purpose": "Add restrained procedural stone surface variation.", "params": {"strength_m": 0.006, "texture": "stone_noise"}},

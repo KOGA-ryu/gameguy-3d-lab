@@ -112,11 +112,11 @@ python3 scripts/compile_blender_tool_plan_v0.py \
   --out /tmp/gameguy_blender_tool_plan_v0
 ```
 
-This reads `data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json`, `data/architecture/asset_mill/blender_tools/asset_family_tool_sequence_policy_v0.json`, and `data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json`. It currently compiles separate staged plans for a banister post, fence post, column, window frame, and door frame, while the policy defines legal tool sequences for columns, banister posts, fence posts, window frames, and door frames. It does not execute Blender, write media, write mesh exports, or make render artifacts. The Blender execution adapter consumes `gameguy_tool_plan_v0` and executes the staged operations.
+This reads `data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json`, `data/architecture/asset_mill/blender_tools/asset_family_tool_sequence_policy_v0.json`, and `data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json`. It currently compiles separate staged plans for a banister post, fence post, rail segment, column, window frame, and door frame, while the policy defines legal tool sequences for columns, banister posts, fence posts, rail segments, window frames, and door frames. It does not execute Blender, write media, write mesh exports, or make render artifacts. The Blender execution adapter consumes `gameguy_tool_plan_v0` and executes the staged operations.
 
 The column source now uses `profile_operation_stack` to declare a square-to-circle-to-fluted-to-circle-to-square profile sequence from legal `geometry_dictionary/` terms. The compiler preserves those terms in `source_terms`, and the tool-plan validator rejects unknown profile or operator terms before Blender sees the plan.
 
-The default architectural tool-plan bundle also uses `finish_tool_stack` to share a source-owned finishing sequence across the banister post, fence post, column, window frame, and door frame. That stack declares bevels, weighted normals, procedural stone material/detail, UV projection/packing, cleanup, collision/LOD, preview, and export as source recipe intent; the compiler expands it into deterministic Blender tool steps.
+The default architectural tool-plan bundle also uses `finish_tool_stack` to share a source-owned finishing sequence across the banister post, fence post, rail segment, column, window frame, and door frame. That stack declares bevels, weighted normals, procedural stone material/detail, UV projection/packing, cleanup, collision/LOD, preview, and export as source recipe intent; the compiler expands it into deterministic Blender tool steps.
 
 Validate compiled tool-plan JSON before adapter execution with:
 
@@ -201,6 +201,7 @@ python3 scripts/compile_blender_tool_plan_v0.py --clean --out /tmp/gameguy_blend
 python3 scripts/validate_gameguy_tool_plan_v0.py --manifest /tmp/gameguy_blender_tool_plan_v0/manifest.json
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_banister_post_tool_plan_v0_compiled.json --validate-only
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_fence_post_tool_plan_v0_compiled.json --validate-only
+python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_rail_segment_tool_plan_v0_compiled.json --validate-only
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_column_tool_plan_v0_compiled.json --validate-only
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_window_frame_tool_plan_v0_compiled.json --validate-only
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_door_frame_tool_plan_v0_compiled.json --validate-only
@@ -218,6 +219,13 @@ python3 scripts/validate_blender_tool_plan_execution_report_v0.py --report /tmp/
   --render \
   --export
 python3 scripts/validate_blender_tool_plan_execution_report_v0.py --report /tmp/gameguy_blender_fence_post_tool_plan_execution_v0/tool_plan_execution_v0_report.json
+/Applications/Blender.app/Contents/MacOS/Blender --background \
+  --python scripts/execute_blender_tool_plan_v0.py -- \
+  --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_rail_segment_tool_plan_v0_compiled.json \
+  --out /tmp/gameguy_blender_rail_segment_tool_plan_execution_v0 \
+  --render \
+  --export
+python3 scripts/validate_blender_tool_plan_execution_report_v0.py --report /tmp/gameguy_blender_rail_segment_tool_plan_execution_v0/tool_plan_execution_v0_report.json
 /Applications/Blender.app/Contents/MacOS/Blender --background \
   --python scripts/execute_blender_tool_plan_v0.py -- \
   --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_column_tool_plan_v0_compiled.json \
@@ -266,10 +274,10 @@ Expected current checks:
 - JSON parses.
 - Python scripts compile.
 - Asset pump tests pass.
-- Blender tool-plan compiler validates a `97`-tool dictionary, a `5`-family sequence policy, and compiles five default plans: a `32`-step banister post, a `32`-step fence post, a `31`-step column, a `25`-step window frame, and a `25`-step door frame.
+- Blender tool-plan compiler validates a `97`-tool dictionary, a `6`-family sequence policy, and compiles six default plans: a `32`-step banister post, a `32`-step fence post, a `28`-step rail segment, a `31`-step column, a `25`-step window frame, and a `25`-step door frame.
 - `gameguy_tool_plan_v0` validation proves manifest shape, known tool IDs, stable step order, stage order, asset-family sequence policy, deterministic steps, false claims, and no compiler media/mesh output.
-- Blender tool-plan execution adapter validation consumes the compiled `32`-step banister plan, the compiled `32`-step fence-post plan, the compiled `31`-step column plan, the compiled `25`-step window-frame plan, and the compiled `25`-step door-frame plan.
-- Blender tool-plan execution report validation proves adapter boundary rules, material-region preservation, topology count, and no repo-local generated outputs for all five plans. The banister and fence-post profiles also prove socket boolean evidence, while the column profile proves square/circular transition and fluted-shaft material regions.
+- Blender tool-plan execution adapter validation consumes the compiled `32`-step banister plan, the compiled `32`-step fence-post plan, the compiled `28`-step rail-segment plan, the compiled `31`-step column plan, the compiled `25`-step window-frame plan, and the compiled `25`-step door-frame plan.
+- Blender tool-plan execution report validation proves adapter boundary rules, material-region preservation, topology count, and no repo-local generated outputs for all six plans. The banister and fence-post profiles also prove socket boolean evidence, the rail-segment profile proves connector-tab material regions, and the column profile proves square/circular transition and fluted-shaft material regions.
 - Blender tool-plan execution quality evidence is recorded in `workflow/reports/3D-LAB-0021-execution-quality-pass-v0/`.
 - Tiny source fixture validation passes.
 - Measured component source validation passes.

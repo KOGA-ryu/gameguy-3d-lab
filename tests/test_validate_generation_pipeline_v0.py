@@ -59,6 +59,7 @@ class GenerationPipelineValidatorTests(unittest.TestCase):
         self.assertIn("generation_registry_validate", labels)
         self.assertIn("tool_plan_validate", labels)
         self.assertIn("fence_post_blender_adapter_validate_only", labels)
+        self.assertIn("rail_segment_blender_adapter_validate_only", labels)
         self.assertIn("column_blender_adapter_validate_only", labels)
         self.assertIn("window_frame_blender_adapter_validate_only", labels)
         self.assertIn("door_frame_blender_adapter_validate_only", labels)
@@ -71,6 +72,7 @@ class GenerationPipelineValidatorTests(unittest.TestCase):
             step.label for step in module.build_command_steps(include_blender=True, skip_unit_tests=True, blender_path=module.DEFAULT_BLENDER)
         }
         self.assertIn("fence_post_blender_execution_report_validate", blender_labels)
+        self.assertIn("rail_segment_blender_execution_report_validate", blender_labels)
         self.assertIn("column_blender_execution_report_validate", blender_labels)
         self.assertIn("window_frame_blender_execution_report_validate", blender_labels)
         self.assertIn("door_frame_blender_execution_report_validate", blender_labels)

@@ -42,6 +42,9 @@ REQUIRED_FENCE_POST_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
 REQUIRED_COLUMN_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
     "socket_boolean_not_required",
 }
+REQUIRED_RAIL_SEGMENT_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
+    "socket_boolean_not_required",
+}
 REQUIRED_WINDOW_FRAME_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
     "socket_boolean_not_required",
 }
@@ -51,6 +54,7 @@ REQUIRED_DOOR_FRAME_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
 REQUIRED_BANISTER_MATERIAL_ROLES = ("base", "cap", "shaft", "rib", "socket_shadow")
 REQUIRED_FENCE_POST_MATERIAL_ROLES = ("base", "cap", "shaft", "rib", "socket_shadow")
 REQUIRED_COLUMN_MATERIAL_ROLES = ("base", "cap", "transition", "shaft", "rib")
+REQUIRED_RAIL_SEGMENT_MATERIAL_ROLES = ("body", "base", "cap", "connector", "rib")
 REQUIRED_WINDOW_FRAME_MATERIAL_ROLES = ("frame",)
 REQUIRED_DOOR_FRAME_MATERIAL_ROLES = ("frame",)
 REQUIRED_SOCKET_CUTTERS = ("east_socket_cutter", "west_socket_cutter")
@@ -164,6 +168,8 @@ def validate_quality_flags(report: dict[str, Any], asset_family: str) -> None:
         required_flags = REQUIRED_FENCE_POST_QUALITY_FLAGS
     elif asset_family == "column":
         required_flags = REQUIRED_COLUMN_QUALITY_FLAGS
+    elif asset_family == "rail_segment":
+        required_flags = REQUIRED_RAIL_SEGMENT_QUALITY_FLAGS
     elif asset_family == "window_frame":
         required_flags = REQUIRED_WINDOW_FRAME_QUALITY_FLAGS
     elif asset_family == "door_frame":
@@ -285,6 +291,10 @@ def validate_report(report_path: Path, *, max_non_manifold_edges: int, min_mater
         socket_shadow_panel_count = report["socket_pass"]["socket_shadow_panel_count"]
     elif asset_family == "column":
         face_counts = validate_material_regions(report, len(REQUIRED_COLUMN_MATERIAL_ROLES), REQUIRED_COLUMN_MATERIAL_ROLES)
+        validate_socket_not_required(report)
+        socket_shadow_panel_count = 0
+    elif asset_family == "rail_segment":
+        face_counts = validate_material_regions(report, len(REQUIRED_RAIL_SEGMENT_MATERIAL_ROLES), REQUIRED_RAIL_SEGMENT_MATERIAL_ROLES)
         validate_socket_not_required(report)
         socket_shadow_panel_count = 0
     elif asset_family == "window_frame":

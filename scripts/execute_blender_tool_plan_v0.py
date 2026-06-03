@@ -49,8 +49,10 @@ SUPPORTED_TOOLS = {
 
 ROLE_MATERIAL_COLORS: dict[str, tuple[float, float, float, float]] = {
     "default": (0.48, 0.46, 0.39, 1.0),
+    "body": (0.48, 0.46, 0.39, 1.0),
     "base": (0.38, 0.36, 0.31, 1.0),
     "cap": (0.55, 0.52, 0.44, 1.0),
+    "connector": (0.22, 0.23, 0.24, 1.0),
     "transition": (0.44, 0.42, 0.36, 1.0),
     "shaft": (0.47, 0.45, 0.38, 1.0),
     "rib": (0.58, 0.55, 0.46, 1.0),
@@ -185,6 +187,10 @@ def alias_from_step_id(step_id: str) -> str:
 
 
 def material_role_for_alias(alias: str) -> str:
+    if "connector" in alias:
+        return "connector"
+    if alias == "rail_body":
+        return "body"
     if alias.startswith("base_"):
         return "base"
     if alias.startswith("cap_"):
@@ -376,7 +382,7 @@ def execute_primitive_cube_add(bpy: Any, step: dict[str, Any], context: dict[str
     obj.name = alias
     obj.dimensions = size
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
-    role = material_role_for_alias(alias)
+    role = str(params.get("material_role") or material_role_for_alias(alias))
     obj["tool_plan_step_id"] = step["step_id"]
     obj["tool_id"] = step["tool_id"]
     obj["material_role"] = role
@@ -413,7 +419,7 @@ def execute_primitive_cylinder_add(bpy: Any, step: dict[str, Any], context: dict
     obj = bpy.context.object
     alias = alias_from_step_id(step["step_id"])
     obj.name = alias
-    role = material_role_for_alias(alias)
+    role = str(params.get("material_role") or material_role_for_alias(alias))
     obj["tool_plan_step_id"] = step["step_id"]
     obj["tool_id"] = step["tool_id"]
     obj["material_role"] = role
@@ -721,6 +727,10 @@ def material_role_from_name(name: str) -> str:
         return "rib"
     if "frame" in normalized:
         return "frame"
+    if "connector" in normalized:
+        return "connector"
+    if "body" in normalized:
+        return "body"
     if "transition" in normalized:
         return "transition"
     if "cap" in normalized:
