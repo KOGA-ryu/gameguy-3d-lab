@@ -1,0 +1,41 @@
+{
+  "schema": "generation_pipeline_validator_receipt_v0",
+  "packet_id": "3D-LAB-0024",
+  "decision": "ADD_GENERATION_PIPELINE_VALIDATOR",
+  "validator": "scripts/validate_generation_pipeline_v0.py",
+  "validation_summary": {
+    "json_file_count": 210,
+    "non_blender_command_count": 21,
+    "full_blender_command_count": 23,
+    "tool_plan_count": 1,
+    "tool_plan_step_count": 32,
+    "tool_plan_unique_tool_count": 24,
+    "blender_non_manifold_edge_count": 0,
+    "blender_material_role_count": 5,
+    "blender_socket_shadow_panel_count": 2,
+    "repo_media_mesh_output_count": 0,
+    "pattern_lab_path_count": 0
+  },
+  "rules_validated": {
+    "source_recipes_compile_to_deterministic_json": true,
+    "gameguy_asset_v0_validated": true,
+    "gameguy_tool_plan_v0_validated": true,
+    "blender_remains_adapter": true,
+    "quality_validation_gate": true,
+    "generated_outputs_in_repo": false
+  },
+  "validator_rules": {
+    "adds_source_design_logic": false,
+    "replaces_asset_pump": false,
+    "replaces_tool_plan_compiler": false,
+    "makes_blender_source_logic": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

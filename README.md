@@ -162,6 +162,18 @@ The current implementation language is Python prototype scripts. A future C++ po
 Run from the repo root:
 
 ```bash
+python3 scripts/validate_generation_pipeline_v0.py
+```
+
+For the full Blender execution and quality report gate:
+
+```bash
+python3 scripts/validate_generation_pipeline_v0.py --include-blender
+```
+
+The expanded validation sequence is:
+
+```bash
 find data contracts docs geometry_dictionary workflow -name '*.json' -print0 | xargs -0 -n 1 python3 -m json.tool >/dev/null
 python3 -m py_compile scripts/*.py
 python3 -m unittest discover -s tests
@@ -198,6 +210,7 @@ find . -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.gif' -o -name '*.we
 
 Expected current checks:
 
+- Generation pipeline validation passes as the canonical orchestration gate.
 - JSON parses.
 - Python scripts compile.
 - Asset pump tests pass.
