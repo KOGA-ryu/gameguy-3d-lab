@@ -28,7 +28,7 @@
       "use_policy": "morphology_reference_only"
     }
   ],
-  "profile_count": 7,
+  "profile_count": 14,
   "profiles": [
     {
       "profile_id": "railing_square_frame_block_v0",
@@ -512,15 +512,502 @@
         "game_engine_integration": false,
         "building_code_compliance": false
       }
+    },
+    {
+      "profile_id": "railing_plinth_ogee_base_side_profile_v0",
+      "profile_family": "side_molding_profile",
+      "source_reference_id": "user_column_molding_profile_reference_v0",
+      "source_2d_shape": {
+        "term_id": "custom_polygon",
+        "coordinate_space": "local_xz",
+        "control_policy": "few side-view points define broad foot, step, ogee transition, and upper neck"
+      },
+      "where_used": [
+        {
+          "target_asset_family": "banister_post",
+          "placement_region": "post_base_plinth_side",
+          "detail_role": "molded_square_plinth",
+          "application_method": "extrude_side_profile_around_square_foot"
+        },
+        {
+          "target_asset_family": "fence_post",
+          "placement_region": "post_foot_transition",
+          "detail_role": "stepped_base_molding",
+          "application_method": "stacked_profile_extrusion"
+        },
+        {
+          "target_asset_family": "guard_panel",
+          "placement_region": "pier_base_step",
+          "detail_role": "reference_plinth_base",
+          "application_method": "replace_plain_square_base_with_profiled_plinth"
+        }
+      ],
+      "geometry_terms_used": ["custom_polygon", "extrude", "offset_profile", "compound_asset", "bevel_edges"],
+      "profile_terms": ["custom_polygon"],
+      "operations": ["extrude", "offset_profile", "compound_asset", "bevel_edges"],
+      "blender_tool_sequence": [
+        {
+          "stage": "base_form",
+          "tool_id": "mesh_from_pydata",
+          "use": "Create a low-point plinth side silhouette from source controls."
+        },
+        {
+          "stage": "assembly",
+          "tool_id": "join_objects",
+          "use": "Join profiled plinth pieces to the post or guard-pier base assembly."
+        },
+        {
+          "stage": "shape_refinement",
+          "tool_id": "modifier_bevel",
+          "use": "Soften the plinth lips without erasing the stepped profile."
+        },
+        {
+          "stage": "shape_refinement",
+          "tool_id": "modifier_weighted_normal",
+          "use": "Preserve crisp stone shading across the molded base steps."
+        }
+      ],
+      "shape_controls": {
+        "dominant_silhouette": "broad square plinth with stepped ogee side profile",
+        "detail_density": "medium",
+        "edit_knobs": ["foot_width", "foot_height", "step_height", "ogee_projection", "upper_neck_width", "bevel_width"]
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "profile_id": "railing_rounded_rectangle_handrail_grip_v0",
+      "profile_family": "frame_profile",
+      "source_reference_id": "user_column_molding_profile_reference_v0",
+      "source_2d_shape": {
+        "term_id": "rounded_rectangle",
+        "coordinate_space": "local_xy",
+        "control_policy": "width, height, corner radius, and segment count define a grippable rail cross-section"
+      },
+      "where_used": [
+        {
+          "target_asset_family": "rail_segment",
+          "placement_region": "top_handrail_core",
+          "detail_role": "rounded_grip_profile",
+          "application_method": "extrude_along_rail_length"
+        },
+        {
+          "target_asset_family": "guard_panel",
+          "placement_region": "top_coping_rail",
+          "detail_role": "softened_top_rail",
+          "application_method": "replace_rectangular_coping_with_rounded_profile"
+        },
+        {
+          "target_asset_family": "window_frame",
+          "placement_region": "mullion_front_profile",
+          "detail_role": "soft_frame_member",
+          "application_method": "extrude_as_low_radius_frame_member"
+        }
+      ],
+      "geometry_terms_used": ["rounded_rectangle", "extrude", "compound_asset", "bevel_edges"],
+      "profile_terms": ["rounded_rectangle"],
+      "operations": ["extrude", "compound_asset", "bevel_edges"],
+      "blender_tool_sequence": [
+        {
+          "stage": "base_form",
+          "tool_id": "mesh_from_pydata",
+          "use": "Create the rounded rectangular rail profile from deterministic profile points."
+        },
+        {
+          "stage": "assembly",
+          "tool_id": "join_objects",
+          "use": "Join the extruded handrail profile to posts or panel guards."
+        },
+        {
+          "stage": "shape_refinement",
+          "tool_id": "modifier_bevel",
+          "use": "Add small edge bevels only where the source profile leaves hard corners."
+        },
+        {
+          "stage": "shape_refinement",
+          "tool_id": "modifier_weighted_normal",
+          "use": "Make the rounded rail read as one continuous finished stone member."
+        }
+      ],
+      "shape_controls": {
+        "dominant_silhouette": "rounded rectangular handrail cross-section",
+        "detail_density": "medium",
+        "edit_knobs": ["width", "height", "corner_radius", "segments", "rail_length", "bevel_width"]
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "profile_id": "railing_round_arch_panel_recess_v0",
+      "profile_family": "panel_cutout_profile",
+      "source_reference_id": "user_compound_pier_reference_v0",
+      "source_2d_shape": {
+        "term_id": "arch_profile",
+        "coordinate_space": "local_xz",
+        "control_policy": "span, vertical leg height, arch radius, and inset depth define a round-arch recess"
+      },
+      "where_used": [
+        {
+          "target_asset_family": "guard_panel",
+          "placement_region": "secondary_panel_face",
+          "detail_role": "round_arch_recess",
+          "application_method": "boolean_cut_or_shadow_plate"
+        },
+        {
+          "target_asset_family": "door_frame",
+          "placement_region": "door_header_opening",
+          "detail_role": "arched_header_reference",
+          "application_method": "profile_cutter_or_trim_border"
+        },
+        {
+          "target_asset_family": "banister_post",
+          "placement_region": "post_side_face",
+          "detail_role": "soft_arch_panel_recess",
+          "application_method": "shallow_boolean_cut"
+        }
+      ],
+      "geometry_terms_used": ["arch_profile", "custom_polygon", "boolean_cut", "offset_profile", "mirror_axis", "bevel_edges"],
+      "profile_terms": ["arch_profile", "custom_polygon"],
+      "operations": ["boolean_cut", "offset_profile", "mirror_axis", "bevel_edges"],
+      "blender_tool_sequence": [
+        {
+          "stage": "base_form",
+          "tool_id": "mesh_from_pydata",
+          "use": "Create a deterministic round-arch cutter or raised trim profile."
+        },
+        {
+          "stage": "assembly",
+          "tool_id": "modifier_boolean",
+          "use": "Cut the arch recess into panel, post, or door-frame faces."
+        },
+        {
+          "stage": "assembly",
+          "tool_id": "modifier_mirror",
+          "use": "Mirror matching arch profiles across paired surfaces."
+        },
+        {
+          "stage": "shape_refinement",
+          "tool_id": "modifier_bevel",
+          "use": "Soften the arch edge after cut or trim placement."
+        }
+      ],
+      "shape_controls": {
+        "dominant_silhouette": "round arch with straight side legs",
+        "detail_density": "medium",
+        "edit_knobs": ["span", "leg_height", "arch_radius", "inset_depth", "border_width", "bevel_width"]
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "profile_id": "railing_triangle_chamfer_cut_v0",
+      "profile_family": "transition_profile",
+      "source_reference_id": "user_column_molding_profile_reference_v0",
+      "source_2d_shape": {
+        "term_id": "triangle",
+        "coordinate_space": "local_xz",
+        "control_policy": "three vertices define chamfer, drip edge, or underside cut slope"
+      },
+      "where_used": [
+        {
+          "target_asset_family": "rail_segment",
+          "placement_region": "rail_underside_drip_edge",
+          "detail_role": "triangular_shadow_chamfer",
+          "application_method": "boolean_cut_or_extruded_sloped_trim"
+        },
+        {
+          "target_asset_family": "guard_panel",
+          "placement_region": "top_coping_underside",
+          "detail_role": "sloped_coping_shadow",
+          "application_method": "mirrorable_triangular_cut"
+        },
+        {
+          "target_asset_family": "banister_post",
+          "placement_region": "cap_block_underside",
+          "detail_role": "cap_chamfer",
+          "application_method": "extruded_chamfer_profile"
+        }
+      ],
+      "geometry_terms_used": ["triangle", "boolean_cut", "extrude", "mirror_axis", "bevel_edges"],
+      "profile_terms": ["triangle"],
+      "operations": ["boolean_cut", "extrude", "mirror_axis", "bevel_edges"],
+      "blender_tool_sequence": [
+        {
+          "stage": "base_form",
+          "tool_id": "mesh_from_pydata",
+          "use": "Create one triangular chamfer or cutter profile."
+        },
+        {
+          "stage": "assembly",
+          "tool_id": "modifier_boolean",
+          "use": "Cut a sloped shadow detail where the source chooses a subtraction."
+        },
+        {
+          "stage": "assembly",
+          "tool_id": "modifier_mirror",
+          "use": "Mirror paired chamfers across rails, caps, or post blocks."
+        },
+        {
+          "stage": "shape_refinement",
+          "tool_id": "mark_sharp",
+          "use": "Keep chamfer arrises crisp after bevel and normal passes."
+        }
+      ],
+      "shape_controls": {
+        "dominant_silhouette": "simple triangular chamfer or drip edge",
+        "detail_density": "low",
+        "edit_knobs": ["rise", "run", "cut_depth", "mirror_axis", "bevel_width"]
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "profile_id": "railing_octagon_baluster_cross_section_v0",
+      "profile_family": "post_cross_section_profile",
+      "source_reference_id": "user_column_molding_profile_reference_v0",
+      "source_2d_shape": {
+        "term_id": "octagon",
+        "coordinate_space": "local_xy",
+        "control_policy": "eight vertices define a low-poly round-ish baluster or small post shaft"
+      },
+      "where_used": [
+        {
+          "target_asset_family": "banister_post",
+          "placement_region": "small_baluster_shaft",
+          "detail_role": "octagonal_spindle_core",
+          "application_method": "extruded_octagon_profile"
+        },
+        {
+          "target_asset_family": "fence_post",
+          "placement_region": "secondary_picket",
+          "detail_role": "low_poly_round_picket",
+          "application_method": "array_linear_between_posts"
+        },
+        {
+          "target_asset_family": "column",
+          "placement_region": "low_poly_column_shaft",
+          "detail_role": "octagonal_column_core",
+          "application_method": "section_stack_or_extrude"
+        }
+      ],
+      "geometry_terms_used": ["octagon", "extrude", "array_linear", "compound_asset", "bevel_edges"],
+      "profile_terms": ["octagon"],
+      "operations": ["extrude", "array_linear", "compound_asset", "bevel_edges"],
+      "blender_tool_sequence": [
+        {
+          "stage": "base_form",
+          "tool_id": "primitive_cylinder_add",
+          "use": "Create an eight-vertex shaft seed when the source profile is a regular octagon."
+        },
+        {
+          "stage": "assembly",
+          "tool_id": "modifier_array",
+          "use": "Repeat octagonal pickets or balusters across a railing span."
+        },
+        {
+          "stage": "assembly",
+          "tool_id": "join_objects",
+          "use": "Join repeated octagonal members to rail and post assemblies."
+        },
+        {
+          "stage": "shape_refinement",
+          "tool_id": "modifier_bevel",
+          "use": "Add narrow edge bevels while preserving the octagonal source outline."
+        }
+      ],
+      "shape_controls": {
+        "dominant_silhouette": "eight-sided round-ish shaft",
+        "detail_density": "low",
+        "edit_knobs": ["radius", "height", "spacing", "count", "bevel_width"]
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "profile_id": "railing_star_rosette_cutout_v0",
+      "profile_family": "panel_cutout_profile",
+      "source_reference_id": "user_compound_pier_reference_v0",
+      "source_2d_shape": {
+        "term_id": "star_polygon",
+        "coordinate_space": "local_xy",
+        "control_policy": "alternating outer and inner radii define a low-vertex rosette, vent, or ornament cut"
+      },
+      "where_used": [
+        {
+          "target_asset_family": "guard_panel",
+          "placement_region": "center_panel_ornament",
+          "detail_role": "star_rosette_cut",
+          "application_method": "boolean_cut_or_inset_shadow_plate"
+        },
+        {
+          "target_asset_family": "banister_post",
+          "placement_region": "post_cap_face",
+          "detail_role": "cap_rosette",
+          "application_method": "shallow_ornament_cut"
+        },
+        {
+          "target_asset_family": "rail_segment",
+          "placement_region": "rail_side_repeat",
+          "detail_role": "repeated_star_vent",
+          "application_method": "array_linear_boolean_cut"
+        }
+      ],
+      "geometry_terms_used": ["star_polygon", "boolean_cut", "array_linear", "mirror_axis", "bevel_edges"],
+      "profile_terms": ["star_polygon"],
+      "operations": ["boolean_cut", "array_linear", "mirror_axis", "bevel_edges"],
+      "blender_tool_sequence": [
+        {
+          "stage": "base_form",
+          "tool_id": "mesh_from_pydata",
+          "use": "Create a deterministic star-polygon cutter or inset ornament plate."
+        },
+        {
+          "stage": "assembly",
+          "tool_id": "modifier_boolean",
+          "use": "Cut the rosette into panel, cap, or rail faces."
+        },
+        {
+          "stage": "assembly",
+          "tool_id": "modifier_array",
+          "use": "Repeat small star cuts along rail side faces when requested."
+        },
+        {
+          "stage": "shape_refinement",
+          "tool_id": "modifier_bevel",
+          "use": "Catch light on the star rim after cut or inset placement."
+        }
+      ],
+      "shape_controls": {
+        "dominant_silhouette": "low-vertex star rosette",
+        "detail_density": "adjustable",
+        "edit_knobs": ["points", "outer_radius", "inner_radius", "rotation", "cut_depth", "bevel_width"]
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "profile_id": "railing_quatrefoil_panel_cutout_v0",
+      "profile_family": "panel_cutout_profile",
+      "source_reference_id": "user_compound_pier_reference_v0",
+      "source_2d_shape": {
+        "term_id": "custom_polygon",
+        "coordinate_space": "local_xy",
+        "control_policy": "twelve to sixteen chosen points approximate a quatrefoil without requiring a dense mesh"
+      },
+      "where_used": [
+        {
+          "target_asset_family": "guard_panel",
+          "placement_region": "panel_tracery_field",
+          "detail_role": "quatrefoil_panel_cutout",
+          "application_method": "boolean_cut_or_raised_tracery"
+        },
+        {
+          "target_asset_family": "window_frame",
+          "placement_region": "upper_tracery",
+          "detail_role": "low_vertex_tracery_profile",
+          "application_method": "profile_cutter_or_trim"
+        },
+        {
+          "target_asset_family": "door_frame",
+          "placement_region": "decorative_transom",
+          "detail_role": "ornamental_lobed_cut",
+          "application_method": "mirrored_boolean_cut"
+        }
+      ],
+      "geometry_terms_used": ["custom_polygon", "circle", "boolean_cut", "offset_profile", "mirror_axis", "bevel_edges"],
+      "profile_terms": ["custom_polygon", "circle"],
+      "operations": ["boolean_cut", "offset_profile", "mirror_axis", "bevel_edges"],
+      "blender_tool_sequence": [
+        {
+          "stage": "base_form",
+          "tool_id": "mesh_from_pydata",
+          "use": "Create the low-vertex quatrefoil cutter or raised tracery profile."
+        },
+        {
+          "stage": "assembly",
+          "tool_id": "modifier_boolean",
+          "use": "Cut the ornamental profile into panel, window, or transom fields."
+        },
+        {
+          "stage": "assembly",
+          "tool_id": "modifier_mirror",
+          "use": "Mirror lobed tracery across symmetric frame or panel layouts."
+        },
+        {
+          "stage": "shape_refinement",
+          "tool_id": "modifier_bevel",
+          "use": "Round the lobed rim after cut or raised-profile placement."
+        }
+      ],
+      "shape_controls": {
+        "dominant_silhouette": "low-vertex quatrefoil or lobed ornament",
+        "detail_density": "high_shape_low_source_vertices",
+        "edit_knobs": ["lobe_radius", "pinch_depth", "point_count", "rotation", "cut_depth", "bevel_width"]
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
     }
   ],
   "railing_detail_sequence": [
     {
       "sequence_id": "base_mass_and_frames",
       "stage": "base_form",
-      "profile_ids": ["railing_square_frame_block_v0"],
-      "tool_ids": ["primitive_cube_add", "mesh_from_pydata"],
-      "purpose": "Establish post blocks, panel frames, and rail cores before small details."
+      "profile_ids": [
+        "railing_square_frame_block_v0",
+        "railing_rounded_rectangle_handrail_grip_v0",
+        "railing_octagon_baluster_cross_section_v0"
+      ],
+      "tool_ids": ["primitive_cube_add", "mesh_from_pydata", "primitive_cylinder_add"],
+      "purpose": "Establish post blocks, panel frames, rail cores, handrail profiles, and low-poly shaft seeds before small details."
     },
     {
       "sequence_id": "face_cutters_and_profiles",
@@ -530,7 +1017,12 @@
         "railing_capsule_vertical_slot_v0",
         "railing_ogee_molding_side_profile_v0",
         "railing_trapezoid_transition_collar_v0",
-        "railing_lobed_post_cross_section_v0"
+        "railing_lobed_post_cross_section_v0",
+        "railing_plinth_ogee_base_side_profile_v0",
+        "railing_round_arch_panel_recess_v0",
+        "railing_triangle_chamfer_cut_v0",
+        "railing_star_rosette_cutout_v0",
+        "railing_quatrefoil_panel_cutout_v0"
       ],
       "tool_ids": ["mesh_from_pydata", "modifier_screw"],
       "purpose": "Create all 2D cutter, molding, collar, and cross-section shapes from source profiles."
@@ -542,7 +1034,14 @@
         "railing_pointed_arch_recess_v0",
         "railing_capsule_vertical_slot_v0",
         "railing_circle_bead_strip_v0",
-        "railing_lobed_post_cross_section_v0"
+        "railing_lobed_post_cross_section_v0",
+        "railing_plinth_ogee_base_side_profile_v0",
+        "railing_rounded_rectangle_handrail_grip_v0",
+        "railing_round_arch_panel_recess_v0",
+        "railing_triangle_chamfer_cut_v0",
+        "railing_octagon_baluster_cross_section_v0",
+        "railing_star_rosette_cutout_v0",
+        "railing_quatrefoil_panel_cutout_v0"
       ],
       "tool_ids": ["modifier_boolean", "modifier_array", "object_duplicate_radial", "modifier_mirror", "join_objects"],
       "purpose": "Cut recesses, repeat beads/slots/ribs, mirror paired details, and join declared assemblies."
@@ -557,7 +1056,14 @@
         "railing_circle_bead_strip_v0",
         "railing_ogee_molding_side_profile_v0",
         "railing_trapezoid_transition_collar_v0",
-        "railing_lobed_post_cross_section_v0"
+        "railing_lobed_post_cross_section_v0",
+        "railing_plinth_ogee_base_side_profile_v0",
+        "railing_rounded_rectangle_handrail_grip_v0",
+        "railing_round_arch_panel_recess_v0",
+        "railing_triangle_chamfer_cut_v0",
+        "railing_octagon_baluster_cross_section_v0",
+        "railing_star_rosette_cutout_v0",
+        "railing_quatrefoil_panel_cutout_v0"
       ],
       "tool_ids": ["modifier_bevel", "mark_sharp", "shade_smooth", "modifier_weighted_normal"],
       "purpose": "Make low-vertex 2D details read as finished stone without moving design decisions into Blender."
@@ -569,7 +1075,13 @@
         "railing_square_frame_block_v0",
         "railing_pointed_arch_recess_v0",
         "railing_capsule_vertical_slot_v0",
-        "railing_ogee_molding_side_profile_v0"
+        "railing_ogee_molding_side_profile_v0",
+        "railing_plinth_ogee_base_side_profile_v0",
+        "railing_rounded_rectangle_handrail_grip_v0",
+        "railing_round_arch_panel_recess_v0",
+        "railing_triangle_chamfer_cut_v0",
+        "railing_star_rosette_cutout_v0",
+        "railing_quatrefoil_panel_cutout_v0"
       ],
       "tool_ids": ["modifier_displace"],
       "purpose": "Add subtle deterministic stone surface variation after forms are correct."
@@ -584,7 +1096,14 @@
         "railing_circle_bead_strip_v0",
         "railing_ogee_molding_side_profile_v0",
         "railing_trapezoid_transition_collar_v0",
-        "railing_lobed_post_cross_section_v0"
+        "railing_lobed_post_cross_section_v0",
+        "railing_plinth_ogee_base_side_profile_v0",
+        "railing_rounded_rectangle_handrail_grip_v0",
+        "railing_round_arch_panel_recess_v0",
+        "railing_triangle_chamfer_cut_v0",
+        "railing_octagon_baluster_cross_section_v0",
+        "railing_star_rosette_cutout_v0",
+        "railing_quatrefoil_panel_cutout_v0"
       ],
       "tool_ids": ["uv_smart_project", "uv_pack_islands"],
       "purpose": "Prepare stable UVs after detail placement is settled."
@@ -599,7 +1118,14 @@
         "railing_circle_bead_strip_v0",
         "railing_ogee_molding_side_profile_v0",
         "railing_trapezoid_transition_collar_v0",
-        "railing_lobed_post_cross_section_v0"
+        "railing_lobed_post_cross_section_v0",
+        "railing_plinth_ogee_base_side_profile_v0",
+        "railing_rounded_rectangle_handrail_grip_v0",
+        "railing_round_arch_panel_recess_v0",
+        "railing_triangle_chamfer_cut_v0",
+        "railing_octagon_baluster_cross_section_v0",
+        "railing_star_rosette_cutout_v0",
+        "railing_quatrefoil_panel_cutout_v0"
       ],
       "tool_ids": ["material_assign_by_part", "procedural_noise_texture", "procedural_bump_map"],
       "purpose": "Keep trim, recess shadow, bead, frame, shaft, cap, and base material roles inspectable."
@@ -614,7 +1140,14 @@
         "railing_circle_bead_strip_v0",
         "railing_ogee_molding_side_profile_v0",
         "railing_trapezoid_transition_collar_v0",
-        "railing_lobed_post_cross_section_v0"
+        "railing_lobed_post_cross_section_v0",
+        "railing_plinth_ogee_base_side_profile_v0",
+        "railing_rounded_rectangle_handrail_grip_v0",
+        "railing_round_arch_panel_recess_v0",
+        "railing_triangle_chamfer_cut_v0",
+        "railing_octagon_baluster_cross_section_v0",
+        "railing_star_rosette_cutout_v0",
+        "railing_quatrefoil_panel_cutout_v0"
       ],
       "tool_ids": ["calculate_bounds", "validate_non_manifold", "create_collision_proxy", "create_lod_variant", "render_workbench_preview", "export_gltf"],
       "purpose": "Prove bounds, topology, helper output, preview, and export after the detail pass."
@@ -629,8 +1162,8 @@
     "no building-code or fabrication claim is made by decorative source details"
   ],
   "next_generation_goal": {
-    "recommended_slice": "3D-LAB-0041-railing-detail-tool-plan-compiler-v0",
-    "first_geometry_change": "Compile railing_detail_profiles_v0 into a guard-panel or post-rail-post Blender tool plan with visible pointed arch, capsule slot, bead strip, and molded rail/post details."
+    "recommended_slice": "3D-LAB-0043-profiled-plinth-base-compiler-v0",
+    "first_geometry_change": "Use railing_plinth_ogee_base_side_profile_v0 to replace one plain square guard-panel or post base with a source-owned profiled plinth extrusion."
   },
   "no_claims": {
     "production_approval": false,

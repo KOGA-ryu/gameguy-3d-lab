@@ -120,7 +120,7 @@ Railing detail profiles extend that same 2D source idea into post, rail, and gua
 python3 scripts/validate_railing_detail_profiles_v0.py
 ```
 
-The current bundle is `data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json`. It declares square frame blocks, pointed-arch recesses, capsule vertical slots, circular bead strips, ogee side moldings, trapezoid transition collars, and lobed post cross-sections. Each profile must say where it is used, what detail role it has, how it is applied, and which staged Blender tools may execute it later.
+The current bundle is `data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json`. It declares square frame blocks, pointed-arch and round-arch recesses, capsule vertical slots, circular bead strips, ogee side moldings, trapezoid transition collars, profiled plinth bases, rounded-rectangle handrail grips, triangular chamfers, octagonal baluster cross-sections, star rosettes, quatrefoil cutouts, and lobed post cross-sections. Each profile must say where it is used, what detail role it has, how it is applied, and which staged Blender tools may execute it later.
 
 The gothic guard-panel tool-plan recipe now selects six of those profiles as a source-owned `railing_detail_profile_stack`. The compiler expands them into a 57-step guard-panel plan with pointed-arch and capsule cutters, shadow recess plates, mirrored side details, a linearly arrayed bead strip, ogee trim, tapered socket collars, and the normal shared finish stack. Blender remains an adapter: it consumes the compiled `gameguy_tool_plan_v0` JSON and executes `mesh_from_pydata`, `modifier_boolean`, `modifier_mirror`, and `modifier_array` steps rather than deciding those details itself.
 

@@ -1,0 +1,92 @@
+{
+  "schema": "railing_2d_profile_library_expansion_receipt_v0",
+  "slice_id": "3D-LAB-0042",
+  "title": "Expand source-owned railing 2D profile library",
+  "profile_bundle": "data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json",
+  "validator": "scripts/validate_railing_detail_profiles_v0.py",
+  "registry": "data/architecture/asset_mill/asset_generation_registry_v0.json",
+  "changed_files": [
+    "README.md",
+    "data/architecture/asset_mill/asset_generation_registry_v0.json",
+    "data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json",
+    "tests/test_validate_asset_generation_registry_v0.py",
+    "tests/test_validate_railing_detail_profiles_v0.py",
+    "workflow/reports/3D-LAB-0042-railing-2d-profile-library-expansion-v0/receipt.json",
+    "workflow/reports/3D-LAB-0042-railing-2d-profile-library-expansion-v0/report.md"
+  ],
+  "added_profiles": [
+    {
+      "profile_id": "railing_plinth_ogee_base_side_profile_v0",
+      "shape_term": "custom_polygon",
+      "primary_use": "replace plain square bases with profiled plinth side extrusions"
+    },
+    {
+      "profile_id": "railing_rounded_rectangle_handrail_grip_v0",
+      "shape_term": "rounded_rectangle",
+      "primary_use": "rounded handrail and coping cross-sections"
+    },
+    {
+      "profile_id": "railing_round_arch_panel_recess_v0",
+      "shape_term": "arch_profile",
+      "primary_use": "round-arch panel, post, and frame recesses"
+    },
+    {
+      "profile_id": "railing_triangle_chamfer_cut_v0",
+      "shape_term": "triangle",
+      "primary_use": "chamfer and underside shadow/drip cuts"
+    },
+    {
+      "profile_id": "railing_octagon_baluster_cross_section_v0",
+      "shape_term": "octagon",
+      "primary_use": "low-poly baluster, picket, and shaft cross-sections"
+    },
+    {
+      "profile_id": "railing_star_rosette_cutout_v0",
+      "shape_term": "star_polygon",
+      "primary_use": "low-vertex rosette and repeated ornament cutouts"
+    },
+    {
+      "profile_id": "railing_quatrefoil_panel_cutout_v0",
+      "shape_term": "custom_polygon",
+      "primary_use": "low-vertex quatrefoil and lobed tracery cutouts"
+    }
+  ],
+  "source_profile_validation": {
+    "profile_count": 14,
+    "placement_count": 42,
+    "sequence_count": 8,
+    "candidate_tool_count": 13,
+    "profile_family_counts": {
+      "face_recess_profile": 1,
+      "frame_profile": 2,
+      "panel_cutout_profile": 4,
+      "post_cross_section_profile": 2,
+      "repeating_trim_profile": 1,
+      "side_molding_profile": 2,
+      "transition_profile": 2
+    }
+  },
+  "registry_validation": {
+    "source_profile_count": 19,
+    "railing_detail_expected_profile_count": 14
+  },
+  "pipeline_validation": {
+    "non_blender": {
+      "command_count": 31,
+      "json_file_count": 236,
+      "include_blender": false
+    },
+    "full_blender": {
+      "command_count": 45,
+      "json_file_count": 236,
+      "include_blender": true
+    }
+  },
+  "rules": {
+    "source_profile_only": true,
+    "no_blender_execution_in_validator": true,
+    "no_generated_outputs_in_repo": true,
+    "geometry_terms_must_exist": true,
+    "tool_stage_sequence_declared": true
+  }
+}

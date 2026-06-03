@@ -45,7 +45,7 @@ class AssetGenerationRegistryValidatorTests(unittest.TestCase):
         self.assertEqual(report["canonical_tool_plan_bundle"]["default_plan_count"], 7)
         self.assertEqual(report["canonical_tool_plan_bundle"]["geometry_dictionary"], "geometry_dictionary")
         self.assertEqual(report["source_profile_bundle_count"], 2)
-        self.assertEqual(report["source_profile_count"], 12)
+        self.assertEqual(report["source_profile_count"], 19)
         self.assertEqual(report["reference_only_recipe_count"], 3)
         self.assertFalse(report["generated_outputs_created"])
         self.assertTrue(report["rules"]["validates_pipeline_label_coverage"])
