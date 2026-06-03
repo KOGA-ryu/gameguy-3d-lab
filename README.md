@@ -88,6 +88,14 @@ python3 scripts/compile_pattern_segments_v0.py \
 
 The first segment bundle is `data/architecture/sacred_geometry/pattern_segment_recipes_v0.json`. It splits `hex_rosette_pattern_field_v0` into candidate segments, preserves selected source-trace and linework-family tags, and previews intersection points before omission rules or closed-loop extraction.
 
+Manual pattern selection can be done in a local browser studio:
+
+```bash
+python3 scripts/serve_pattern_selection_studio_v0.py
+```
+
+By default it serves `http://127.0.0.1:8765`, loads `/tmp/gameguy_pattern_segments_v0/segment_sets/hex_rosette_pattern_segments_v0.json`, lets segments be selected and colored, and saves deterministic selection recipes under `/tmp/gameguy_pattern_selection_studio_v0/selection_recipes/`.
+
 The first lean command is:
 
 ```bash
@@ -288,6 +296,7 @@ python3 scripts/compile_sacred_graph_v0.py --clean --out /tmp/gameguy_sacred_gra
 python3 scripts/compile_construction_cell_selection_v0.py --clean --graph-manifest /tmp/gameguy_sacred_graph_v0/manifest.json --out /tmp/gameguy_construction_cell_selection_v0
 python3 scripts/compile_pattern_field_v0.py --clean --out /tmp/gameguy_pattern_field_v0
 python3 scripts/compile_pattern_segments_v0.py --clean --pattern-field-manifest /tmp/gameguy_pattern_field_v0/manifest.json --out /tmp/gameguy_pattern_segments_v0
+python3 scripts/serve_pattern_selection_studio_v0.py --validate-only
 python3 scripts/compile_blender_tool_plan_v0.py --validate-only
 python3 scripts/compile_blender_tool_plan_v0.py --clean --out /tmp/gameguy_blender_tool_plan_v0
 python3 scripts/validate_gameguy_tool_plan_v0.py --manifest /tmp/gameguy_blender_tool_plan_v0/manifest.json

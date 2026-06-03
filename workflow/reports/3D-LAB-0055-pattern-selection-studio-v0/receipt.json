@@ -1,0 +1,63 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0055-pattern-selection-studio-v0",
+  "created_utc": "2026-06-03T00:00:00Z",
+  "summary": "Added a local browser studio that lets the user select, color, role, save, load, and download deterministic pattern segment selection recipes.",
+  "source_inputs": {
+    "studio": "scripts/serve_pattern_selection_studio_v0.py",
+    "source_segment_set_default": "/tmp/gameguy_pattern_segments_v0/segment_sets/hex_rosette_pattern_segments_v0.json",
+    "selection_output_default": "/tmp/gameguy_pattern_selection_studio_v0/selection_recipes/hex_rosette_user_selection_v0.json"
+  },
+  "studio": {
+    "url": "http://127.0.0.1:8765",
+    "served_schema": "gameguy_pattern_segment_graph_v0",
+    "saved_schema": "pattern_selection_recipe_v0",
+    "default_segment_set_id": "hex_rosette_pattern_segments_v0",
+    "default_selection_id": "hex_rosette_user_selection_v0",
+    "features": [
+      "click_select_segments",
+      "box_select_visible_segments",
+      "filter_by_tag_or_segment_id",
+      "assign_role",
+      "assign_color",
+      "assign_stroke_width",
+      "toggle_intersections",
+      "save_selection_json",
+      "load_selection_json",
+      "download_selection_json"
+    ]
+  },
+  "validation": {
+    "pattern_selection_studio_validate_only": {
+      "command": "python3 scripts/serve_pattern_selection_studio_v0.py --validate-only",
+      "result": "PASS pattern selection studio validation: segment_set=hex_rosette_pattern_segments_v0 segments=14324 default_selection=hex_rosette_user_selection_v0"
+    },
+    "targeted_tests": {
+      "command": "python3 -m unittest tests/test_pattern_selection_studio_v0.py tests/test_audit_script_orbit_v0.py tests/test_asset_mill_retirement_readiness_v0.py",
+      "result": "OK",
+      "test_count": 8
+    },
+    "script_orbit_audit": {
+      "command": "python3 scripts/audit_script_orbit_v0.py --json-report /tmp/gameguy_script_orbit_0055.json",
+      "result": "PASS script orbit audit: scripts=82 KEEP_CANONICAL=23, CONVERT_TO_ADAPTER=0, REPLACE_BY_PUMP=0, REFERENCE_ONLY=59, DELETE_LATER=0"
+    },
+    "asset_generation_registry": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS asset generation registry validation: geometry_bundles=5 geometry_assets=40 source_profiles=19 source_graphs=1 source_cell_selections=1 source_pattern_fields=1 source_pattern_segments=1 source_taxonomies=23 reference_only=3"
+    },
+    "generation_pipeline_non_blender_skip_unit_tests": {
+      "command": "python3 scripts/validate_generation_pipeline_v0.py --skip-unit-tests --json-report /tmp/gameguy_pipeline_0055_pattern_selection_studio.json",
+      "result": "PASS generation pipeline validation: commands=38 json=259 include_blender=false",
+      "command_count": 38,
+      "json_file_count": 259
+    }
+  },
+  "rules": {
+    "manual_source_selection": true,
+    "does_not_modify_source_segment_graph": true,
+    "generated_outputs_stay_under_tmp": true,
+    "no_blender_validation_for_source_only_slice": true,
+    "no_mesh_output": true
+  },
+  "recommended_next_goal": "Use the studio to save a first user-selected motif recipe, then compile an omission preview from that recipe."
+}

@@ -140,6 +140,14 @@ python3 scripts/compile_pattern_segments_v0.py \
 
 It computes line intersections in the hex rosette pattern field, splits source edges into candidate segments, preserves selected source-trace tags, and previews the intersection points. The next compiler should either omit guide segments and extract closed motif loops, or promote selected cells/edges into operation stacks:
 
+`3D-LAB-0055 pattern_selection_studio_v0` adds a local source-authoring studio:
+
+```bash
+python3 scripts/serve_pattern_selection_studio_v0.py
+```
+
+It consumes deterministic pattern segment JSON, lets the user select/color/role segments in the browser, and saves deterministic selection recipe JSON under `/tmp`. This is the manual correction lane before omission and closed-loop extraction.
+
 ```text
 selected construction cells/edges
 -> role promotion records
