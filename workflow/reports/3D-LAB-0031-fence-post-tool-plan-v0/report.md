@@ -38,8 +38,8 @@ compiled tool plans=5 steps=145 tools=97 out=<validate-only>
 PASS gameguy_tool_plan_v0 validation: 5 plans, 145 steps, 25 tools
 PASS Blender tool-plan adapter validation: steps=32 tools=24
 PASS Blender tool-plan execution quality validation: steps=32 non_manifold=0 material_roles=5 socket_panels=2
-PASS generation pipeline validation: commands=26 json=223 include_blender=false
-PASS generation pipeline validation: commands=36 json=223 include_blender=true
+PASS generation pipeline validation: commands=26 json=225 include_blender=false
+PASS generation pipeline validation: commands=36 json=225 include_blender=true
 ```
 
 The full default tool-plan bundle now contains:

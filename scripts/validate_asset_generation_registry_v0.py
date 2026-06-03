@@ -215,9 +215,10 @@ def validate_tool_plan_bundle(item: Any, known_labels: set[str]) -> dict[str, An
     geometry_dictionary_path = repo_path(bundle_ref.get("geometry_dictionary"), "canonical_tool_plan_bundle.geometry_dictionary")
     if not geometry_dictionary_path.is_dir():
         fail("canonical_tool_plan_bundle.geometry_dictionary must reference the geometry_dictionary directory")
-    profile_stack_term = geometry_dictionary_path / "operations" / "profile_operation_stack.json"
-    if not profile_stack_term.exists():
-        fail("canonical_tool_plan_bundle.geometry_dictionary must contain operations/profile_operation_stack.json")
+    for term_name in ("profile_operation_stack", "finish_tool_stack"):
+        term_path = geometry_dictionary_path / "operations" / f"{term_name}.json"
+        if not term_path.exists():
+            fail(f"canonical_tool_plan_bundle.geometry_dictionary must contain operations/{term_name}.json")
     expected_family_policy_count = require_int(
         bundle_ref.get("expected_asset_family_policy_count"),
         "canonical_tool_plan_bundle.expected_asset_family_policy_count",

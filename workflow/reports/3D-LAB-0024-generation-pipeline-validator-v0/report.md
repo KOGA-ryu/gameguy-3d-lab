@@ -46,13 +46,13 @@ It orchestrates:
 Non-Blender pipeline result:
 
 ```text
-PASS generation pipeline validation: commands=26 json=223 include_blender=false
+PASS generation pipeline validation: commands=26 json=225 include_blender=false
 ```
 
 Full Blender pipeline result:
 
 ```text
-PASS generation pipeline validation: commands=36 json=223 include_blender=true
+PASS generation pipeline validation: commands=36 json=225 include_blender=true
 ```
 
 The full run includes:

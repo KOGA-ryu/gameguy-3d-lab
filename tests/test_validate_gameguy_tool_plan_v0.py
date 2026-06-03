@@ -175,6 +175,19 @@ class GameguyToolPlanValidatorTests(unittest.TestCase):
         self.assertIn("source_terms.operators", result.stderr)
         self.assertIn("unknown geometry dictionary term `fake_operator`", result.stderr)
 
+    def test_rejects_unknown_finish_tool_stack_tool_id(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            manifest_path = compile_plan(Path(tmp) / "plans")
+            plan_path = plan_path_by_asset(manifest_path, "gothic_stone_column_tool_plan_v0")
+            plan = load_json(plan_path)
+            plan["source_terms"]["finish_tool_stack"]["tool_ids"].append("fake_finish_tool")
+            plan_path.write_text(json.dumps(plan, indent=2) + "\n", encoding="utf-8")
+            result = run_validator(manifest_path)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("source_terms.finish_tool_stack.tool_ids", result.stderr)
+        self.assertIn("unknown tool_id `fake_finish_tool`", result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

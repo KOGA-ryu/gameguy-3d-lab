@@ -1,0 +1,35 @@
+{
+  "term_id": "finish_tool_stack",
+  "category": "composition_operation",
+  "plain_name": "Finish Tool Stack",
+  "description": "Declares an ordered source-owned finishing sequence for procedural assets before backend-specific tool-plan emission.",
+  "required_inputs": {
+    "sequence": "finish_operation[]",
+    "tool_ids": "blender_tool_dictionary tool_id[]",
+    "operations": "composition_operation[]"
+  },
+  "outputs": {
+    "type": "deterministic_tool_plan_steps"
+  },
+  "constraints": {
+    "sequence_must_not_be_empty": true,
+    "tool_ids_must_exist_in_tool_dictionary": true,
+    "compiler_expands_to_deterministic_steps": true,
+    "blender_adapter_consumes_compiled_plan_only": true
+  },
+  "common_uses": [
+    "bevel and normal passes",
+    "surface material assignment",
+    "procedural stone or wood texture setup",
+    "UV projection and packing",
+    "collision, LOD, preview, and export planning"
+  ],
+  "blender_method": "compile source finish operations to deterministic gameguy_tool_plan_v0 steps; Blender consumes the compiled plan only",
+  "validation": [
+    "known_tool_ids",
+    "stage_order",
+    "nonzero_volume",
+    "non_manifold_check",
+    "material_role_coverage"
+  ]
+}

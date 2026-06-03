@@ -72,7 +72,8 @@
     "geometry": "Geometry dictionary terms used by the source recipe.",
     "profiles": "Profile primitive terms from geometry_dictionary.",
     "operators": "Operation terms from geometry_dictionary.",
-    "profile_operation_stack": "Optional profile-operation grammar metadata when the asset uses a profile_operation_stack feature."
+    "profile_operation_stack": "Optional profile-operation grammar metadata when the asset uses a profile_operation_stack feature.",
+    "finish_tool_stack": "Optional finish/tool grammar metadata when the asset uses a finish_tool_stack feature."
   },
   "required_no_claims": {
     "production_approval": false,

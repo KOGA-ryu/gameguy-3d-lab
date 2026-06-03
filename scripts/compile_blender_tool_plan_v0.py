@@ -23,6 +23,29 @@ DEFAULT_RECIPE = ROOT / "data" / "architecture" / "asset_mill" / "tool_plan_reci
 DEFAULT_OUT = Path("/tmp/gameguy_blender_tool_plan_v0")
 GEOMETRY_DICTIONARY_ROOT = ROOT / "geometry_dictionary"
 SEQUENCE_POLICY_SCHEMA = "asset_family_tool_sequence_policy_v0"
+FINISH_FEATURE_TOOL_IDS = {
+    "hard_edge_bevels": ["modifier_bevel", "mark_sharp"],
+    "weighted_normals": ["modifier_weighted_normal"],
+    "stone_surface_material": [
+        "modifier_displace",
+        "material_principled_shader",
+        "procedural_noise_texture",
+        "procedural_bump_map",
+        "material_assign_by_part",
+    ],
+    "smart_uvs": ["mark_seam", "uv_smart_project", "uv_pack_islands"],
+    "collision_and_lod_proxy": [
+        "modifier_weld",
+        "dissolve_limited",
+        "recalc_normals",
+        "calculate_bounds",
+        "validate_non_manifold",
+        "create_collision_proxy",
+        "create_lod_variant",
+    ],
+    "preview_and_export_plan": ["render_workbench_preview", "export_gltf"],
+}
+FINISH_FEATURES = set(FINISH_FEATURE_TOOL_IDS)
 FALSE_CLAIMS = {
     "production_approval": False,
     "structural_safety": False,
@@ -371,7 +394,62 @@ def validate_profile_operation_stack(asset: dict[str, Any], terms: dict[str, set
     require_string_list(join.get("profile_transition_sequence"), f"{asset_id}.profile_operation_stack.join.profile_transition_sequence")
 
 
-def validate_recipe_bundle(bundle: dict[str, Any], stages: list[str], geometry_terms: dict[str, set[str]]) -> list[dict[str, Any]]:
+def validate_finish_tool_stacks(
+    bundle: dict[str, Any],
+    geometry_terms: dict[str, set[str]],
+    tool_map: dict[str, dict[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    stacks = require_list(bundle.get("finish_tool_stacks", []), "finish_tool_stacks")
+    if "finish_tool_stack_count" in bundle and bundle["finish_tool_stack_count"] != len(stacks):
+        fail("finish_tool_stack_count must match finish_tool_stacks length")
+    result: dict[str, dict[str, Any]] = {}
+    for stack_index, item in enumerate(stacks):
+        stack = require_object(item, f"finish_tool_stacks[{stack_index}]")
+        stack_id = require_string(stack.get("stack_id"), f"finish_tool_stacks[{stack_index}].stack_id")
+        if stack_id in result:
+            fail(f"duplicate finish_tool_stack stack_id `{stack_id}`")
+        if stack.get("schema") != "finish_tool_stack_v0":
+            fail(f"finish_tool_stacks[{stack_index}].schema must be finish_tool_stack_v0")
+        require_string(stack.get("grammar_id"), f"finish_tool_stacks[{stack_index}].grammar_id")
+        geometry = require_known_terms(stack.get("geometry_terms_used"), all_geometry_terms(geometry_terms), f"finish_tool_stacks[{stack_index}].geometry_terms_used")
+        operations = require_known_terms(stack.get("operations"), operation_terms(geometry_terms), f"finish_tool_stacks[{stack_index}].operations")
+        if "finish_tool_stack" not in geometry or "finish_tool_stack" not in operations:
+            fail(f"finish_tool_stacks[{stack_index}] must declare finish_tool_stack operation term")
+        sequence = require_list(stack.get("sequence"), f"finish_tool_stacks[{stack_index}].sequence")
+        if not sequence:
+            fail(f"finish_tool_stacks[{stack_index}].sequence must not be empty")
+        for sequence_index, sequence_item in enumerate(sequence):
+            entry = require_object(sequence_item, f"finish_tool_stacks[{stack_index}].sequence[{sequence_index}]")
+            feature = require_string(entry.get("feature"), f"finish_tool_stacks[{stack_index}].sequence[{sequence_index}].feature")
+            if feature not in FINISH_FEATURES:
+                fail(f"finish_tool_stacks[{stack_index}].sequence[{sequence_index}].feature uses unknown finish feature `{feature}`")
+            tool_ids = require_string_list(entry.get("tool_ids"), f"finish_tool_stacks[{stack_index}].sequence[{sequence_index}].tool_ids")
+            expected_tool_ids = FINISH_FEATURE_TOOL_IDS[feature]
+            if tool_ids != expected_tool_ids:
+                fail(f"finish_tool_stacks[{stack_index}].sequence[{sequence_index}].tool_ids must match compiler expansion for `{feature}`")
+            for tool_id in tool_ids:
+                if tool_id not in tool_map:
+                    fail(f"finish_tool_stacks[{stack_index}].sequence[{sequence_index}].tool_ids uses unknown tool `{tool_id}`")
+        result[stack_id] = stack
+    return result
+
+
+def resolve_finish_tool_stack(asset: dict[str, Any], finish_stack_map: dict[str, dict[str, Any]]) -> None:
+    asset_id = require_string(asset.get("asset_id"), "asset_id")
+    if "finish_tool_stack" not in require_list(asset.get("features"), f"{asset_id}.features"):
+        return
+    stack_id = require_string(asset.get("finish_tool_stack"), f"{asset_id}.finish_tool_stack")
+    if stack_id not in finish_stack_map:
+        fail(f"{asset_id}.finish_tool_stack references unknown stack `{stack_id}`")
+    asset["_resolved_finish_tool_stack"] = finish_stack_map[stack_id]
+
+
+def validate_recipe_bundle(
+    bundle: dict[str, Any],
+    stages: list[str],
+    geometry_terms: dict[str, set[str]],
+    tool_map: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
     if bundle.get("schema") != "asset_mill_tool_plan_recipe_bundle_v0":
         fail("recipe bundle schema must be asset_mill_tool_plan_recipe_bundle_v0")
     assets = require_list(bundle.get("assets"), "assets")
@@ -381,6 +459,7 @@ def validate_recipe_bundle(bundle: dict[str, Any], stages: list[str], geometry_t
         fail("asset_count must match assets length")
     result: list[dict[str, Any]] = []
     seen_asset_ids: set[str] = set()
+    finish_stack_map = validate_finish_tool_stacks(bundle, geometry_terms, tool_map)
     for asset_index, item in enumerate(assets):
         asset = require_object(item, f"assets[{asset_index}]")
         asset_id = require_string(asset.get("asset_id"), f"assets[{asset_index}].asset_id")
@@ -394,6 +473,8 @@ def validate_recipe_bundle(bundle: dict[str, Any], stages: list[str], geometry_t
             fail(f"{asset_id}.features must not be empty")
         if "profile_operation_stack" in asset.get("features", []):
             validate_profile_operation_stack(asset, geometry_terms)
+        if "finish_tool_stack" in asset.get("features", []):
+            resolve_finish_tool_stack(asset, finish_stack_map)
         for stage_index, stage in enumerate(require_list(asset.get("required_stage_coverage"), f"{asset_id}.required_stage_coverage")):
             stage_id = require_string(stage, f"{asset_id}.required_stage_coverage[{stage_index}]")
             if stage_id not in stages:
@@ -583,10 +664,30 @@ def profile_operation_stack_steps(asset: dict[str, Any]) -> list[dict[str, Any]]
     return steps
 
 
+def resolved_finish_tool_stack(asset: dict[str, Any]) -> dict[str, Any]:
+    asset_id = require_string(asset.get("asset_id"), "asset_id")
+    return require_object(asset.get("_resolved_finish_tool_stack"), f"{asset_id}._resolved_finish_tool_stack")
+
+
+def finish_tool_stack_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
+    asset_id = require_string(asset.get("asset_id"), "asset_id")
+    stack = resolved_finish_tool_stack(asset)
+    steps: list[dict[str, Any]] = []
+    for entry_index, item in enumerate(require_list(stack.get("sequence"), f"{asset_id}.finish_tool_stack.sequence")):
+        entry = require_object(item, f"{asset_id}.finish_tool_stack.sequence[{entry_index}]")
+        feature = require_string(entry.get("feature"), f"{asset_id}.finish_tool_stack.sequence[{entry_index}].feature")
+        if feature not in FINISH_FEATURES:
+            fail(f"{asset_id}.finish_tool_stack.sequence[{entry_index}] uses unknown finish feature `{feature}`")
+        steps.extend(feature_steps(asset, feature))
+    return steps
+
+
 def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
     params = style_params(asset)
     if feature == "profile_operation_stack":
         return profile_operation_stack_steps(asset)
+    if feature == "finish_tool_stack":
+        return finish_tool_stack_steps(asset)
     if feature == "stepped_square_base":
         base_foot_size = vector_param(params, "base_foot_size_m", [0.52, 0.52, 0.10])
         base_mid_size = vector_param(params, "base_mid_size_m", [0.44, 0.44, 0.06])
@@ -771,19 +872,44 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
 
 def source_terms_for_asset(asset: dict[str, Any]) -> dict[str, Any]:
     asset_id = require_string(asset.get("asset_id"), "asset_id")
-    if "profile_operation_stack" not in require_list(asset.get("features"), f"{asset_id}.features"):
-        return {"geometry": [], "profiles": [], "operators": []}
-    stack = require_object(asset.get("profile_operation_stack"), f"{asset_id}.profile_operation_stack")
-    return {
-        "geometry": require_string_list(stack.get("geometry_terms_used"), f"{asset_id}.profile_operation_stack.geometry_terms_used"),
-        "profiles": require_string_list(stack.get("profile_terms"), f"{asset_id}.profile_operation_stack.profile_terms"),
-        "operators": require_string_list(stack.get("operations"), f"{asset_id}.profile_operation_stack.operations"),
-        "profile_operation_stack": {
+    features = require_list(asset.get("features"), f"{asset_id}.features")
+    result: dict[str, Any] = {"geometry": [], "profiles": [], "operators": []}
+
+    def append_unique(field: str, values: list[str]) -> None:
+        current = result[field]
+        for value in values:
+            if value not in current:
+                current.append(value)
+
+    if "profile_operation_stack" in features:
+        stack = require_object(asset.get("profile_operation_stack"), f"{asset_id}.profile_operation_stack")
+        append_unique("geometry", require_string_list(stack.get("geometry_terms_used"), f"{asset_id}.profile_operation_stack.geometry_terms_used"))
+        append_unique("profiles", require_string_list(stack.get("profile_terms"), f"{asset_id}.profile_operation_stack.profile_terms"))
+        append_unique("operators", require_string_list(stack.get("operations"), f"{asset_id}.profile_operation_stack.operations"))
+        result["profile_operation_stack"] = {
             "grammar_id": require_string(stack.get("grammar_id"), f"{asset_id}.profile_operation_stack.grammar_id"),
             "axis": require_string(stack.get("axis"), f"{asset_id}.profile_operation_stack.axis"),
             "sequence": require_string_list(stack.get("sequence"), f"{asset_id}.profile_operation_stack.sequence"),
-        },
-    }
+        }
+    if "finish_tool_stack" in features:
+        finish_stack = resolved_finish_tool_stack(asset)
+        append_unique("geometry", require_string_list(finish_stack.get("geometry_terms_used"), f"{asset_id}.finish_tool_stack.geometry_terms_used"))
+        append_unique("operators", require_string_list(finish_stack.get("operations"), f"{asset_id}.finish_tool_stack.operations"))
+        sequence_features = []
+        tool_ids = []
+        for entry_index, item in enumerate(require_list(finish_stack.get("sequence"), f"{asset_id}.finish_tool_stack.sequence")):
+            entry = require_object(item, f"{asset_id}.finish_tool_stack.sequence[{entry_index}]")
+            sequence_features.append(require_string(entry.get("feature"), f"{asset_id}.finish_tool_stack.sequence[{entry_index}].feature"))
+            for tool_id in require_string_list(entry.get("tool_ids"), f"{asset_id}.finish_tool_stack.sequence[{entry_index}].tool_ids"):
+                if tool_id not in tool_ids:
+                    tool_ids.append(tool_id)
+        result["finish_tool_stack"] = {
+            "stack_id": require_string(finish_stack.get("stack_id"), f"{asset_id}.finish_tool_stack.stack_id"),
+            "grammar_id": require_string(finish_stack.get("grammar_id"), f"{asset_id}.finish_tool_stack.grammar_id"),
+            "sequence": sequence_features,
+            "tool_ids": tool_ids,
+        }
+    return result
 
 
 def true_or_false(value: bool) -> bool:
@@ -1016,7 +1142,7 @@ def main() -> int:
     geometry_terms = load_geometry_terms()
     tool_map = validate_tool_dictionary(dictionary)
     policy_map = validate_sequence_policy(sequence_policy, dictionary, tool_map)
-    assets = validate_recipe_bundle(recipe, [str(stage) for stage in require_list(dictionary.get("stages"), "dictionary.stages")], geometry_terms)
+    assets = validate_recipe_bundle(recipe, [str(stage) for stage in require_list(dictionary.get("stages"), "dictionary.stages")], geometry_terms, tool_map)
     plans = [compile_asset_plan(asset, tool_map, dictionary, sequence_policy, policy_map, recipe_path) for asset in assets]
     if not args.validate_only:
         write_outputs(plans, out_root, recipe_path, sequence_policy)

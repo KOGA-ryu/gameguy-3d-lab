@@ -9,6 +9,46 @@
     "no_generated_outputs": true,
     "tool_ids_must_exist_in_dictionary": true
   },
+  "finish_tool_stack_count": 1,
+  "finish_tool_stacks": [
+    {
+      "schema": "finish_tool_stack_v0",
+      "stack_id": "gothic_stone_finish_stack_v0",
+      "grammar_id": "gothic_stone_near_finished_finish_stack_v0",
+      "geometry_terms_used": [
+        "finish_tool_stack"
+      ],
+      "operations": [
+        "finish_tool_stack"
+      ],
+      "sequence": [
+        {
+          "feature": "hard_edge_bevels",
+          "tool_ids": ["modifier_bevel", "mark_sharp"]
+        },
+        {
+          "feature": "weighted_normals",
+          "tool_ids": ["modifier_weighted_normal"]
+        },
+        {
+          "feature": "stone_surface_material",
+          "tool_ids": ["modifier_displace", "material_principled_shader", "procedural_noise_texture", "procedural_bump_map", "material_assign_by_part"]
+        },
+        {
+          "feature": "smart_uvs",
+          "tool_ids": ["mark_seam", "uv_smart_project", "uv_pack_islands"]
+        },
+        {
+          "feature": "collision_and_lod_proxy",
+          "tool_ids": ["modifier_weld", "dissolve_limited", "recalc_normals", "calculate_bounds", "validate_non_manifold", "create_collision_proxy", "create_lod_variant"]
+        },
+        {
+          "feature": "preview_and_export_plan",
+          "tool_ids": ["render_workbench_preview", "export_gltf"]
+        }
+      ]
+    }
+  ],
   "asset_count": 5,
   "assets": [
     {
@@ -26,13 +66,9 @@
         "stepped_square_base",
         "ribbed_post_core",
         "east_west_rail_sockets",
-        "hard_edge_bevels",
-        "weighted_normals",
-        "stone_surface_material",
-        "smart_uvs",
-        "collision_and_lod_proxy",
-        "preview_and_export_plan"
+        "finish_tool_stack"
       ],
+      "finish_tool_stack": "gothic_stone_finish_stack_v0",
       "style_parameters": {
         "base_step_count": 3,
         "rib_count": 12,
@@ -77,13 +113,9 @@
         "stepped_square_base",
         "ribbed_post_core",
         "rail_sockets",
-        "hard_edge_bevels",
-        "weighted_normals",
-        "stone_surface_material",
-        "smart_uvs",
-        "collision_and_lod_proxy",
-        "preview_and_export_plan"
+        "finish_tool_stack"
       ],
+      "finish_tool_stack": "gothic_stone_finish_stack_v0",
       "style_parameters": {
         "base_step_count": 3,
         "base_foot_size_m": [0.44, 0.44, 0.08],
@@ -140,13 +172,9 @@
       },
       "features": [
         "profile_operation_stack",
-        "hard_edge_bevels",
-        "weighted_normals",
-        "stone_surface_material",
-        "smart_uvs",
-        "collision_and_lod_proxy",
-        "preview_and_export_plan"
+        "finish_tool_stack"
       ],
+      "finish_tool_stack": "gothic_stone_finish_stack_v0",
       "style_parameters": {
         "bevel_width_m": 0.014,
         "stone_noise_scale": 36.0,
@@ -318,13 +346,9 @@
       },
       "features": [
         "rectangular_frame_blocks",
-        "hard_edge_bevels",
-        "weighted_normals",
-        "stone_surface_material",
-        "smart_uvs",
-        "collision_and_lod_proxy",
-        "preview_and_export_plan"
+        "finish_tool_stack"
       ],
+      "finish_tool_stack": "gothic_stone_finish_stack_v0",
       "style_parameters": {
         "frame_width_m": 0.92,
         "frame_depth_m": 0.16,
@@ -369,13 +393,9 @@
       },
       "features": [
         "rectangular_frame_blocks",
-        "hard_edge_bevels",
-        "weighted_normals",
-        "stone_surface_material",
-        "smart_uvs",
-        "collision_and_lod_proxy",
-        "preview_and_export_plan"
+        "finish_tool_stack"
       ],
+      "finish_tool_stack": "gothic_stone_finish_stack_v0",
       "style_parameters": {
         "frame_width_m": 1.1,
         "frame_depth_m": 0.2,

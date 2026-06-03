@@ -18,6 +18,14 @@ DICTIONARY = ROOT / "data" / "architecture" / "asset_mill" / "blender_tools" / "
 SEQUENCE_POLICY = ROOT / "data" / "architecture" / "asset_mill" / "blender_tools" / "asset_family_tool_sequence_policy_v0.json"
 DEFAULT_RECIPE = ROOT / "data" / "architecture" / "asset_mill" / "tool_plan_recipes" / "architectural_tool_plan_recipes_v0.json"
 CONTRACT = ROOT / "contracts" / "gameguy_tool_plan_v0.json"
+FINISH_FEATURES = {
+    "hard_edge_bevels",
+    "weighted_normals",
+    "stone_surface_material",
+    "smart_uvs",
+    "collision_and_lod_proxy",
+    "preview_and_export_plan",
+}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -97,6 +105,7 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(set(families), {"column", "banister_post", "fence_post", "window_frame", "door_frame"})
 
         for family, item in families.items():
+            self.assertIn("finish_tool_stack", item["allowed_features"], family)
             self.assertIn("calculate_bounds", item["required_tools"], family)
             self.assertIn("validate_non_manifold", item["required_tools"], family)
             self.assertIn("export_gltf", item["required_tools"], family)
@@ -139,6 +148,8 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(plan["tool_sequence_policy"], "asset_family_tool_sequence_policy_v0")
         self.assertEqual(plan["asset_family_policy"], "banister_post")
         self.assertEqual(plan["style"], "gothic_stone")
+        self.assertIn("finish_tool_stack", plan["features"])
+        self.assertTrue(FINISH_FEATURES.isdisjoint(plan["features"]))
         self.assertEqual(plan["summary"]["covered_stages"], plan["stage_order"])
         self.assertEqual(plan["summary"]["non_deterministic_step_count"], 0)
         self.assertEqual(plan["rules"]["compiler_executes_blender"], False)
@@ -181,6 +192,8 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(plan["asset_family"], "fence_post")
         self.assertEqual(plan["asset_family_policy"], "fence_post")
         self.assertEqual(plan["style"], "gothic_stone")
+        self.assertIn("finish_tool_stack", plan["features"])
+        self.assertTrue(FINISH_FEATURES.isdisjoint(plan["features"]))
         self.assertEqual(plan["summary"]["step_count"], 32)
         self.assertEqual(plan["summary"]["unique_tool_count"], 24)
         self.assertEqual(plan["summary"]["covered_stages"], plan["stage_order"])
@@ -206,10 +219,12 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(plan["asset_family_policy"], "column")
         self.assertEqual(plan["style"], "gothic_stone")
         self.assertEqual(plan["features"][0], "profile_operation_stack")
+        self.assertEqual(plan["features"][1], "finish_tool_stack")
         self.assertNotIn("stepped_square_base", plan["features"])
         self.assertNotIn("round_transition_ring", plan["features"])
         self.assertNotIn("star_or_fluted_shaft", plan["features"])
         self.assertNotIn("square_top_cap", plan["features"])
+        self.assertTrue(FINISH_FEATURES.isdisjoint(plan["features"]))
         self.assertEqual(plan["summary"]["step_count"], 31)
         self.assertEqual(plan["summary"]["unique_tool_count"], 24)
         self.assertEqual(plan["summary"]["covered_stages"], plan["stage_order"])
@@ -219,12 +234,24 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(plan["source_terms"]["profiles"], ["square", "circle", "rectangle"])
         self.assertEqual(
             plan["source_terms"]["operators"],
-            ["profile_operation_stack", "compound_asset", "extrude", "array_radial"],
+            ["profile_operation_stack", "compound_asset", "extrude", "array_radial", "finish_tool_stack"],
         )
         self.assertEqual(plan["source_terms"]["profile_operation_stack"]["grammar_id"], "square_circle_fluted_column_stack_v0")
         self.assertEqual(
             plan["source_terms"]["profile_operation_stack"]["sequence"],
             ["square_base", "circle_transition", "fluted_shaft", "circle_transition", "square_cap"],
+        )
+        self.assertEqual(plan["source_terms"]["finish_tool_stack"]["stack_id"], "gothic_stone_finish_stack_v0")
+        self.assertEqual(
+            plan["source_terms"]["finish_tool_stack"]["sequence"],
+            [
+                "hard_edge_bevels",
+                "weighted_normals",
+                "stone_surface_material",
+                "smart_uvs",
+                "collision_and_lod_proxy",
+                "preview_and_export_plan",
+            ],
         )
 
         by_step = {step["step_id"]: step for step in plan["steps"]}
@@ -261,6 +288,8 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(plan["asset_family"], "window_frame")
         self.assertEqual(plan["asset_family_policy"], "window_frame")
         self.assertEqual(plan["style"], "gothic_stone")
+        self.assertIn("finish_tool_stack", plan["features"])
+        self.assertTrue(FINISH_FEATURES.isdisjoint(plan["features"]))
         self.assertEqual(plan["summary"]["step_count"], 25)
         self.assertEqual(plan["summary"]["unique_tool_count"], 22)
         self.assertEqual(plan["summary"]["covered_stages"], plan["stage_order"])
@@ -292,6 +321,8 @@ class BlenderToolPlanTests(unittest.TestCase):
 
         self.assertEqual(plan["asset_family"], "door_frame")
         self.assertEqual(plan["asset_family_policy"], "door_frame")
+        self.assertIn("finish_tool_stack", plan["features"])
+        self.assertTrue(FINISH_FEATURES.isdisjoint(plan["features"]))
         self.assertEqual(plan["summary"]["step_count"], 25)
         self.assertEqual(plan["summary"]["unique_tool_count"], 22)
         self.assertEqual(plan["summary"]["covered_stages"], plan["stage_order"])
@@ -403,6 +434,25 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("profile_operation_stack.profile_terms", result.stderr)
         self.assertIn("unknown geometry dictionary term `fake_profile`", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
+
+    def test_finish_tool_stack_rejects_unknown_finish_feature_before_output(self) -> None:
+        source = load_json(DEFAULT_RECIPE)
+        source["finish_tool_stacks"][0]["sequence"][0]["feature"] = "fake_finish"
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            recipe_path = Path(tmp) / "bad_recipe.json"
+            out_root = Path(tmp) / "plans"
+            recipe_path.write_text(json.dumps(source, indent=2) + "\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(COMPILER), "--recipe", str(recipe_path), "--out", str(out_root)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("unknown finish feature `fake_finish`", result.stderr)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_tool_count_mismatch_fails_before_output(self) -> None:

@@ -24,7 +24,7 @@ The default bundle now emits:
 | `gothic_stone_window_frame_tool_plan_v0` | `window_frame` | 25 | 22 |
 | `gothic_stone_door_frame_tool_plan_v0` | `door_frame` | 25 | 22 |
 
-The window and door frames use different sequences from the post assets. They create frame blocks, join them, apply bevels and weighted normals, add procedural stone material/detail, UVs, cleanup, bounds validation, proxy/LOD, preview, and export steps. The fence post stays in the socketed post family, but its dimensions, rail sockets, rib count, and cap/base sizes come from the source recipe. The column now uses `profile_operation_stack` source grammar for square base, circular transition rings, fluted shaft, circular transition, and square cap.
+The window and door frames use different sequences from the post assets. They create frame blocks, join them, apply bevels and weighted normals, add procedural stone material/detail, UVs, cleanup, bounds validation, proxy/LOD, preview, and export steps. The fence post stays in the socketed post family, but its dimensions, rail sockets, rib count, and cap/base sizes come from the source recipe. The column now uses `profile_operation_stack` source grammar for square base, circular transition rings, fluted shaft, circular transition, and square cap. The shared `finish_tool_stack` source grammar now owns the default finishing sequence for all five assets.
 
 ## Boundary
 

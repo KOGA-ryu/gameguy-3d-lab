@@ -116,6 +116,8 @@ This reads `data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v
 
 The column source now uses `profile_operation_stack` to declare a square-to-circle-to-fluted-to-circle-to-square profile sequence from legal `geometry_dictionary/` terms. The compiler preserves those terms in `source_terms`, and the tool-plan validator rejects unknown profile or operator terms before Blender sees the plan.
 
+The default architectural tool-plan bundle also uses `finish_tool_stack` to share a source-owned finishing sequence across the banister post, fence post, column, window frame, and door frame. That stack declares bevels, weighted normals, procedural stone material/detail, UV projection/packing, cleanup, collision/LOD, preview, and export as source recipe intent; the compiler expands it into deterministic Blender tool steps.
+
 Validate compiled tool-plan JSON before adapter execution with:
 
 ```bash

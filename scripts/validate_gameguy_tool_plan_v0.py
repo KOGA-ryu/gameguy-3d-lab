@@ -410,22 +410,32 @@ def validate_step(
     return step_id, tool_id
 
 
-def validate_source_terms(plan: dict[str, Any], geometry_terms: dict[str, set[str]]) -> None:
+def validate_source_terms(plan: dict[str, Any], geometry_terms: dict[str, set[str]], tool_map: dict[str, dict[str, Any]]) -> None:
     source_terms = require_object(plan.get("source_terms"), "source_terms")
     geometry = require_known_terms(source_terms.get("geometry"), all_geometry_terms(geometry_terms), "source_terms.geometry")
     profiles = require_known_terms(source_terms.get("profiles"), geometry_terms["profile_primitive"], "source_terms.profiles")
     operators = require_known_terms(source_terms.get("operators"), operation_terms(geometry_terms), "source_terms.operators")
-    if "profile_operation_stack" not in require_string_list(plan.get("features"), "features"):
-        return
-    if "profile_operation_stack" not in geometry or "profile_operation_stack" not in operators:
-        fail("source_terms must declare profile_operation_stack for profile_operation_stack features")
-    if not profiles:
-        fail("source_terms.profiles must not be empty for profile_operation_stack features")
-    stack = require_object(source_terms.get("profile_operation_stack"), "source_terms.profile_operation_stack")
-    require_string(stack.get("grammar_id"), "source_terms.profile_operation_stack.grammar_id")
-    if require_string(stack.get("axis"), "source_terms.profile_operation_stack.axis") != "z":
-        fail("source_terms.profile_operation_stack.axis only supports z in v0")
-    require_string_list(stack.get("sequence"), "source_terms.profile_operation_stack.sequence")
+    features = require_string_list(plan.get("features"), "features")
+    if "profile_operation_stack" in features:
+        if "profile_operation_stack" not in geometry or "profile_operation_stack" not in operators:
+            fail("source_terms must declare profile_operation_stack for profile_operation_stack features")
+        if not profiles:
+            fail("source_terms.profiles must not be empty for profile_operation_stack features")
+        stack = require_object(source_terms.get("profile_operation_stack"), "source_terms.profile_operation_stack")
+        require_string(stack.get("grammar_id"), "source_terms.profile_operation_stack.grammar_id")
+        if require_string(stack.get("axis"), "source_terms.profile_operation_stack.axis") != "z":
+            fail("source_terms.profile_operation_stack.axis only supports z in v0")
+        require_string_list(stack.get("sequence"), "source_terms.profile_operation_stack.sequence")
+    if "finish_tool_stack" in features:
+        if "finish_tool_stack" not in geometry or "finish_tool_stack" not in operators:
+            fail("source_terms must declare finish_tool_stack for finish_tool_stack features")
+        finish_stack = require_object(source_terms.get("finish_tool_stack"), "source_terms.finish_tool_stack")
+        require_string(finish_stack.get("stack_id"), "source_terms.finish_tool_stack.stack_id")
+        require_string(finish_stack.get("grammar_id"), "source_terms.finish_tool_stack.grammar_id")
+        require_string_list(finish_stack.get("sequence"), "source_terms.finish_tool_stack.sequence")
+        for index, tool_id in enumerate(require_string_list(finish_stack.get("tool_ids"), "source_terms.finish_tool_stack.tool_ids")):
+            if tool_id not in tool_map:
+                fail(f"source_terms.finish_tool_stack.tool_ids[{index}] uses unknown tool_id `{tool_id}`")
 
 
 def enforce_plan_sequence_policy(
@@ -502,7 +512,7 @@ def validate_plan(
     require_string(plan.get("detail_level"), "detail_level")
     require_string_list(plan.get("features"), "features")
     require_object(plan.get("style_parameters", {}), "style_parameters")
-    validate_source_terms(plan, geometry_terms)
+    validate_source_terms(plan, geometry_terms, tool_map)
     validate_dimensions(plan.get("dimensions_m"), "dimensions_m")
     if require_string_list(plan.get("stage_order"), "stage_order") != stages:
         fail("stage_order must match tool dictionary stages")
