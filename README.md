@@ -40,13 +40,15 @@ python3 scripts/asset_pump_v0.py --clean --out /tmp/gameguy_asset_pump_v0
 
 It reads `data/architecture/asset_mill/recipes/simple_solids_v0.json` and writes a compact asset manifest plus per-asset geometry JSON. It does not write workflow reports, receipts, Blender files, renders, exported mesh files, or repo-local generated folders.
 
-Measurement sources for future asset dissection live at:
+The first stable generated asset schema is:
 
 ```text
-data/architecture/taxonomy/source_measurements/asset_dissection_measurement_sources_v0.json
+contracts/gameguy_asset_v0.json
 ```
 
-That registry ranks source types by usefulness for extracting part measurements, curves, ratios, and operator-chain inputs.
+Blender scripts should be adapters for viewing or exporting deterministic asset JSON. If a Blender script contains source design decisions, move those decisions into source recipes or the asset pump.
+
+Measurement-source registries and research notes are reference material until they feed concrete asset dissection records or recipe inputs.
 
 ## Current Language
 
@@ -59,6 +61,7 @@ Run from the repo root:
 ```bash
 find data contracts docs geometry_dictionary workflow -name '*.json' -print0 | xargs -0 -n 1 python3 -m json.tool >/dev/null
 python3 -m py_compile scripts/*.py
+python3 -m unittest discover -s tests
 test ! -d pattern_lab_2d
 find . -path '*pattern_lab_2d*' -print
 find . -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.gif' -o -name '*.webp' -o -name '*.blend' -o -name '*.blend1' -o -name '*.obj' -o -name '*.gltf' -o -name '*.glb' -o -name '*.fbx' \) -print
@@ -68,6 +71,7 @@ Expected current checks:
 
 - JSON parses.
 - Python scripts compile.
+- Asset pump tests pass.
 - No `pattern_lab_2d` paths.
 - No media, render, mesh, or Blender proof output files.
 

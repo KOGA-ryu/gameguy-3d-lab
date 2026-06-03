@@ -1,0 +1,101 @@
+{
+  "schema": "gameguy_asset_contract_v0",
+  "generated_schema": "gameguy_asset_v0",
+  "status": "first_stable_generated_asset_schema",
+  "purpose": "Define the deterministic JSON asset shape emitted by the canonical asset pump.",
+  "producer": "scripts/asset_pump_v0.py",
+  "source_inputs": [
+    "data/architecture/asset_mill/recipes/simple_solids_v0.json",
+    "geometry_dictionary/"
+  ],
+  "coordinate_model": {
+    "unit": "abstract_meter",
+    "coordinate_space": "local_xyz_m",
+    "axes": {
+      "x": "width / left-right",
+      "y": "depth / front-back",
+      "z": "height / up-down"
+    }
+  },
+  "required_fields": [
+    "schema",
+    "asset_id",
+    "source_operation",
+    "asset_kind",
+    "architectural_role",
+    "generation_use",
+    "semantic_tags",
+    "connectors",
+    "components",
+    "bounds_m",
+    "dimensions_m",
+    "mesh",
+    "no_claims"
+  ],
+  "field_contracts": {
+    "schema": "Must equal gameguy_asset_v0.",
+    "asset_id": "Stable source asset identifier.",
+    "source_operation": "Profile or composition operation used by the pump.",
+    "asset_kind": "Source asset class such as primitive, loft, or compound.",
+    "architectural_role": "Human-readable source role from the recipe.",
+    "generation_use": "List of intended gameplay or generation uses.",
+    "semantic_tags": "List of legal semantic geometry tags from geometry_dictionary.",
+    "connectors": "List of connector anchors derived from local bounds.",
+    "components": "List of source component references for compound assets; empty for primitive assets.",
+    "bounds_m": "Local min/max coordinate bounds in abstract meters.",
+    "dimensions_m": "Width, depth, and height derived from bounds_m.",
+    "mesh": "Deterministic local mesh JSON with vertices and polygon faces.",
+    "no_claims": "Required false-claim block copied from source recipe."
+  },
+  "connector_contract": {
+    "required_fields": [
+      "connector_id",
+      "position_m",
+      "direction"
+    ],
+    "position_m": "Three finite numbers in local_xyz_m.",
+    "direction": "Three finite numbers describing connector orientation."
+  },
+  "component_contract": {
+    "required_fields": [
+      "instance_id",
+      "asset_ref",
+      "translation_m"
+    ],
+    "translation_m": "Three finite local offsets in abstract meters."
+  },
+  "mesh_contract": {
+    "required_fields": [
+      "coordinate_space",
+      "vertices",
+      "faces"
+    ],
+    "coordinate_space": "Must equal local_xyz_m.",
+    "vertices": "List of [x, y, z] finite numeric coordinates rounded by the pump.",
+    "faces": "List of polygon faces using zero-based vertex indices."
+  },
+  "determinism_rules": {
+    "same_source_same_json": true,
+    "no_wall_clock_fields": true,
+    "no_absolute_output_paths": true,
+    "no_blender_runtime_dependency": true,
+    "no_render_or_mesh_export_files": true
+  },
+  "adapter_rules": {
+    "blender_scripts_are_adapters": true,
+    "source_design_decisions_belong_in_recipes_or_pump": true,
+    "exporters_must_consume_gameguy_asset_v0": true
+  },
+  "required_no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false
+  },
+  "non_goals": [
+    "This contract does not define a production asset pack.",
+    "This contract does not define Blender scene source logic.",
+    "This contract does not imply structural, fabrication, or historical accuracy.",
+    "This contract does not define game-engine integration."
+  ]
+}
