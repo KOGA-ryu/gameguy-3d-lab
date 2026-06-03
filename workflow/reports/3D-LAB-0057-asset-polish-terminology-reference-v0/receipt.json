@@ -1,0 +1,50 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0057-asset-polish-terminology-reference-v0",
+  "created_utc": "2026-06-03T21:12:41Z",
+  "summary": "Added a source reference doc that maps architectural terminology, geometric construction vocabulary, and Blender/tool-plan operations into usable asset polish language.",
+  "source_inputs": {
+    "reference_doc": "docs/asset_pump/asset_polish_terminology_reference_v0.md",
+    "readme": "README.md"
+  },
+  "reference_doc": {
+    "sections": [
+      "architectural_part_terms",
+      "railing_and_balustrade_terms",
+      "panel_frame_and_window_terms",
+      "arch_and_vault_terms",
+      "moldings_and_edge_profile_terms",
+      "geometric_construction_terms",
+      "blender_and_tool_plan_terms",
+      "common_polish_sequences",
+      "phrasebook_for_talking_to_dex",
+      "target_naming_convention",
+      "source_references",
+      "guardrails"
+    ],
+    "source_boundary": "documentation_only",
+    "intended_next_schema": "asset_polish_tool_plan_v0"
+  },
+  "validation": {
+    "receipt_json_parse": {
+      "command": "python3 -m json.tool workflow/reports/3D-LAB-0057-asset-polish-terminology-reference-v0/receipt.json",
+      "result": "PASS"
+    },
+    "reference_doc_anchor_check": {
+      "command": "rg \"Source References|Phrasebook|Target Naming Convention\" docs/asset_pump/asset_polish_terminology_reference_v0.md",
+      "result": "PASS"
+    },
+    "diff_whitespace": {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  },
+  "rules": {
+    "documentation_only": true,
+    "no_blender_validation_for_reference_doc": true,
+    "no_mesh_output": true,
+    "no_generated_media": true,
+    "do_not_hide_design_choices_in_blender": true
+  },
+  "recommended_next_goal": "Define asset_polish_tool_plan_v0 using the terminology reference as the phrase-to-operation bridge."
+}

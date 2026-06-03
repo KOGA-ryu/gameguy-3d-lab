@@ -96,6 +96,14 @@ python3 scripts/serve_pattern_selection_studio_v0.py
 
 By default it serves `http://127.0.0.1:8765`, loads `/tmp/gameguy_pattern_segments_v0/segment_sets/hex_rosette_pattern_segments_v0.json`, opens in a lighter prioritized detail mode for browser performance, lets segments be selected and colored, and saves deterministic selection recipes under `/tmp/gameguy_pattern_selection_studio_v0/selection_recipes/`. The Detail control can be raised to dense or full when the machine can handle the complete line field.
 
+Asset polish terminology and prompt vocabulary live in:
+
+```text
+docs/asset_pump/asset_polish_terminology_reference_v0.md
+```
+
+Use it to map architectural words such as plinth, arris, fielded panel, tracery, mullion, rib, boss, ogee, cavetto, and weighted normals into recipe targets and Blender tool-plan operations.
+
 The first lean command is:
 
 ```bash
