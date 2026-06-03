@@ -42,7 +42,7 @@ class ConstructionGeometryTaxonomyValidatorTests(unittest.TestCase):
         self.assertEqual(report["source_count"], 9)
         self.assertEqual(report["taxonomy_term_count"], 23)
         self.assertEqual(report["claim_count"], 5)
-        self.assertEqual(report["repo_mapping_count"], 8)
+        self.assertEqual(report["repo_mapping_count"], 9)
         self.assertFalse(report["rules"]["runs_blender"])
         self.assertTrue(report["rules"]["validates_required_terms"])
         self.assertTrue(report["rules"]["validates_source_support"])

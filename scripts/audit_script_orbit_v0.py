@@ -28,6 +28,7 @@ OVERRIDES: dict[str, tuple[str, str]] = {
     "compile_blender_tool_plan_v0.py": ("KEEP_CANONICAL", "canonical source intent to staged Blender tool-plan JSON compiler"),
     "compile_construction_cell_selection_v0.py": ("KEEP_CANONICAL", "canonical construction graph cell-selection compiler before asset lifting, folding, or Blender adapter work"),
     "compile_pattern_field_v0.py": ("KEEP_CANONICAL", "canonical multi-center pattern field source compiler before selection refinement, asset lifting, or Blender adapter work"),
+    "compile_pattern_segments_v0.py": ("KEEP_CANONICAL", "canonical pattern field segment splitter before omission, closed-loop extraction, or Blender adapter work"),
     "execute_blender_tool_plan_v0.py": ("KEEP_CANONICAL", "adapter that consumes gameguy_tool_plan_v0 and executes supported deterministic Blender steps"),
     "export_blender_asset_preview_v0.py": ("KEEP_CANONICAL", "first adapter that consumes gameguy_asset_v0 JSON"),
     "export_blender_measured_components_preview_v0.py": ("KEEP_CANONICAL", "adapter that consumes measured gameguy_asset_v0 JSON from the asset pump"),

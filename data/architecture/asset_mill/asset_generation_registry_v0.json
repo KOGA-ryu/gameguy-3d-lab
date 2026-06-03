@@ -165,6 +165,16 @@
       "pipeline_labels": ["pattern_field_compile"]
     }
   ],
+  "source_pattern_segment_bundles": [
+    {
+      "bundle_id": "pattern_segment_recipes_v0",
+      "path": "data/architecture/sacred_geometry/pattern_segment_recipes_v0.json",
+      "schema": "pattern_segment_recipe_bundle_v0",
+      "expected_segment_set_count": 1,
+      "compiler": "scripts/compile_pattern_segments_v0.py",
+      "pipeline_labels": ["pattern_segment_compile"]
+    }
+  ],
   "source_taxonomy_bundles": [
     {
       "bundle_id": "construction_geometry_taxonomy_v0",

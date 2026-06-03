@@ -373,6 +373,38 @@ def validate_source_pattern_field_bundle(item: Any, index: int, known_labels: se
     }
 
 
+def validate_source_pattern_segment_bundle(item: Any, index: int, known_labels: set[str]) -> dict[str, Any]:
+    bundle_ref = require_object(item, f"source_pattern_segment_bundles[{index}]")
+    path = repo_path(bundle_ref.get("path"), f"source_pattern_segment_bundles[{index}].path")
+    bundle = load_json(path)
+    expected_schema = require_string(bundle_ref.get("schema"), f"source_pattern_segment_bundles[{index}].schema")
+    if bundle.get("schema") != expected_schema:
+        fail(f"{display_path(path)} schema must be {expected_schema}")
+    bundle_id = require_string(bundle_ref.get("bundle_id"), f"source_pattern_segment_bundles[{index}].bundle_id")
+    if bundle.get("bundle_id") != bundle_id:
+        fail(f"{display_path(path)} bundle_id must be {bundle_id}")
+    expected_count = require_int(
+        bundle_ref.get("expected_segment_set_count"),
+        f"source_pattern_segment_bundles[{index}].expected_segment_set_count",
+        minimum=1,
+    )
+    segment_sets = require_list(bundle.get("segment_sets"), f"source_pattern_segment_bundles[{index}].segment_sets")
+    if len(segment_sets) != expected_count:
+        fail(f"source_pattern_segment_bundles[{index}].expected_segment_set_count must match segment_sets length")
+    if bundle.get("segment_set_count") != expected_count:
+        fail(f"source_pattern_segment_bundles[{index}].expected_segment_set_count must match bundle segment_set_count")
+    compiler = script_path(bundle_ref.get("compiler"), f"source_pattern_segment_bundles[{index}].compiler")
+    assert_no_blender_import(compiler, f"source_pattern_segment_bundles[{index}].compiler")
+    labels = validate_pipeline_labels(bundle_ref.get("pipeline_labels"), known_labels, f"source_pattern_segment_bundles[{index}].pipeline_labels")
+    return {
+        "bundle_id": bundle_id,
+        "path": display_path(path),
+        "schema": expected_schema,
+        "segment_set_count": expected_count,
+        "pipeline_label_count": len(labels),
+    }
+
+
 def validate_source_taxonomy_bundle(item: Any, index: int, known_labels: set[str]) -> dict[str, Any]:
     bundle_ref = require_object(item, f"source_taxonomy_bundles[{index}]")
     path = repo_path(bundle_ref.get("path"), f"source_taxonomy_bundles[{index}].path")
@@ -476,6 +508,13 @@ def validate_registry(path: Path) -> dict[str, Any]:
     source_pattern_field_paths = {result["path"] for result in source_pattern_field_results}
     if len(source_pattern_field_paths) != len(source_pattern_field_results):
         fail("source_pattern_field_bundles paths must be unique")
+    source_pattern_segment_results = [
+        validate_source_pattern_segment_bundle(item, index, known_labels)
+        for index, item in enumerate(require_list(registry.get("source_pattern_segment_bundles"), "source_pattern_segment_bundles"))
+    ]
+    source_pattern_segment_paths = {result["path"] for result in source_pattern_segment_results}
+    if len(source_pattern_segment_paths) != len(source_pattern_segment_results):
+        fail("source_pattern_segment_bundles paths must be unique")
     source_taxonomy_results = [
         validate_source_taxonomy_bundle(item, index, known_labels)
         for index, item in enumerate(require_list(registry.get("source_taxonomy_bundles"), "source_taxonomy_bundles"))
@@ -490,6 +529,7 @@ def validate_registry(path: Path) -> dict[str, Any]:
         | source_graph_paths
         | source_cell_selection_paths
         | source_pattern_field_paths
+        | source_pattern_segment_paths
         | source_taxonomy_paths
     )
     reference_results = [
@@ -523,6 +563,8 @@ def validate_registry(path: Path) -> dict[str, Any]:
         "source_cell_selection_set_count": sum(result["selection_set_count"] for result in source_cell_selection_results),
         "source_pattern_field_bundle_count": len(source_pattern_field_results),
         "source_pattern_field_count": sum(result["field_count"] for result in source_pattern_field_results),
+        "source_pattern_segment_bundle_count": len(source_pattern_segment_results),
+        "source_pattern_segment_set_count": sum(result["segment_set_count"] for result in source_pattern_segment_results),
         "source_taxonomy_bundle_count": len(source_taxonomy_results),
         "source_taxonomy_term_count": sum(result["term_count"] for result in source_taxonomy_results),
         "reference_only_recipe_count": len(reference_results),
@@ -539,6 +581,7 @@ def validate_registry(path: Path) -> dict[str, Any]:
             "validates_source_graph_boundaries": True,
             "validates_source_cell_selection_boundaries": True,
             "validates_source_pattern_field_boundaries": True,
+            "validates_source_pattern_segment_boundaries": True,
             "validates_source_taxonomy_boundaries": True,
             "validates_reference_only_boundaries": True,
         },
@@ -568,6 +611,7 @@ def main(argv: list[str] | None = None) -> int:
         f"source_graphs={result['source_graph_count']} "
         f"source_cell_selections={result['source_cell_selection_set_count']} "
         f"source_pattern_fields={result['source_pattern_field_count']} "
+        f"source_pattern_segments={result['source_pattern_segment_set_count']} "
         f"source_taxonomies={result['source_taxonomy_term_count']} "
         f"reference_only={result['reference_only_recipe_count']}"
     )

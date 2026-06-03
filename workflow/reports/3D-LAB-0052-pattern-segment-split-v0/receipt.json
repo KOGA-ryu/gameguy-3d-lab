@@ -1,0 +1,59 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0052-pattern-segment-split-v0",
+  "created_utc": "2026-06-03T00:00:00Z",
+  "summary": "Added a source-only compiler that splits multi-center pattern-field edges at intersections into selectable segments before omission, loop extraction, or 3D promotion.",
+  "source_inputs": {
+    "pattern_segment_bundle": "data/architecture/sacred_geometry/pattern_segment_recipes_v0.json",
+    "source_pattern_field_bundle": "data/architecture/sacred_geometry/pattern_field_recipes_v0.json",
+    "geometry_operation": "geometry_dictionary/operations/pattern_segment_split.json",
+    "compiler": "scripts/compile_pattern_segments_v0.py"
+  },
+  "compiled_pattern_segments": {
+    "segment_set_id": "multi_rosette_pattern_segments_v0",
+    "source_field_id": "multi_rosette_pattern_field_v0",
+    "source_edge_count": 540,
+    "intersection_point_count": 1020,
+    "segment_count": 2402,
+    "selection_count": 3,
+    "selected_segment_reference_count": 1333,
+    "unique_selected_segment_count": 1333,
+    "manifest_path": "/tmp/gameguy_pattern_segments_v0_0052/manifest.json",
+    "segment_set_path": "/tmp/gameguy_pattern_segments_v0_0052/segment_sets/multi_rosette_pattern_segments_v0.json",
+    "svg_preview_path": "/tmp/gameguy_pattern_segments_v0_0052/svg/multi_rosette_pattern_segments_v0.svg",
+    "png_preview_path": "/tmp/gameguy_pattern_segments_v0_0052_preview/multi_rosette_pattern_segments_v0.svg.png"
+  },
+  "validation": {
+    "pattern_segments_validate_only": {
+      "command": "python3 scripts/compile_pattern_segments_v0.py --validate-only",
+      "result": "compiled pattern segment sets=1 intersections=1020 segments=2402 out=<validate-only>"
+    },
+    "pattern_segments_compile": {
+      "command": "python3 scripts/compile_pattern_field_v0.py --clean --out /tmp/gameguy_pattern_field_v0_0052 && python3 scripts/compile_pattern_segments_v0.py --clean --pattern-field-manifest /tmp/gameguy_pattern_field_v0_0052/manifest.json --out /tmp/gameguy_pattern_segments_v0_0052",
+      "result": "compiled pattern fields=1 edges=540 selected=120 out=/tmp/gameguy_pattern_field_v0_0052; compiled pattern segment sets=1 intersections=1020 segments=2402 selected=1333 out=/tmp/gameguy_pattern_segments_v0_0052"
+    },
+    "targeted_tests": {
+      "command": "python3 -m unittest tests/test_compile_pattern_segments_v0.py tests/test_validate_asset_generation_registry_v0.py tests/test_validate_generation_pipeline_v0.py tests/test_validate_construction_geometry_taxonomy_v0.py",
+      "result": "OK",
+      "test_count": 19
+    },
+    "asset_generation_registry": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS asset generation registry validation: geometry_bundles=5 geometry_assets=40 source_profiles=19 source_graphs=1 source_cell_selections=1 source_pattern_fields=1 source_pattern_segments=1 source_taxonomies=23 reference_only=3"
+    },
+    "generation_pipeline_non_blender_skip_unit_tests": {
+      "command": "python3 scripts/validate_generation_pipeline_v0.py --skip-unit-tests --json-report /tmp/gameguy_pipeline_0052_final.json",
+      "result": "PASS generation pipeline validation: commands=38 json=256 include_blender=false",
+      "command_count": 38,
+      "json_file_count": 256
+    }
+  },
+  "rules": {
+    "source_segments_only": true,
+    "selected_segments_named": true,
+    "blender_is_adapter_layer": true,
+    "generated_outputs_stay_under_tmp": true,
+    "no_production_or_structural_claims": true
+  },
+  "recommended_next_goal": "Add omission rules and closed-loop extraction over split pattern segments."
+}

@@ -1,0 +1,36 @@
+{
+  "term_id": "pattern_segment_split",
+  "category": "composition_operation",
+  "plain_name": "Pattern Segment Split",
+  "description": "Splits a multi-center pattern field's guide and selected lines at geometric intersections so smaller candidate segments can be selected, omitted, or promoted later.",
+  "required_inputs": {
+    "source_pattern_field": "multi_center_construction_field_2d",
+    "intersection_policy": "intersection_split_policy",
+    "selections": "segment_selection[]"
+  },
+  "outputs": {
+    "type": "pattern_segment_graph_2d",
+    "coordinate_space": "local_xy",
+    "selection_ready": true
+  },
+  "constraints": {
+    "source_field_must_have_points_and_edges": true,
+    "edges_split_at_intersections": true,
+    "segment_ids_must_be_stable": true,
+    "tiny_segments_are_rejected": true,
+    "selections_reference_existing_segments": true
+  },
+  "common_uses": [
+    "line omission planning",
+    "tracery segment selection",
+    "railing ornament source selection",
+    "rosette motif extraction",
+    "vault rib source selection"
+  ],
+  "blender_method": "Blender does not compute pattern intersections or choose segments; adapters consume selected segments after source recipes promote them into geometry roles.",
+  "validation": [
+    "source_edges_exist",
+    "intersections_deduplicated",
+    "segments_reference_source_edges"
+  ]
+}
