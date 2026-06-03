@@ -1,0 +1,72 @@
+{
+  "schema": "measured_components_source_promotion_decision_v0",
+  "packet_id": "3D-LAB-0009",
+  "target_scripts": [
+    "scripts/compile_asset_mill_measured_components_v1.py",
+    "scripts/compile_asset_mill_measured_components_v2.py"
+  ],
+  "replacement_source": "data/architecture/asset_mill/recipes/measured_components_v0.json",
+  "validator": "scripts/validate_measured_component_source_v0.py",
+  "decision": "PROMOTE_SOURCE_AND_DEMOTE_SCRIPTS_TO_REFERENCE_ONLY",
+  "safe_to_delete_now": false,
+  "reason": "The stable measured component catalog value has been moved out of compiler scripts and into source JSON. The old scripts remain only as historical comparison until a separate deletion task.",
+  "comparison_evidence": {
+    "v1_asset_count": 12,
+    "v2_asset_count": 10,
+    "promoted_asset_count": 22,
+    "goal_references_preserved": false,
+    "wall_clock_fields_preserved": false,
+    "source_validator_added": true,
+    "script_orbit_replace_by_pump_count_after": 0
+  },
+  "old_value_preserved": [
+    "Measured component asset IDs from v1 and v2.",
+    "Dimensions, bounds, ratio_basis, uncertainty, sockets, semantic roles, validation expectations, and proof primitives.",
+    "Local measurement, ratio document, source quality, geometry link, and semantic link references.",
+    "No-claims blocks and explicit non-production/non-structural/non-fabrication/non-historical posture.",
+    "Version provenance through source_version and source_script fields."
+  ],
+  "not_preserved_by_design": [
+    {
+      "old_value": "goal/architecture/asset_mill_measured_v1 generated index reference",
+      "reason": "Generated goal output is not source. v2 references now point to measured_components_v0.v1_assets."
+    },
+    {
+      "old_value": "goal/architecture/asset_mill_measured_v2 orientation report reference",
+      "reason": "The referenced generated report does not exist in the clean repo and was converted to a source-promotion note."
+    },
+    {
+      "old_value": "created_at_utc fields",
+      "reason": "Source data and deterministic validation should avoid wall-clock fields."
+    },
+    {
+      "old_value": "compiler-side generated recipe/index/report/receipt writes",
+      "reason": "The promoted catalog is source JSON; workflow evidence lives in this packet."
+    }
+  ],
+  "orbit_bucket_updates": [
+    {
+      "script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "from": "REPLACE_BY_PUMP",
+      "to": "REFERENCE_ONLY"
+    },
+    {
+      "script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "from": "REPLACE_BY_PUMP",
+      "to": "REFERENCE_ONLY"
+    }
+  ],
+  "follow_up": [
+    "Do not run the measured component compiler scripts as active source logic.",
+    "Use measured_components_v0.json plus validate_measured_component_source_v0.py as the source lane.",
+    "Add pump support for measured component recipes only after deciding a stable operator mapping from proof primitives and sockets to gameguy_asset_v0."
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

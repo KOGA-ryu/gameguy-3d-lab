@@ -28,11 +28,12 @@ OVERRIDES: dict[str, tuple[str, str]] = {
     "export_blender_asset_preview_v0.py": ("KEEP_CANONICAL", "first adapter that consumes gameguy_asset_v0 JSON"),
     "validate_geometry_dictionary.py": ("KEEP_CANONICAL", "guards legal geometry vocabulary used by recipes and pump"),
     "validate_connector_source_v0.py": ("KEEP_CANONICAL", "guards connector source manifest and placement policy"),
+    "validate_measured_component_source_v0.py": ("KEEP_CANONICAL", "guards promoted measured component source recipes"),
     "validate_tiny_fixture_v0.py": ("KEEP_CANONICAL", "guards canonical source-only map/building/connector fixture"),
     "audit_script_orbit_v0.py": ("KEEP_CANONICAL", "tracks script cleanup buckets without deleting files"),
     "compile_asset_mill_solids_v0.py": ("REFERENCE_ONLY", "core value has been replaced by asset_pump_v0; keep only as historical comparison until a deletion task"),
-    "compile_asset_mill_measured_components_v1.py": ("REPLACE_BY_PUMP", "asset generation logic should move into source recipes or pump path"),
-    "compile_asset_mill_measured_components_v2.py": ("REPLACE_BY_PUMP", "asset generation logic should move into source recipes or pump path"),
+    "compile_asset_mill_measured_components_v1.py": ("REFERENCE_ONLY", "measured component catalog has been promoted to data/architecture/asset_mill/recipes/measured_components_v0.json"),
+    "compile_asset_mill_measured_components_v2.py": ("REFERENCE_ONLY", "measured component catalog has been promoted to data/architecture/asset_mill/recipes/measured_components_v0.json"),
     "validate_contract.py": ("REFERENCE_ONLY", "legacy quarantined 2D mosaic contract validator; keep until quarantine is retired"),
 }
 

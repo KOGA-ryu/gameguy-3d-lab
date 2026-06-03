@@ -1,0 +1,4080 @@
+{
+  "schema": "asset_mill_measured_component_bundle_v0",
+  "bundle_id": "measured_components_v0",
+  "purpose": "Promoted source catalog for measured Asset Mill component recipes formerly embedded in v1/v2 compiler scripts.",
+  "units": "abstract_meter",
+  "source_scripts": [
+    "scripts/compile_asset_mill_measured_components_v1.py",
+    "scripts/compile_asset_mill_measured_components_v2.py"
+  ],
+  "source_files": [
+    "data/architecture/taxonomy/source_measurements/extracted_measurements_v0.json",
+    "data/architecture/taxonomy/source_measurements/measurement_sources_v0.json",
+    "data/architecture/taxonomy/source_measurements/measurement_geometry_term_links_v0.json",
+    "data/architecture/taxonomy/source_measurements/measurement_semantic_role_links_v0.json",
+    "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md",
+    "docs/research/architectural_measurements/source_quality_notes_v0.md",
+    "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+  ],
+  "rules": {
+    "source_lane": true,
+    "local_sources_only": true,
+    "measurements_are_ratio_hints_only": true,
+    "proof_primitives_are_preview_hints_only": true,
+    "no_goal_references": true,
+    "no_generated_outputs": true,
+    "no_wall_clock_fields": true,
+    "no_web_search": true,
+    "no_silent_scaling": true
+  },
+  "v1_asset_count": 12,
+  "v2_asset_count": 10,
+  "asset_count": 22,
+  "assets": [
+    {
+      "schema": "asset_mill_measured_component_recipe_v1",
+      "asset_id": "measured_rectangular_wall_block_v1",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "habs_tn181_splayed_support_opening_ratio_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        },
+        {
+          "ref_type": "local_policy_doc",
+          "ref": "docs/research/architectural_measurements/source_quality_notes_v0.md"
+        }
+      ],
+      "geometry_terms_used": [
+        "rectangle",
+        "width",
+        "height",
+        "extrude",
+        "bevel_edges",
+        "socket",
+        "floor",
+        "ceiling",
+        "north",
+        "south",
+        "east",
+        "west",
+        "blocked",
+        "cover",
+        "line_of_sight_blocker",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "rectangle"
+      ],
+      "operations": [
+        "extrude",
+        "bevel_edges"
+      ],
+      "dimensions_m": {
+        "width": 2.2,
+        "depth": 0.34,
+        "height": 1.6
+      },
+      "bounds_m": {
+        "min": [
+          -1.1,
+          -0.17,
+          0.0
+        ],
+        "max": [
+          1.1,
+          0.17,
+          1.6
+        ]
+      },
+      "ratio_basis": {
+        "module": "scaled wall grammar block using local opening measurement as bay-scale hint",
+        "depth_to_width": 0.154545,
+        "height_to_width": 0.727273,
+        "weak_area_note": "wall thickness to span is explicitly weak in v0; this is a game blockout ratio only."
+      },
+      "uncertainty": {
+        "level": "high",
+        "reason": "wall thickness evidence is weak; dimensions are gameplay-scaled grammar values"
+      },
+      "sockets": [
+        {
+          "socket_id": "floor_anchor",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "ceiling_stack",
+          "connector_term": "ceiling",
+          "position_m": [
+            0.0,
+            0.0,
+            1.6
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "stack"
+        },
+        {
+          "socket_id": "north_join",
+          "connector_term": "north",
+          "position_m": [
+            0.0,
+            0.17,
+            0.8
+          ],
+          "direction": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "role": "wall_join"
+        },
+        {
+          "socket_id": "south_join",
+          "connector_term": "south",
+          "position_m": [
+            0.0,
+            -0.17,
+            0.8
+          ],
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "role": "wall_join"
+        }
+      ],
+      "semantic_roles": [
+        "blocked",
+        "cover",
+        "line_of_sight_blocker",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "socket_count_min": 2
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "wall_block",
+          "location_m": [
+            0,
+            0,
+            0.8
+          ],
+          "dimensions_m": [
+            2.2,
+            0.34,
+            1.6
+          ],
+          "material_role": "stone"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "source_version": "v1"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v1",
+      "asset_id": "measured_floor_slab_v1",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "habs_tn181_round_recess_window_dimensions_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md"
+        },
+        {
+          "ref_type": "local_policy_doc",
+          "ref": "docs/research/architectural_measurements/source_quality_notes_v0.md"
+        }
+      ],
+      "geometry_terms_used": [
+        "rectangle",
+        "width",
+        "height",
+        "extrude",
+        "socket",
+        "floor",
+        "ceiling",
+        "north",
+        "south",
+        "east",
+        "west",
+        "walkable",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "rectangle"
+      ],
+      "operations": [
+        "extrude"
+      ],
+      "dimensions_m": {
+        "width": 2.4,
+        "depth": 2.4,
+        "height": 0.18
+      },
+      "bounds_m": {
+        "min": [
+          -1.2,
+          -1.2,
+          0.0
+        ],
+        "max": [
+          1.2,
+          1.2,
+          0.18
+        ]
+      },
+      "ratio_basis": {
+        "module": "square floor bay scaled from local bay-width examples for game construction",
+        "thickness_to_width": 0.075
+      },
+      "uncertainty": {
+        "level": "medium",
+        "reason": "slab thickness is a gameplay-scaled proportion, not a measured structural value"
+      },
+      "sockets": [
+        {
+          "socket_id": "floor_anchor",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "top_walkable",
+          "connector_term": "ceiling",
+          "position_m": [
+            0.0,
+            0.0,
+            0.18
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "walkable_surface"
+        },
+        {
+          "socket_id": "north_tile_join",
+          "connector_term": "north",
+          "position_m": [
+            0.0,
+            1.2,
+            0.09
+          ],
+          "direction": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "role": "tile_join"
+        },
+        {
+          "socket_id": "east_tile_join",
+          "connector_term": "east",
+          "position_m": [
+            1.2,
+            0.0,
+            0.09
+          ],
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "role": "tile_join"
+        }
+      ],
+      "semantic_roles": [
+        "walkable",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "walkable_top": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "floor_slab",
+          "location_m": [
+            0,
+            0,
+            0.09
+          ],
+          "dimensions_m": [
+            2.4,
+            2.4,
+            0.18
+          ],
+          "material_role": "walkable"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "source_version": "v1"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v1",
+      "asset_id": "measured_square_pier_v1",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "vitruvius_doric_column_ratio_v0"
+        },
+        {
+          "ref_type": "measurement_id",
+          "ref": "palladio_corinthian_column_ratio_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        },
+        {
+          "ref_type": "local_link_file",
+          "ref": "data/architecture/taxonomy/source_measurements/measurement_geometry_term_links_v0.json"
+        }
+      ],
+      "geometry_terms_used": [
+        "square",
+        "width",
+        "height",
+        "aspect_ratio",
+        "extrude",
+        "bevel_edges",
+        "floor",
+        "ceiling",
+        "column_cap",
+        "support",
+        "blocked",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "square"
+      ],
+      "operations": [
+        "extrude",
+        "bevel_edges"
+      ],
+      "dimensions_m": {
+        "width": 0.46,
+        "depth": 0.46,
+        "height": 3.22
+      },
+      "bounds_m": {
+        "min": [
+          -0.23,
+          -0.23,
+          0.0
+        ],
+        "max": [
+          0.23,
+          0.23,
+          3.22
+        ]
+      },
+      "ratio_basis": {
+        "height_to_width": 7.0,
+        "source_band": "column height/diameter 7.0-9.0 used as support grammar hint"
+      },
+      "uncertainty": {
+        "level": "medium",
+        "reason": "pier-specific support width to bay span is weak; column ratio used as fallback grammar"
+      },
+      "sockets": [
+        {
+          "socket_id": "base",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "cap",
+          "connector_term": "column_cap",
+          "position_m": [
+            0.0,
+            0.0,
+            3.22
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "cap_attachment"
+        }
+      ],
+      "semantic_roles": [
+        "support",
+        "blocked",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "height_to_width_in_local_column_band": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "square_pier",
+          "location_m": [
+            0,
+            0,
+            1.61
+          ],
+          "dimensions_m": [
+            0.46,
+            0.46,
+            3.22
+          ],
+          "material_role": "support"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "source_version": "v1"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v1",
+      "asset_id": "measured_round_column_v1",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "vitruvius_doric_column_ratio_v0"
+        },
+        {
+          "ref_type": "measurement_id",
+          "ref": "palladio_corinthian_column_ratio_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md"
+        }
+      ],
+      "geometry_terms_used": [
+        "circle",
+        "diameter",
+        "radius",
+        "height",
+        "aspect_ratio",
+        "extrude",
+        "radial",
+        "floor",
+        "ceiling",
+        "column_cap",
+        "support",
+        "blocked",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "circle"
+      ],
+      "operations": [
+        "extrude"
+      ],
+      "dimensions_m": {
+        "width": 0.42,
+        "depth": 0.42,
+        "height": 3.0,
+        "diameter": 0.42,
+        "radius": 0.21
+      },
+      "bounds_m": {
+        "min": [
+          -0.21,
+          -0.21,
+          0.0
+        ],
+        "max": [
+          0.21,
+          0.21,
+          3.0
+        ]
+      },
+      "ratio_basis": {
+        "height_to_diameter": 7.142857,
+        "source_band": "local column height/diameter 7.0-9.0"
+      },
+      "uncertainty": {
+        "level": "low",
+        "reason": "column height/diameter ratio is locally source-backed, but base/capital details remain simplified"
+      },
+      "sockets": [
+        {
+          "socket_id": "base",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "cap",
+          "connector_term": "column_cap",
+          "position_m": [
+            0.0,
+            0.0,
+            3.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "cap_attachment"
+        },
+        {
+          "socket_id": "radial_center",
+          "connector_term": "radial",
+          "position_m": [
+            0.0,
+            0.0,
+            1.5
+          ],
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "role": "radial_array_anchor"
+        }
+      ],
+      "semantic_roles": [
+        "support",
+        "blocked",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "height_to_diameter_in_local_column_band": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cylinder",
+          "name": "round_column",
+          "location_m": [
+            0,
+            0,
+            1.5
+          ],
+          "radius_m": 0.21,
+          "depth_m": 3.0,
+          "vertices": 32,
+          "material_role": "support"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "source_version": "v1"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v1",
+      "asset_id": "measured_octagon_column_v1",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "vitruvius_doric_column_ratio_v0"
+        },
+        {
+          "ref_type": "measurement_id",
+          "ref": "ely_octagon_width_height_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md"
+        }
+      ],
+      "geometry_terms_used": [
+        "octagon",
+        "diameter",
+        "radius",
+        "height",
+        "aspect_ratio",
+        "extrude",
+        "radial",
+        "floor",
+        "ceiling",
+        "column_cap",
+        "support",
+        "blocked",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "octagon"
+      ],
+      "operations": [
+        "extrude"
+      ],
+      "dimensions_m": {
+        "width": 0.48,
+        "depth": 0.48,
+        "height": 3.36,
+        "diameter": 0.48,
+        "radius": 0.24
+      },
+      "bounds_m": {
+        "min": [
+          -0.24,
+          -0.24,
+          0.0
+        ],
+        "max": [
+          0.24,
+          0.24,
+          3.36
+        ]
+      },
+      "ratio_basis": {
+        "height_to_diameter": 7.0,
+        "octagonal_plan_reference": "octagon records guide profile choice only, not historical scale"
+      },
+      "uncertainty": {
+        "level": "medium",
+        "reason": "octagonal profile is source-motivated but column subdivision remains simplified"
+      },
+      "sockets": [
+        {
+          "socket_id": "base",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "cap",
+          "connector_term": "column_cap",
+          "position_m": [
+            0.0,
+            0.0,
+            3.36
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "cap_attachment"
+        },
+        {
+          "socket_id": "radial_center",
+          "connector_term": "radial",
+          "position_m": [
+            0.0,
+            0.0,
+            1.68
+          ],
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "role": "radial_array_anchor"
+        }
+      ],
+      "semantic_roles": [
+        "support",
+        "blocked",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "octagon_profile": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cylinder",
+          "name": "octagon_column",
+          "location_m": [
+            0,
+            0,
+            1.68
+          ],
+          "radius_m": 0.24,
+          "depth_m": 3.36,
+          "vertices": 8,
+          "material_role": "support"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "source_version": "v1"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v1",
+      "asset_id": "measured_base_plinth_v1",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "vitruvius_doric_column_ratio_v0"
+        },
+        {
+          "ref_type": "measurement_id",
+          "ref": "palladio_corinthian_column_ratio_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        }
+      ],
+      "geometry_terms_used": [
+        "square",
+        "width",
+        "height",
+        "extrude",
+        "bevel_edges",
+        "floor",
+        "ceiling",
+        "support",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "square"
+      ],
+      "operations": [
+        "extrude",
+        "bevel_edges"
+      ],
+      "dimensions_m": {
+        "width": 0.78,
+        "depth": 0.78,
+        "height": 0.28
+      },
+      "bounds_m": {
+        "min": [
+          -0.39,
+          -0.39,
+          0.0
+        ],
+        "max": [
+          0.39,
+          0.39,
+          0.28
+        ]
+      },
+      "ratio_basis": {
+        "plinth_width_to_round_column_diameter": 1.857143,
+        "source_note": "base subdivision not measured in v0; local column ratios only bound the attached support"
+      },
+      "uncertainty": {
+        "level": "high",
+        "reason": "base/capital subdivision is explicitly weak in local notes"
+      },
+      "sockets": [
+        {
+          "socket_id": "floor_anchor",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "column_seat",
+          "connector_term": "ceiling",
+          "position_m": [
+            0.0,
+            0.0,
+            0.28
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "column_base_attachment"
+        }
+      ],
+      "semantic_roles": [
+        "support",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "has_column_socket": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "base_plinth",
+          "location_m": [
+            0,
+            0,
+            0.14
+          ],
+          "dimensions_m": [
+            0.78,
+            0.78,
+            0.28
+          ],
+          "material_role": "cap"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "source_version": "v1"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v1",
+      "asset_id": "measured_cap_block_v1",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "vitruvius_doric_column_ratio_v0"
+        },
+        {
+          "ref_type": "measurement_id",
+          "ref": "palladio_corinthian_column_ratio_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        }
+      ],
+      "geometry_terms_used": [
+        "square",
+        "width",
+        "height",
+        "extrude",
+        "bevel_edges",
+        "floor",
+        "ceiling",
+        "column_cap",
+        "support",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "square"
+      ],
+      "operations": [
+        "extrude",
+        "bevel_edges"
+      ],
+      "dimensions_m": {
+        "width": 0.68,
+        "depth": 0.68,
+        "height": 0.22
+      },
+      "bounds_m": {
+        "min": [
+          -0.34,
+          -0.34,
+          0.0
+        ],
+        "max": [
+          0.34,
+          0.34,
+          0.22
+        ]
+      },
+      "ratio_basis": {
+        "cap_width_to_round_column_diameter": 1.619048,
+        "source_note": "capital height is not measured in v0; this is a simplified cap socket component"
+      },
+      "uncertainty": {
+        "level": "high",
+        "reason": "capital subdivision is explicitly weak in local notes"
+      },
+      "sockets": [
+        {
+          "socket_id": "column_receive",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "column_cap_attachment"
+        },
+        {
+          "socket_id": "ceiling_stack",
+          "connector_term": "ceiling",
+          "position_m": [
+            0.0,
+            0.0,
+            0.22
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "stack"
+        }
+      ],
+      "semantic_roles": [
+        "support",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "has_column_socket": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "cap_block",
+          "location_m": [
+            0,
+            0,
+            0.11
+          ],
+          "dimensions_m": [
+            0.68,
+            0.68,
+            0.22
+          ],
+          "material_role": "cap"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "source_version": "v1"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v1",
+      "asset_id": "measured_pointed_arch_doorway_v1",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "pointed_arch_equilateral_rule_v0"
+        },
+        {
+          "ref_type": "measurement_id",
+          "ref": "amiens_gothic_nave_span_height_v0"
+        },
+        {
+          "ref_type": "measurement_id",
+          "ref": "chartres_gothic_nave_span_height_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md"
+        },
+        {
+          "ref_type": "local_link_file",
+          "ref": "data/architecture/taxonomy/source_measurements/measurement_semantic_role_links_v0.json"
+        }
+      ],
+      "geometry_terms_used": [
+        "pointed_arch_profile",
+        "rectangle",
+        "width",
+        "height",
+        "aspect_ratio",
+        "extrude",
+        "compound_asset",
+        "socket",
+        "arch_springline",
+        "floor",
+        "north",
+        "south",
+        "blocked",
+        "line_of_sight_blocker",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "pointed_arch_profile",
+        "rectangle"
+      ],
+      "operations": [
+        "compound_asset",
+        "extrude"
+      ],
+      "dimensions_m": {
+        "width": 2.4,
+        "depth": 0.48,
+        "height": 2.9,
+        "opening_width": 1.3,
+        "springline_height": 1.55,
+        "arch_rise": 1.1258
+      },
+      "bounds_m": {
+        "min": [
+          -1.2,
+          -0.24,
+          0.0
+        ],
+        "max": [
+          1.2,
+          0.24,
+          2.9
+        ]
+      },
+      "ratio_basis": {
+        "rise_to_opening_span": 0.866,
+        "construction_basis": "local equilateral pointed arch rule",
+        "nave_height_examples_are_envelope_hints_only": true
+      },
+      "uncertainty": {
+        "level": "medium",
+        "reason": "rise/span is source-backed; frame thickness and jamb sizes are gameplay-scaled"
+      },
+      "sockets": [
+        {
+          "socket_id": "threshold",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "portal",
+          "connector_term": "socket",
+          "position_m": [
+            0.0,
+            -0.25,
+            0.9
+          ],
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "role": "doorway_connection"
+        },
+        {
+          "socket_id": "springline_left",
+          "connector_term": "arch_springline",
+          "position_m": [
+            -0.65,
+            -0.24,
+            1.55
+          ],
+          "direction": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "role": "arch_rule_marker"
+        },
+        {
+          "socket_id": "springline_right",
+          "connector_term": "arch_springline",
+          "position_m": [
+            0.65,
+            -0.24,
+            1.55
+          ],
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "role": "arch_rule_marker"
+        }
+      ],
+      "semantic_roles": [
+        "blocked",
+        "line_of_sight_blocker",
+        "collision_proxy",
+        "panel_socket"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "has_portal_socket": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "left_jamb",
+          "location_m": [
+            -0.86,
+            0,
+            0.775
+          ],
+          "dimensions_m": [
+            0.36,
+            0.48,
+            1.55
+          ],
+          "material_role": "stone"
+        },
+        {
+          "primitive": "cube",
+          "name": "right_jamb",
+          "location_m": [
+            0.86,
+            0,
+            0.775
+          ],
+          "dimensions_m": [
+            0.36,
+            0.48,
+            1.55
+          ],
+          "material_role": "stone"
+        },
+        {
+          "primitive": "cube",
+          "name": "threshold",
+          "location_m": [
+            0,
+            0,
+            0.06
+          ],
+          "dimensions_m": [
+            1.8,
+            0.56,
+            0.12
+          ],
+          "material_role": "walkable"
+        },
+        {
+          "primitive": "curve",
+          "name": "pointed_arch_rib",
+          "curve_kind": "pointed",
+          "span_m": 1.3,
+          "spring_z_m": 1.55,
+          "rise_m": 1.1258,
+          "y_m": -0.26,
+          "bevel_depth_m": 0.055,
+          "material_role": "rib"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "source_version": "v1"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v1",
+      "asset_id": "measured_round_arch_bay_v1",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "round_arch_semicircular_rule_v0"
+        },
+        {
+          "ref_type": "measurement_id",
+          "ref": "pont_du_gard_upper_arcade_span_v0"
+        },
+        {
+          "ref_type": "measurement_id",
+          "ref": "habs_tn181_round_recess_window_dimensions_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md"
+        }
+      ],
+      "geometry_terms_used": [
+        "arch_profile",
+        "circle",
+        "rectangle",
+        "width",
+        "height",
+        "aspect_ratio",
+        "extrude",
+        "compound_asset",
+        "socket",
+        "arch_springline",
+        "floor",
+        "north",
+        "south",
+        "blocked",
+        "line_of_sight_blocker",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "arch_profile",
+        "circle",
+        "rectangle"
+      ],
+      "operations": [
+        "compound_asset",
+        "extrude"
+      ],
+      "dimensions_m": {
+        "width": 2.6,
+        "depth": 0.48,
+        "height": 2.45,
+        "opening_width": 1.5,
+        "springline_height": 1.25,
+        "arch_rise": 0.75
+      },
+      "bounds_m": {
+        "min": [
+          -1.3,
+          -0.24,
+          0.0
+        ],
+        "max": [
+          1.3,
+          0.24,
+          2.45
+        ]
+      },
+      "ratio_basis": {
+        "rise_to_opening_span": 0.5,
+        "construction_basis": "local semicircular arch rule"
+      },
+      "uncertainty": {
+        "level": "medium",
+        "reason": "semicircular rise/span is source-backed; frame sizes are simplified"
+      },
+      "sockets": [
+        {
+          "socket_id": "bay_floor",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "opening",
+          "connector_term": "socket",
+          "position_m": [
+            0.0,
+            -0.25,
+            0.85
+          ],
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "role": "bay_connection"
+        },
+        {
+          "socket_id": "springline_left",
+          "connector_term": "arch_springline",
+          "position_m": [
+            -0.75,
+            -0.24,
+            1.25
+          ],
+          "direction": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "role": "arch_rule_marker"
+        },
+        {
+          "socket_id": "springline_right",
+          "connector_term": "arch_springline",
+          "position_m": [
+            0.75,
+            -0.24,
+            1.25
+          ],
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "role": "arch_rule_marker"
+        }
+      ],
+      "semantic_roles": [
+        "blocked",
+        "line_of_sight_blocker",
+        "collision_proxy",
+        "panel_socket"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "has_opening_socket": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "left_pier",
+          "location_m": [
+            -0.98,
+            0,
+            0.625
+          ],
+          "dimensions_m": [
+            0.36,
+            0.48,
+            1.25
+          ],
+          "material_role": "stone"
+        },
+        {
+          "primitive": "cube",
+          "name": "right_pier",
+          "location_m": [
+            0.98,
+            0,
+            0.625
+          ],
+          "dimensions_m": [
+            0.36,
+            0.48,
+            1.25
+          ],
+          "material_role": "stone"
+        },
+        {
+          "primitive": "curve",
+          "name": "round_arch_rib",
+          "curve_kind": "round",
+          "span_m": 1.5,
+          "spring_z_m": 1.25,
+          "rise_m": 0.75,
+          "y_m": -0.26,
+          "bevel_depth_m": 0.055,
+          "material_role": "rib"
+        },
+        {
+          "primitive": "cube",
+          "name": "low_spandrel_left",
+          "location_m": [
+            -1.08,
+            0,
+            1.85
+          ],
+          "dimensions_m": [
+            0.32,
+            0.42,
+            0.62
+          ],
+          "material_role": "stone"
+        },
+        {
+          "primitive": "cube",
+          "name": "low_spandrel_right",
+          "location_m": [
+            1.08,
+            0,
+            1.85
+          ],
+          "dimensions_m": [
+            0.32,
+            0.42,
+            0.62
+          ],
+          "material_role": "stone"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "source_version": "v1"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v1",
+      "asset_id": "measured_lancet_window_bay_v1",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "pointed_arch_lancet_constraint_v0"
+        },
+        {
+          "ref_type": "measurement_id",
+          "ref": "pointed_arch_equilateral_rule_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        }
+      ],
+      "geometry_terms_used": [
+        "pointed_arch_profile",
+        "rectangle",
+        "width",
+        "height",
+        "aspect_ratio",
+        "extrude",
+        "compound_asset",
+        "socket",
+        "arch_springline",
+        "floor",
+        "blocked",
+        "line_of_sight_blocker",
+        "decorative_only",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "pointed_arch_profile",
+        "rectangle"
+      ],
+      "operations": [
+        "compound_asset",
+        "extrude"
+      ],
+      "dimensions_m": {
+        "width": 1.35,
+        "depth": 0.32,
+        "height": 2.65,
+        "opening_width": 0.55,
+        "springline_height": 0.95,
+        "arch_rise": 0.7
+      },
+      "bounds_m": {
+        "min": [
+          -0.675,
+          -0.16,
+          0.0
+        ],
+        "max": [
+          0.675,
+          0.16,
+          2.65
+        ]
+      },
+      "ratio_basis": {
+        "rise_to_opening_span": 1.272727,
+        "construction_basis": "lancet constraint is greater than equilateral rise/span"
+      },
+      "uncertainty": {
+        "level": "medium",
+        "reason": "lancet relation is local constraint-based; frame measurements remain weak"
+      },
+      "sockets": [
+        {
+          "socket_id": "wall_anchor",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "window_opening",
+          "connector_term": "socket",
+          "position_m": [
+            0.0,
+            -0.18,
+            1.05
+          ],
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "role": "line_of_sight_frame"
+        },
+        {
+          "socket_id": "springline",
+          "connector_term": "arch_springline",
+          "position_m": [
+            0.0,
+            -0.16,
+            0.95
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "arch_rule_marker"
+        }
+      ],
+      "semantic_roles": [
+        "line_of_sight_blocker",
+        "decorative_only",
+        "collision_proxy",
+        "panel_socket"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "lancet_rise_above_equilateral": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "window_back_wall",
+          "location_m": [
+            0,
+            0.05,
+            1.325
+          ],
+          "dimensions_m": [
+            1.35,
+            0.18,
+            2.65
+          ],
+          "material_role": "stone"
+        },
+        {
+          "primitive": "curve",
+          "name": "lancet_rib",
+          "curve_kind": "pointed",
+          "span_m": 0.55,
+          "spring_z_m": 0.95,
+          "rise_m": 0.7,
+          "y_m": -0.16,
+          "bevel_depth_m": 0.032,
+          "material_role": "rib"
+        },
+        {
+          "primitive": "cube",
+          "name": "sill",
+          "location_m": [
+            0,
+            -0.16,
+            0.32
+          ],
+          "dimensions_m": [
+            0.78,
+            0.12,
+            0.12
+          ],
+          "material_role": "cap"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "source_version": "v1"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v1",
+      "asset_id": "measured_rail_unit_v1",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "vitruvius_doric_column_ratio_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        }
+      ],
+      "geometry_terms_used": [
+        "rectangle",
+        "capsule",
+        "width",
+        "height",
+        "extrude",
+        "array_linear",
+        "east",
+        "west",
+        "floor",
+        "barrier",
+        "rail",
+        "cover",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "rectangle",
+        "capsule"
+      ],
+      "operations": [
+        "compound_asset",
+        "extrude",
+        "array_linear"
+      ],
+      "dimensions_m": {
+        "width": 1.8,
+        "depth": 0.2,
+        "height": 1.05
+      },
+      "bounds_m": {
+        "min": [
+          -0.9,
+          -0.1,
+          0.0
+        ],
+        "max": [
+          0.9,
+          0.1,
+          1.05
+        ]
+      },
+      "ratio_basis": {
+        "post_height_to_post_width": 6.5625,
+        "source_note": "column ratio informs slender vertical post grammar only"
+      },
+      "uncertainty": {
+        "level": "high",
+        "reason": "rail dimensions are gameplay barrier values; no local railing measurement packet exists"
+      },
+      "sockets": [
+        {
+          "socket_id": "left_repeat",
+          "connector_term": "west",
+          "position_m": [
+            -0.9,
+            0.0,
+            0.52
+          ],
+          "direction": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "role": "repeat"
+        },
+        {
+          "socket_id": "right_repeat",
+          "connector_term": "east",
+          "position_m": [
+            0.9,
+            0.0,
+            0.52
+          ],
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "role": "repeat"
+        },
+        {
+          "socket_id": "floor_anchor",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        }
+      ],
+      "semantic_roles": [
+        "barrier",
+        "rail",
+        "cover",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "has_repeat_sockets": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "left_post",
+          "location_m": [
+            -0.78,
+            0,
+            0.5
+          ],
+          "dimensions_m": [
+            0.16,
+            0.16,
+            1.0
+          ],
+          "material_role": "support"
+        },
+        {
+          "primitive": "cube",
+          "name": "right_post",
+          "location_m": [
+            0.78,
+            0,
+            0.5
+          ],
+          "dimensions_m": [
+            0.16,
+            0.16,
+            1.0
+          ],
+          "material_role": "support"
+        },
+        {
+          "primitive": "cube",
+          "name": "top_rail",
+          "location_m": [
+            0,
+            0,
+            0.92
+          ],
+          "dimensions_m": [
+            1.72,
+            0.12,
+            0.12
+          ],
+          "material_role": "rail"
+        },
+        {
+          "primitive": "cube",
+          "name": "mid_rail",
+          "location_m": [
+            0,
+            0,
+            0.55
+          ],
+          "dimensions_m": [
+            1.62,
+            0.08,
+            0.08
+          ],
+          "material_role": "rail"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "source_version": "v1"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v1",
+      "asset_id": "measured_stair_block_run_v1",
+      "source_measurement_refs": [
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md"
+        },
+        {
+          "ref_type": "local_policy_doc",
+          "ref": "docs/research/architectural_measurements/source_quality_notes_v0.md"
+        }
+      ],
+      "geometry_terms_used": [
+        "rectangle",
+        "height",
+        "length",
+        "extrude",
+        "array_linear",
+        "floor",
+        "ceiling",
+        "north",
+        "south",
+        "walkable",
+        "vertical_transition",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "rectangle"
+      ],
+      "operations": [
+        "compound_asset",
+        "extrude",
+        "array_linear"
+      ],
+      "dimensions_m": {
+        "width": 1.2,
+        "depth": 1.6,
+        "height": 0.72,
+        "step_rise": 0.18,
+        "step_run": 0.4
+      },
+      "bounds_m": {
+        "min": [
+          -0.6,
+          -0.8,
+          0.0
+        ],
+        "max": [
+          0.6,
+          0.8,
+          0.72
+        ]
+      },
+      "ratio_basis": {
+        "steps": 4,
+        "rise_to_run": 0.45,
+        "source_note": "stair_tower is fetch_needed in v0; this is a gameplay traversal blockout"
+      },
+      "uncertainty": {
+        "level": "high",
+        "reason": "local notes explicitly mark stair dimensions as fetch_needed"
+      },
+      "sockets": [
+        {
+          "socket_id": "lower_landing",
+          "connector_term": "south",
+          "position_m": [
+            0.0,
+            -0.8,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "role": "route_entry"
+        },
+        {
+          "socket_id": "upper_landing",
+          "connector_term": "north",
+          "position_m": [
+            0.0,
+            0.8,
+            0.72
+          ],
+          "direction": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "role": "route_exit"
+        },
+        {
+          "socket_id": "floor_anchor",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        }
+      ],
+      "semantic_roles": [
+        "walkable",
+        "vertical_transition",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "has_route_sockets": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "step_00",
+          "location_m": [
+            0,
+            -0.6,
+            0.09
+          ],
+          "dimensions_m": [
+            1.2,
+            0.4,
+            0.18
+          ],
+          "material_role": "walkable"
+        },
+        {
+          "primitive": "cube",
+          "name": "step_01",
+          "location_m": [
+            0,
+            -0.2,
+            0.27
+          ],
+          "dimensions_m": [
+            1.2,
+            0.4,
+            0.18
+          ],
+          "material_role": "walkable"
+        },
+        {
+          "primitive": "cube",
+          "name": "step_02",
+          "location_m": [
+            0,
+            0.2,
+            0.45
+          ],
+          "dimensions_m": [
+            1.2,
+            0.4,
+            0.18
+          ],
+          "material_role": "walkable"
+        },
+        {
+          "primitive": "cube",
+          "name": "step_03",
+          "location_m": [
+            0,
+            0.6,
+            0.63
+          ],
+          "dimensions_m": [
+            1.2,
+            0.4,
+            0.18
+          ],
+          "material_role": "walkable"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v1.py",
+      "source_version": "v1"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v2",
+      "asset_id": "measured_wall_segment_v2",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "habs_tn181_splayed_support_opening_ratio_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        },
+        {
+          "ref_type": "local_policy_doc",
+          "ref": "docs/research/architectural_measurements/source_quality_notes_v0.md"
+        },
+        {
+          "ref_type": "source_bundle_version",
+          "ref": "measured_components_v0.v1_assets"
+        }
+      ],
+      "geometry_terms_used": [
+        "rectangle",
+        "width",
+        "height",
+        "extrude",
+        "bevel_edges",
+        "socket",
+        "floor",
+        "ceiling",
+        "north",
+        "south",
+        "east",
+        "west",
+        "blocked",
+        "cover",
+        "line_of_sight_blocker",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "rectangle"
+      ],
+      "operations": [
+        "extrude",
+        "bevel_edges"
+      ],
+      "dimensions_m": {
+        "width": 2.2,
+        "depth": 0.34,
+        "height": 1.6
+      },
+      "bounds_m": {
+        "min": [
+          -1.1,
+          -0.17,
+          0.0
+        ],
+        "max": [
+          1.1,
+          0.17,
+          1.6
+        ]
+      },
+      "ratio_basis": {
+        "module": "v2 wall segment keeps v1 wall-block envelope for direct building-graph compatibility",
+        "depth_to_width": 0.154545,
+        "height_to_width": 0.727273
+      },
+      "uncertainty": {
+        "level": "high",
+        "reason": "wall thickness remains a local gameplay grammar value with weak measurement support"
+      },
+      "sockets": [
+        {
+          "socket_id": "floor_anchor",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "ceiling_stack",
+          "connector_term": "ceiling",
+          "position_m": [
+            0.0,
+            0.0,
+            1.6
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "stack"
+        },
+        {
+          "socket_id": "west_repeat",
+          "connector_term": "west",
+          "position_m": [
+            -1.1,
+            0.0,
+            0.8
+          ],
+          "direction": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "role": "wall_repeat"
+        },
+        {
+          "socket_id": "east_repeat",
+          "connector_term": "east",
+          "position_m": [
+            1.1,
+            0.0,
+            0.8
+          ],
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "role": "wall_repeat"
+        }
+      ],
+      "semantic_roles": [
+        "blocked",
+        "cover",
+        "line_of_sight_blocker",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "repeat_sockets_present": true,
+        "no_silent_scaling": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "wall_core",
+          "location_m": [
+            0.0,
+            0.0,
+            0.8
+          ],
+          "dimensions_m": [
+            2.2,
+            0.34,
+            1.6
+          ],
+          "material_role": "stone"
+        },
+        {
+          "primitive": "cube",
+          "name": "top_trim",
+          "location_m": [
+            0.0,
+            -0.19,
+            1.52
+          ],
+          "dimensions_m": [
+            2.24,
+            0.08,
+            0.12
+          ],
+          "material_role": "trim"
+        },
+        {
+          "primitive": "cube",
+          "name": "base_trim",
+          "location_m": [
+            0.0,
+            -0.19,
+            0.12
+          ],
+          "dimensions_m": [
+            2.24,
+            0.08,
+            0.12
+          ],
+          "material_role": "trim"
+        }
+      ],
+      "notes": [
+        "generated-lane orientation reference omitted during source promotion because it is not source data"
+      ],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "source_version": "v2"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v2",
+      "asset_id": "measured_corner_post_v2",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "vitruvius_doric_column_ratio_v0"
+        },
+        {
+          "ref_type": "measurement_id",
+          "ref": "palladio_corinthian_column_ratio_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        },
+        {
+          "ref_type": "local_link_file",
+          "ref": "data/architecture/taxonomy/source_measurements/measurement_geometry_term_links_v0.json"
+        },
+        {
+          "ref_type": "source_bundle_version",
+          "ref": "measured_components_v0.v1_assets"
+        }
+      ],
+      "geometry_terms_used": [
+        "square",
+        "width",
+        "height",
+        "aspect_ratio",
+        "extrude",
+        "bevel_edges",
+        "floor",
+        "ceiling",
+        "column_cap",
+        "support",
+        "blocked",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "square"
+      ],
+      "operations": [
+        "extrude",
+        "bevel_edges"
+      ],
+      "dimensions_m": {
+        "width": 0.52,
+        "depth": 0.52,
+        "height": 2.2
+      },
+      "bounds_m": {
+        "min": [
+          -0.26,
+          -0.26,
+          0.0
+        ],
+        "max": [
+          0.26,
+          0.26,
+          2.2
+        ]
+      },
+      "ratio_basis": {
+        "height_to_width": 4.230769,
+        "basis": "shorter corner post for wall-height building graph corners, not a column-order claim"
+      },
+      "uncertainty": {
+        "level": "medium",
+        "reason": "support grammar is source-bounded, but corner post height is chosen for v2 wall compatibility"
+      },
+      "sockets": [
+        {
+          "socket_id": "base",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "cap",
+          "connector_term": "column_cap",
+          "position_m": [
+            0.0,
+            0.0,
+            2.2
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "cap_attachment"
+        },
+        {
+          "socket_id": "north_wall_join",
+          "connector_term": "north",
+          "position_m": [
+            0.0,
+            0.26,
+            0.8
+          ],
+          "direction": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "role": "wall_join"
+        },
+        {
+          "socket_id": "east_wall_join",
+          "connector_term": "east",
+          "position_m": [
+            0.26,
+            0.0,
+            0.8
+          ],
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "role": "wall_join"
+        }
+      ],
+      "semantic_roles": [
+        "support",
+        "blocked",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "corner_join_sockets_present": true,
+        "no_silent_scaling": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "corner_post_shaft",
+          "location_m": [
+            0.0,
+            0.0,
+            1.1
+          ],
+          "dimensions_m": [
+            0.46,
+            0.46,
+            2.2
+          ],
+          "material_role": "support"
+        },
+        {
+          "primitive": "cube",
+          "name": "corner_post_base",
+          "location_m": [
+            0.0,
+            0.0,
+            0.1
+          ],
+          "dimensions_m": [
+            0.52,
+            0.52,
+            0.2
+          ],
+          "material_role": "cap"
+        },
+        {
+          "primitive": "cube",
+          "name": "corner_post_cap",
+          "location_m": [
+            0.0,
+            0.0,
+            2.12
+          ],
+          "dimensions_m": [
+            0.52,
+            0.52,
+            0.16
+          ],
+          "material_role": "cap"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "source_version": "v2"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v2",
+      "asset_id": "measured_door_frame_v2",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "habs_tn181_round_recess_window_dimensions_v0"
+        },
+        {
+          "ref_type": "measurement_id",
+          "ref": "pointed_arch_equilateral_rule_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md"
+        },
+        {
+          "ref_type": "local_link_file",
+          "ref": "data/architecture/taxonomy/source_measurements/measurement_semantic_role_links_v0.json"
+        },
+        {
+          "ref_type": "source_bundle_version",
+          "ref": "measured_components_v0.v1_assets"
+        }
+      ],
+      "geometry_terms_used": [
+        "rectangle",
+        "width",
+        "height",
+        "aspect_ratio",
+        "extrude",
+        "compound_asset",
+        "socket",
+        "floor",
+        "north",
+        "south",
+        "blocked",
+        "line_of_sight_blocker",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "rectangle"
+      ],
+      "operations": [
+        "compound_asset",
+        "extrude"
+      ],
+      "dimensions_m": {
+        "width": 2.2,
+        "depth": 0.48,
+        "height": 2.4,
+        "opening_width": 1.2,
+        "opening_height": 1.95
+      },
+      "bounds_m": {
+        "min": [
+          -1.1,
+          -0.24,
+          0.0
+        ],
+        "max": [
+          1.1,
+          0.24,
+          2.4
+        ]
+      },
+      "ratio_basis": {
+        "opening_width_to_total_width": 0.545455,
+        "basis": "rectangular portal frame for building graph entrance sockets"
+      },
+      "uncertainty": {
+        "level": "medium",
+        "reason": "opening ratios are locally bounded, while frame/jamb massing is simplified"
+      },
+      "sockets": [
+        {
+          "socket_id": "threshold",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "portal_front",
+          "connector_term": "socket",
+          "position_m": [
+            0.0,
+            -0.25,
+            0.9
+          ],
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "role": "doorway_connection"
+        },
+        {
+          "socket_id": "north_wall_join",
+          "connector_term": "north",
+          "position_m": [
+            0.0,
+            0.24,
+            1.0
+          ],
+          "direction": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "role": "wall_join"
+        },
+        {
+          "socket_id": "south_wall_join",
+          "connector_term": "south",
+          "position_m": [
+            0.0,
+            -0.24,
+            1.0
+          ],
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "role": "wall_join"
+        }
+      ],
+      "semantic_roles": [
+        "blocked",
+        "line_of_sight_blocker",
+        "collision_proxy",
+        "panel_socket"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "portal_socket_present": true,
+        "no_silent_scaling": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "left_jamb",
+          "location_m": [
+            -0.78,
+            0.0,
+            0.98
+          ],
+          "dimensions_m": [
+            0.34,
+            0.48,
+            1.96
+          ],
+          "material_role": "stone"
+        },
+        {
+          "primitive": "cube",
+          "name": "right_jamb",
+          "location_m": [
+            0.78,
+            0.0,
+            0.98
+          ],
+          "dimensions_m": [
+            0.34,
+            0.48,
+            1.96
+          ],
+          "material_role": "stone"
+        },
+        {
+          "primitive": "cube",
+          "name": "top_lintel",
+          "location_m": [
+            0.0,
+            0.0,
+            2.18
+          ],
+          "dimensions_m": [
+            2.2,
+            0.48,
+            0.28
+          ],
+          "material_role": "cap"
+        },
+        {
+          "primitive": "cube",
+          "name": "threshold_slab",
+          "location_m": [
+            0.0,
+            0.0,
+            0.06
+          ],
+          "dimensions_m": [
+            1.62,
+            0.56,
+            0.12
+          ],
+          "material_role": "walkable"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "source_version": "v2"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v2",
+      "asset_id": "measured_window_frame_v2",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "habs_tn181_round_recess_window_dimensions_v0"
+        },
+        {
+          "ref_type": "measurement_id",
+          "ref": "pointed_arch_lancet_constraint_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        },
+        {
+          "ref_type": "source_bundle_version",
+          "ref": "measured_components_v0.v1_assets"
+        }
+      ],
+      "geometry_terms_used": [
+        "rectangle",
+        "width",
+        "height",
+        "aspect_ratio",
+        "extrude",
+        "compound_asset",
+        "socket",
+        "floor",
+        "blocked",
+        "line_of_sight_blocker",
+        "decorative_only",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "rectangle"
+      ],
+      "operations": [
+        "compound_asset",
+        "extrude"
+      ],
+      "dimensions_m": {
+        "width": 1.35,
+        "depth": 0.32,
+        "height": 1.8,
+        "opening_width": 0.62,
+        "opening_height": 1.05
+      },
+      "bounds_m": {
+        "min": [
+          -0.675,
+          -0.16,
+          0.0
+        ],
+        "max": [
+          0.675,
+          0.16,
+          1.8
+        ]
+      },
+      "ratio_basis": {
+        "opening_width_to_total_width": 0.459259,
+        "basis": "small wall-mounted frame for window sockets"
+      },
+      "uncertainty": {
+        "level": "medium",
+        "reason": "window envelope is locally source-inspired; frame bands are simplified"
+      },
+      "sockets": [
+        {
+          "socket_id": "wall_anchor",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "window_opening",
+          "connector_term": "socket",
+          "position_m": [
+            0.0,
+            -0.18,
+            0.95
+          ],
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "role": "line_of_sight_frame"
+        },
+        {
+          "socket_id": "top_stack",
+          "connector_term": "ceiling",
+          "position_m": [
+            0.0,
+            0.0,
+            1.8
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "stack"
+        }
+      ],
+      "semantic_roles": [
+        "line_of_sight_blocker",
+        "decorative_only",
+        "collision_proxy",
+        "panel_socket"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "window_socket_present": true,
+        "no_silent_scaling": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "window_backer",
+          "location_m": [
+            0.0,
+            0.05,
+            0.9
+          ],
+          "dimensions_m": [
+            1.35,
+            0.18,
+            1.8
+          ],
+          "material_role": "stone"
+        },
+        {
+          "primitive": "cube",
+          "name": "left_reveal",
+          "location_m": [
+            -0.43,
+            -0.12,
+            0.9
+          ],
+          "dimensions_m": [
+            0.1,
+            0.12,
+            1.2
+          ],
+          "material_role": "trim"
+        },
+        {
+          "primitive": "cube",
+          "name": "right_reveal",
+          "location_m": [
+            0.43,
+            -0.12,
+            0.9
+          ],
+          "dimensions_m": [
+            0.1,
+            0.12,
+            1.2
+          ],
+          "material_role": "trim"
+        },
+        {
+          "primitive": "cube",
+          "name": "sill",
+          "location_m": [
+            0.0,
+            -0.13,
+            0.3
+          ],
+          "dimensions_m": [
+            0.86,
+            0.14,
+            0.12
+          ],
+          "material_role": "cap"
+        },
+        {
+          "primitive": "cube",
+          "name": "head",
+          "location_m": [
+            0.0,
+            -0.13,
+            1.5
+          ],
+          "dimensions_m": [
+            0.86,
+            0.14,
+            0.12
+          ],
+          "material_role": "cap"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "source_version": "v2"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v2",
+      "asset_id": "measured_foundation_skirt_v2",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "habs_tn181_splayed_support_opening_ratio_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        },
+        {
+          "ref_type": "local_policy_doc",
+          "ref": "docs/research/architectural_measurements/source_quality_notes_v0.md"
+        },
+        {
+          "ref_type": "source_bundle_version",
+          "ref": "measured_components_v0.v1_assets"
+        }
+      ],
+      "geometry_terms_used": [
+        "rectangle",
+        "width",
+        "height",
+        "extrude",
+        "bevel_edges",
+        "floor",
+        "ceiling",
+        "north",
+        "south",
+        "support",
+        "blocked",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "rectangle"
+      ],
+      "operations": [
+        "extrude",
+        "bevel_edges"
+      ],
+      "dimensions_m": {
+        "width": 2.8,
+        "depth": 0.62,
+        "height": 0.32
+      },
+      "bounds_m": {
+        "min": [
+          -1.4,
+          -0.31,
+          0.0
+        ],
+        "max": [
+          1.4,
+          0.31,
+          0.32
+        ]
+      },
+      "ratio_basis": {
+        "height_to_width": 0.114286,
+        "basis": "foundation skirt hides terrain contact and exposes stack sockets"
+      },
+      "uncertainty": {
+        "level": "high",
+        "reason": "foundation skirt is a terrain-contact blockout, not a structural foundation claim"
+      },
+      "sockets": [
+        {
+          "socket_id": "terrain_contact",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "wall_stack",
+          "connector_term": "ceiling",
+          "position_m": [
+            0.0,
+            0.0,
+            0.32
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "wall_stack"
+        },
+        {
+          "socket_id": "north_edge",
+          "connector_term": "north",
+          "position_m": [
+            0.0,
+            0.31,
+            0.16
+          ],
+          "direction": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "role": "edge_join"
+        },
+        {
+          "socket_id": "south_edge",
+          "connector_term": "south",
+          "position_m": [
+            0.0,
+            -0.31,
+            0.16
+          ],
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "role": "edge_join"
+        }
+      ],
+      "semantic_roles": [
+        "support",
+        "blocked",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "stack_socket_present": true,
+        "no_silent_scaling": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "foundation_skirt",
+          "location_m": [
+            0.0,
+            0.0,
+            0.16
+          ],
+          "dimensions_m": [
+            2.8,
+            0.62,
+            0.32
+          ],
+          "material_role": "support"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "source_version": "v2"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v2",
+      "asset_id": "measured_threshold_step_v2",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "habs_tn181_round_recess_window_dimensions_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md"
+        },
+        {
+          "ref_type": "local_policy_doc",
+          "ref": "docs/research/architectural_measurements/source_quality_notes_v0.md"
+        },
+        {
+          "ref_type": "source_bundle_version",
+          "ref": "measured_components_v0.v1_assets"
+        }
+      ],
+      "geometry_terms_used": [
+        "rectangle",
+        "width",
+        "height",
+        "extrude",
+        "socket",
+        "floor",
+        "ceiling",
+        "north",
+        "south",
+        "walkable",
+        "vertical_transition",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "rectangle"
+      ],
+      "operations": [
+        "extrude"
+      ],
+      "dimensions_m": {
+        "width": 1.8,
+        "depth": 0.74,
+        "height": 0.22
+      },
+      "bounds_m": {
+        "min": [
+          -0.9,
+          -0.37,
+          0.0
+        ],
+        "max": [
+          0.9,
+          0.37,
+          0.22
+        ]
+      },
+      "ratio_basis": {
+        "height_to_depth": 0.297297,
+        "basis": "single explicit threshold step for entrance transitions"
+      },
+      "uncertainty": {
+        "level": "high",
+        "reason": "stair/threshold proportions remain gameplay traversal blockout values"
+      },
+      "sockets": [
+        {
+          "socket_id": "lower_entry",
+          "connector_term": "south",
+          "position_m": [
+            0.0,
+            -0.37,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "role": "route_entry"
+        },
+        {
+          "socket_id": "upper_exit",
+          "connector_term": "north",
+          "position_m": [
+            0.0,
+            0.37,
+            0.22
+          ],
+          "direction": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "role": "route_exit"
+        },
+        {
+          "socket_id": "floor_anchor",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "top_walkable",
+          "connector_term": "ceiling",
+          "position_m": [
+            0.0,
+            0.0,
+            0.22
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "walkable_surface"
+        }
+      ],
+      "semantic_roles": [
+        "walkable",
+        "vertical_transition",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "route_sockets_present": true,
+        "no_silent_scaling": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "threshold_step",
+          "location_m": [
+            0.0,
+            0.0,
+            0.11
+          ],
+          "dimensions_m": [
+            1.8,
+            0.74,
+            0.22
+          ],
+          "material_role": "walkable"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "source_version": "v2"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v2",
+      "asset_id": "measured_low_retaining_wall_v2",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "habs_tn181_splayed_support_opening_ratio_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        },
+        {
+          "ref_type": "local_policy_doc",
+          "ref": "docs/research/architectural_measurements/source_quality_notes_v0.md"
+        },
+        {
+          "ref_type": "source_bundle_version",
+          "ref": "measured_components_v0.v1_assets"
+        }
+      ],
+      "geometry_terms_used": [
+        "rectangle",
+        "width",
+        "height",
+        "extrude",
+        "bevel_edges",
+        "floor",
+        "ceiling",
+        "east",
+        "west",
+        "support",
+        "cover",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "rectangle"
+      ],
+      "operations": [
+        "extrude",
+        "bevel_edges"
+      ],
+      "dimensions_m": {
+        "width": 1.6,
+        "depth": 0.3,
+        "height": 0.75
+      },
+      "bounds_m": {
+        "min": [
+          -0.8,
+          -0.15,
+          0.0
+        ],
+        "max": [
+          0.8,
+          0.15,
+          0.75
+        ]
+      },
+      "ratio_basis": {
+        "height_to_width": 0.46875,
+        "basis": "low terrain-edge blocker compatible with connector retaining wall language"
+      },
+      "uncertainty": {
+        "level": "high",
+        "reason": "retaining wall is a visual/terrain edge marker, not a structural design"
+      },
+      "sockets": [
+        {
+          "socket_id": "floor_anchor",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "top_stack",
+          "connector_term": "ceiling",
+          "position_m": [
+            0.0,
+            0.0,
+            0.75
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "stack"
+        },
+        {
+          "socket_id": "left_repeat",
+          "connector_term": "west",
+          "position_m": [
+            -0.8,
+            0.0,
+            0.375
+          ],
+          "direction": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "role": "repeat"
+        },
+        {
+          "socket_id": "right_repeat",
+          "connector_term": "east",
+          "position_m": [
+            0.8,
+            0.0,
+            0.375
+          ],
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "role": "repeat"
+        }
+      ],
+      "semantic_roles": [
+        "support",
+        "cover",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "repeat_sockets_present": true,
+        "no_silent_scaling": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "retaining_wall_core",
+          "location_m": [
+            0.0,
+            0.0,
+            0.375
+          ],
+          "dimensions_m": [
+            1.6,
+            0.3,
+            0.75
+          ],
+          "material_role": "stone"
+        },
+        {
+          "primitive": "cube",
+          "name": "retaining_wall_cap",
+          "location_m": [
+            0.0,
+            0.0,
+            0.79
+          ],
+          "dimensions_m": [
+            1.72,
+            0.36,
+            0.08
+          ],
+          "material_role": "cap"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "source_version": "v2"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v2",
+      "asset_id": "measured_roof_cap_block_v2",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "habs_tn181_round_recess_window_dimensions_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/recommended_ratio_ranges_v0.md"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        },
+        {
+          "ref_type": "source_bundle_version",
+          "ref": "measured_components_v0.v1_assets"
+        }
+      ],
+      "geometry_terms_used": [
+        "rectangle",
+        "width",
+        "height",
+        "extrude",
+        "bevel_edges",
+        "floor",
+        "ceiling",
+        "north",
+        "south",
+        "east",
+        "west",
+        "cover",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "rectangle"
+      ],
+      "operations": [
+        "extrude",
+        "bevel_edges"
+      ],
+      "dimensions_m": {
+        "width": 2.6,
+        "depth": 2.6,
+        "height": 0.24
+      },
+      "bounds_m": {
+        "min": [
+          -1.3,
+          -1.3,
+          0.0
+        ],
+        "max": [
+          1.3,
+          1.3,
+          0.24
+        ]
+      },
+      "ratio_basis": {
+        "height_to_width": 0.092308,
+        "basis": "flat roof cap placeholder that remains an explicit non-scaled block"
+      },
+      "uncertainty": {
+        "level": "high",
+        "reason": "roof cap is a placeholder massing component, not a roof construction claim"
+      },
+      "sockets": [
+        {
+          "socket_id": "wall_receive",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "wall_stack_receive"
+        },
+        {
+          "socket_id": "top_marker",
+          "connector_term": "ceiling",
+          "position_m": [
+            0.0,
+            0.0,
+            0.24
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "top_surface"
+        },
+        {
+          "socket_id": "north_edge",
+          "connector_term": "north",
+          "position_m": [
+            0.0,
+            1.3,
+            0.12
+          ],
+          "direction": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "role": "edge_join"
+        },
+        {
+          "socket_id": "east_edge",
+          "connector_term": "east",
+          "position_m": [
+            1.3,
+            0.0,
+            0.12
+          ],
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "role": "edge_join"
+        }
+      ],
+      "semantic_roles": [
+        "cover",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "edge_sockets_present": true,
+        "no_silent_scaling": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "roof_cap_plate",
+          "location_m": [
+            0.0,
+            0.0,
+            0.12
+          ],
+          "dimensions_m": [
+            2.6,
+            2.6,
+            0.24
+          ],
+          "material_role": "cap"
+        },
+        {
+          "primitive": "cube",
+          "name": "roof_cap_center_marker",
+          "location_m": [
+            0.0,
+            0.0,
+            0.29
+          ],
+          "dimensions_m": [
+            1.3,
+            1.3,
+            0.06
+          ],
+          "material_role": "trim"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "source_version": "v2"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v2",
+      "asset_id": "measured_trim_strip_v2",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "habs_tn181_round_recess_window_dimensions_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        },
+        {
+          "ref_type": "local_policy_doc",
+          "ref": "docs/research/architectural_measurements/source_quality_notes_v0.md"
+        },
+        {
+          "ref_type": "source_bundle_version",
+          "ref": "measured_components_v0.v1_assets"
+        }
+      ],
+      "geometry_terms_used": [
+        "rectangle",
+        "width",
+        "height",
+        "extrude",
+        "array_linear",
+        "east",
+        "west",
+        "floor",
+        "decorative_only",
+        "panel_socket",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "rectangle"
+      ],
+      "operations": [
+        "extrude",
+        "array_linear"
+      ],
+      "dimensions_m": {
+        "width": 1.8,
+        "depth": 0.12,
+        "height": 0.12
+      },
+      "bounds_m": {
+        "min": [
+          -0.9,
+          -0.06,
+          0.0
+        ],
+        "max": [
+          0.9,
+          0.06,
+          0.12
+        ]
+      },
+      "ratio_basis": {
+        "height_to_width": 0.066667,
+        "basis": "repeatable facade trim strip with explicit repeat sockets"
+      },
+      "uncertainty": {
+        "level": "high",
+        "reason": "trim is decorative grammar only and has no measurement-backed detailing"
+      },
+      "sockets": [
+        {
+          "socket_id": "left_repeat",
+          "connector_term": "west",
+          "position_m": [
+            -0.9,
+            0.0,
+            0.06
+          ],
+          "direction": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "role": "repeat"
+        },
+        {
+          "socket_id": "right_repeat",
+          "connector_term": "east",
+          "position_m": [
+            0.9,
+            0.0,
+            0.06
+          ],
+          "direction": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "role": "repeat"
+        },
+        {
+          "socket_id": "back_anchor",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "mount"
+        }
+      ],
+      "semantic_roles": [
+        "decorative_only",
+        "panel_socket",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "repeat_sockets_present": true,
+        "no_silent_scaling": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "trim_strip",
+          "location_m": [
+            0.0,
+            0.0,
+            0.06
+          ],
+          "dimensions_m": [
+            1.8,
+            0.12,
+            0.12
+          ],
+          "material_role": "trim"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "source_version": "v2"
+    },
+    {
+      "schema": "asset_mill_measured_component_recipe_v2",
+      "asset_id": "measured_small_buttress_block_v2",
+      "source_measurement_refs": [
+        {
+          "ref_type": "measurement_id",
+          "ref": "habs_tn181_splayed_support_opening_ratio_v0"
+        },
+        {
+          "ref_type": "local_ratio_doc",
+          "ref": "docs/research/architectural_measurements/weak_measurement_areas_v0.md"
+        },
+        {
+          "ref_type": "local_link_file",
+          "ref": "data/architecture/taxonomy/source_measurements/measurement_geometry_term_links_v0.json"
+        },
+        {
+          "ref_type": "local_link_file",
+          "ref": "data/architecture/taxonomy/source_measurements/measurement_semantic_role_links_v0.json"
+        },
+        {
+          "ref_type": "source_bundle_version",
+          "ref": "measured_components_v0.v1_assets"
+        }
+      ],
+      "geometry_terms_used": [
+        "rectangle",
+        "width",
+        "height",
+        "extrude",
+        "compound_asset",
+        "bevel_edges",
+        "floor",
+        "ceiling",
+        "socket",
+        "support",
+        "cover",
+        "blocked",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "rectangle"
+      ],
+      "operations": [
+        "compound_asset",
+        "extrude",
+        "bevel_edges"
+      ],
+      "dimensions_m": {
+        "width": 0.82,
+        "depth": 0.68,
+        "height": 1.1
+      },
+      "bounds_m": {
+        "min": [
+          -0.41,
+          -0.34,
+          0.0
+        ],
+        "max": [
+          0.41,
+          0.34,
+          1.1
+        ]
+      },
+      "ratio_basis": {
+        "projection_to_height": 0.618182,
+        "basis": "small wall-side support mass for facade rhythm; no structural claim"
+      },
+      "uncertainty": {
+        "level": "high",
+        "reason": "buttress block is a simplified support marker with weak local measurement backing"
+      },
+      "sockets": [
+        {
+          "socket_id": "floor_anchor",
+          "connector_term": "floor",
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "role": "placement"
+        },
+        {
+          "socket_id": "wall_mount",
+          "connector_term": "socket",
+          "position_m": [
+            0.0,
+            -0.34,
+            0.55
+          ],
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "role": "wall_mount"
+        },
+        {
+          "socket_id": "top_stack",
+          "connector_term": "ceiling",
+          "position_m": [
+            0.0,
+            0.0,
+            1.1
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "role": "stack"
+        }
+      ],
+      "semantic_roles": [
+        "support",
+        "cover",
+        "blocked",
+        "collision_proxy"
+      ],
+      "validation_expectations": {
+        "nonzero_bounds": true,
+        "known_geometry_terms": true,
+        "wall_mount_socket_present": true,
+        "no_silent_scaling": true
+      },
+      "proof_primitives": [
+        {
+          "primitive": "cube",
+          "name": "buttress_foot",
+          "location_m": [
+            0.0,
+            0.08,
+            0.16
+          ],
+          "dimensions_m": [
+            0.82,
+            0.68,
+            0.32
+          ],
+          "material_role": "support"
+        },
+        {
+          "primitive": "cube",
+          "name": "buttress_body",
+          "location_m": [
+            0.0,
+            -0.04,
+            0.62
+          ],
+          "dimensions_m": [
+            0.58,
+            0.48,
+            0.72
+          ],
+          "material_role": "stone"
+        },
+        {
+          "primitive": "cube",
+          "name": "buttress_cap",
+          "location_m": [
+            0.0,
+            -0.08,
+            1.02
+          ],
+          "dimensions_m": [
+            0.64,
+            0.42,
+            0.16
+          ],
+          "material_role": "cap"
+        }
+      ],
+      "notes": [],
+      "no_production_claim": true,
+      "no_structural_claim": true,
+      "no_fabrication_claim": true,
+      "no_historical_accuracy_claim": true,
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false
+      },
+      "source_script": "scripts/compile_asset_mill_measured_components_v2.py",
+      "source_version": "v2"
+    }
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

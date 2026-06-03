@@ -1,0 +1,30 @@
+{
+  "schema": "workflow_receipt_v0",
+  "packet_id": "3D-LAB-0009",
+  "result": "measured_component_compilers_demoted_to_reference_only",
+  "files_changed": [
+    "data/architecture/asset_mill/recipes/measured_components_v0.json",
+    "scripts/validate_measured_component_source_v0.py",
+    "scripts/audit_script_orbit_v0.py",
+    "tests/test_validate_measured_component_source_v0.py",
+    "tests/test_audit_script_orbit_v0.py",
+    "workflow/reports/3D-LAB-0009-measured-components-source-promotion/replacement_decision.json",
+    "workflow/reports/3D-LAB-0009-measured-components-source-promotion/report.md",
+    "workflow/reports/3D-LAB-0009-measured-components-source-promotion/receipt.json"
+  ],
+  "validation": [
+    "measured component source bundle validates",
+    "bundle contains 12 v1 assets and 10 v2 assets",
+    "bundle contains no goal/ references",
+    "bundle contains no created_at_utc fields",
+    "script orbit audit reports REPLACE_BY_PUMP=0"
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}
