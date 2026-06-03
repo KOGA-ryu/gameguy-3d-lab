@@ -11,12 +11,12 @@
   "validation_summary": {
     "tool_dictionary_tool_count": 97,
     "asset_family_policy_count": 5,
-    "compiled_plan_count": 3,
-    "compiled_step_count": 82,
+    "compiled_plan_count": 4,
+    "compiled_step_count": 114,
     "compiled_unique_tool_count": 24,
-    "json_file_count": 219,
-    "non_blender_command_count": 24,
-    "full_blender_command_count": 30
+    "json_file_count": 220,
+    "non_blender_command_count": 25,
+    "full_blender_command_count": 33
   },
   "asset_families": [
     "column",

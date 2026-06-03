@@ -8,13 +8,19 @@
   "adapter": "scripts/execute_blender_tool_plan_v0.py",
   "generated_schema": "gameguy_tool_plan_v0",
   "compiled_default": {
-    "plan_count": 3,
-    "total_steps": 82,
+    "plan_count": 4,
+    "total_steps": 114,
     "unique_tool_count": 24,
     "plans": [
       {
         "plan_id": "gothic_stone_banister_post_tool_plan_v0_compiled",
         "asset_family": "banister_post",
+        "step_count": 32,
+        "unique_tool_count": 24
+      },
+      {
+        "plan_id": "gothic_stone_fence_post_tool_plan_v0_compiled",
+        "asset_family": "fence_post",
         "step_count": 32,
         "unique_tool_count": 24
       },
@@ -39,6 +45,7 @@
     "blender_adapter_consumes_compiled_plan": true,
     "default_bundle_has_multiple_asset_families": true,
     "window_frame_uses_distinct_tool_sequence": true,
+    "fence_post_uses_socketed_post_sequence": true,
     "door_frame_uses_distinct_family_policy": true,
     "adapter_validate_only_accepts_default_plans": true
   },

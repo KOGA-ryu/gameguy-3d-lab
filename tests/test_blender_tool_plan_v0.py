@@ -46,6 +46,13 @@ def plan_by_asset(out_root: Path, asset_id: str) -> dict[str, Any]:
     raise AssertionError(f"missing plan for {asset_id}")
 
 
+def asset_by_id(source: dict[str, Any], asset_id: str) -> dict[str, Any]:
+    for asset in source["assets"]:
+        if asset["asset_id"] == asset_id:
+            return asset
+    raise AssertionError(f"missing source asset for {asset_id}")
+
+
 class BlenderToolPlanTests(unittest.TestCase):
     def test_tool_dictionary_is_large_and_stage_classified(self) -> None:
         dictionary = load_json(DICTIONARY)
@@ -125,7 +132,7 @@ class BlenderToolPlanTests(unittest.TestCase):
 
         self.assertEqual(manifest["schema"], "gameguy_tool_plan_manifest_v0")
         self.assertEqual(manifest["tool_sequence_policy"], "asset_family_tool_sequence_policy_v0")
-        self.assertEqual(manifest["plan_count"], 3)
+        self.assertEqual(manifest["plan_count"], 4)
         self.assertEqual(manifest["plans"][0]["step_count"], 32)
         self.assertEqual(manifest["plans"][0]["unique_tool_count"], 24)
         self.assertEqual(plan["asset_family"], "banister_post")
@@ -164,6 +171,30 @@ class BlenderToolPlanTests(unittest.TestCase):
         topology_validation = by_step["validate_topology_non_manifold"]["params"]
         self.assertEqual(topology_validation["cleanup_merge_distance_m"], 0.0)
         self.assertEqual(topology_validation["cleanup_fill_hole_sides"], 0)
+
+    def test_fence_post_recipe_compiles_to_socketed_post_family_sequence(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "plans"
+            run_compiler(out_root)
+            plan = plan_by_asset(out_root, "gothic_stone_fence_post_tool_plan_v0")
+
+        self.assertEqual(plan["asset_family"], "fence_post")
+        self.assertEqual(plan["asset_family_policy"], "fence_post")
+        self.assertEqual(plan["style"], "gothic_stone")
+        self.assertEqual(plan["summary"]["step_count"], 32)
+        self.assertEqual(plan["summary"]["unique_tool_count"], 24)
+        self.assertEqual(plan["summary"]["covered_stages"], plan["stage_order"])
+        self.assertIn("modifier_boolean", plan["summary"]["unique_tools"])
+        self.assertIn("object_duplicate_radial", plan["summary"]["unique_tools"])
+
+        by_step = {step["step_id"]: step for step in plan["steps"]}
+        self.assertEqual(by_step["create_base_foot"]["params"]["size_m"], [0.44, 0.44, 0.08])
+        self.assertEqual(by_step["create_post_core"]["params"]["size_m"], [0.2, 0.2, 0.78])
+        self.assertEqual(by_step["duplicate_ribs_radially"]["params"]["count"], 8)
+        self.assertEqual(by_step["create_east_socket_cutter"]["params"]["size_m"], [0.14, 0.2, 0.22])
+        self.assertEqual(by_step["boolean_cut_rail_sockets"]["params"]["cutters"], ["east_socket_cutter", "west_socket_cutter"])
+        self.assertEqual(by_step["boolean_cut_rail_sockets"]["params"]["socket_shadow_panels"]["surface_x_m"], 0.1)
+        self.assertIn("socket_shadows", by_step["join_visible_post_parts"]["params"]["objects"])
 
     def test_window_frame_recipe_compiles_to_different_tool_sequence(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
@@ -237,7 +268,7 @@ class BlenderToolPlanTests(unittest.TestCase):
                 text=True,
             )
 
-        self.assertIn("compiled tool plans=3 steps=82 tools=97 out=<validate-only>", result.stdout)
+        self.assertIn("compiled tool plans=4 steps=114 tools=97 out=<validate-only>", result.stdout)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_unknown_feature_fails_before_output(self) -> None:
@@ -261,7 +292,7 @@ class BlenderToolPlanTests(unittest.TestCase):
 
     def test_feature_rejected_when_disallowed_by_family_policy(self) -> None:
         source = load_json(DEFAULT_RECIPE)
-        source["assets"][1]["features"].append("east_west_rail_sockets")
+        asset_by_id(source, "gothic_stone_window_frame_tool_plan_v0")["features"].append("east_west_rail_sockets")
 
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             recipe_path = Path(tmp) / "bad_recipe.json"
@@ -280,7 +311,7 @@ class BlenderToolPlanTests(unittest.TestCase):
 
     def test_window_frame_invalid_member_dimensions_fail_before_output(self) -> None:
         source = load_json(DEFAULT_RECIPE)
-        source["assets"][1]["style_parameters"]["side_member_width_m"] = 0.5
+        asset_by_id(source, "gothic_stone_window_frame_tool_plan_v0")["style_parameters"]["side_member_width_m"] = 0.5
 
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             recipe_path = Path(tmp) / "bad_recipe.json"

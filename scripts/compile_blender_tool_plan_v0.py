@@ -271,6 +271,25 @@ def dimensions(asset: dict[str, Any]) -> dict[str, float]:
     return {axis: positive_number(raw.get(axis), f"{asset['asset_id']}.dimensions_m.{axis}") for axis in ("width", "depth", "height")}
 
 
+def number_param(params: dict[str, Any], name: str, default: float) -> float:
+    value = params.get(name, default)
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
+        fail(f"style_parameters.{name} must be a number")
+    return round(float(value), 6)
+
+
+def vector_param(params: dict[str, Any], name: str, default: list[float]) -> list[float]:
+    value = params.get(name, default)
+    if not isinstance(value, list) or len(value) != len(default):
+        fail(f"style_parameters.{name} must be a {len(default)}-number list")
+    result = []
+    for index, item in enumerate(value):
+        if not isinstance(item, (int, float)) or isinstance(item, bool):
+            fail(f"style_parameters.{name}[{index}] must be a number")
+        result.append(round(float(item), 6))
+    return result
+
+
 def rectangular_frame_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
     params = style_params(asset)
     dims = dimensions(asset)
@@ -312,25 +331,45 @@ def rectangular_frame_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
 def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
     params = style_params(asset)
     if feature == "stepped_square_base":
+        base_foot_size = vector_param(params, "base_foot_size_m", [0.52, 0.52, 0.10])
+        base_mid_size = vector_param(params, "base_mid_size_m", [0.44, 0.44, 0.06])
+        base_top_size = vector_param(params, "base_top_size_m", [0.34, 0.34, 0.06])
+        cap_neck_size = vector_param(params, "cap_neck_size_m", [0.34, 0.34, 0.07])
+        cap_top_size = vector_param(params, "cap_top_size_m", [0.50, 0.50, 0.13])
+        post_core_height = number_param(params, "post_core_height_m", 0.96)
+        base_foot_z = round(base_foot_size[2] * 0.5, 6)
+        base_mid_z = round(base_foot_size[2] + base_mid_size[2] * 0.5, 6)
+        base_top_z = round(base_foot_size[2] + base_mid_size[2] + base_top_size[2] * 0.5, 6)
+        cap_neck_z = round(base_foot_size[2] + base_mid_size[2] + base_top_size[2] + post_core_height + cap_neck_size[2] * 0.5, 6)
+        cap_top_z = round(base_foot_size[2] + base_mid_size[2] + base_top_size[2] + post_core_height + cap_neck_size[2] + cap_top_size[2] * 0.5, 6)
         return [
-            {"step_id": "create_base_foot", "tool_id": "primitive_cube_add", "purpose": "Create the bottom square foot block.", "params": {"size_m": [0.52, 0.52, 0.10], "location_m": [0.0, 0.0, 0.05]}},
-            {"step_id": "create_base_mid_step", "tool_id": "primitive_cube_add", "purpose": "Create the middle stepped plinth block.", "params": {"size_m": [0.44, 0.44, 0.06], "location_m": [0.0, 0.0, 0.13]}},
-            {"step_id": "create_base_top_step", "tool_id": "primitive_cube_add", "purpose": "Create the top base transition block.", "params": {"size_m": [0.34, 0.34, 0.06], "location_m": [0.0, 0.0, 0.19], "base_step_count": params.get("base_step_count", 3)}},
-            {"step_id": "create_cap_neck", "tool_id": "primitive_cube_add", "purpose": "Create the upper necking block under the cap.", "params": {"size_m": [0.34, 0.34, 0.07], "location_m": [0.0, 0.0, 1.17]}},
-            {"step_id": "create_cap_top", "tool_id": "primitive_cube_add", "purpose": "Create the square top cap block.", "params": {"size_m": [0.50, 0.50, 0.13], "location_m": [0.0, 0.0, 1.285]}},
+            {"step_id": "create_base_foot", "tool_id": "primitive_cube_add", "purpose": "Create the bottom square foot block.", "params": {"size_m": base_foot_size, "location_m": [0.0, 0.0, base_foot_z]}},
+            {"step_id": "create_base_mid_step", "tool_id": "primitive_cube_add", "purpose": "Create the middle stepped plinth block.", "params": {"size_m": base_mid_size, "location_m": [0.0, 0.0, base_mid_z]}},
+            {"step_id": "create_base_top_step", "tool_id": "primitive_cube_add", "purpose": "Create the top base transition block.", "params": {"size_m": base_top_size, "location_m": [0.0, 0.0, base_top_z], "base_step_count": params.get("base_step_count", 3)}},
+            {"step_id": "create_cap_neck", "tool_id": "primitive_cube_add", "purpose": "Create the upper necking block under the cap.", "params": {"size_m": cap_neck_size, "location_m": [0.0, 0.0, cap_neck_z]}},
+            {"step_id": "create_cap_top", "tool_id": "primitive_cube_add", "purpose": "Create the square top cap block.", "params": {"size_m": cap_top_size, "location_m": [0.0, 0.0, cap_top_z]}},
         ]
     if feature == "ribbed_post_core":
+        core_size = vector_param(params, "post_core_size_m", [0.24, 0.24, 0.96])
+        core_location_z = number_param(params, "post_core_location_z_m", 0.67)
+        rib_size = vector_param(params, "rib_source_size_m", [params.get("rib_depth_m", 0.025), 0.035, 0.90])
+        rib_radius = number_param(params, "rib_radius_m", 0.145)
+        rib_location_z = number_param(params, "rib_location_z_m", 0.68)
         return [
-            {"step_id": "create_post_core", "tool_id": "primitive_cube_add", "purpose": "Create the central square post core.", "params": {"size_m": [0.24, 0.24, 0.96], "location_m": [0.0, 0.0, 0.67]}},
-            {"step_id": "create_single_rib_source", "tool_id": "primitive_cube_add", "purpose": "Create one narrow rib source block before radial duplication.", "params": {"size_m": [params.get("rib_depth_m", 0.025), 0.035, 0.90], "location_m": [0.145, 0.0, 0.68]}},
-            {"step_id": "duplicate_ribs_radially", "tool_id": "object_duplicate_radial", "purpose": "Duplicate the rib source around the post core.", "params": {"count": params.get("rib_count", 12), "axis": "z", "radius_m": 0.145}},
+            {"step_id": "create_post_core", "tool_id": "primitive_cube_add", "purpose": "Create the central square post core.", "params": {"size_m": core_size, "location_m": [0.0, 0.0, core_location_z]}},
+            {"step_id": "create_single_rib_source", "tool_id": "primitive_cube_add", "purpose": "Create one narrow rib source block before radial duplication.", "params": {"size_m": rib_size, "location_m": [rib_radius, 0.0, rib_location_z]}},
+            {"step_id": "duplicate_ribs_radially", "tool_id": "object_duplicate_radial", "purpose": "Duplicate the rib source around the post core.", "params": {"count": params.get("rib_count", 12), "axis": "z", "radius_m": rib_radius}},
         ]
     if feature == "rectangular_frame_blocks":
         return rectangular_frame_steps(asset)
-    if feature == "east_west_rail_sockets":
+    if feature in {"east_west_rail_sockets", "rail_sockets"}:
+        socket_size = vector_param(params, "rail_socket_size_m", [0.16, 0.22, params.get("rail_socket_height_m", 0.26)])
+        socket_x = number_param(params, "rail_socket_x_m", 0.18)
+        socket_z = number_param(params, "rail_socket_z_m", 0.70)
+        socket_surface_x = number_param(params, "rail_socket_surface_x_m", 0.12)
         return [
-            {"step_id": "create_east_socket_cutter", "tool_id": "primitive_cube_add", "purpose": "Create the east rail socket cutter volume.", "params": {"size_m": [0.16, 0.22, params.get("rail_socket_height_m", 0.26)], "location_m": [0.18, 0.0, 0.70]}},
-            {"step_id": "create_west_socket_cutter", "tool_id": "primitive_cube_add", "purpose": "Create the west rail socket cutter volume.", "params": {"size_m": [0.16, 0.22, params.get("rail_socket_height_m", 0.26)], "location_m": [-0.18, 0.0, 0.70]}},
+            {"step_id": "create_east_socket_cutter", "tool_id": "primitive_cube_add", "purpose": "Create the east rail socket cutter volume.", "params": {"size_m": socket_size, "location_m": [socket_x, 0.0, socket_z]}},
+            {"step_id": "create_west_socket_cutter", "tool_id": "primitive_cube_add", "purpose": "Create the west rail socket cutter volume.", "params": {"size_m": socket_size, "location_m": [-socket_x, 0.0, socket_z]}},
             {
                 "step_id": "boolean_cut_rail_sockets",
                 "tool_id": "modifier_boolean",
@@ -345,7 +384,7 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
                         "enabled": True,
                         "material_role": "socket_shadow",
                         "thickness_m": 0.014,
-                        "surface_x_m": 0.12,
+                        "surface_x_m": socket_surface_x,
                         "surface_offset_m": 0.003,
                         "scale_y": 0.88,
                         "scale_z": 0.88,

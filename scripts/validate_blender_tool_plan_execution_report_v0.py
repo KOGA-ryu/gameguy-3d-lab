@@ -35,6 +35,10 @@ REQUIRED_BANISTER_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
     "explicit_socket_boolean_targets",
     "socket_cutters_removed",
 }
+REQUIRED_FENCE_POST_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
+    "explicit_socket_boolean_targets",
+    "socket_cutters_removed",
+}
 REQUIRED_WINDOW_FRAME_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
     "socket_boolean_not_required",
 }
@@ -42,6 +46,7 @@ REQUIRED_DOOR_FRAME_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
     "socket_boolean_not_required",
 }
 REQUIRED_BANISTER_MATERIAL_ROLES = ("base", "cap", "shaft", "rib", "socket_shadow")
+REQUIRED_FENCE_POST_MATERIAL_ROLES = ("base", "cap", "shaft", "rib", "socket_shadow")
 REQUIRED_WINDOW_FRAME_MATERIAL_ROLES = ("frame",)
 REQUIRED_DOOR_FRAME_MATERIAL_ROLES = ("frame",)
 REQUIRED_SOCKET_CUTTERS = ("east_socket_cutter", "west_socket_cutter")
@@ -151,6 +156,8 @@ def validate_quality_flags(report: dict[str, Any], asset_family: str) -> None:
         fail("quality_pass.asset_family_quality_profile must match asset_family")
     if asset_family == "banister_post":
         required_flags = REQUIRED_BANISTER_QUALITY_FLAGS
+    elif asset_family == "fence_post":
+        required_flags = REQUIRED_FENCE_POST_QUALITY_FLAGS
     elif asset_family == "window_frame":
         required_flags = REQUIRED_WINDOW_FRAME_QUALITY_FLAGS
     elif asset_family == "door_frame":
@@ -264,6 +271,10 @@ def validate_report(report_path: Path, *, max_non_manifold_edges: int, min_mater
     validate_quality_flags(report, asset_family)
     if asset_family == "banister_post":
         face_counts = validate_material_regions(report, min_material_roles, REQUIRED_BANISTER_MATERIAL_ROLES)
+        validate_socket_pass(report, min_socket_panels)
+        socket_shadow_panel_count = report["socket_pass"]["socket_shadow_panel_count"]
+    elif asset_family == "fence_post":
+        face_counts = validate_material_regions(report, min_material_roles, REQUIRED_FENCE_POST_MATERIAL_ROLES)
         validate_socket_pass(report, min_socket_panels)
         socket_shadow_panel_count = report["socket_pass"]["socket_shadow_panel_count"]
     elif asset_family == "window_frame":

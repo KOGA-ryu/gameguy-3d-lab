@@ -18,8 +18,26 @@
       "socket_boolean_required": true
     },
     {
+      "asset_family": "fence_post",
+      "plan_id": "gothic_stone_fence_post_tool_plan_v0_compiled",
+      "step_count": 32,
+      "non_manifold_edge_count": 0,
+      "material_role_count": 5,
+      "socket_shadow_panel_count": 2,
+      "socket_boolean_required": true
+    },
+    {
       "asset_family": "window_frame",
       "plan_id": "gothic_stone_window_frame_tool_plan_v0_compiled",
+      "step_count": 25,
+      "non_manifold_edge_count": 0,
+      "material_role_count": 1,
+      "socket_shadow_panel_count": 0,
+      "socket_boolean_required": false
+    },
+    {
+      "asset_family": "door_frame",
+      "plan_id": "gothic_stone_door_frame_tool_plan_v0_compiled",
       "step_count": 25,
       "non_manifold_edge_count": 0,
       "material_role_count": 1,
@@ -28,8 +46,8 @@
     }
   ],
   "full_pipeline": {
-    "command_count": 30,
-    "json_file_count": 219,
+    "command_count": 33,
+    "json_file_count": 220,
     "include_blender": true,
     "status": "pass"
   },

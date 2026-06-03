@@ -266,7 +266,7 @@ def run_blender_execution(plan: dict[str, Any], steps: list[dict[str, Any]], out
         "material_regions_preserved": material_regions_preserved,
         "explicit_socket_boolean_targets": bool(context["socket_pass"].get("target_names")),
         "socket_cutters_removed": bool(context["socket_pass"].get("cutter_objects_removed")),
-        "socket_boolean_not_required": plan.get("asset_family") != "banister_post",
+        "socket_boolean_not_required": plan.get("asset_family") not in {"banister_post", "fence_post"},
         "topology_cleanup_attempted": bool(context["topology_cleanup"].get("attempted")),
     }
     if context.get("render_path"):

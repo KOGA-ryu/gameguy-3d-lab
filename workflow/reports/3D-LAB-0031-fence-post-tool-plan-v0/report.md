@@ -1,6 +1,6 @@
-# Door-Frame Tool Plan v0
+# Fence-Post Tool Plan v0
 
-This slice proves the asset-family sequence policy scales beyond the existing banister post and window frame.
+This slice proves the tool-plan lane can add another socketed post asset without moving design logic into Blender.
 
 ## Source Path
 
@@ -17,26 +17,27 @@ architectural_tool_plan_recipes_v0.json
 ## Added Asset
 
 ```text
-gothic_stone_door_frame_tool_plan_v0
+gothic_stone_fence_post_tool_plan_v0
 ```
 
-The new source recipe uses the `door_frame` policy with a rectangular stone frame:
+The new source recipe uses the `fence_post` policy with parameterized post dimensions:
 
-- width `1.10 m`
-- depth `0.20 m`
-- height `1.75 m`
-- side jamb width `0.16 m`
-- threshold/sill height `0.12 m`
-- header height `0.18 m`
-- clear opening `0.78 m x 1.45 m`
+- total size `0.44 m x 0.44 m x 1.10 m`
+- stepped square base blocks: `0.44 m`, `0.36 m`, and `0.30 m` square
+- square post core: `0.20 m x 0.20 m x 0.78 m`
+- radial rib count: `8`
+- rail socket cutter size: `0.14 m x 0.20 m x 0.22 m`
+- cap neck/top blocks: `0.28 m` and `0.38 m` square
+
+The compiler now lets post-family recipes drive the stepped base, cap, rib source, rib radius/count, and rail-socket parameters. The default banister dimensions remain unchanged through helper defaults.
 
 ## Current Evidence
 
 ```text
 compiled tool plans=4 steps=114 tools=97 out=<validate-only>
 PASS gameguy_tool_plan_v0 validation: 4 plans, 114 steps, 24 tools
-PASS Blender tool-plan adapter validation: steps=25 tools=22
-PASS Blender tool-plan execution quality validation: steps=25 non_manifold=0 material_roles=1 socket_panels=0
+PASS Blender tool-plan adapter validation: steps=32 tools=24
+PASS Blender tool-plan execution quality validation: steps=32 non_manifold=0 material_roles=5 socket_panels=2
 PASS generation pipeline validation: commands=25 json=220 include_blender=false
 PASS generation pipeline validation: commands=33 json=220 include_blender=true
 ```
@@ -52,4 +53,4 @@ The full default tool-plan bundle now contains:
 
 ## Boundary
 
-The door-frame design lives in the source recipe and sequence policy. Blender still consumes compiled deterministic JSON and writes `.blend`, preview, and `.glb` outputs only under `/tmp`.
+The fence-post design lives in the source recipe and sequence policy. Blender still consumes compiled deterministic JSON and writes `.blend`, preview, and `.glb` outputs only under `/tmp`.

@@ -152,6 +152,35 @@ def valid_window_frame_report() -> dict[str, Any]:
     return report
 
 
+def valid_fence_post_report() -> dict[str, Any]:
+    report = valid_report()
+    report.update(
+        {
+            "source_plan": "/tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_fence_post_tool_plan_v0_compiled.json",
+            "plan_id": "gothic_stone_fence_post_tool_plan_v0_compiled",
+            "asset_id": "gothic_stone_fence_post_tool_plan_v0",
+            "asset_family": "fence_post",
+            "bounds_m": {"min": [-0.22, -0.22, 0.0], "max": [0.22, 0.22, 1.1]},
+            "quality_pass": {
+                "asset_family_quality_profile": "fence_post",
+                "material_regions_preserved": True,
+                "explicit_socket_boolean_targets": True,
+                "socket_cutters_removed": True,
+                "socket_boolean_not_required": False,
+                "topology_cleanup_attempted": True,
+            },
+            "final_object": {
+                "name": "gothic_stone_fence_post_tool_plan_v0",
+                "vertex_count": 900,
+                "edge_count": 1700,
+                "face_count": 850,
+                "material_slot_count": 6,
+            },
+        }
+    )
+    return report
+
+
 def valid_door_frame_report() -> dict[str, Any]:
     report = valid_window_frame_report()
     report.update(
@@ -222,6 +251,20 @@ class BlenderToolPlanExecutionReportValidatorTests(unittest.TestCase):
         self.assertEqual(validation["asset_id"], "gothic_stone_window_frame_tool_plan_v0")
         self.assertEqual(validation["material_role_count"], 1)
         self.assertEqual(validation["socket_shadow_panel_count"], 0)
+
+    def test_accepts_fence_post_quality_execution_report(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            report_path = Path(tmp) / "tool_plan_execution_report.json"
+            json_report = Path(tmp) / "quality_validation.json"
+            write_report(report_path, valid_fence_post_report())
+            result = run_validator(report_path, json_report)
+            validation = json.loads(json_report.read_text(encoding="utf-8"))
+
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("PASS Blender tool-plan execution quality validation", result.stdout)
+        self.assertEqual(validation["asset_id"], "gothic_stone_fence_post_tool_plan_v0")
+        self.assertEqual(validation["material_role_count"], 5)
+        self.assertEqual(validation["socket_shadow_panel_count"], 2)
 
     def test_accepts_door_frame_quality_execution_report(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
