@@ -266,9 +266,12 @@ class BlenderToolPlanExecutionAdapterTests(unittest.TestCase):
         self.assertIn("PASS Blender tool-plan adapter validation", result.stdout)
         self.assertEqual(report["plan_id"], "gothic_panel_guard_tool_plan_v0_compiled")
         self.assertEqual(report["asset_family"], "guard_panel")
-        self.assertEqual(report["step_count"], 46)
-        self.assertEqual(report["supported_step_count"], 46)
-        self.assertEqual(report["unique_tool_count"], 24)
+        self.assertEqual(report["step_count"], 57)
+        self.assertEqual(report["supported_step_count"], 57)
+        self.assertEqual(report["unique_tool_count"], 27)
+        self.assertIn("modifier_boolean", report["unique_tools"])
+        self.assertIn("modifier_array", report["unique_tools"])
+        self.assertIn("modifier_mirror", report["unique_tools"])
         self.assertTrue(report["rules"]["consumes_gameguy_tool_plan_v0"])
 
     def test_validate_only_rejects_unsupported_tool_id_before_output(self) -> None:

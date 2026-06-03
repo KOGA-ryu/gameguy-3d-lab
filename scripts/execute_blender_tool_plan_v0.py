@@ -34,6 +34,8 @@ SUPPORTED_TOOLS = {
     "modifier_bevel",
     "modifier_boolean",
     "modifier_displace",
+    "modifier_array",
+    "modifier_mirror",
     "modifier_weighted_normal",
     "modifier_weld",
     "object_duplicate_radial",
@@ -235,6 +237,9 @@ def run_blender_execution(plan: dict[str, Any], steps: list[dict[str, Any]], out
             "transition": [],
             "shaft": [],
             "ribs": [],
+            "railing_detail_recesses": [],
+            "railing_detail_trim": [],
+            "railing_detail_beads": [],
             "cutters": [],
             "socket_shadows": [],
             "visible": [],
@@ -284,12 +289,13 @@ def run_blender_execution(plan: dict[str, Any], steps: list[dict[str, Any]], out
     material_regions_preserved = len(face_counts_by_role) > 1
     if plan.get("asset_family") in {"window_frame", "door_frame"}:
         material_regions_preserved = "frame" in face_counts_by_role
+    socket_boolean_has_targets = bool(context["socket_pass"].get("target_names"))
     report["quality_pass"] = {
         "asset_family_quality_profile": str(plan.get("asset_family", "unknown")),
         "material_regions_preserved": material_regions_preserved,
-        "explicit_socket_boolean_targets": bool(context["socket_pass"].get("target_names")),
+        "explicit_socket_boolean_targets": socket_boolean_has_targets,
         "socket_cutters_removed": bool(context["socket_pass"].get("cutter_objects_removed")),
-        "socket_boolean_not_required": plan.get("asset_family") not in {"banister_post", "fence_post"},
+        "socket_boolean_not_required": not socket_boolean_has_targets,
         "topology_cleanup_attempted": bool(context["topology_cleanup"].get("attempted")),
     }
     if context.get("render_path"):
@@ -324,6 +330,10 @@ def execute_step(bpy: Any, mathutils: Any, plan: dict[str, Any], step: dict[str,
         execute_mesh_from_pydata(bpy, step, context)
     elif tool_id == "object_duplicate_radial":
         execute_object_duplicate_radial(step, context)
+    elif tool_id == "modifier_array":
+        execute_modifier_array(step, context)
+    elif tool_id == "modifier_mirror":
+        execute_modifier_mirror(step, context)
     elif tool_id == "modifier_boolean":
         execute_modifier_boolean(bpy, step, context)
     elif tool_id == "join_objects":
@@ -478,7 +488,15 @@ def execute_mesh_from_pydata(bpy: Any, step: dict[str, Any], context: dict[str, 
     obj["material_role"] = role
     obj.data.materials.append(context["materials"].get(role, context["materials"]["default"]))
     context["objects"][alias] = obj
-    context["groups"]["visible"].append(alias)
+    group_name = params.get("group")
+    if isinstance(group_name, str) and group_name:
+        context["groups"].setdefault(group_name, []).append(alias)
+    if role == "socket":
+        context["groups"]["cutters"].append(alias)
+        obj.hide_viewport = True
+        obj.hide_render = True
+    else:
+        context["groups"]["visible"].append(alias)
 
 
 def execute_object_duplicate_radial(step: dict[str, Any], context: dict[str, Any]) -> None:
@@ -511,6 +529,93 @@ def execute_object_duplicate_radial(step: dict[str, Any], context: dict[str, Any
         context["objects"][duplicate.name] = duplicate
         context["groups"]["ribs"].append(duplicate.name)
         context["groups"]["visible"].append(duplicate.name)
+
+
+def copy_object_for_detail(source: Any, name: str) -> Any:
+    duplicate = source.copy()
+    duplicate.data = source.data.copy()
+    duplicate.name = name
+    source.users_collection[0].objects.link(duplicate)
+    for key in ("material_role", "tool_id", "tool_plan_step_id"):
+        if key in source:
+            duplicate[key] = source[key]
+    return duplicate
+
+
+def register_detail_duplicate(duplicate: Any, context: dict[str, Any], group_name: str | None = None) -> None:
+    context["objects"][duplicate.name] = duplicate
+    role = str(duplicate.get("material_role", "default"))
+    if group_name:
+        context["groups"].setdefault(group_name, []).append(duplicate.name)
+    if role == "socket":
+        context["groups"]["cutters"].append(duplicate.name)
+        duplicate.hide_viewport = True
+        duplicate.hide_render = True
+    else:
+        context["groups"]["visible"].append(duplicate.name)
+
+
+def replace_group_alias(context: dict[str, Any], old_alias: str, new_alias: str) -> None:
+    for group in context["groups"].values():
+        for index, alias in enumerate(group):
+            if alias == old_alias:
+                group[index] = new_alias
+
+
+def execute_modifier_array(step: dict[str, Any], context: dict[str, Any]) -> None:
+    params = step["params"]
+    source_alias = require_string(params.get("source_object"), f"{step['step_id']}.params.source_object")
+    source = context["objects"].get(source_alias)
+    if source is None:
+        fail(f"{step['step_id']} requires source object `{source_alias}`")
+    count = int(params.get("count", 1))
+    if count < 1:
+        fail(f"{step['step_id']}.params.count must be positive")
+    offset = require_vector(params.get("offset_m", [0.0, 0.0, 0.0]), f"{step['step_id']}.params.offset_m", 3)
+    name_prefix = require_string(params.get("name_prefix", source_alias), f"{step['step_id']}.params.name_prefix")
+    output_group = params.get("output_group")
+    if isinstance(output_group, str) and output_group:
+        context["groups"].setdefault(output_group, [])
+        if source_alias not in context["groups"][output_group]:
+            context["groups"][output_group].append(source_alias)
+    source.name = f"{name_prefix}_00"
+    context["objects"].pop(source_alias, None)
+    context["objects"][source.name] = source
+    replace_group_alias(context, source_alias, source.name)
+    for index in range(1, count):
+        duplicate = copy_object_for_detail(source, f"{name_prefix}_{index:02d}")
+        duplicate.location.x += offset[0] * index
+        duplicate.location.y += offset[1] * index
+        duplicate.location.z += offset[2] * index
+        register_detail_duplicate(duplicate, context, output_group if isinstance(output_group, str) else None)
+
+
+def execute_modifier_mirror(step: dict[str, Any], context: dict[str, Any]) -> None:
+    params = step["params"]
+    axis = require_string(params.get("axis", "x"), f"{step['step_id']}.params.axis")
+    if axis not in {"x", "y", "z"}:
+        fail(f"{step['step_id']}.params.axis must be x, y, or z")
+    entries = require_list(params.get("objects"), f"{step['step_id']}.params.objects")
+    for index, entry_value in enumerate(entries):
+        entry = require_object(entry_value, f"{step['step_id']}.params.objects[{index}]")
+        source_alias = require_string(entry.get("source_object"), f"{step['step_id']}.params.objects[{index}].source_object")
+        mirrored_name = require_string(entry.get("mirrored_name"), f"{step['step_id']}.params.objects[{index}].mirrored_name")
+        source = context["objects"].get(source_alias)
+        if source is None:
+            fail(f"{step['step_id']} requires source object `{source_alias}`")
+        duplicate = copy_object_for_detail(source, mirrored_name)
+        axis_index = {"x": 0, "y": 1, "z": 2}[axis]
+        for vertex in duplicate.data.vertices:
+            vertex.co[axis_index] *= -1.0
+        duplicate.data.update(calc_edges=True)
+        if axis == "x":
+            duplicate.location.x *= -1.0
+        elif axis == "y":
+            duplicate.location.y *= -1.0
+        else:
+            duplicate.location.z *= -1.0
+        group_name = entry.get("group")
+        register_detail_duplicate(duplicate, context, group_name if isinstance(group_name, str) else None)
 
 
 def resolve_object_aliases(names: list[Any], context: dict[str, Any]) -> list[str]:

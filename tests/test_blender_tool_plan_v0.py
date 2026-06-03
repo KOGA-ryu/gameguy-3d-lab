@@ -91,6 +91,8 @@ class BlenderToolPlanTests(unittest.TestCase):
             self.assertIn(expected, by_id)
             self.assertIn(by_id[expected]["stage"], stages)
             self.assertIn(by_id[expected]["execution_lane"], lanes)
+        for expected in ("modifier_boolean", "modifier_array", "modifier_mirror"):
+            self.assertIn("guard_panel", by_id[expected]["asset_families"])
 
     def test_sequence_policy_covers_target_asset_families(self) -> None:
         dictionary = load_json(DICTIONARY)
@@ -339,22 +341,58 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(plan["asset_family"], "guard_panel")
         self.assertEqual(plan["asset_family_policy"], "guard_panel")
         self.assertEqual(plan["style"], "gothic_stone")
-        self.assertEqual(plan["features"], ["gothic_panel_guard_blocks", "finish_tool_stack"])
+        self.assertEqual(
+            plan["features"],
+            ["railing_detail_profile_stack", "gothic_panel_guard_blocks", "finish_tool_stack"],
+        )
         self.assertTrue(FINISH_FEATURES.isdisjoint(plan["features"]))
-        self.assertEqual(plan["summary"]["step_count"], 46)
-        self.assertEqual(plan["summary"]["unique_tool_count"], 24)
+        self.assertEqual(plan["summary"]["step_count"], 57)
+        self.assertEqual(plan["summary"]["unique_tool_count"], 27)
         self.assertEqual(plan["summary"]["covered_stages"], plan["stage_order"])
         self.assertIn("mesh_from_pydata", plan["summary"]["unique_tools"])
         self.assertIn("primitive_cylinder_add", plan["summary"]["unique_tools"])
-        self.assertNotIn("modifier_boolean", plan["summary"]["unique_tools"])
+        self.assertIn("modifier_boolean", plan["summary"]["unique_tools"])
+        self.assertIn("modifier_array", plan["summary"]["unique_tools"])
+        self.assertIn("modifier_mirror", plan["summary"]["unique_tools"])
         self.assertNotIn("object_duplicate_radial", plan["summary"]["unique_tools"])
         self.assertEqual(
             plan["source_terms"]["reference_packet"],
             "data/architecture/asset_mill/reference_packets/gothic_panel_guard_reference_v0.json",
         )
-        self.assertEqual(plan["source_terms"]["profiles"], ["rectangle", "pointed_arch_profile"])
+        self.assertEqual(
+            plan["source_terms"]["profiles"],
+            ["rectangle", "pointed_arch_profile", "square", "custom_polygon", "capsule", "circle", "trapezoid"],
+        )
+        self.assertEqual(
+            plan["source_terms"]["railing_detail_profile_stack"]["bundle_path"],
+            "data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json",
+        )
+        self.assertIn(
+            "railing_capsule_vertical_slot_v0",
+            plan["source_terms"]["railing_detail_profile_stack"]["profile_ids"],
+        )
 
         by_step = {step["step_id"]: step for step in plan["steps"]}
+        self.assertEqual(by_step["create_center_panel_arch_cutter"]["params"]["material_role"], "socket")
+        self.assertEqual(
+            by_step["create_center_panel_arch_recess_shadow"]["params"]["source_detail_profile"],
+            "railing_pointed_arch_recess_v0",
+        )
+        self.assertEqual(by_step["create_left_panel_capsule_slot_shadow"]["params"]["group"], "railing_detail_recesses")
+        self.assertEqual(by_step["mirror_panel_capsule_slot_detail"]["tool_id"], "modifier_mirror")
+        self.assertEqual(by_step["array_lower_bead_strip"]["tool_id"], "modifier_array")
+        self.assertEqual(by_step["array_lower_bead_strip"]["params"]["count"], 9)
+        self.assertEqual(
+            by_step["boolean_cut_center_panel_detail_profiles"]["params"]["source_detail_profiles"],
+            [
+                "railing_square_frame_block_v0",
+                "railing_pointed_arch_recess_v0",
+                "railing_capsule_vertical_slot_v0",
+                "railing_circle_bead_strip_v0",
+                "railing_ogee_molding_side_profile_v0",
+                "railing_trapezoid_transition_collar_v0",
+            ],
+        )
         self.assertEqual(by_step["create_left_pier_core"]["params"]["size_m"], [0.22, 0.23, 0.76])
         self.assertEqual(by_step["create_left_finial"]["params"]["vertices"], 8)
         self.assertEqual(by_step["create_center_guard_panel"]["params"]["material_role"], "panel")
@@ -365,6 +403,8 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(by_step["create_left_pier_arch_recess_shadow"]["params"]["source_profile"], "pointed_arch_profile")
         self.assertEqual(by_step["join_gothic_panel_guard_blocks"]["params"]["source_component_count"], 9)
         self.assertTrue(by_step["join_gothic_panel_guard_blocks"]["params"]["socket_collar_composition"])
+        self.assertTrue(by_step["join_gothic_panel_guard_blocks"]["params"]["railing_detail_profile_stack"])
+        self.assertIn("railing_detail_beads", by_step["join_gothic_panel_guard_blocks"]["params"]["objects"])
         self.assertEqual(by_step["render_workbench_asset_preview"]["params"]["preview_visibility"], "final_asset_only")
         self.assertTrue(by_step["render_workbench_asset_preview"]["params"]["hide_validation_helpers"])
         self.assertEqual(
@@ -459,7 +499,7 @@ class BlenderToolPlanTests(unittest.TestCase):
                 text=True,
             )
 
-        self.assertIn("compiled tool plans=7 steps=219 tools=97 out=<validate-only>", result.stdout)
+        self.assertIn("compiled tool plans=7 steps=230 tools=97 out=<validate-only>", result.stdout)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_unknown_feature_fails_before_output(self) -> None:
@@ -498,6 +538,26 @@ class BlenderToolPlanTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("is not allowed by the window_frame sequence policy", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
+
+    def test_guard_panel_rejects_mismatched_detail_profile_stack_before_output(self) -> None:
+        source = load_json(DEFAULT_RECIPE)
+        guard = asset_by_id(source, "gothic_panel_guard_tool_plan_v0")
+        guard["style_parameters"]["railing_detail_profile_ids"] = guard["style_parameters"]["railing_detail_profile_ids"][:-1]
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            recipe_path = Path(tmp) / "bad_recipe.json"
+            out_root = Path(tmp) / "plans"
+            recipe_path.write_text(json.dumps(source, indent=2) + "\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(COMPILER), "--recipe", str(recipe_path), "--out", str(out_root)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("railing_detail_profile_ids must match guard-panel detail compiler profile order", result.stderr)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_window_frame_invalid_member_dimensions_fail_before_output(self) -> None:

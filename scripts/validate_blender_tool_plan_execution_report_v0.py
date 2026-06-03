@@ -52,7 +52,8 @@ REQUIRED_DOOR_FRAME_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
     "socket_boolean_not_required",
 }
 REQUIRED_GUARD_PANEL_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
-    "socket_boolean_not_required",
+    "explicit_socket_boolean_targets",
+    "socket_cutters_removed",
 }
 REQUIRED_BANISTER_MATERIAL_ROLES = ("base", "cap", "shaft", "rib", "socket_shadow")
 REQUIRED_FENCE_POST_MATERIAL_ROLES = ("base", "cap", "shaft", "rib", "socket_shadow")
@@ -62,6 +63,7 @@ REQUIRED_WINDOW_FRAME_MATERIAL_ROLES = ("frame",)
 REQUIRED_DOOR_FRAME_MATERIAL_ROLES = ("frame",)
 REQUIRED_GUARD_PANEL_MATERIAL_ROLES = ("pier", "base", "cap", "panel", "coping", "trim", "recess", "finial", "collar")
 REQUIRED_SOCKET_CUTTERS = ("east_socket_cutter", "west_socket_cutter")
+REQUIRED_GUARD_PANEL_DETAIL_CUTTERS = ("center_panel_arch_cutter", "left_panel_capsule_slot_cutter", "right_panel_capsule_slot_cutter")
 
 
 def fail(message: str) -> None:
@@ -222,32 +224,40 @@ def validate_material_regions(report: dict[str, Any], min_material_roles: int, r
     return face_counts
 
 
-def validate_socket_pass(report: dict[str, Any], min_socket_panels: int) -> None:
+def validate_socket_pass(
+    report: dict[str, Any],
+    min_socket_panels: int,
+    *,
+    target_names: list[str] | None = None,
+    required_cutters: tuple[str, ...] = REQUIRED_SOCKET_CUTTERS,
+    require_shadow_panels_for_cutters: bool = True,
+) -> None:
     socket_pass = require_object(report.get("socket_pass"), "socket_pass")
     if socket_pass.get("operation") != "DIFFERENCE":
         fail("socket_pass.operation must be DIFFERENCE")
     if socket_pass.get("solver_requested") != "EXACT":
         fail("socket_pass.solver_requested must be EXACT")
-    target_names = require_string_list(socket_pass.get("target_names"), "socket_pass.target_names")
-    if target_names != ["post_core"]:
-        fail("socket_pass.target_names must be [`post_core`]")
+    expected_target_names = target_names or ["post_core"]
+    actual_target_names = require_string_list(socket_pass.get("target_names"), "socket_pass.target_names")
+    if actual_target_names != expected_target_names:
+        fail(f"socket_pass.target_names must be {expected_target_names}")
     cutter_names = require_string_list(socket_pass.get("cutter_names"), "socket_pass.cutter_names")
-    for cutter in REQUIRED_SOCKET_CUTTERS:
+    for cutter in required_cutters:
         if cutter not in cutter_names:
             fail(f"socket_pass.cutter_names must include `{cutter}`")
-    applied_count = require_int(socket_pass.get("applied_modifier_count"), "socket_pass.applied_modifier_count", minimum=len(REQUIRED_SOCKET_CUTTERS))
+    applied_count = require_int(socket_pass.get("applied_modifier_count"), "socket_pass.applied_modifier_count", minimum=len(required_cutters))
     if applied_count != len(cutter_names):
         fail("socket_pass.applied_modifier_count must match socket_pass.cutter_names length")
     failed_count = require_int(socket_pass.get("failed_modifier_count"), "socket_pass.failed_modifier_count")
     if failed_count != 0:
         fail("socket_pass.failed_modifier_count must be 0")
     panel_count = require_int(socket_pass.get("socket_shadow_panel_count"), "socket_pass.socket_shadow_panel_count", minimum=min_socket_panels)
-    if panel_count < len(REQUIRED_SOCKET_CUTTERS):
+    if require_shadow_panels_for_cutters and panel_count < len(required_cutters):
         fail("socket_pass.socket_shadow_panel_count must cover both socket cutters")
     if require_bool(socket_pass.get("cutter_objects_removed"), "socket_pass.cutter_objects_removed") is not True:
         fail("socket_pass.cutter_objects_removed must be true")
     removed = require_string_list(socket_pass.get("removed_cutter_names"), "socket_pass.removed_cutter_names")
-    for cutter in REQUIRED_SOCKET_CUTTERS:
+    for cutter in required_cutters:
         if cutter not in removed:
             fail(f"socket_pass.removed_cutter_names must include `{cutter}`")
 
@@ -258,12 +268,13 @@ def validate_socket_not_required(report: dict[str, Any]) -> None:
         fail("socket_pass must be empty when socket booleans are not required")
 
 
-def validate_topology(report: dict[str, Any], max_non_manifold_edges: int) -> None:
+def validate_topology(report: dict[str, Any], max_non_manifold_edges: int, max_non_manifold_edges_before_cleanup: int | None = None) -> None:
     validation = require_object(report.get("validation"), "validation")
     before = require_int(validation.get("non_manifold_edge_count_before_cleanup"), "validation.non_manifold_edge_count_before_cleanup")
     after = require_int(validation.get("non_manifold_edge_count"), "validation.non_manifold_edge_count")
-    if before > max_non_manifold_edges:
-        fail(f"validation.non_manifold_edge_count_before_cleanup must be <= {max_non_manifold_edges}")
+    before_limit = max_non_manifold_edges if max_non_manifold_edges_before_cleanup is None else max_non_manifold_edges_before_cleanup
+    if before > before_limit:
+        fail(f"validation.non_manifold_edge_count_before_cleanup must be <= {before_limit}")
     if after > max_non_manifold_edges:
         fail(f"validation.non_manifold_edge_count must be <= {max_non_manifold_edges}")
     cleanup = require_object(report.get("topology_cleanup"), "topology_cleanup")
@@ -283,7 +294,14 @@ def validate_final_object(report: dict[str, Any]) -> None:
     require_int(final_object.get("face_count"), "final_object.face_count", minimum=1)
 
 
-def validate_report(report_path: Path, *, max_non_manifold_edges: int, min_material_roles: int, min_socket_panels: int) -> dict[str, Any]:
+def validate_report(
+    report_path: Path,
+    *,
+    max_non_manifold_edges: int,
+    max_non_manifold_edges_before_cleanup: int | None,
+    min_material_roles: int,
+    min_socket_panels: int,
+) -> dict[str, Any]:
     report = load_json(report_path)
     if report.get("schema") != REPORT_SCHEMA:
         fail(f"{report_path} schema must be {REPORT_SCHEMA}")
@@ -327,11 +345,17 @@ def validate_report(report_path: Path, *, max_non_manifold_edges: int, min_mater
         socket_shadow_panel_count = 0
     elif asset_family == "guard_panel":
         face_counts = validate_material_regions(report, len(REQUIRED_GUARD_PANEL_MATERIAL_ROLES), REQUIRED_GUARD_PANEL_MATERIAL_ROLES)
-        validate_socket_not_required(report)
-        socket_shadow_panel_count = 0
+        validate_socket_pass(
+            report,
+            0,
+            target_names=["center_guard_panel"],
+            required_cutters=REQUIRED_GUARD_PANEL_DETAIL_CUTTERS,
+            require_shadow_panels_for_cutters=False,
+        )
+        socket_shadow_panel_count = report["socket_pass"]["socket_shadow_panel_count"]
     else:
         fail(f"unsupported asset_family quality profile `{asset_family}`")
-    validate_topology(report, max_non_manifold_edges)
+    validate_topology(report, max_non_manifold_edges, max_non_manifold_edges_before_cleanup)
     validate_final_object(report)
     validate_preview_visibility(report)
     validate_no_repo_generated_outputs(report)
@@ -360,6 +384,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--report", type=Path, default=DEFAULT_REPORT)
     parser.add_argument("--json-report", type=Path, help="Optional path for a machine-readable validation report.")
     parser.add_argument("--max-non-manifold-edges", type=int, default=0)
+    parser.add_argument("--max-non-manifold-edges-before-cleanup", type=int)
     parser.add_argument("--min-material-roles", type=int, default=5)
     parser.add_argument("--min-socket-panels", type=int, default=2)
     return parser.parse_args(argv)
@@ -371,6 +396,7 @@ def main(argv: list[str] | None = None) -> int:
     result = validate_report(
         report_path,
         max_non_manifold_edges=args.max_non_manifold_edges,
+        max_non_manifold_edges_before_cleanup=args.max_non_manifold_edges_before_cleanup,
         min_material_roles=args.min_material_roles,
         min_socket_panels=args.min_socket_panels,
     )

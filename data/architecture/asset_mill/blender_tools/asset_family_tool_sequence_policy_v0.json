@@ -221,6 +221,7 @@
       "dictionary_family_tags": ["guard_panel", "panel", "stone", "all"],
       "allowed_features": [
         "gothic_panel_guard_blocks",
+        "railing_detail_profile_stack",
         "finish_tool_stack",
         "hard_edge_bevels",
         "weighted_normals",
@@ -241,7 +242,7 @@
       ],
       "allowed_tools_by_stage": {
         "base_form": ["primitive_cube_add", "primitive_cylinder_add", "mesh_from_pydata", "bmesh_create", "extrude_region"],
-        "assembly": ["join_objects", "transform_apply", "modifier_nodes", "gn_join_geometry", "gn_realize_instances", "gn_transform_geometry"],
+        "assembly": ["join_objects", "transform_apply", "modifier_boolean", "modifier_array", "modifier_mirror", "modifier_nodes", "gn_join_geometry", "gn_realize_instances", "gn_transform_geometry"],
         "shape_refinement": ["bevel_mesh_edges", "mark_sharp", "modifier_bevel", "modifier_weighted_normal"],
         "sculpt_detail": ["modifier_displace"],
         "retopo_cleanup": ["fill_holes", "merge_vertices", "remove_doubles", "dissolve_limited", "recalc_normals", "modifier_weld"],
@@ -250,7 +251,7 @@
         "validation_export": ["origin_set", "calculate_bounds", "validate_non_manifold", "create_collision_proxy", "create_lod_variant", "render_workbench_preview", "export_gltf"]
       },
       "required_tools": ["primitive_cube_add", "mesh_from_pydata", "join_objects", "modifier_bevel", "modifier_weighted_normal", "uv_smart_project", "material_principled_shader", "calculate_bounds", "validate_non_manifold", "create_collision_proxy", "create_lod_variant", "render_workbench_preview", "export_gltf"],
-      "forbidden_tools": ["object_duplicate_radial", "modifier_boolean", "modifier_array", "modifier_mirror", "sculpt_draw", "sculpt_smooth"],
+      "forbidden_tools": ["object_duplicate_radial", "sculpt_draw", "sculpt_smooth"],
       "tool_order_constraints": [
         {"before": "join_objects", "after": "modifier_bevel"},
         {"before": "modifier_bevel", "after": "modifier_weighted_normal"},

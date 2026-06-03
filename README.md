@@ -122,6 +122,8 @@ python3 scripts/validate_railing_detail_profiles_v0.py
 
 The current bundle is `data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json`. It declares square frame blocks, pointed-arch recesses, capsule vertical slots, circular bead strips, ogee side moldings, trapezoid transition collars, and lobed post cross-sections. Each profile must say where it is used, what detail role it has, how it is applied, and which staged Blender tools may execute it later.
 
+The gothic guard-panel tool-plan recipe now selects six of those profiles as a source-owned `railing_detail_profile_stack`. The compiler expands them into a 57-step guard-panel plan with pointed-arch and capsule cutters, shadow recess plates, mirrored side details, a linearly arrayed bead strip, ogee trim, tapered socket collars, and the normal shared finish stack. Blender remains an adapter: it consumes the compiled `gameguy_tool_plan_v0` JSON and executes `mesh_from_pydata`, `modifier_boolean`, `modifier_mirror`, and `modifier_array` steps rather than deciding those details itself.
+
 The repo now also has a tool-planning layer for near-finished Blender-capable asset construction:
 
 ```text
@@ -229,6 +231,7 @@ python3 scripts/validate_gameguy_tool_plan_v0.py --manifest /tmp/gameguy_blender
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_banister_post_tool_plan_v0_compiled.json --validate-only
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_fence_post_tool_plan_v0_compiled.json --validate-only
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_rail_segment_tool_plan_v0_compiled.json --validate-only
+python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_panel_guard_tool_plan_v0_compiled.json --validate-only
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_column_tool_plan_v0_compiled.json --validate-only
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_window_frame_tool_plan_v0_compiled.json --validate-only
 python3 scripts/execute_blender_tool_plan_v0.py --plan /tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_door_frame_tool_plan_v0_compiled.json --validate-only
@@ -304,10 +307,10 @@ Expected current checks:
 - JSON parses.
 - Python scripts compile.
 - Asset pump tests pass.
-- Blender tool-plan compiler validates a `97`-tool dictionary, a `7`-family sequence policy, and compiles seven default plans: a `32`-step banister post, a `32`-step fence post, a `28`-step rail segment, a `46`-step gothic panel guard, a `31`-step column, a `25`-step window frame, and a `25`-step door frame.
+- Blender tool-plan compiler validates a `97`-tool dictionary, a `7`-family sequence policy, and compiles seven default plans: a `32`-step banister post, a `32`-step fence post, a `28`-step rail segment, a `57`-step gothic panel guard, a `31`-step column, a `25`-step window frame, and a `25`-step door frame.
 - `gameguy_tool_plan_v0` validation proves manifest shape, known tool IDs, stable step order, stage order, asset-family sequence policy, deterministic steps, false claims, and no compiler media/mesh output.
-- Blender tool-plan execution adapter validation consumes the compiled `32`-step banister plan, the compiled `32`-step fence-post plan, the compiled `28`-step rail-segment plan, the compiled `46`-step guard-panel plan, the compiled `31`-step column plan, the compiled `25`-step window-frame plan, and the compiled `25`-step door-frame plan.
-- Blender tool-plan execution report validation proves adapter boundary rules, material-region preservation, topology count, and no repo-local generated outputs for all seven plans. The banister and fence-post profiles also prove socket boolean evidence, the rail-segment profile proves connector-tab material regions, the guard-panel profile proves reference-led panel/pier/collar/recess material regions, and the column profile proves square/circular transition and fluted-shaft material regions.
+- Blender tool-plan execution adapter validation consumes the compiled `32`-step banister plan, the compiled `32`-step fence-post plan, the compiled `28`-step rail-segment plan, the compiled `57`-step guard-panel plan, the compiled `31`-step column plan, the compiled `25`-step window-frame plan, and the compiled `25`-step door-frame plan.
+- Blender tool-plan execution report validation proves adapter boundary rules, material-region preservation, topology count, and no repo-local generated outputs for all seven plans. The banister and fence-post profiles also prove socket boolean evidence, the rail-segment profile proves connector-tab material regions, the guard-panel profile proves reference-led panel/pier/collar/recess material regions plus decorative detail boolean evidence, and the column profile proves square/circular transition and fluted-shaft material regions.
 - Blender tool-plan execution quality evidence is recorded in `workflow/reports/3D-LAB-0021-execution-quality-pass-v0/`.
 - Tiny source fixture validation passes.
 - Measured component source validation passes.

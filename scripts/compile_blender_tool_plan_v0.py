@@ -20,9 +20,18 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DICTIONARY = ROOT / "data" / "architecture" / "asset_mill" / "blender_tools" / "blender_tool_dictionary_v0.json"
 DEFAULT_SEQUENCE_POLICY = ROOT / "data" / "architecture" / "asset_mill" / "blender_tools" / "asset_family_tool_sequence_policy_v0.json"
 DEFAULT_RECIPE = ROOT / "data" / "architecture" / "asset_mill" / "tool_plan_recipes" / "architectural_tool_plan_recipes_v0.json"
+DEFAULT_RAILING_DETAIL_PROFILES = ROOT / "data" / "architecture" / "asset_mill" / "profile_sources" / "railing_detail_profiles_v0.json"
 DEFAULT_OUT = Path("/tmp/gameguy_blender_tool_plan_v0")
 GEOMETRY_DICTIONARY_ROOT = ROOT / "geometry_dictionary"
 SEQUENCE_POLICY_SCHEMA = "asset_family_tool_sequence_policy_v0"
+GUARD_PANEL_RAILING_DETAIL_PROFILE_IDS = [
+    "railing_square_frame_block_v0",
+    "railing_pointed_arch_recess_v0",
+    "railing_capsule_vertical_slot_v0",
+    "railing_circle_bead_strip_v0",
+    "railing_ogee_molding_side_profile_v0",
+    "railing_trapezoid_transition_collar_v0",
+]
 FINISH_FEATURE_TOOL_IDS = {
     "hard_edge_bevels": ["modifier_bevel", "mark_sharp"],
     "weighted_normals": ["modifier_weighted_normal"],
@@ -66,6 +75,14 @@ def repo_display_path(path: Path) -> str:
         return str(path.relative_to(ROOT))
     except ValueError:
         return str(path)
+
+
+def repo_relative_path(value: Any, field: str) -> Path:
+    text = require_string(value, field)
+    path = Path(text)
+    if path.is_absolute() or ".." in path.parts:
+        fail(f"{field} must be a relative repo path")
+    return ROOT / path
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -440,6 +457,52 @@ def validate_finish_tool_stacks(
     return result
 
 
+def validate_railing_detail_profile_stack(asset: dict[str, Any], geometry_terms: dict[str, set[str]], tool_map: dict[str, dict[str, Any]]) -> None:
+    asset_id = require_string(asset.get("asset_id"), "asset_id")
+    params = style_params(asset)
+    bundle_path = repo_relative_path(
+        params.get("railing_detail_profile_bundle", repo_display_path(DEFAULT_RAILING_DETAIL_PROFILES)),
+        f"{asset_id}.style_parameters.railing_detail_profile_bundle",
+    )
+    bundle = load_json(bundle_path)
+    if bundle.get("schema") != "asset_mill_railing_detail_profile_bundle_v0":
+        fail(f"{asset_id}.railing_detail_profile_bundle schema must be asset_mill_railing_detail_profile_bundle_v0")
+    profiles = require_list(bundle.get("profiles"), f"{asset_id}.railing_detail_profile_bundle.profiles")
+    if bundle.get("profile_count") != len(profiles):
+        fail(f"{asset_id}.railing_detail_profile_bundle.profile_count must match profiles length")
+    profile_map = {}
+    for index, profile_value in enumerate(profiles):
+        profile = require_object(profile_value, f"{asset_id}.railing_detail_profile_bundle.profiles[{index}]")
+        profile_id = require_string(profile.get("profile_id"), f"{asset_id}.railing_detail_profile_bundle.profiles[{index}].profile_id")
+        profile_map[profile_id] = profile
+    selected = require_string_list(params.get("railing_detail_profile_ids"), f"{asset_id}.style_parameters.railing_detail_profile_ids")
+    if asset.get("asset_family") == "guard_panel" and selected != GUARD_PANEL_RAILING_DETAIL_PROFILE_IDS:
+        fail(f"{asset_id}.style_parameters.railing_detail_profile_ids must match guard-panel detail compiler profile order")
+    for profile_id in selected:
+        if profile_id not in profile_map:
+            fail(f"{asset_id}.style_parameters.railing_detail_profile_ids references unknown profile `{profile_id}`")
+        profile = profile_map[profile_id]
+        shape = require_object(profile.get("source_2d_shape"), f"{profile_id}.source_2d_shape")
+        shape_term = require_string(shape.get("term_id"), f"{profile_id}.source_2d_shape.term_id")
+        if shape_term not in geometry_terms["profile_primitive"]:
+            fail(f"{profile_id}.source_2d_shape.term_id must be a known profile primitive")
+        require_known_terms(profile.get("geometry_terms_used"), all_geometry_terms(geometry_terms), f"{profile_id}.geometry_terms_used")
+        require_known_terms(profile.get("profile_terms"), geometry_terms["profile_primitive"], f"{profile_id}.profile_terms")
+        require_known_terms(profile.get("operations"), operation_terms(geometry_terms), f"{profile_id}.operations")
+        has_guard_panel_placement = False
+        for placement_index, placement_value in enumerate(require_list(profile.get("where_used"), f"{profile_id}.where_used")):
+            placement = require_object(placement_value, f"{profile_id}.where_used[{placement_index}]")
+            if placement.get("target_asset_family") == "guard_panel":
+                has_guard_panel_placement = True
+        if not has_guard_panel_placement and asset.get("asset_family") == "guard_panel":
+            fail(f"{profile_id}.where_used must include a guard_panel placement")
+        for step_index, step_value in enumerate(require_list(profile.get("blender_tool_sequence"), f"{profile_id}.blender_tool_sequence")):
+            step = require_object(step_value, f"{profile_id}.blender_tool_sequence[{step_index}]")
+            tool_id = require_string(step.get("tool_id"), f"{profile_id}.blender_tool_sequence[{step_index}].tool_id")
+            if tool_id not in tool_map:
+                fail(f"{profile_id}.blender_tool_sequence[{step_index}].tool_id uses unknown tool `{tool_id}`")
+
+
 def resolve_finish_tool_stack(asset: dict[str, Any], finish_stack_map: dict[str, dict[str, Any]]) -> None:
     asset_id = require_string(asset.get("asset_id"), "asset_id")
     if "finish_tool_stack" not in require_list(asset.get("features"), f"{asset_id}.features"):
@@ -479,6 +542,8 @@ def validate_recipe_bundle(
             fail(f"{asset_id}.features must not be empty")
         if "profile_operation_stack" in asset.get("features", []):
             validate_profile_operation_stack(asset, geometry_terms)
+        if "railing_detail_profile_stack" in asset.get("features", []):
+            validate_railing_detail_profile_stack(asset, geometry_terms, tool_map)
         if "finish_tool_stack" in asset.get("features", []):
             resolve_finish_tool_stack(asset, finish_stack_map)
         for stage_index, stage in enumerate(require_list(asset.get("required_stage_coverage"), f"{asset_id}.required_stage_coverage")):
@@ -547,6 +612,77 @@ def flat_profile_prism(profile_points_xz: list[list[float]], y_center: float, de
         next_index = (index + 1) % point_count
         faces.append([index, next_index, point_count + next_index, point_count + index])
     return {"vertices": vertices, "faces": faces}
+
+
+def pointed_arch_points(center_x: float, width: float, base_z: float, shoulder_z: float, apex_z: float) -> list[list[float]]:
+    half_width = width * 0.5
+    return [
+        [round(center_x - half_width, 6), round(base_z, 6)],
+        [round(center_x + half_width, 6), round(base_z, 6)],
+        [round(center_x + half_width, 6), round(shoulder_z, 6)],
+        [round(center_x, 6), round(apex_z, 6)],
+        [round(center_x - half_width, 6), round(shoulder_z, 6)],
+    ]
+
+
+def capsule_points(center_x: float, center_z: float, width: float, height: float) -> list[list[float]]:
+    half_width = width * 0.5
+    half_height = height * 0.5
+    radius = min(half_width, half_height)
+    straight_half = max(half_height - radius, 0.001)
+    return [
+        [round(center_x - half_width, 6), round(center_z - straight_half, 6)],
+        [round(center_x - half_width * 0.72, 6), round(center_z - half_height, 6)],
+        [round(center_x, 6), round(center_z - half_height, 6)],
+        [round(center_x + half_width * 0.72, 6), round(center_z - half_height, 6)],
+        [round(center_x + half_width, 6), round(center_z - straight_half, 6)],
+        [round(center_x + half_width, 6), round(center_z + straight_half, 6)],
+        [round(center_x + half_width * 0.72, 6), round(center_z + half_height, 6)],
+        [round(center_x, 6), round(center_z + half_height, 6)],
+        [round(center_x - half_width * 0.72, 6), round(center_z + half_height, 6)],
+        [round(center_x - half_width, 6), round(center_z + straight_half, 6)],
+    ]
+
+
+def regular_profile_points(center_x: float, center_z: float, radius_x: float, radius_z: float, segments: int = 8) -> list[list[float]]:
+    if segments < 4:
+        fail("regular profile points require at least four segments")
+    return [
+        [
+            round(center_x + math.cos(math.tau * index / segments) * radius_x, 6),
+            round(center_z + math.sin(math.tau * index / segments) * radius_z, 6),
+        ]
+        for index in range(segments)
+    ]
+
+
+def trapezoid_points(center_x: float, center_z: float, bottom_width: float, top_width: float, height: float) -> list[list[float]]:
+    half_bottom = bottom_width * 0.5
+    half_top = top_width * 0.5
+    half_height = height * 0.5
+    return [
+        [round(center_x - half_bottom, 6), round(center_z - half_height, 6)],
+        [round(center_x + half_bottom, 6), round(center_z - half_height, 6)],
+        [round(center_x + half_top, 6), round(center_z + half_height, 6)],
+        [round(center_x - half_top, 6), round(center_z + half_height, 6)],
+    ]
+
+
+def ogee_points(center_x: float, center_z: float, width: float, height: float) -> list[list[float]]:
+    half_width = width * 0.5
+    half_height = height * 0.5
+    return [
+        [round(center_x - half_width, 6), round(center_z - half_height, 6)],
+        [round(center_x - half_width * 0.70, 6), round(center_z - half_height, 6)],
+        [round(center_x - half_width * 0.58, 6), round(center_z - half_height * 0.15, 6)],
+        [round(center_x - half_width * 0.18, 6), round(center_z + half_height * 0.18, 6)],
+        [round(center_x + half_width * 0.18, 6), round(center_z - half_height * 0.18, 6)],
+        [round(center_x + half_width * 0.58, 6), round(center_z + half_height * 0.15, 6)],
+        [round(center_x + half_width * 0.70, 6), round(center_z + half_height, 6)],
+        [round(center_x + half_width, 6), round(center_z + half_height, 6)],
+        [round(center_x + half_width, 6), round(center_z + half_height * 0.58, 6)],
+        [round(center_x - half_width, 6), round(center_z - half_height * 0.58, 6)],
+    ]
 
 
 def rail_segment_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
@@ -635,19 +771,222 @@ def gothic_panel_guard_mesh_step(
     y_center: float,
     depth_y: float,
     material_role: str,
+    source_profile: str = "pointed_arch_profile",
+    source_detail_profile: str | None = None,
+    group: str | None = None,
 ) -> dict[str, Any]:
     mesh = flat_profile_prism(points_xz, y_center, depth_y)
+    params = {
+        "vertices": mesh["vertices"],
+        "faces": mesh["faces"],
+        "material_role": material_role,
+        "source_profile": source_profile,
+    }
+    if source_detail_profile:
+        params["source_detail_profile"] = source_detail_profile
+    if group:
+        params["group"] = group
     return {
         "step_id": step_id,
         "tool_id": "mesh_from_pydata",
         "purpose": purpose,
-        "params": {
-            "vertices": mesh["vertices"],
-            "faces": mesh["faces"],
-            "material_role": material_role,
-            "source_profile": "pointed_arch_profile",
-        },
+        "params": params,
     }
+
+
+def railing_detail_profile_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
+    params = style_params(asset)
+    bundle_path = repo_display_path(
+        repo_relative_path(
+            params.get("railing_detail_profile_bundle", repo_display_path(DEFAULT_RAILING_DETAIL_PROFILES)),
+            f"{asset['asset_id']}.style_parameters.railing_detail_profile_bundle",
+        )
+    )
+    selected_profiles = require_string_list(params.get("railing_detail_profile_ids"), f"{asset['asset_id']}.style_parameters.railing_detail_profile_ids")
+    detail_y = number_param(params, "center_panel_detail_surface_y_m", -0.083)
+    cut_depth = number_param(params, "center_panel_arch_cut_depth_y_m", 0.18)
+    arch_points = pointed_arch_points(
+        0.0,
+        number_param(params, "center_panel_arch_width_m", 0.34),
+        number_param(params, "center_panel_arch_base_z_m", 0.42),
+        number_param(params, "center_panel_arch_shoulder_z_m", 0.61),
+        number_param(params, "center_panel_arch_apex_z_m", 0.72),
+    )
+    slot_x = number_param(params, "panel_capsule_slot_center_x_m", 0.36)
+    slot_points = capsule_points(
+        -slot_x,
+        number_param(params, "panel_capsule_slot_center_z_m", 0.56),
+        number_param(params, "panel_capsule_slot_width_m", 0.085),
+        number_param(params, "panel_capsule_slot_height_m", 0.25),
+    )
+    bead_points = regular_profile_points(
+        number_param(params, "lower_bead_center_x_m", -0.34),
+        number_param(params, "lower_bead_center_z_m", 0.255),
+        number_param(params, "lower_bead_radius_x_m", 0.026),
+        number_param(params, "lower_bead_radius_z_m", 0.018),
+        segments=8,
+    )
+    ogee_points_xz = ogee_points(
+        0.0,
+        number_param(params, "ogee_profile_center_z_m", 0.805),
+        number_param(params, "ogee_profile_width_m", 0.92),
+        number_param(params, "ogee_profile_height_m", 0.055),
+    )
+    trapezoid_x = number_param(params, "socket_trapezoid_center_x_m", 0.63)
+    trapezoid_points_xz = trapezoid_points(
+        -trapezoid_x,
+        number_param(params, "socket_trapezoid_center_z_m", 0.55),
+        number_param(params, "socket_trapezoid_width_bottom_m", 0.12),
+        number_param(params, "socket_trapezoid_width_top_m", 0.075),
+        number_param(params, "socket_trapezoid_height_m", 0.30),
+    )
+    slot_cut_depth = number_param(params, "panel_capsule_slot_cut_depth_y_m", 0.18)
+    bead_count = int_param(params, "lower_bead_count", 9, minimum=1)
+    bead_spacing = number_param(params, "lower_bead_spacing_x_m", 0.085)
+    base_steps = [
+        gothic_panel_guard_mesh_step(
+            "create_center_panel_arch_cutter",
+            "Create a pointed-arch cutter from the railing detail source profile.",
+            arch_points,
+            y_center=detail_y,
+            depth_y=cut_depth,
+            material_role="socket",
+            source_profile="pointed_arch_profile",
+            source_detail_profile="railing_pointed_arch_recess_v0",
+        ),
+        gothic_panel_guard_mesh_step(
+            "create_center_panel_arch_recess_shadow",
+            "Create a dark pointed-arch recess plate behind the panel cut.",
+            arch_points,
+            y_center=round(detail_y - cut_depth * 0.52, 6),
+            depth_y=0.012,
+            material_role="recess",
+            source_profile="pointed_arch_profile",
+            source_detail_profile="railing_pointed_arch_recess_v0",
+            group="railing_detail_recesses",
+        ),
+        gothic_panel_guard_mesh_step(
+            "create_left_panel_capsule_slot_cutter",
+            "Create one capsule slot cutter from the railing detail source profile.",
+            slot_points,
+            y_center=detail_y,
+            depth_y=slot_cut_depth,
+            material_role="socket",
+            source_profile="capsule",
+            source_detail_profile="railing_capsule_vertical_slot_v0",
+        ),
+        gothic_panel_guard_mesh_step(
+            "create_left_panel_capsule_slot_shadow",
+            "Create one capsule slot shadow plate before mirroring.",
+            slot_points,
+            y_center=round(detail_y - slot_cut_depth * 0.52, 6),
+            depth_y=0.012,
+            material_role="recess",
+            source_profile="capsule",
+            source_detail_profile="railing_capsule_vertical_slot_v0",
+            group="railing_detail_recesses",
+        ),
+        gothic_panel_guard_mesh_step(
+            "create_lower_bead_source",
+            "Create one circular bead source before linear array expansion.",
+            bead_points,
+            y_center=round(detail_y - 0.014, 6),
+            depth_y=0.028,
+            material_role="trim",
+            source_profile="circle",
+            source_detail_profile="railing_circle_bead_strip_v0",
+            group="railing_detail_beads",
+        ),
+        gothic_panel_guard_mesh_step(
+            "create_top_coping_ogee_front_profile",
+            "Create a low-point ogee/cyma molding profile along the front coping rail.",
+            ogee_points_xz,
+            y_center=round(detail_y - 0.012, 6),
+            depth_y=0.024,
+            material_role="trim",
+            source_profile="custom_polygon",
+            source_detail_profile="railing_ogee_molding_side_profile_v0",
+            group="railing_detail_trim",
+        ),
+        gothic_panel_guard_mesh_step(
+            "create_left_socket_trapezoid_collar_trim",
+            "Create one tapered socket-collar trim plate before mirroring.",
+            trapezoid_points_xz,
+            y_center=round(detail_y - 0.018, 6),
+            depth_y=0.024,
+            material_role="collar",
+            source_profile="trapezoid",
+            source_detail_profile="railing_trapezoid_transition_collar_v0",
+            group="railing_detail_trim",
+        ),
+    ]
+    return [
+        *base_steps,
+        {
+            "step_id": "mirror_panel_capsule_slot_detail",
+            "tool_id": "modifier_mirror",
+            "purpose": "Mirror capsule slot cutter and shadow plate across the guard panel.",
+            "params": {
+                "axis": "x",
+                "objects": [
+                    {
+                        "source_object": "left_panel_capsule_slot_cutter",
+                        "mirrored_name": "right_panel_capsule_slot_cutter",
+                        "group": "cutters",
+                    },
+                    {
+                        "source_object": "left_panel_capsule_slot_shadow",
+                        "mirrored_name": "right_panel_capsule_slot_shadow",
+                        "group": "railing_detail_recesses",
+                    },
+                ],
+                "source_detail_profile": "railing_capsule_vertical_slot_v0",
+            },
+        },
+        {
+            "step_id": "mirror_socket_trapezoid_collar_trim",
+            "tool_id": "modifier_mirror",
+            "purpose": "Mirror the tapered socket-collar trim to the other panel side.",
+            "params": {
+                "axis": "x",
+                "objects": [
+                    {
+                        "source_object": "left_socket_trapezoid_collar_trim",
+                        "mirrored_name": "right_socket_trapezoid_collar_trim",
+                        "group": "railing_detail_trim",
+                    }
+                ],
+                "source_detail_profile": "railing_trapezoid_transition_collar_v0",
+            },
+        },
+        {
+            "step_id": "boolean_cut_center_panel_detail_profiles",
+            "tool_id": "modifier_boolean",
+            "purpose": "Cut source-owned pointed-arch and capsule recesses into the center guard panel.",
+            "params": {
+                "operation": "DIFFERENCE",
+                "solver": "EXACT",
+                "cutters": ["center_panel_arch_cutter", "left_panel_capsule_slot_cutter", "right_panel_capsule_slot_cutter"],
+                "targets": ["center_guard_panel"],
+                "cleanup_cutters": True,
+                "source_profile_bundle": bundle_path,
+                "source_detail_profiles": selected_profiles,
+            },
+        },
+        {
+            "step_id": "array_lower_bead_strip",
+            "tool_id": "modifier_array",
+            "purpose": "Repeat the circular bead source across the lower molding strip.",
+            "params": {
+                "source_object": "lower_bead_source",
+                "count": bead_count,
+                "offset_m": [bead_spacing, 0.0, 0.0],
+                "name_prefix": "lower_bead",
+                "output_group": "railing_detail_beads",
+                "source_detail_profile": "railing_circle_bead_strip_v0",
+            },
+        },
+    ]
 
 
 def gothic_panel_guard_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
@@ -875,16 +1214,19 @@ def gothic_panel_guard_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
         "right_pier_arch_recess_shadow",
         "right_pier_arch_raised_trim",
     ]
+    if "railing_detail_profile_stack" in asset.get("features", []):
+        join_objects.extend(["railing_detail_recesses", "railing_detail_trim", "railing_detail_beads"])
     steps.append(
         {
             "step_id": "join_gothic_panel_guard_blocks",
             "tool_id": "join_objects",
-            "purpose": "Join piers, collars, panel, coping, molding, trim, and recess plates into one reference-led guard asset.",
+            "purpose": "Join piers, collars, panel, coping, molding, trim, recess plates, and source-owned 2D detail profiles into one reference-led guard asset.",
             "params": {
                 "objects": join_objects,
                 "reference_packet": require_string(params.get("reference_packet"), f"{asset['asset_id']}.style_parameters.reference_packet"),
                 "source_component_count": 9,
                 "socket_collar_composition": True,
+                "railing_detail_profile_stack": "railing_detail_profile_stack" in asset.get("features", []),
             },
         }
     )
@@ -1051,6 +1393,8 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
     params = style_params(asset)
     if feature == "profile_operation_stack":
         return profile_operation_stack_steps(asset)
+    if feature == "railing_detail_profile_stack":
+        return railing_detail_profile_steps(asset)
     if feature == "finish_tool_stack":
         return finish_tool_stack_steps(asset)
     if feature == "stepped_square_base":
@@ -1308,6 +1652,50 @@ def source_terms_for_asset(asset: dict[str, Any]) -> dict[str, Any]:
         append_unique("geometry", ["rectangle", "pointed_arch_profile", "extrude", "compound_asset", "bevel_edges"])
         append_unique("profiles", ["rectangle", "pointed_arch_profile"])
         append_unique("operators", ["extrude", "compound_asset", "bevel_edges"])
+    if "railing_detail_profile_stack" in features:
+        params = style_params(asset)
+        bundle_path = repo_relative_path(
+            params.get("railing_detail_profile_bundle", repo_display_path(DEFAULT_RAILING_DETAIL_PROFILES)),
+            f"{asset_id}.style_parameters.railing_detail_profile_bundle",
+        )
+        bundle = load_json(bundle_path)
+        selected_profile_ids = require_string_list(params.get("railing_detail_profile_ids"), f"{asset_id}.style_parameters.railing_detail_profile_ids")
+        profile_map = {}
+        for index, profile_value in enumerate(require_list(bundle.get("profiles"), f"{asset_id}.railing_detail_profile_bundle.profiles")):
+            profile = require_object(profile_value, f"{asset_id}.railing_detail_profile_bundle.profiles[{index}]")
+            profile_map[require_string(profile.get("profile_id"), f"{asset_id}.railing_detail_profile_bundle.profiles[{index}].profile_id")] = profile
+        detail_profiles = []
+        tool_ids = []
+        placement_regions = []
+        for profile_id in selected_profile_ids:
+            profile = require_object(profile_map.get(profile_id), f"{asset_id}.railing_detail_profile_stack.{profile_id}")
+            append_unique("geometry", require_string_list(profile.get("geometry_terms_used"), f"{profile_id}.geometry_terms_used"))
+            append_unique("profiles", require_string_list(profile.get("profile_terms"), f"{profile_id}.profile_terms"))
+            append_unique("operators", require_string_list(profile.get("operations"), f"{profile_id}.operations"))
+            detail_profiles.append(profile_id)
+            for placement_value in require_list(profile.get("where_used"), f"{profile_id}.where_used"):
+                placement = require_object(placement_value, f"{profile_id}.where_used[]")
+                if placement.get("target_asset_family") == asset.get("asset_family"):
+                    placement_regions.append(
+                        {
+                            "profile_id": profile_id,
+                            "placement_region": require_string(placement.get("placement_region"), f"{profile_id}.placement_region"),
+                            "detail_role": require_string(placement.get("detail_role"), f"{profile_id}.detail_role"),
+                            "application_method": require_string(placement.get("application_method"), f"{profile_id}.application_method"),
+                        }
+                    )
+            for step_value in require_list(profile.get("blender_tool_sequence"), f"{profile_id}.blender_tool_sequence"):
+                step = require_object(step_value, f"{profile_id}.blender_tool_sequence[]")
+                tool_id = require_string(step.get("tool_id"), f"{profile_id}.blender_tool_sequence.tool_id")
+                if tool_id not in tool_ids:
+                    tool_ids.append(tool_id)
+        result["railing_detail_profile_stack"] = {
+            "bundle_path": repo_display_path(bundle_path),
+            "profile_ids": detail_profiles,
+            "placement_regions": placement_regions,
+            "tool_ids": tool_ids,
+            "compile_mode": "guard_panel_cut_shadow_and_trim_v0",
+        }
     if "finish_tool_stack" in features:
         finish_stack = resolved_finish_tool_stack(asset)
         append_unique("geometry", require_string_list(finish_stack.get("geometry_terms_used"), f"{asset_id}.finish_tool_stack.geometry_terms_used"))

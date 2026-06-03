@@ -320,6 +320,8 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
                         "scripts/validate_blender_tool_plan_execution_report_v0.py",
                         "--report",
                         GUARD_PANEL_TOOL_PLAN_EXECUTION_OUT / "tool_plan_execution_v0_report.json",
+                        "--max-non-manifold-edges-before-cleanup",
+                        "40",
                     ),
                 ),
             ]

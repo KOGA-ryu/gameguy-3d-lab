@@ -1,0 +1,101 @@
+{
+  "schema": "railing_detail_tool_plan_compiler_receipt_v0",
+  "slice_id": "3D-LAB-0041",
+  "title": "Compile railing 2D detail profiles into the guard-panel tool plan",
+  "source_profile_bundle": "data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json",
+  "tool_plan_recipe_bundle": "data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json",
+  "compiler": "scripts/compile_blender_tool_plan_v0.py",
+  "blender_adapter": "scripts/execute_blender_tool_plan_v0.py",
+  "execution_report_validator": "scripts/validate_blender_tool_plan_execution_report_v0.py",
+  "pipeline_validator": "scripts/validate_generation_pipeline_v0.py",
+  "changed_files": [
+    "README.md",
+    "data/architecture/asset_mill/blender_tools/asset_family_tool_sequence_policy_v0.json",
+    "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json",
+    "data/architecture/asset_mill/tool_plan_recipes/architectural_tool_plan_recipes_v0.json",
+    "scripts/compile_blender_tool_plan_v0.py",
+    "scripts/execute_blender_tool_plan_v0.py",
+    "scripts/validate_blender_tool_plan_execution_report_v0.py",
+    "scripts/validate_generation_pipeline_v0.py",
+    "tests/test_blender_tool_plan_v0.py",
+    "tests/test_execute_blender_tool_plan_v0.py",
+    "tests/test_validate_blender_tool_plan_execution_report_v0.py",
+    "tests/test_validate_gameguy_tool_plan_v0.py",
+    "workflow/reports/3D-LAB-0041-railing-detail-tool-plan-compiler-v0/receipt.json",
+    "workflow/reports/3D-LAB-0041-railing-detail-tool-plan-compiler-v0/report.md"
+  ],
+  "compiled_guard_panel_plan": {
+    "asset_id": "gothic_panel_guard_tool_plan_v0",
+    "plan_id": "gothic_panel_guard_tool_plan_v0_compiled",
+    "features": [
+      "railing_detail_profile_stack",
+      "gothic_panel_guard_blocks",
+      "finish_tool_stack"
+    ],
+    "step_count": 57,
+    "unique_tool_count": 27,
+    "railing_detail_profile_ids": [
+      "railing_square_frame_block_v0",
+      "railing_pointed_arch_recess_v0",
+      "railing_capsule_vertical_slot_v0",
+      "railing_circle_bead_strip_v0",
+      "railing_ogee_molding_side_profile_v0",
+      "railing_trapezoid_transition_collar_v0"
+    ],
+    "compiled_detail_tools": [
+      "mesh_from_pydata",
+      "modifier_boolean",
+      "modifier_mirror",
+      "modifier_array"
+    ],
+    "compile_mode": "guard_panel_cut_shadow_and_trim_v0"
+  },
+  "execution_evidence": {
+    "guard_panel_step_count": 57,
+    "guard_panel_unique_tool_count": 27,
+    "guard_panel_material_role_count": 10,
+    "guard_panel_boolean_target_names": [
+      "center_guard_panel"
+    ],
+    "guard_panel_cutter_names": [
+      "center_panel_arch_cutter",
+      "left_panel_capsule_slot_cutter",
+      "right_panel_capsule_slot_cutter"
+    ],
+    "guard_panel_applied_modifier_count": 3,
+    "guard_panel_failed_modifier_count": 0,
+    "guard_panel_non_manifold_before_cleanup": 36,
+    "guard_panel_non_manifold_after_cleanup": 0
+  },
+  "validation": {
+    "targeted_unit_tests": "47 tests",
+    "full_unit_tests": "included in pipeline gate",
+    "tool_plan_validation": {
+      "plan_count": 7,
+      "total_steps": 230,
+      "unique_tool_count": 28
+    },
+    "guard_panel_adapter_validate_only": {
+      "step_count": 57,
+      "supported_step_count": 57,
+      "unique_tool_count": 27
+    },
+    "non_blender_pipeline": {
+      "command_count": 31,
+      "json_file_count": 235,
+      "include_blender": false
+    },
+    "full_blender_pipeline": {
+      "command_count": 45,
+      "json_file_count": 235,
+      "include_blender": true
+    },
+    "repo_media_mesh_output_count": 0
+  },
+  "rules": {
+    "blender_execution_is_adapter_layer": true,
+    "source_design_logic_stays_in_recipe_or_compiler": true,
+    "compiled_plan_is_deterministic_json": true,
+    "generated_outputs_stay_out_of_repo": true
+  }
+}
