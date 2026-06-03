@@ -287,9 +287,15 @@ def validate_source_asset_polish_bundle(item: Any, index: int, known_labels: set
     compiler = script_path(bundle_ref.get("compiler"), f"source_asset_polish_plan_bundles[{index}].compiler")
     validator = script_path(bundle_ref.get("validator"), f"source_asset_polish_plan_bundles[{index}].validator")
     adapter = script_path(bundle_ref.get("adapter_validate_only"), f"source_asset_polish_plan_bundles[{index}].adapter_validate_only")
+    executor = script_path(bundle_ref.get("executor"), f"source_asset_polish_plan_bundles[{index}].executor")
+    execution_report_validator = script_path(
+        bundle_ref.get("execution_report_validator"),
+        f"source_asset_polish_plan_bundles[{index}].execution_report_validator",
+    )
     assert_no_blender_import(compiler, f"source_asset_polish_plan_bundles[{index}].compiler")
     assert_no_blender_import(validator, f"source_asset_polish_plan_bundles[{index}].validator")
     assert_no_blender_import(adapter, f"source_asset_polish_plan_bundles[{index}].adapter_validate_only")
+    assert_no_blender_import(execution_report_validator, f"source_asset_polish_plan_bundles[{index}].execution_report_validator")
     labels = validate_pipeline_labels(bundle_ref.get("pipeline_labels"), known_labels, f"source_asset_polish_plan_bundles[{index}].pipeline_labels")
     return {
         "bundle_id": bundle_id,
@@ -298,6 +304,8 @@ def validate_source_asset_polish_bundle(item: Any, index: int, known_labels: set
         "plan_count": expected_count,
         "tool_dictionary": display_path(dictionary_path),
         "adapter_validate_only": display_path(adapter),
+        "executor": display_path(executor),
+        "execution_report_validator": display_path(execution_report_validator),
         "pipeline_label_count": len(labels),
     }
 
