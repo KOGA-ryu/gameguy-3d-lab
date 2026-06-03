@@ -1,0 +1,96 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0054-hex-linework-families-v0",
+  "created_utc": "2026-06-03T00:00:00Z",
+  "summary": "Added field-level linework families to the hex rosette source pattern, generating selected inner star-ring chords and bridge lines before segment splitting.",
+  "source_inputs": {
+    "pattern_field_bundle": "data/architecture/sacred_geometry/pattern_field_recipes_v0.json",
+    "pattern_segment_bundle": "data/architecture/sacred_geometry/pattern_segment_recipes_v0.json",
+    "pattern_field_compiler": "scripts/compile_pattern_field_v0.py",
+    "pattern_segment_compiler": "scripts/compile_pattern_segments_v0.py"
+  },
+  "linework_families": [
+    {
+      "family_id": "hex_inner_rosette_chords",
+      "family_type": "ring_chords",
+      "edge_count": 168,
+      "source_ring": "star"
+    },
+    {
+      "family_id": "hex_center_spoke_point_bridges",
+      "family_type": "ring_point_bridges",
+      "edge_count": 216,
+      "source_rings": ["star", "star"]
+    },
+    {
+      "family_id": "hex_surrounding_orbit_point_bridges",
+      "family_type": "ring_point_bridges",
+      "edge_count": 72,
+      "source_rings": ["star", "star"]
+    }
+  ],
+  "compiled_pattern_field": {
+    "field_id": "hex_rosette_pattern_field_v0",
+    "instance_count": 7,
+    "linework_family_count": 3,
+    "linework_edge_count": 456,
+    "circle_count": 21,
+    "point_count": 259,
+    "edge_count": 888,
+    "selection_count": 4,
+    "selected_edge_reference_count": 552,
+    "unique_selected_edge_count": 552,
+    "manifest_path": "/tmp/gameguy_pattern_field_v0_0054/manifest.json",
+    "field_path": "/tmp/gameguy_pattern_field_v0_0054/fields/hex_rosette_pattern_field_v0.json",
+    "svg_preview_path": "/tmp/gameguy_pattern_field_v0_0054/svg/hex_rosette_pattern_field_v0.svg",
+    "png_preview_path": "/tmp/gameguy_pattern_field_v0_0054_preview/hex_rosette_pattern_field_v0.svg.png"
+  },
+  "compiled_pattern_segments": {
+    "segment_set_id": "hex_rosette_pattern_segments_v0",
+    "source_field_id": "hex_rosette_pattern_field_v0",
+    "source_edge_count": 888,
+    "intersection_point_count": 7751,
+    "segment_count": 14324,
+    "selection_count": 4,
+    "selected_segment_reference_count": 12602,
+    "unique_selected_segment_count": 12602,
+    "manifest_path": "/tmp/gameguy_pattern_segments_v0_0054/manifest.json",
+    "segment_set_path": "/tmp/gameguy_pattern_segments_v0_0054/segment_sets/hex_rosette_pattern_segments_v0.json",
+    "svg_preview_path": "/tmp/gameguy_pattern_segments_v0_0054/svg/hex_rosette_pattern_segments_v0.svg",
+    "png_preview_path": "/tmp/gameguy_pattern_segments_v0_0054_preview/hex_rosette_pattern_segments_v0.svg.png"
+  },
+  "validation": {
+    "pattern_field_validate_only": {
+      "command": "python3 scripts/compile_pattern_field_v0.py --validate-only",
+      "result": "compiled pattern fields=1 edges=888 out=<validate-only>"
+    },
+    "pattern_segments_validate_only": {
+      "command": "python3 scripts/compile_pattern_segments_v0.py --validate-only",
+      "result": "compiled pattern segment sets=1 intersections=7751 segments=14324 out=<validate-only>"
+    },
+    "targeted_tests": {
+      "command": "python3 -m unittest tests/test_compile_pattern_field_v0.py tests/test_compile_pattern_segments_v0.py",
+      "result": "OK",
+      "test_count": 9
+    },
+    "asset_generation_registry": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS asset generation registry validation: geometry_bundles=5 geometry_assets=40 source_profiles=19 source_graphs=1 source_cell_selections=1 source_pattern_fields=1 source_pattern_segments=1 source_taxonomies=23 reference_only=3"
+    },
+    "generation_pipeline_non_blender_skip_unit_tests": {
+      "command": "python3 scripts/validate_generation_pipeline_v0.py --skip-unit-tests --json-report /tmp/gameguy_pipeline_0054_hex_linework.json",
+      "result": "PASS generation pipeline validation: commands=38 json=258 include_blender=false",
+      "command_count": 38,
+      "json_file_count": 258
+    }
+  },
+  "rules": {
+    "source_field_only": true,
+    "linework_families_are_recipe_data": true,
+    "selected_linework_uses_inner_star_ring": true,
+    "outer_rings_are_guides": true,
+    "generated_outputs_stay_under_tmp": true,
+    "no_blender_validation_for_source_only_slice": true
+  },
+  "recommended_next_goal": "Add omission rules and closed-loop extraction over the dense split hex field."
+}

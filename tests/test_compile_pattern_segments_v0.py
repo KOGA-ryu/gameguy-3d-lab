@@ -69,25 +69,40 @@ class PatternSegmentCompilerTests(unittest.TestCase):
         self.assertEqual(manifest["segment_set_count"], 1)
         self.assertEqual(segment_set["schema"], "gameguy_pattern_segment_graph_v0")
         self.assertEqual(segment_set["source_field_id"], "hex_rosette_pattern_field_v0")
-        self.assertEqual(segment_set["summary"]["source_edge_count"], 432)
-        self.assertEqual(segment_set["summary"]["intersection_point_count"], 504)
-        self.assertEqual(segment_set["summary"]["segment_count"], 1656)
-        self.assertEqual(segment_set["summary"]["selection_count"], 3)
-        self.assertEqual(segment_set["summary"]["selected_segment_reference_count"], 984)
-        self.assertEqual(segment_set["summary"]["unique_selected_segment_count"], 984)
+        self.assertEqual(segment_set["summary"]["source_edge_count"], 888)
+        self.assertEqual(segment_set["summary"]["intersection_point_count"], 7751)
+        self.assertEqual(segment_set["summary"]["segment_count"], 14324)
+        self.assertEqual(segment_set["summary"]["selection_count"], 4)
+        self.assertEqual(segment_set["summary"]["selected_segment_reference_count"], 12602)
+        self.assertEqual(segment_set["summary"]["unique_selected_segment_count"], 12602)
 
         selections = {selection["selection_id"]: selection for selection in segment_set["selections"]}
-        self.assertEqual(selections["selected_center_rosette_segments"]["selected_count"], 132)
-        self.assertEqual(selections["selected_surrounding_rosette_segments"]["selected_count"], 792)
-        self.assertEqual(selections["selected_connector_segments"]["selected_count"], 60)
+        self.assertEqual(selections["selected_center_rosette_segments"]["selected_count"], 360)
+        self.assertEqual(selections["selected_surrounding_rosette_segments"]["selected_count"], 1488)
+        self.assertEqual(selections["selected_connector_segments"]["selected_count"], 234)
+        self.assertEqual(selections["selected_hex_inner_linework_segments"]["selected_count"], 10520)
         segment_by_id = {segment["segment_id"]: segment for segment in segment_set["segments"]}
         selected_rosette_ids = (
             selections["selected_center_rosette_segments"]["segment_ids"]
             + selections["selected_surrounding_rosette_segments"]["segment_ids"]
         )
         selected_rosette_segments = [segment_by_id[segment_id] for segment_id in selected_rosette_ids]
+        selected_linework_segments = [
+            segment_by_id[segment_id] for segment_id in selections["selected_hex_inner_linework_segments"]["segment_ids"]
+        ]
         self.assertTrue(all("source:ring:star" in segment["tags"] for segment in selected_rosette_segments))
         self.assertTrue(all("source:ring:outer" not in segment["tags"] for segment in selected_rosette_segments))
+        self.assertTrue(
+            all(
+                "source:ring:outer" not in segment["tags"]
+                and (
+                    "source:ring:star" in segment["tags"]
+                    or "source:from_ring:star" in segment["tags"]
+                    or "source:to_ring:star" in segment["tags"]
+                )
+                for segment in selected_linework_segments
+            )
+        )
         self.assertIn("hex_rosette_pattern_segments_v0", svg)
         self.assertIn('class="intersection"', svg)
 

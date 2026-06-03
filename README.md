@@ -75,7 +75,7 @@ python3 scripts/compile_pattern_field_v0.py \
   --out /tmp/gameguy_pattern_field_v0
 ```
 
-The first pattern-field bundle is `data/architecture/sacred_geometry/pattern_field_recipes_v0.json`. It compiles `hex_rosette_pattern_field_v0` into one center rosette and six surrounding tangent rosettes, with outer circles kept as guide boundaries and selected star linework pulled from the inner star ring. It is a construction drawing source, not a final ornament or mesh.
+The first pattern-field bundle is `data/architecture/sacred_geometry/pattern_field_recipes_v0.json`. It compiles `hex_rosette_pattern_field_v0` into one center rosette and six surrounding tangent rosettes, with outer circles kept as guide boundaries and selected star/chord/bridge linework pulled from the inner star ring. It is a construction drawing source, not a final ornament or mesh.
 
 Pattern segment splitting turns the field into smaller selectable pieces by cutting linework at intersections:
 
@@ -86,7 +86,7 @@ python3 scripts/compile_pattern_segments_v0.py \
   --out /tmp/gameguy_pattern_segments_v0
 ```
 
-The first segment bundle is `data/architecture/sacred_geometry/pattern_segment_recipes_v0.json`. It splits `hex_rosette_pattern_field_v0` into candidate segments, preserves selected source-trace tags, and previews intersection points before omission rules or closed-loop extraction.
+The first segment bundle is `data/architecture/sacred_geometry/pattern_segment_recipes_v0.json`. It splits `hex_rosette_pattern_field_v0` into candidate segments, preserves selected source-trace and linework-family tags, and previews intersection points before omission rules or closed-loop extraction.
 
 The first lean command is:
 
@@ -373,8 +373,8 @@ Expected current checks:
 - Construction geometry taxonomy validation proves the source-language terms for construction fields, selection/omission, role promotion, motif orbits, tracery, muqarnas cell plans, and lift/fold/sweep/thicken/bevel operations.
 - Sacred graph compilation proves a source-owned 22-division construction graph with named point, edge, and star-trace selections before 3D lifting/folding.
 - Construction cell selection compilation proves `66` closed ring-band cells and named cell selections for vault webs, tracery openings, and railing recess panels before 3D lifting/folding/sweeping.
-- Pattern field compilation proves a source-owned hex rosette construction field with one center pattern, six surrounding patterns, faint guide layers, and named selected inner-ring trace groups before intersections, omission rules, or 3D promotion.
-- Pattern segment splitting proves the multi-center field can be cut at intersections into smaller candidate segments before guide omission, closed-loop extraction, or 3D role promotion.
+- Pattern field compilation proves a source-owned hex rosette construction field with one center pattern, six surrounding patterns, faint guide layers, and named selected inner-ring trace/linework groups before intersections, omission rules, or 3D promotion.
+- Pattern segment splitting proves the hex field can be cut at intersections into smaller candidate segments before guide omission, closed-loop extraction, or 3D role promotion.
 - JSON parses.
 - Python scripts compile.
 - Asset pump tests pass.

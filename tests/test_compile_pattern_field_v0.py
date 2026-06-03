@@ -43,30 +43,42 @@ class PatternFieldCompilerTests(unittest.TestCase):
             field = load_json(out_root / "fields" / "hex_rosette_pattern_field_v0.json")
             svg = (out_root / "svg" / "hex_rosette_pattern_field_v0.svg").read_text(encoding="utf-8")
 
-        self.assertIn("compiled pattern fields=1 edges=432 selected=96", result.stdout)
+        self.assertIn("compiled pattern fields=1 edges=888 selected=552", result.stdout)
         self.assertEqual(manifest["schema"], "gameguy_pattern_field_manifest_v0")
         self.assertEqual(manifest["field_count"], 1)
-        self.assertEqual(manifest["fields"][0]["edge_count"], 432)
-        self.assertEqual(manifest["fields"][0]["unique_selected_edge_count"], 96)
+        self.assertEqual(manifest["fields"][0]["edge_count"], 888)
+        self.assertEqual(manifest["fields"][0]["unique_selected_edge_count"], 552)
         self.assertEqual(field["schema"], "gameguy_pattern_field_v0")
         self.assertEqual(field["field_id"], "hex_rosette_pattern_field_v0")
         self.assertEqual(field["summary"]["instance_count"], 7)
+        self.assertEqual(field["summary"]["linework_family_count"], 3)
+        self.assertEqual(field["summary"]["linework_edge_count"], 456)
         self.assertEqual(field["summary"]["circle_count"], 21)
         self.assertEqual(field["summary"]["point_count"], 259)
-        self.assertEqual(field["summary"]["edge_count"], 432)
-        self.assertEqual(field["summary"]["selection_count"], 3)
-        self.assertEqual(field["summary"]["selected_edge_reference_count"], 96)
-        self.assertEqual(field["summary"]["unique_selected_edge_count"], 96)
+        self.assertEqual(field["summary"]["edge_count"], 888)
+        self.assertEqual(field["summary"]["selection_count"], 4)
+        self.assertEqual(field["summary"]["selected_edge_reference_count"], 552)
+        self.assertEqual(field["summary"]["unique_selected_edge_count"], 552)
 
         selections = {selection["selection_id"]: selection for selection in field["selections"]}
         self.assertEqual(selections["center_rosette_inner_star_traces"]["selected_count"], 12)
         self.assertEqual(selections["surrounding_rosette_inner_star_traces"]["selected_count"], 72)
         self.assertEqual(selections["selected_connector_traces"]["selected_count"], 12)
+        self.assertEqual(selections["selected_hex_inner_linework"]["selected_count"], 456)
         edge_by_id = {edge["edge_id"]: edge for edge in field["edges"]}
         center_selected_edges = [edge_by_id[edge_id] for edge_id in selections["center_rosette_inner_star_traces"]["edge_ids"]]
         surrounding_selected_edges = [edge_by_id[edge_id] for edge_id in selections["surrounding_rosette_inner_star_traces"]["edge_ids"]]
+        linework_edges = [edge_by_id[edge_id] for edge_id in selections["selected_hex_inner_linework"]["edge_ids"]]
         self.assertTrue(all("ring:star" in edge["tags"] for edge in center_selected_edges + surrounding_selected_edges))
         self.assertTrue(all("ring:outer" not in edge["tags"] for edge in center_selected_edges + surrounding_selected_edges))
+        self.assertEqual({edge["edge_type"] for edge in linework_edges}, {"linework_bridge", "linework_chord"})
+        self.assertTrue(
+            all(
+                "ring:outer" not in edge["tags"]
+                and ("ring:star" in edge["tags"] or "from_ring:star" in edge["tags"] or "to_ring:star" in edge["tags"])
+                for edge in linework_edges
+            )
+        )
         self.assertIn("hex_rosette_pattern_field_v0", svg)
         self.assertIn('class="selected"', svg)
 
@@ -81,7 +93,7 @@ class PatternFieldCompilerTests(unittest.TestCase):
                 text=True,
             )
 
-        self.assertIn("compiled pattern fields=1 edges=432 out=<validate-only>", result.stdout)
+        self.assertIn("compiled pattern fields=1 edges=888 out=<validate-only>", result.stdout)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_output_is_deterministic_across_runs(self) -> None:
@@ -117,6 +129,24 @@ class PatternFieldCompilerTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("references unknown module", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
+
+    def test_selected_linework_family_cannot_use_outer_ring(self) -> None:
+        source = load_json(DEFAULT_BUNDLE)
+        source["fields"][0]["linework_families"][0]["ring_id"] = "outer"
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            bad_bundle = Path(tmp) / "bad_pattern_field_bundle.json"
+            out_root = Path(tmp) / "pattern_field"
+            bad_bundle.write_text(json.dumps(source, indent=2) + "\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(COMPILER), "--bundle", str(bad_bundle), "--out", str(out_root)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("selected linework families must not use the outer ring", result.stderr)
         self.assertFalse((out_root / "manifest.json").exists())
 
 

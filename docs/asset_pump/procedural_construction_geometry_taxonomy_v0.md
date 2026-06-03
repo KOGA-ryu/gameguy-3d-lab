@@ -127,7 +127,7 @@ python3 scripts/compile_pattern_field_v0.py \
   --out /tmp/gameguy_pattern_field_v0
 ```
 
-It creates a construction drawing closer to the user's paper reference: one center rosette, six surrounding tangent rosettes, outer guide circles, radial rays, ring segments, selected inner-ring star traces, selected connector traces, JSON output, and SVG preview.
+It creates a construction drawing closer to the user's paper reference: one center rosette, six surrounding tangent rosettes, outer guide circles, radial rays, ring segments, selected inner-ring star traces, selected connector traces, and selected inner-ring chord/bridge linework families.
 
 `3D-LAB-0052 pattern_segment_split_v0` adds the first intersection splitter:
 

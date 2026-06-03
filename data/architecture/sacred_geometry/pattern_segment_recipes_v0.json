@@ -43,15 +43,21 @@
           "selection_type": "segments",
           "selector": { "kind": "segment_tag_query", "tag": "source:selected:connector" },
           "architectural_roles": ["field_connector_segment", "tracery_axis_candidate"]
+        },
+        {
+          "selection_id": "selected_hex_inner_linework_segments",
+          "selection_type": "segments",
+          "selector": { "kind": "segment_tag_query", "tag": "source:selected:hex_inner_linework" },
+          "architectural_roles": ["linework_family_segment", "motif_candidate", "tracery_candidate"]
         }
       ],
       "validation_expectations": {
-        "source_edge_count": 432,
-        "intersection_point_count": 504,
-        "segment_count": 1656,
-        "selection_count": 3,
-        "selected_segment_reference_count": 984,
-        "unique_selected_segment_count": 984
+        "source_edge_count": 888,
+        "intersection_point_count": 7751,
+        "segment_count": 14324,
+        "selection_count": 4,
+        "selected_segment_reference_count": 12602,
+        "unique_selected_segment_count": 12602
       },
       "no_claims": {
         "production_approval": false,

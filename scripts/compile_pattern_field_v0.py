@@ -104,6 +104,12 @@ def integer_at_least(value: Any, minimum: int, field: str) -> int:
     return value
 
 
+def require_int(value: Any, field: str) -> int:
+    if not isinstance(value, int) or isinstance(value, bool):
+        fail(f"{field} must be an integer")
+    return value
+
+
 def finite_vector(value: Any, field: str, length: int = 2) -> list[float]:
     items = require_list(value, field)
     if len(items) != length:
@@ -157,6 +163,9 @@ def validate_star_trace(module_id: str, divisions: int, ring_ids: set[str], valu
     ring_id = require_string(trace.get("ring_id"), f"{module_id}.star_traces[{index}].ring_id")
     if ring_id not in ring_ids:
         fail(f"{module_id}.star_traces[{index}].ring_id references unknown ring: {ring_id}")
+    selected = bool(trace.get("selected", False))
+    if selected and ring_id == "outer":
+        fail(f"{module_id}.star_traces[{index}] selected traces must not use the outer ring in v0")
     step = integer_at_least(trace.get("step"), 1, f"{module_id}.star_traces[{index}].step")
     if step >= divisions:
         fail(f"{module_id}.star_traces[{index}].step must be less than divisions")
@@ -166,7 +175,7 @@ def validate_star_trace(module_id: str, divisions: int, ring_ids: set[str], valu
         "trace_id": trace_id,
         "ring_id": ring_id,
         "step": step,
-        "selected": bool(trace.get("selected", False)),
+        "selected": selected,
         "role_hint": require_string(trace.get("role_hint"), f"{module_id}.star_traces[{index}].role_hint"),
     }
 
@@ -239,6 +248,116 @@ def validate_connector(value: Any, field_id: str, index: int, instance_ids: set[
     }
 
 
+def instance_ring_ids(instance_id: str, instance_by_id: dict[str, dict[str, Any]], module_by_id: dict[str, dict[str, Any]]) -> set[str]:
+    module = module_by_id[instance_by_id[instance_id]["module_id"]]
+    return {ring["ring_id"] for ring in module["rings"]}
+
+
+def instance_divisions(instance_id: str, instance_by_id: dict[str, dict[str, Any]], module_by_id: dict[str, dict[str, Any]]) -> int:
+    return module_by_id[instance_by_id[instance_id]["module_id"]]["divisions"]
+
+
+def validate_ring_for_instance(
+    instance_id: str,
+    ring_id: str,
+    field: str,
+    instance_by_id: dict[str, dict[str, Any]],
+    module_by_id: dict[str, dict[str, Any]],
+) -> None:
+    if ring_id not in instance_ring_ids(instance_id, instance_by_id, module_by_id):
+        fail(f"{field} references unknown ring `{ring_id}` for instance `{instance_id}`")
+
+
+def validate_linework_pair(value: Any, family_id: str, index: int, instance_ids: set[str]) -> dict[str, str]:
+    pair = require_object(value, f"{family_id}.pairs[{index}]")
+    from_id = require_string(pair.get("from_instance_id"), f"{family_id}.pairs[{index}].from_instance_id")
+    to_id = require_string(pair.get("to_instance_id"), f"{family_id}.pairs[{index}].to_instance_id")
+    if from_id not in instance_ids:
+        fail(f"{family_id}.pairs[{index}].from_instance_id references unknown instance: {from_id}")
+    if to_id not in instance_ids:
+        fail(f"{family_id}.pairs[{index}].to_instance_id references unknown instance: {to_id}")
+    if from_id == to_id:
+        fail(f"{family_id}.pairs[{index}] must connect two different instances")
+    return {"from_instance_id": from_id, "to_instance_id": to_id}
+
+
+def validate_linework_family(
+    value: Any,
+    field_id: str,
+    index: int,
+    instance_by_id: dict[str, dict[str, Any]],
+    module_by_id: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    family = require_object(value, f"{field_id}.linework_families[{index}]")
+    family_id = require_string(family.get("family_id"), f"{field_id}.linework_families[{index}].family_id")
+    family_type = require_string(family.get("family_type"), f"{family_id}.family_type")
+    if family_type not in {"ring_chords", "ring_point_bridges"}:
+        fail(f"{family_id}.family_type must be ring_chords or ring_point_bridges")
+    selected = bool(family.get("selected", False))
+    role_hint = require_string(family.get("role_hint"), f"{family_id}.role_hint")
+    instance_ids = set(instance_by_id)
+    if family_type == "ring_chords":
+        chord_instances = require_string_list(family.get("instance_ids"), f"{family_id}.instance_ids")
+        ring_id = require_string(family.get("ring_id"), f"{family_id}.ring_id")
+        if selected and ring_id == "outer":
+            fail(f"{family_id}.ring_id selected linework families must not use the outer ring in v0")
+        steps = [integer_at_least(step, 2, f"{family_id}.steps[{step_index}]") for step_index, step in enumerate(require_list(family.get("steps"), f"{family_id}.steps"))]
+        for instance_id in chord_instances:
+            if instance_id not in instance_ids:
+                fail(f"{family_id}.instance_ids references unknown instance: {instance_id}")
+            validate_ring_for_instance(instance_id, ring_id, f"{family_id}.ring_id", instance_by_id, module_by_id)
+            divisions = instance_divisions(instance_id, instance_by_id, module_by_id)
+            for step in steps:
+                if step >= divisions or step > divisions // 2:
+                    fail(f"{family_id}.steps must be less than divisions and no larger than half the division count")
+        return {
+            "family_id": family_id,
+            "family_type": family_type,
+            "instance_ids": chord_instances,
+            "ring_id": ring_id,
+            "steps": steps,
+            "selected": selected,
+            "role_hint": role_hint,
+        }
+    pairs = [
+        validate_linework_pair(pair, family_id, pair_index, instance_ids)
+        for pair_index, pair in enumerate(require_list(family.get("pairs"), f"{family_id}.pairs"))
+    ]
+    if not pairs:
+        fail(f"{family_id}.pairs must not be empty")
+    from_ring_id = require_string(family.get("from_ring_id"), f"{family_id}.from_ring_id")
+    to_ring_id = require_string(family.get("to_ring_id"), f"{family_id}.to_ring_id")
+    if selected and (from_ring_id == "outer" or to_ring_id == "outer"):
+        fail(f"{family_id} selected linework bridge families must not use the outer ring in v0")
+    division_offsets = [
+        require_int(offset, f"{family_id}.division_offsets[{offset_index}]")
+        for offset_index, offset in enumerate(require_list(family.get("division_offsets"), f"{family_id}.division_offsets"))
+    ]
+    if not division_offsets:
+        fail(f"{family_id}.division_offsets must not be empty")
+    for pair in pairs:
+        from_id = pair["from_instance_id"]
+        to_id = pair["to_instance_id"]
+        validate_ring_for_instance(from_id, from_ring_id, f"{family_id}.from_ring_id", instance_by_id, module_by_id)
+        validate_ring_for_instance(to_id, to_ring_id, f"{family_id}.to_ring_id", instance_by_id, module_by_id)
+        divisions = instance_divisions(from_id, instance_by_id, module_by_id)
+        if divisions != instance_divisions(to_id, instance_by_id, module_by_id):
+            fail(f"{family_id}.pairs must connect instances with matching division counts in v0")
+        for offset in division_offsets:
+            if abs(offset) >= divisions:
+                fail(f"{family_id}.division_offsets must be smaller than the division count")
+    return {
+        "family_id": family_id,
+        "family_type": family_type,
+        "pairs": pairs,
+        "from_ring_id": from_ring_id,
+        "to_ring_id": to_ring_id,
+        "division_offsets": division_offsets,
+        "selected": selected,
+        "role_hint": role_hint,
+    }
+
+
 def validate_selection(value: Any, field_id: str, index: int) -> dict[str, Any]:
     selection = require_object(value, f"{field_id}.selections[{index}]")
     selection_id = require_string(selection.get("selection_id"), f"{field_id}.selections[{index}].selection_id")
@@ -277,10 +396,19 @@ def validate_field(value: Any, operations: set[str], index: int) -> dict[str, An
     instance_ids = {instance["instance_id"] for instance in instances}
     if len(instance_ids) != len(instances):
         fail(f"{field_id}.instances instance_ids must be unique")
+    instance_by_id = {instance["instance_id"]: instance for instance in instances}
+    module_by_id = {module["module_id"]: module for module in modules}
     connectors = [
         validate_connector(connector, field_id, connector_index, instance_ids)
         for connector_index, connector in enumerate(require_list(field.get("connector_lines", []), f"{field_id}.connector_lines"))
     ]
+    linework_families = [
+        validate_linework_family(family, field_id, family_index, instance_by_id, module_by_id)
+        for family_index, family in enumerate(require_list(field.get("linework_families", []), f"{field_id}.linework_families"))
+    ]
+    linework_family_ids = {family["family_id"] for family in linework_families}
+    if len(linework_family_ids) != len(linework_families):
+        fail(f"{field_id}.linework_families family_ids must be unique")
     selections = [
         validate_selection(selection, field_id, selection_index)
         for selection_index, selection in enumerate(require_list(field.get("selections"), f"{field_id}.selections"))
@@ -294,6 +422,7 @@ def validate_field(value: Any, operations: set[str], index: int) -> dict[str, An
         "modules": modules,
         "instances": instances,
         "connector_lines": connectors,
+        "linework_families": linework_families,
         "selections": selections,
         "validation_expectations": require_object(field.get("validation_expectations"), f"{field_id}.validation_expectations"),
         "no_claims": field["no_claims"],
@@ -330,8 +459,96 @@ def edge_record(edge_id: str, a: str, b: str, edge_type: str, tags: list[str]) -
     return {"edge_id": edge_id, "from": a, "to": b, "edge_type": edge_type, "tags": tags}
 
 
+def signed_token(value: int) -> str:
+    if value < 0:
+        return f"m{abs(value):02d}"
+    return f"p{value:02d}"
+
+
+def linework_tags(family: dict[str, Any], extra_tags: list[str]) -> list[str]:
+    tags = [
+        "linework_family",
+        f"linework_family:{family['family_id']}",
+        f"linework_type:{family['family_type']}",
+        f"role:{family['role_hint']}",
+        *extra_tags,
+    ]
+    if family["selected"]:
+        tags.append(f"selected:{family['role_hint']}")
+    else:
+        tags.append("guide")
+    return tags
+
+
+def compile_linework_family(
+    family: dict[str, Any],
+    instance_by_id: dict[str, dict[str, Any]],
+    module_by_id: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    edges: list[dict[str, Any]] = []
+    family_id = family["family_id"]
+    if family["family_type"] == "ring_chords":
+        ring_id = family["ring_id"]
+        for instance_id in family["instance_ids"]:
+            divisions = instance_divisions(instance_id, instance_by_id, module_by_id)
+            for step in family["steps"]:
+                for index in range(divisions):
+                    target = (index + step) % divisions
+                    edges.append(
+                        edge_record(
+                            f"{family_id}_{instance_id}_{ring_id}_step_{step:02d}_{index:02d}_{target:02d}",
+                            f"{instance_id}_{ring_id}_p_{index:02d}",
+                            f"{instance_id}_{ring_id}_p_{target:02d}",
+                            "linework_chord",
+                            linework_tags(
+                                family,
+                                [
+                                    "ring_chord",
+                                    f"instance:{instance_id}",
+                                    f"ring:{ring_id}",
+                                    f"step:{step}",
+                                ],
+                            ),
+                        )
+                    )
+        return edges
+    from_ring_id = family["from_ring_id"]
+    to_ring_id = family["to_ring_id"]
+    for pair in family["pairs"]:
+        from_id = pair["from_instance_id"]
+        to_id = pair["to_instance_id"]
+        divisions = instance_divisions(from_id, instance_by_id, module_by_id)
+        pair_tag = f"pair:{from_id}_to_{to_id}"
+        for offset in family["division_offsets"]:
+            offset_token = signed_token(offset)
+            for index in range(divisions):
+                target = (index + offset) % divisions
+                edges.append(
+                    edge_record(
+                        f"{family_id}_{from_id}_to_{to_id}_offset_{offset_token}_{index:02d}_{target:02d}",
+                        f"{from_id}_{from_ring_id}_p_{index:02d}",
+                        f"{to_id}_{to_ring_id}_p_{target:02d}",
+                        "linework_bridge",
+                        linework_tags(
+                            family,
+                            [
+                                "ring_point_bridge",
+                                pair_tag,
+                                f"from_instance:{from_id}",
+                                f"to_instance:{to_id}",
+                                f"from_ring:{from_ring_id}",
+                                f"to_ring:{to_ring_id}",
+                                f"offset:{offset}",
+                            ],
+                        ),
+                    )
+                )
+    return edges
+
+
 def compile_field(bundle: dict[str, Any], field: dict[str, Any]) -> dict[str, Any]:
     module_by_id = {module["module_id"]: module for module in field["modules"]}
+    instance_by_id = {instance["instance_id"]: instance for instance in field["instances"]}
     point_by_id: dict[str, list[float]] = {}
     points: list[dict[str, Any]] = []
     circles: list[dict[str, Any]] = []
@@ -433,6 +650,11 @@ def compile_field(bundle: dict[str, Any], field: dict[str, Any]) -> dict[str, An
                 tags,
             )
         )
+    linework_edges: list[dict[str, Any]] = []
+    for family in field["linework_families"]:
+        family_edges = compile_linework_family(family, instance_by_id, module_by_id)
+        linework_edges.extend(family_edges)
+        edges.extend(family_edges)
     compiled_selections: list[dict[str, Any]] = []
     selected_edge_refs: list[str] = []
     for selection in field["selections"]:
@@ -462,12 +684,15 @@ def compile_field(bundle: dict[str, Any], field: dict[str, Any]) -> dict[str, An
         "bounds_m": field["bounds_m"],
         "modules": field["modules"],
         "instances": field["instances"],
+        "linework_families": field["linework_families"],
         "circles": circles,
         "points": points,
         "edges": edges,
         "selections": compiled_selections,
         "summary": {
             "instance_count": len(field["instances"]),
+            "linework_family_count": len(field["linework_families"]),
+            "linework_edge_count": len(linework_edges),
             "circle_count": len(circles),
             "point_count": len(points),
             "edge_count": len(edges),

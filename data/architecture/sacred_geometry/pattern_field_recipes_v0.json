@@ -72,6 +72,59 @@
         { "connector_id": "orbit_sw_to_se", "from_instance_id": "surrounding_sw", "to_instance_id": "surrounding_se", "selected": true, "role_hint": "surrounding_orbit_axis" },
         { "connector_id": "orbit_se_to_e", "from_instance_id": "surrounding_se", "to_instance_id": "surrounding_e", "selected": true, "role_hint": "surrounding_orbit_axis" }
       ],
+      "linework_families": [
+        {
+          "family_id": "hex_inner_rosette_chords",
+          "family_type": "ring_chords",
+          "instance_ids": [
+            "center_rosette",
+            "surrounding_e",
+            "surrounding_ne",
+            "surrounding_nw",
+            "surrounding_w",
+            "surrounding_sw",
+            "surrounding_se"
+          ],
+          "ring_id": "star",
+          "steps": [2, 3],
+          "selected": true,
+          "role_hint": "hex_inner_linework"
+        },
+        {
+          "family_id": "hex_center_spoke_point_bridges",
+          "family_type": "ring_point_bridges",
+          "pairs": [
+            { "from_instance_id": "center_rosette", "to_instance_id": "surrounding_e" },
+            { "from_instance_id": "center_rosette", "to_instance_id": "surrounding_ne" },
+            { "from_instance_id": "center_rosette", "to_instance_id": "surrounding_nw" },
+            { "from_instance_id": "center_rosette", "to_instance_id": "surrounding_w" },
+            { "from_instance_id": "center_rosette", "to_instance_id": "surrounding_sw" },
+            { "from_instance_id": "center_rosette", "to_instance_id": "surrounding_se" }
+          ],
+          "from_ring_id": "star",
+          "to_ring_id": "star",
+          "division_offsets": [-1, 0, 1],
+          "selected": true,
+          "role_hint": "hex_inner_linework"
+        },
+        {
+          "family_id": "hex_surrounding_orbit_point_bridges",
+          "family_type": "ring_point_bridges",
+          "pairs": [
+            { "from_instance_id": "surrounding_e", "to_instance_id": "surrounding_ne" },
+            { "from_instance_id": "surrounding_ne", "to_instance_id": "surrounding_nw" },
+            { "from_instance_id": "surrounding_nw", "to_instance_id": "surrounding_w" },
+            { "from_instance_id": "surrounding_w", "to_instance_id": "surrounding_sw" },
+            { "from_instance_id": "surrounding_sw", "to_instance_id": "surrounding_se" },
+            { "from_instance_id": "surrounding_se", "to_instance_id": "surrounding_e" }
+          ],
+          "from_ring_id": "star",
+          "to_ring_id": "star",
+          "division_offsets": [0],
+          "selected": true,
+          "role_hint": "hex_inner_linework"
+        }
+      ],
       "selections": [
         {
           "selection_id": "center_rosette_inner_star_traces",
@@ -90,16 +143,24 @@
           "selection_type": "edges",
           "selector": { "kind": "edge_tag_query", "tag": "selected:connector" },
           "architectural_roles": ["field_connector_trace", "tracery_axis_candidate"]
+        },
+        {
+          "selection_id": "selected_hex_inner_linework",
+          "selection_type": "edges",
+          "selector": { "kind": "edge_tag_query", "tag": "selected:hex_inner_linework" },
+          "architectural_roles": ["linework_family_trace", "motif_candidate", "tracery_candidate"]
         }
       ],
       "validation_expectations": {
         "instance_count": 7,
+        "linework_family_count": 3,
+        "linework_edge_count": 456,
         "circle_count": 21,
         "point_count": 259,
-        "edge_count": 432,
-        "selection_count": 3,
-        "selected_edge_reference_count": 96,
-        "unique_selected_edge_count": 96
+        "edge_count": 888,
+        "selection_count": 4,
+        "selected_edge_reference_count": 552,
+        "unique_selected_edge_count": 552
       },
       "no_claims": {
         "production_approval": false,
