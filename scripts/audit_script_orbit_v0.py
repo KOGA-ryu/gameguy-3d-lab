@@ -39,6 +39,7 @@ OVERRIDES: dict[str, tuple[str, str]] = {
     "validate_gameguy_asset_v0.py": ("KEEP_CANONICAL", "guards deterministic gameguy_asset_v0 pump output"),
     "validate_measured_component_source_v0.py": ("KEEP_CANONICAL", "guards promoted measured component source recipes"),
     "validate_measured_molding_profiles_v0.py": ("KEEP_CANONICAL", "guards source-only measured molding and compound-pier profiles before generation"),
+    "validate_railing_detail_profiles_v0.py": ("KEEP_CANONICAL", "guards source-owned 2D railing detail profiles and Blender tool stage sequencing"),
     "validate_tiny_fixture_v0.py": ("KEEP_CANONICAL", "guards canonical source-only map/building/connector fixture"),
     "audit_script_orbit_v0.py": ("KEEP_CANONICAL", "tracks script cleanup buckets without deleting files"),
     "validate_contract.py": ("REFERENCE_ONLY", "legacy quarantined 2D mosaic contract validator; keep until quarantine is retired"),

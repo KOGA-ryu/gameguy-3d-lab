@@ -114,7 +114,7 @@
     }
   ],
   "script_orbit_expected_after": {
-    "KEEP_CANONICAL": 17,
+    "KEEP_CANONICAL": 18,
     "CONVERT_TO_ADAPTER": 0,
     "REPLACE_BY_PUMP": 0,
     "REFERENCE_ONLY": 58,

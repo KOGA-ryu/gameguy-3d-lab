@@ -1,0 +1,109 @@
+{
+  "schema": "railing_2d_detail_profiles_receipt_v0",
+  "packet_id": "3D-LAB-0040",
+  "decision": "ADD_SOURCE_OWNED_RAILING_2D_DETAIL_PROFILES",
+  "source_profile_bundle": "data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json",
+  "validator": "scripts/validate_railing_detail_profiles_v0.py",
+  "registry": "data/architecture/asset_mill/asset_generation_registry_v0.json",
+  "pipeline_validator": "scripts/validate_generation_pipeline_v0.py",
+  "tests": [
+    "tests/test_validate_railing_detail_profiles_v0.py",
+    "tests/test_validate_asset_generation_registry_v0.py",
+    "tests/test_validate_generation_pipeline_v0.py",
+    "tests/test_asset_mill_retirement_readiness_v0.py"
+  ],
+  "profile_source_summary": {
+    "reference_count": 2,
+    "profile_count": 7,
+    "placement_count": 21,
+    "sequence_count": 8,
+    "candidate_blender_tool_count": 13
+  },
+  "profile_ids": [
+    "railing_square_frame_block_v0",
+    "railing_pointed_arch_recess_v0",
+    "railing_capsule_vertical_slot_v0",
+    "railing_circle_bead_strip_v0",
+    "railing_ogee_molding_side_profile_v0",
+    "railing_trapezoid_transition_collar_v0",
+    "railing_lobed_post_cross_section_v0"
+  ],
+  "shape_terms_used": [
+    "rectangle",
+    "square",
+    "pointed_arch_profile",
+    "capsule",
+    "circle",
+    "custom_polygon",
+    "trapezoid"
+  ],
+  "blender_tools_used": [
+    "primitive_cube_add",
+    "primitive_cylinder_add",
+    "mesh_from_pydata",
+    "modifier_screw",
+    "modifier_boolean",
+    "modifier_array",
+    "object_duplicate_radial",
+    "modifier_mirror",
+    "join_objects",
+    "modifier_bevel",
+    "mark_sharp",
+    "shade_smooth",
+    "modifier_weighted_normal"
+  ],
+  "full_sequence_tools": [
+    "primitive_cube_add",
+    "mesh_from_pydata",
+    "modifier_screw",
+    "modifier_boolean",
+    "modifier_array",
+    "object_duplicate_radial",
+    "modifier_mirror",
+    "join_objects",
+    "modifier_bevel",
+    "mark_sharp",
+    "shade_smooth",
+    "modifier_weighted_normal",
+    "modifier_displace",
+    "uv_smart_project",
+    "uv_pack_islands",
+    "material_assign_by_part",
+    "procedural_noise_texture",
+    "procedural_bump_map",
+    "calculate_bounds",
+    "validate_non_manifold",
+    "create_collision_proxy",
+    "create_lod_variant",
+    "render_workbench_preview",
+    "export_gltf"
+  ],
+  "validation_summary": {
+    "source_profile_bundle_count": 2,
+    "source_profile_count": 12,
+    "railing_detail_profile_count": 7,
+    "json_file_count": 234,
+    "non_blender_command_count": 31,
+    "full_blender_command_count": 45,
+    "repo_media_mesh_output_count": 0
+  },
+  "rules": {
+    "source_profile_only": true,
+    "placement_region_required": true,
+    "detail_role_required": true,
+    "application_method_required": true,
+    "blender_tool_stage_order_checked": true,
+    "no_asset_json_generated_by_this_slice": true,
+    "no_blender_execution_for_profile_sources": true,
+    "generated_outputs_in_repo": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false,
+    "building_code_compliance": false
+  }
+}

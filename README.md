@@ -114,6 +114,14 @@ python3 scripts/validate_measured_molding_profiles_v0.py
 
 The current bundle is `data/architecture/asset_mill/profile_sources/measured_molding_profiles_v0.json`. It records the user-supplied column molding and compound-pier references as cap/base side profiles, fluted shaft channel profiles, plinth profiles, and a lobed compound-pier cross-section. These records declare measurements, geometry dictionary terms, and candidate Blender tools, but do not generate asset JSON, compile tool plans, or execute Blender.
 
+Railing detail profiles extend that same 2D source idea into post, rail, and guard-panel decoration:
+
+```bash
+python3 scripts/validate_railing_detail_profiles_v0.py
+```
+
+The current bundle is `data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json`. It declares square frame blocks, pointed-arch recesses, capsule vertical slots, circular bead strips, ogee side moldings, trapezoid transition collars, and lobed post cross-sections. Each profile must say where it is used, what detail role it has, how it is applied, and which staged Blender tools may execute it later.
+
 The repo now also has a tool-planning layer for near-finished Blender-capable asset construction:
 
 ```text
@@ -214,6 +222,7 @@ python3 -m unittest discover -s tests
 python3 scripts/validate_asset_generation_registry_v0.py
 python3 scripts/validate_reference_dissection_packet_v0.py
 python3 scripts/validate_measured_molding_profiles_v0.py
+python3 scripts/validate_railing_detail_profiles_v0.py
 python3 scripts/compile_blender_tool_plan_v0.py --validate-only
 python3 scripts/compile_blender_tool_plan_v0.py --clean --out /tmp/gameguy_blender_tool_plan_v0
 python3 scripts/validate_gameguy_tool_plan_v0.py --manifest /tmp/gameguy_blender_tool_plan_v0/manifest.json
@@ -291,6 +300,7 @@ Expected current checks:
 - Asset generation registry validation proves the canonical recipe/tool-plan surface and reference-only recipe boundaries.
 - Reference dissection packet validation proves visible shapes, geometry terms, and candidate Blender tools before the next geometry pass.
 - Measured molding profile validation proves user-supplied cap/base/flute/plinth/compound-pier profile sources before the next geometry pass.
+- Railing detail profile validation proves 2D detail shape placement, detail roles, application methods, and Blender tool stage order before the next geometry pass.
 - JSON parses.
 - Python scripts compile.
 - Asset pump tests pass.
