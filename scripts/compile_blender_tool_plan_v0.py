@@ -170,8 +170,28 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
         return [
             {"step_id": "create_east_socket_cutter", "tool_id": "primitive_cube_add", "purpose": "Create the east rail socket cutter volume.", "params": {"size_m": [0.16, 0.22, params.get("rail_socket_height_m", 0.26)], "location_m": [0.18, 0.0, 0.70]}},
             {"step_id": "create_west_socket_cutter", "tool_id": "primitive_cube_add", "purpose": "Create the west rail socket cutter volume.", "params": {"size_m": [0.16, 0.22, params.get("rail_socket_height_m", 0.26)], "location_m": [-0.18, 0.0, 0.70]}},
-            {"step_id": "boolean_cut_rail_sockets", "tool_id": "modifier_boolean", "purpose": "Cut east and west rail sockets into the post body.", "params": {"operation": "DIFFERENCE", "cutters": ["east_socket_cutter", "west_socket_cutter"]}},
-            {"step_id": "join_visible_post_parts", "tool_id": "join_objects", "purpose": "Join visible body pieces after socket planning.", "params": {"objects": ["base", "post_core", "ribs", "cap"]}},
+            {
+                "step_id": "boolean_cut_rail_sockets",
+                "tool_id": "modifier_boolean",
+                "purpose": "Cut east and west rail sockets into the post body.",
+                "params": {
+                    "operation": "DIFFERENCE",
+                    "solver": "EXACT",
+                    "cutters": ["east_socket_cutter", "west_socket_cutter"],
+                    "targets": ["post_core"],
+                    "cleanup_cutters": True,
+                    "socket_shadow_panels": {
+                        "enabled": True,
+                        "material_role": "socket_shadow",
+                        "thickness_m": 0.014,
+                        "surface_x_m": 0.12,
+                        "surface_offset_m": 0.003,
+                        "scale_y": 0.88,
+                        "scale_z": 0.88,
+                    },
+                },
+            },
+            {"step_id": "join_visible_post_parts", "tool_id": "join_objects", "purpose": "Join visible body pieces after socket planning.", "params": {"objects": ["base", "post_core", "ribs", "cap", "socket_shadows"]}},
         ]
     if feature == "hard_edge_bevels":
         return [
@@ -188,7 +208,7 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
             {"step_id": "create_stone_material", "tool_id": "material_principled_shader", "purpose": "Create the base gothic stone material.", "params": {"base_color": [0.48, 0.46, 0.39], "roughness": 0.82, "metallic": 0.0}},
             {"step_id": "add_stone_noise_texture", "tool_id": "procedural_noise_texture", "purpose": "Add deterministic stone color and roughness variation.", "params": {"scale": params.get("stone_noise_scale", 38.0), "detail": 9, "roughness": 0.58, "seed": 19}},
             {"step_id": "add_stone_bump_map", "tool_id": "procedural_bump_map", "purpose": "Connect subtle bump detail for close views.", "params": {"height_source": "stone_noise", "strength": 0.07}},
-            {"step_id": "assign_material_regions", "tool_id": "material_assign_by_part", "purpose": "Assign material indexes by generated part role.", "params": {"material_map": {"base": "gothic_stone_dark", "shaft": "gothic_stone", "rib": "gothic_stone_highlight", "socket": "gothic_stone_shadow"}}},
+            {"step_id": "assign_material_regions", "tool_id": "material_assign_by_part", "purpose": "Assign material indexes by generated part role.", "params": {"material_map": {"base": "gothic_stone_dark", "cap": "gothic_stone_cap", "shaft": "gothic_stone", "rib": "gothic_stone_highlight", "socket": "gothic_stone_shadow", "socket_shadow": "gothic_stone_shadow"}}},
         ]
     if feature == "smart_uvs":
         return [
@@ -198,11 +218,11 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
         ]
     if feature == "collision_and_lod_proxy":
         return [
-            {"step_id": "weld_close_vertices", "tool_id": "modifier_weld", "purpose": "Clean nearly overlapping vertices after booleans and joins.", "params": {"merge_distance_m": 0.0005}},
+            {"step_id": "weld_close_vertices", "tool_id": "modifier_weld", "purpose": "Run a deterministic weld pass without merging loose block parts until union cleanup is source-planned.", "params": {"merge_distance_m": params.get("weld_merge_distance_m", 0.0)}},
             {"step_id": "limited_dissolve_cleanup", "tool_id": "dissolve_limited", "purpose": "Remove unneeded coplanar cleanup edges.", "params": {"angle_limit_degrees": 1.0}},
             {"step_id": "recalculate_normals", "tool_id": "recalc_normals", "purpose": "Ensure normals are consistently outward before export.", "params": {"inside": False}},
             {"step_id": "calculate_asset_bounds", "tool_id": "calculate_bounds", "purpose": "Calculate bounds used by connectors, preview framing, and validation.", "params": {"units": "abstract_meter"}},
-            {"step_id": "validate_topology_non_manifold", "tool_id": "validate_non_manifold", "purpose": "Report non-manifold geometry before export.", "params": {"fail_on_non_manifold": True}},
+            {"step_id": "validate_topology_non_manifold", "tool_id": "validate_non_manifold", "purpose": "Report non-manifold geometry before export.", "params": {"fail_on_non_manifold": True, "cleanup_merge_distance_m": 0.0, "cleanup_fill_hole_sides": 0}},
             {"step_id": "create_simple_collision_proxy", "tool_id": "create_collision_proxy", "purpose": "Create a simple collision proxy from asset bounds and socket extents.", "params": {"proxy_policy": "box_stack_low_poly"}},
             {"step_id": "create_lod1_variant", "tool_id": "create_lod_variant", "purpose": "Create a lower-cost display variant for distance views.", "params": {"decimate_ratio": params.get("lod_decimate_ratio", 0.55)}},
         ]

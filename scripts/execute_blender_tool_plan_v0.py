@@ -46,6 +46,18 @@ SUPPORTED_TOOLS = {
     "validate_non_manifold",
 }
 
+ROLE_MATERIAL_COLORS: dict[str, tuple[float, float, float, float]] = {
+    "default": (0.48, 0.46, 0.39, 1.0),
+    "base": (0.38, 0.36, 0.31, 1.0),
+    "cap": (0.55, 0.52, 0.44, 1.0),
+    "shaft": (0.47, 0.45, 0.38, 1.0),
+    "rib": (0.58, 0.55, 0.46, 1.0),
+    "socket": (0.20, 0.22, 0.24, 1.0),
+    "socket_shadow": (0.10, 0.11, 0.12, 1.0),
+    "collision": (0.12, 0.35, 0.90, 0.25),
+    "lod": (0.32, 0.46, 0.62, 1.0),
+}
+
 
 def fail(message: str) -> None:
     print(f"FAIL {message}", file=sys.stderr)
@@ -201,6 +213,7 @@ def run_blender_execution(plan: dict[str, Any], steps: list[dict[str, Any]], out
             "cap": [],
             "ribs": [],
             "cutters": [],
+            "socket_shadows": [],
             "visible": [],
         },
         "materials": {},
@@ -208,6 +221,9 @@ def run_blender_execution(plan: dict[str, Any], steps: list[dict[str, Any]], out
         "executed_steps": [],
         "skipped_steps": [],
         "validation": {},
+        "material_regions": {},
+        "socket_pass": {},
+        "topology_cleanup": {},
         "bounds_m": None,
         "final_object": None,
     }
@@ -235,6 +251,15 @@ def run_blender_execution(plan: dict[str, Any], steps: list[dict[str, Any]], out
     report["skipped_steps"] = context["skipped_steps"]
     report["bounds_m"] = context["bounds_m"]
     report["validation"] = context["validation"]
+    report["material_regions"] = context["material_regions"]
+    report["socket_pass"] = context["socket_pass"]
+    report["topology_cleanup"] = context["topology_cleanup"]
+    report["quality_pass"] = {
+        "material_regions_preserved": len(context["material_regions"].get("face_counts_by_role", {})) > 1,
+        "explicit_socket_boolean_targets": bool(context["socket_pass"].get("target_names")),
+        "socket_cutters_removed": bool(context["socket_pass"].get("cutter_objects_removed")),
+        "topology_cleanup_attempted": bool(context["topology_cleanup"].get("attempted")),
+    }
     if context.get("render_path"):
         report["render_path"] = context["render_path"]
     if context.get("export_path"):
@@ -251,17 +276,7 @@ def run_blender_execution(plan: dict[str, Any], steps: list[dict[str, Any]], out
 
 
 def create_default_materials(bpy: Any, context: dict[str, Any]) -> None:
-    colors = {
-        "default": (0.48, 0.46, 0.39, 1.0),
-        "base": (0.38, 0.36, 0.31, 1.0),
-        "cap": (0.55, 0.52, 0.44, 1.0),
-        "shaft": (0.47, 0.45, 0.38, 1.0),
-        "rib": (0.58, 0.55, 0.46, 1.0),
-        "socket": (0.20, 0.22, 0.24, 1.0),
-        "collision": (0.12, 0.35, 0.90, 0.25),
-        "lod": (0.32, 0.46, 0.62, 1.0),
-    }
-    for name, color in colors.items():
+    for name, color in ROLE_MATERIAL_COLORS.items():
         mat = bpy.data.materials.new(f"tool_plan_{name}")
         mat.diffuse_color = color
         context["materials"][name] = mat
@@ -304,11 +319,11 @@ def execute_step(bpy: Any, mathutils: Any, plan: dict[str, Any], step: dict[str,
     elif tool_id == "procedural_bump_map":
         context["textures"]["stone_bump"] = step["params"]
     elif tool_id == "material_assign_by_part":
-        assign_stone_material_to_final(context)
+        assign_stone_material_to_final(bpy, step, context)
     elif tool_id == "calculate_bounds":
         context["bounds_m"] = calculate_object_bounds(mathutils, require_final_object(context))
     elif tool_id == "validate_non_manifold":
-        context["validation"]["non_manifold_edge_count"] = count_non_manifold_edges(require_final_object(context))
+        execute_validate_non_manifold(bpy, step, context)
     elif tool_id == "create_collision_proxy":
         execute_create_collision_proxy(bpy, step, context)
     elif tool_id == "create_lod_variant":
@@ -395,32 +410,110 @@ def execute_object_duplicate_radial(step: dict[str, Any], context: dict[str, Any
         context["groups"]["visible"].append(duplicate.name)
 
 
+def resolve_object_aliases(names: list[Any], context: dict[str, Any]) -> list[str]:
+    resolved: list[str] = []
+    for item in names:
+        if not isinstance(item, str):
+            continue
+        if item in context["groups"]:
+            resolved.extend(context["groups"][item])
+        elif item in context["objects"]:
+            resolved.append(item)
+    return list(dict.fromkeys(resolved))
+
+
 def execute_modifier_boolean(bpy: Any, step: dict[str, Any], context: dict[str, Any]) -> None:
-    cutters = [context["objects"].get(name) for name in step["params"].get("cutters", [])]
+    params = step["params"]
+    cutters = [context["objects"].get(name) for name in params.get("cutters", [])]
     cutters = [cutter for cutter in cutters if cutter is not None]
-    targets = [context["objects"].get("post_core")]
-    targets.extend(context["objects"].get(name) for name in context["groups"].get("ribs", []))
-    for target in [obj for obj in targets if obj is not None]:
+    target_names = resolve_object_aliases(params.get("targets", ["post_core"]), context)
+    targets = [context["objects"].get(name) for name in target_names]
+    targets = [target for target in targets if target is not None]
+    operation = params.get("operation", "DIFFERENCE")
+    solver = params.get("solver", "EXACT")
+    socket_pass: dict[str, Any] = {
+        "step_id": step["step_id"],
+        "operation": operation,
+        "solver_requested": solver,
+        "target_names": [target.name for target in targets],
+        "cutter_names": [cutter.name for cutter in cutters],
+        "applied_modifier_count": 0,
+        "failed_modifier_count": 0,
+        "socket_shadow_panel_count": 0,
+        "cutter_objects_removed": False,
+        "removed_cutter_names": [],
+    }
+    for target in targets:
         for cutter in cutters:
             modifier = target.modifiers.new(name=f"{step['step_id']}_{cutter.name}", type="BOOLEAN")
-            modifier.operation = step["params"].get("operation", "DIFFERENCE")
+            modifier.operation = operation
+            if hasattr(modifier, "solver"):
+                try:
+                    modifier.solver = solver
+                except TypeError:
+                    socket_pass.setdefault("solver_fallbacks", []).append(modifier.name)
             modifier.object = cutter
             bpy.context.view_layer.objects.active = target
             target.select_set(True)
             try:
                 bpy.ops.object.modifier_apply(modifier=modifier.name)
+                socket_pass["applied_modifier_count"] += 1
             except RuntimeError:
                 target.modifiers.remove(modifier)
+                socket_pass["failed_modifier_count"] += 1
             target.select_set(False)
+    shadow_params = require_object(params.get("socket_shadow_panels", {}), f"{step['step_id']}.params.socket_shadow_panels")
+    if shadow_params.get("enabled") is True:
+        socket_pass["socket_shadow_panel_count"] = create_socket_shadow_panels(bpy, context, cutters, shadow_params)
+    if params.get("cleanup_cutters") is True:
+        for cutter in cutters:
+            socket_pass["removed_cutter_names"].append(cutter.name)
+            bpy.data.objects.remove(cutter, do_unlink=True)
+        context["groups"]["cutters"] = []
+        for name in socket_pass["removed_cutter_names"]:
+            context["objects"].pop(name, None)
+        socket_pass["cutter_objects_removed"] = True
+    context["socket_pass"] = socket_pass
+
+
+def create_socket_shadow_panels(bpy: Any, context: dict[str, Any], cutters: list[Any], params: dict[str, Any]) -> int:
+    thickness = float(params.get("thickness_m", 0.014))
+    surface_x = float(params.get("surface_x_m", 0.12))
+    surface_offset = float(params.get("surface_offset_m", 0.003))
+    scale_y = float(params.get("scale_y", 0.88))
+    scale_z = float(params.get("scale_z", 0.88))
+    role = str(params.get("material_role", "socket_shadow"))
+    material = context["materials"].get(role, context["materials"]["socket_shadow"])
+    created_count = 0
+    for index, cutter in enumerate(cutters):
+        sign = 1.0 if cutter.location.x >= 0.0 else -1.0
+        panel_size = [
+            thickness,
+            max(float(cutter.dimensions.y) * scale_y, 0.001),
+            max(float(cutter.dimensions.z) * scale_z, 0.001),
+        ]
+        panel_location = [
+            sign * (surface_x + surface_offset + thickness * 0.5),
+            float(cutter.location.y),
+            float(cutter.location.z),
+        ]
+        bpy.ops.mesh.primitive_cube_add(size=1.0, location=panel_location)
+        panel = bpy.context.object
+        side = "east" if sign > 0 else "west"
+        panel.name = f"{side}_socket_shadow_{index:02d}"
+        panel.dimensions = panel_size
+        bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+        panel["material_role"] = role
+        panel.data.materials.append(material)
+        context["objects"][panel.name] = panel
+        context["groups"]["socket_shadows"].append(panel.name)
+        context["groups"]["visible"].append(panel.name)
+        created_count += 1
+    return created_count
 
 
 def execute_join_objects(bpy: Any, plan: dict[str, Any], step: dict[str, Any], context: dict[str, Any]) -> None:
-    names: list[str] = []
-    for group_name in step["params"].get("objects", []):
-        if group_name in context["groups"]:
-            names.extend(context["groups"][group_name])
-        elif group_name in context["objects"]:
-            names.append(group_name)
+    names = resolve_object_aliases(step["params"].get("objects", []), context)
     objects = [context["objects"][name] for name in names if name in context["objects"] and not context["objects"][name].hide_viewport]
     if not objects:
         fail("join_visible_post_parts found no visible objects")
@@ -565,13 +658,76 @@ def execute_material_principled_shader(bpy: Any, step: dict[str, Any], context: 
     context["materials"]["gothic_stone"] = mat
 
 
-def assign_stone_material_to_final(context: dict[str, Any]) -> None:
+def material_role_from_name(name: str) -> str:
+    normalized = name.removeprefix("tool_plan_")
+    if normalized in ROLE_MATERIAL_COLORS:
+        return normalized
+    if "socket_shadow" in normalized or normalized.endswith("_shadow"):
+        return "socket_shadow"
+    if "highlight" in normalized or "rib" in normalized:
+        return "rib"
+    if "cap" in normalized:
+        return "cap"
+    if "dark" in normalized or "base" in normalized:
+        return "base"
+    if normalized == "gothic_stone" or "shaft" in normalized or "stone" in normalized:
+        return "shaft"
+    return "default"
+
+
+def get_or_create_role_material(bpy: Any, context: dict[str, Any], material_name: str, role: str) -> Any:
+    material = bpy.data.materials.get(material_name)
+    if material is None:
+        material = bpy.data.materials.new(material_name)
+        material.diffuse_color = ROLE_MATERIAL_COLORS.get(role, ROLE_MATERIAL_COLORS["default"])
+        if material_name.startswith("gothic_stone"):
+            material.use_nodes = True
+            bsdf = material.node_tree.nodes.get("Principled BSDF")
+            if bsdf is not None:
+                if "Base Color" in bsdf.inputs:
+                    bsdf.inputs["Base Color"].default_value = material.diffuse_color
+                if "Roughness" in bsdf.inputs:
+                    bsdf.inputs["Roughness"].default_value = 0.82
+                if "Metallic" in bsdf.inputs:
+                    bsdf.inputs["Metallic"].default_value = 0.0
+    context["materials"][material_name] = material
+    return material
+
+
+def assign_stone_material_to_final(bpy: Any, step: dict[str, Any], context: dict[str, Any]) -> None:
     obj = require_final_object(context)
-    material = context["materials"].get("gothic_stone", context["materials"]["default"])
-    obj.data.materials.clear()
-    obj.data.materials.append(material)
+    material_map = require_object(step["params"].get("material_map", {}), f"{step['step_id']}.params.material_map")
+    if not obj.material_slots:
+        obj.data.materials.append(context["materials"].get("default"))
+    slot_roles: list[dict[str, Any]] = []
+    for slot_index, slot in enumerate(obj.material_slots):
+        material_name = slot.material.name if slot.material is not None else "tool_plan_default"
+        role = material_role_from_name(material_name)
+        target_material_name = str(material_map.get(role, material_map.get("default", "gothic_stone")))
+        slot.material = get_or_create_role_material(bpy, context, target_material_name, role)
+        slot_roles.append({"slot_index": slot_index, "role": role, "material": target_material_name})
+    context["material_regions"] = collect_material_regions(obj, material_map)
+    context["material_regions"]["slot_roles"] = slot_roles
+
+
+def collect_material_regions(obj: Any, material_map: dict[str, Any]) -> dict[str, Any]:
+    reverse_map = {str(material): role for role, material in material_map.items() if isinstance(role, str)}
+    face_counts_by_role: dict[str, int] = {}
+    material_slots: list[dict[str, Any]] = []
+    for slot_index, slot in enumerate(obj.material_slots):
+        material_name = slot.material.name if slot.material is not None else "none"
+        role = reverse_map.get(material_name, material_role_from_name(material_name))
+        material_slots.append({"slot_index": slot_index, "material": material_name, "role": role})
     for polygon in obj.data.polygons:
-        polygon.material_index = 0
+        role = "none"
+        if polygon.material_index < len(material_slots):
+            role = str(material_slots[polygon.material_index]["role"])
+        face_counts_by_role[role] = face_counts_by_role.get(role, 0) + 1
+    return {
+        "material_slot_count": len(obj.material_slots),
+        "face_counts_by_role": dict(sorted(face_counts_by_role.items())),
+        "material_slots": material_slots,
+    }
 
 
 def calculate_object_bounds(mathutils: Any, obj: Any) -> dict[str, list[float]]:
@@ -579,6 +735,67 @@ def calculate_object_bounds(mathutils: Any, obj: Any) -> dict[str, list[float]]:
     return {
         "min": [round(min(getattr(coord, axis) for coord in coords), 6) for axis in ("x", "y", "z")],
         "max": [round(max(getattr(coord, axis) for coord in coords), 6) for axis in ("x", "y", "z")],
+    }
+
+
+def execute_validate_non_manifold(bpy: Any, step: dict[str, Any], context: dict[str, Any]) -> None:
+    obj = require_final_object(context)
+    before = count_non_manifold_edges(obj)
+    cleanup = cleanup_final_mesh(bpy, obj, step)
+    after = count_non_manifold_edges(obj)
+    cleanup["non_manifold_edge_count_before"] = before
+    cleanup["non_manifold_edge_count_after"] = after
+    context["topology_cleanup"] = cleanup
+    context["validation"]["non_manifold_edge_count_before_cleanup"] = before
+    context["validation"]["non_manifold_edge_count"] = after
+
+
+def cleanup_final_mesh(bpy: Any, obj: Any, step: dict[str, Any]) -> dict[str, Any]:
+    params = step.get("params", {})
+    merge_distance = float(params.get("cleanup_merge_distance_m", 0.001))
+    fill_hole_sides = int(params.get("cleanup_fill_hole_sides", 12))
+    before_vertices = len(obj.data.vertices)
+    before_edges = len(obj.data.edges)
+    before_faces = len(obj.data.polygons)
+    operations: list[str] = []
+    bpy.ops.object.select_all(action="DESELECT")
+    bpy.context.view_layer.objects.active = obj
+    obj.select_set(True)
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.select_all(action="SELECT")
+    try:
+        bpy.ops.mesh.remove_doubles(threshold=merge_distance)
+        operations.append("remove_doubles")
+    except (AttributeError, RuntimeError, TypeError):
+        try:
+            bpy.ops.mesh.merge_by_distance(distance=merge_distance)
+            operations.append("merge_by_distance")
+        except (AttributeError, RuntimeError, TypeError):
+            operations.append("merge_by_distance_unavailable")
+    try:
+        bpy.ops.mesh.fill_holes(sides=fill_hole_sides)
+        operations.append("fill_holes")
+    except (AttributeError, RuntimeError, TypeError):
+        operations.append("fill_holes_unavailable")
+    try:
+        bpy.ops.mesh.normals_make_consistent(inside=False)
+        operations.append("normals_make_consistent")
+    except RuntimeError:
+        operations.append("normals_make_consistent_failed")
+    bpy.ops.object.mode_set(mode="OBJECT")
+    obj.select_set(False)
+    obj.data.update(calc_edges=True)
+    return {
+        "attempted": True,
+        "operations": operations,
+        "merge_distance_m": merge_distance,
+        "fill_hole_sides": fill_hole_sides,
+        "vertex_count_before": before_vertices,
+        "edge_count_before": before_edges,
+        "face_count_before": before_faces,
+        "vertex_count_after": len(obj.data.vertices),
+        "edge_count_after": len(obj.data.edges),
+        "face_count_after": len(obj.data.polygons),
     }
 
 

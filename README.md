@@ -113,6 +113,8 @@ The first execution adapter consumes the compiled tool plan and runs supported d
 
 This writes its report, preview, `.blend`, and optional `.glb` under `/tmp`, not the repo.
 
+The execution report includes `material_regions`, `socket_pass`, `topology_cleanup`, and `quality_pass` evidence. The current banister-post run preserves role material regions, applies two explicit socket booleans with cutter cleanup, creates two socket shadow panels, and reports `0` non-manifold edges after validation.
+
 Blender scripts should be adapters for viewing or exporting deterministic asset JSON. If a Blender script contains source design decisions, move those decisions into source recipes or the asset pump.
 
 The first adapter is:
@@ -179,6 +181,7 @@ Expected current checks:
 - Asset pump tests pass.
 - Blender tool-plan compiler validates a `97`-tool dictionary and compiles a `32`-step banister-post plan.
 - Blender tool-plan execution adapter validation consumes the compiled `32`-step plan.
+- Blender tool-plan execution quality evidence is recorded in `workflow/reports/3D-LAB-0021-execution-quality-pass-v0/`.
 - Tiny source fixture validation passes.
 - Measured component source validation passes.
 - Generated `gameguy_asset_v0` validation passes for simple, measured, section-stack, blocky-column, and blocky-shape grammar pump output.

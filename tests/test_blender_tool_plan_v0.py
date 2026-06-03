@@ -114,6 +114,21 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertIn("material_principled_shader", plan["summary"]["unique_tools"])
         self.assertIn("create_collision_proxy", plan["summary"]["unique_tools"])
 
+        by_step = {step["step_id"]: step for step in plan["steps"]}
+        socket_boolean = by_step["boolean_cut_rail_sockets"]["params"]
+        self.assertEqual(socket_boolean["targets"], ["post_core"])
+        self.assertEqual(socket_boolean["solver"], "EXACT")
+        self.assertTrue(socket_boolean["cleanup_cutters"])
+        self.assertTrue(socket_boolean["socket_shadow_panels"]["enabled"])
+        self.assertEqual(socket_boolean["socket_shadow_panels"]["material_role"], "socket_shadow")
+        self.assertIn("socket_shadows", by_step["join_visible_post_parts"]["params"]["objects"])
+        material_map = by_step["assign_material_regions"]["params"]["material_map"]
+        self.assertEqual(material_map["socket_shadow"], "gothic_stone_shadow")
+        self.assertEqual(by_step["weld_close_vertices"]["params"]["merge_distance_m"], 0.0)
+        topology_validation = by_step["validate_topology_non_manifold"]["params"]
+        self.assertEqual(topology_validation["cleanup_merge_distance_m"], 0.0)
+        self.assertEqual(topology_validation["cleanup_fill_hole_sides"], 0)
+
     def test_validate_only_writes_no_manifest(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             out_root = Path(tmp) / "plans"

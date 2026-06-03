@@ -1,0 +1,60 @@
+{
+  "schema": "blender_tool_plan_execution_quality_pass_receipt_v0",
+  "packet_id": "3D-LAB-0021",
+  "decision": "IMPROVE_BLENDER_TOOL_PLAN_EXECUTION_QUALITY",
+  "source_plan_schema": "gameguy_tool_plan_v0",
+  "compiler": "scripts/compile_blender_tool_plan_v0.py",
+  "adapter": "scripts/execute_blender_tool_plan_v0.py",
+  "input_plan": "/tmp/gameguy_blender_tool_plan_v0/plans/gothic_stone_banister_post_tool_plan_v0_compiled.json",
+  "execution_report": "/tmp/gameguy_blender_tool_plan_execution_v0/tool_plan_execution_v0_report.json",
+  "execution_summary": {
+    "plan_id": "gothic_stone_banister_post_tool_plan_v0_compiled",
+    "asset_family": "banister_post",
+    "style": "gothic_stone",
+    "step_count": 32,
+    "supported_step_count": 32,
+    "unique_tool_count": 24,
+    "executed_step_count": 32,
+    "skipped_step_count": 0,
+    "mesh_object_count": 3,
+    "final_object_vertex_count": 1225,
+    "final_object_face_count": 1158,
+    "final_object_material_slot_count": 6,
+    "non_manifold_edge_count_before_cleanup": 0,
+    "non_manifold_edge_count_reported": 0,
+    "socket_boolean_applied_modifier_count": 2,
+    "socket_boolean_failed_modifier_count": 0,
+    "socket_shadow_panel_count": 2,
+    "socket_cutters_removed": true,
+    "material_face_counts_by_role": {
+      "base": 158,
+      "cap": 106,
+      "rib": 626,
+      "shaft": 115,
+      "socket_shadow": 153
+    }
+  },
+  "outputs": {
+    "out_root": "/tmp/gameguy_blender_tool_plan_execution_v0",
+    "preview_png": "/tmp/gameguy_blender_tool_plan_execution_v0/tool_plan_execution_v0_workbench.png",
+    "blend": "/tmp/gameguy_blender_tool_plan_execution_v0/tool_plan_execution_v0.blend",
+    "glb": "/tmp/gameguy_blender_tool_plan_execution_v0/tool_plan_execution_v0.glb"
+  },
+  "rules": {
+    "consumes_gameguy_tool_plan_v0": true,
+    "reads_source_intent_recipe": false,
+    "runs_tool_plan_compiler": false,
+    "imports_asset_pump": false,
+    "executes_only_supported_deterministic_steps": true,
+    "source_design_logic": false,
+    "generated_outputs_in_repo": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}
