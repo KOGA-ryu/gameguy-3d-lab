@@ -1,0 +1,93 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0048-sacred-graph-v0",
+  "created_utc": "2026-06-03T00:00:00Z",
+  "summary": "Added a source-owned sacred construction graph compiler that emits deterministic 2D graph JSON, named subgraph selections, and SVG previews before 3D asset lifting.",
+  "source_inputs": {
+    "sacred_graph_bundle": "data/architecture/sacred_geometry/sacred_graph_recipes_v0.json",
+    "geometry_operation": "geometry_dictionary/operations/sacred_graph.json",
+    "downstream_asset_bundle": "data/architecture/asset_mill/recipes/section_stack_assets_v0.json",
+    "downstream_asset_id": "star_column_22_v0"
+  },
+  "compiled_graph": {
+    "graph_id": "sacred_22_star_construction_graph_v0",
+    "schema": "gameguy_sacred_graph_v0",
+    "graph_type": "radial_sacred_graph",
+    "divisions": 22,
+    "ring_count": 4,
+    "point_count": 89,
+    "edge_count": 220,
+    "selection_count": 4,
+    "derived_profile_count": 1,
+    "column_star_outline_vertex_count": 66,
+    "graph_path": "/tmp/gameguy_sacred_graph_v0_0048/graphs/sacred_22_star_construction_graph_v0.json",
+    "svg_preview_path": "/tmp/gameguy_sacred_graph_v0_0048/svg/sacred_22_star_construction_graph_v0.svg",
+    "png_preview_path": "/tmp/gameguy_sacred_graph_v0_0048_preview/sacred_22_star_construction_graph_v0.svg.png"
+  },
+  "named_selections": [
+    {
+      "selection_id": "center_boss_node",
+      "selection_type": "points",
+      "selected_count": 1,
+      "roles": ["boss", "dome_crown", "radial_origin"]
+    },
+    {
+      "selection_id": "primary_radial_ribs",
+      "selection_type": "edges",
+      "selected_count": 88,
+      "roles": ["vault_rib", "rose_window_spoke", "column_flute_axis"]
+    },
+    {
+      "selection_id": "outer_star_step_5_trace",
+      "selection_type": "edges",
+      "selected_count": 22,
+      "roles": ["tracery_trace", "rib_network", "faceted_fold_line"]
+    },
+    {
+      "selection_id": "column_star_outline",
+      "selection_type": "profile",
+      "selected_count": 66,
+      "roles": ["column_profile", "section_stack_profile"]
+    }
+  ],
+  "validation": {
+    "sacred_graph_validate_only": {
+      "command": "python3 scripts/compile_sacred_graph_v0.py --validate-only",
+      "result": "compiled sacred graphs=1 out=<validate-only>"
+    },
+    "sacred_graph_compile": {
+      "command": "python3 scripts/compile_sacred_graph_v0.py --clean --out /tmp/gameguy_sacred_graph_v0_0048",
+      "result": "compiled sacred graphs=1 points=89 edges=220 out=/tmp/gameguy_sacred_graph_v0_0048"
+    },
+    "unit_tests": {
+      "command": "python3 -m unittest discover -s tests",
+      "result": "OK",
+      "test_count": 134
+    },
+    "asset_generation_registry": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS asset generation registry validation: geometry_bundles=5 geometry_assets=40 source_profiles=19 source_graphs=1 reference_only=3"
+    },
+    "generation_pipeline": {
+      "non_blender": {
+        "command": "python3 scripts/validate_generation_pipeline_v0.py --json-report /tmp/gameguy_pipeline_0048_final.json",
+        "result": "PASS generation pipeline validation: commands=35 json=245 include_blender=false",
+        "command_count": 35,
+        "json_file_count": 245
+      },
+      "full_blender": {
+        "command": "python3 scripts/validate_generation_pipeline_v0.py --include-blender --json-report /tmp/gameguy_pipeline_blender_0048_final.json",
+        "result": "PASS generation pipeline validation: commands=49 json=245 include_blender=true",
+        "command_count": 49,
+        "json_file_count": 245
+      }
+    }
+  },
+  "rules": {
+    "source_graph_is_first_class": true,
+    "graph_selections_are_named": true,
+    "blender_is_adapter_layer": true,
+    "generated_outputs_stay_under_tmp": true,
+    "no_production_or_structural_claims": true
+  }
+}

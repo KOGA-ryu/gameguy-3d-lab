@@ -1,0 +1,107 @@
+{
+  "schema": "sacred_graph_recipe_bundle_v0",
+  "bundle_id": "sacred_graph_recipes_v0",
+  "purpose": "Source construction-graph recipes for selecting sacred-geometry subgraphs before any 3D asset, tool-plan, or Blender adapter work.",
+  "units": "abstract_meter",
+  "rules": {
+    "source_lane": true,
+    "deterministic_output": true,
+    "no_blender_logic": true,
+    "no_generated_outputs": true,
+    "no_wall_clock_fields": true,
+    "graph_is_source_field": true
+  },
+  "graph_count": 1,
+  "graphs": [
+    {
+      "graph_id": "sacred_22_star_construction_graph_v0",
+      "graph_type": "radial_sacred_graph",
+      "geometry_operation": "sacred_graph",
+      "description": "Twenty-two division construction field used to prove that one sacred graph can feed columns, ribs, rose windows, vaults, and later muqarnas cell selection.",
+      "origin_m": [0.0, 0.0],
+      "divisions": 22,
+      "orientation_degrees": 0.0,
+      "rings": [
+        { "ring_id": "boss", "radius_m": 0.08, "role_hint": "boss_anchor" },
+        { "ring_id": "inner_cell", "radius_m": 0.277, "role_hint": "cell_valley_ring" },
+        { "ring_id": "shaft_valley", "radius_m": 0.34, "role_hint": "column_inner_radius_reference" },
+        { "ring_id": "outer_tip", "radius_m": 0.43, "role_hint": "column_outer_tip_reference" }
+      ],
+      "star_connections": [
+        { "connection_id": "outer_step_5", "ring_id": "outer_tip", "step": 5, "role_hint": "primary_star_trace" },
+        { "connection_id": "outer_step_7", "ring_id": "outer_tip", "step": 7, "role_hint": "secondary_star_trace" }
+      ],
+      "derived_profiles": [
+        {
+          "profile_id": "column_star_outline",
+          "profile_type": "star_polygon",
+          "role_hint": "column_profile",
+          "params": {
+            "points": 22,
+            "outer_radius_x": 0.43,
+            "outer_radius_y": 0.34,
+            "inner_radius_x": 0.368,
+            "inner_radius_y": 0.277,
+            "flat_edge_ratio": 0.35
+          },
+          "architectural_roles": [
+            "column_profile",
+            "ribbed_shaft_profile",
+            "rose_window_outer_trace"
+          ]
+        }
+      ],
+      "selections": [
+        {
+          "selection_id": "center_boss_node",
+          "selection_type": "points",
+          "selector": { "kind": "point_id", "point_id": "center" },
+          "architectural_roles": ["boss", "dome_crown", "radial_origin"]
+        },
+        {
+          "selection_id": "primary_radial_ribs",
+          "selection_type": "edges",
+          "selector": { "kind": "edge_tag_query", "tag": "radial" },
+          "architectural_roles": ["vault_rib", "rose_window_spoke", "column_flute_axis"]
+        },
+        {
+          "selection_id": "outer_star_step_5_trace",
+          "selection_type": "edges",
+          "selector": { "kind": "edge_tag_query", "tag": "star_step:5" },
+          "architectural_roles": ["tracery_trace", "rib_network", "faceted_fold_line"]
+        },
+        {
+          "selection_id": "column_star_outline",
+          "selection_type": "profile",
+          "selector": { "kind": "derived_profile", "profile_id": "column_star_outline" },
+          "architectural_roles": ["column_profile", "section_stack_profile"]
+        }
+      ],
+      "downstream_proofs": [
+        {
+          "asset_bundle": "data/architecture/asset_mill/recipes/section_stack_assets_v0.json",
+          "asset_id": "star_column_22_v0",
+          "uses_selection": "column_star_outline",
+          "relationship": "first 3D consumer of the 22-division construction graph"
+        }
+      ],
+      "validation_expectations": {
+        "point_count": 89,
+        "edge_count": 220,
+        "ring_count": 4,
+        "star_connection_count": 2,
+        "derived_profile_count": 1,
+        "column_star_outline_vertex_count": 66,
+        "known_geometry_operation": true
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false
+      }
+    }
+  ]
+}

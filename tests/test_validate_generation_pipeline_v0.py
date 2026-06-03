@@ -60,6 +60,7 @@ class GenerationPipelineValidatorTests(unittest.TestCase):
         self.assertIn("reference_dissection_validate", labels)
         self.assertIn("measured_molding_profile_validate", labels)
         self.assertIn("railing_detail_profile_validate", labels)
+        self.assertIn("sacred_graph_compile", labels)
         self.assertIn("tool_plan_validate", labels)
         self.assertIn("fence_post_blender_adapter_validate_only", labels)
         self.assertIn("rail_segment_blender_adapter_validate_only", labels)

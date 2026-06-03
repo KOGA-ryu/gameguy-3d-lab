@@ -29,8 +29,18 @@ The source repo remains the historical prototype/reference. This repo is a flatt
 The durable core of this repo is:
 
 ```text
-source asset recipe -> profile/operation compiler -> deterministic asset geometry JSON
+sacred construction graph -> selected subgraph/profile -> source asset recipe -> profile/operation compiler -> deterministic asset geometry JSON
 ```
+
+The graph layer is source-only. It creates named 2D points, edges, rings, star traces, and profile selections before any asset pump or Blender adapter sees the shape:
+
+```bash
+python3 scripts/compile_sacred_graph_v0.py \
+  --clean \
+  --out /tmp/gameguy_sacred_graph_v0
+```
+
+The first graph bundle is `data/architecture/sacred_geometry/sacred_graph_recipes_v0.json`. It compiles `sacred_22_star_construction_graph_v0` into `89` named points, `220` named edges, an SVG construction preview, and a selected `column_star_outline` profile with `66` vertices. The existing `star_column_22_v0` section-stack asset is the first downstream proof that a selected sacred-geometry profile can become deterministic 3D geometry.
 
 The first lean command is:
 
@@ -227,6 +237,7 @@ python3 scripts/validate_asset_generation_registry_v0.py
 python3 scripts/validate_reference_dissection_packet_v0.py
 python3 scripts/validate_measured_molding_profiles_v0.py
 python3 scripts/validate_railing_detail_profiles_v0.py
+python3 scripts/compile_sacred_graph_v0.py --clean --out /tmp/gameguy_sacred_graph_v0
 python3 scripts/compile_blender_tool_plan_v0.py --validate-only
 python3 scripts/compile_blender_tool_plan_v0.py --clean --out /tmp/gameguy_blender_tool_plan_v0
 python3 scripts/validate_gameguy_tool_plan_v0.py --manifest /tmp/gameguy_blender_tool_plan_v0/manifest.json
@@ -309,6 +320,7 @@ Expected current checks:
 - Reference dissection packet validation proves visible shapes, geometry terms, and candidate Blender tools before the next geometry pass.
 - Measured molding profile validation proves user-supplied cap/base/flute/plinth/compound-pier profile sources before the next geometry pass.
 - Railing detail profile validation proves 2D detail shape placement, detail roles, application methods, and Blender tool stage order before the next geometry pass.
+- Sacred graph compilation proves a source-owned 22-division construction graph with named point, edge, star-trace, and derived profile selections before 3D lifting/folding.
 - JSON parses.
 - Python scripts compile.
 - Asset pump tests pass.

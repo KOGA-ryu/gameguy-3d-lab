@@ -135,6 +135,16 @@
       "pipeline_labels": ["railing_detail_profile_validate"]
     }
   ],
+  "source_graph_bundles": [
+    {
+      "bundle_id": "sacred_graph_recipes_v0",
+      "path": "data/architecture/sacred_geometry/sacred_graph_recipes_v0.json",
+      "schema": "sacred_graph_recipe_bundle_v0",
+      "expected_graph_count": 1,
+      "compiler": "scripts/compile_sacred_graph_v0.py",
+      "pipeline_labels": ["sacred_graph_compile"]
+    }
+  ],
   "reference_only_recipe_bundles": [
     {
       "path": "data/architecture/asset_mill/recipes/architectural_asset_batch_v0.json",

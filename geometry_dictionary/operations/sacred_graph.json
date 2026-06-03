@@ -1,0 +1,36 @@
+{
+  "term_id": "sacred_graph",
+  "category": "composition_operation",
+  "plain_name": "Sacred Construction Graph",
+  "description": "Creates a named 2D radial construction graph whose points, edges, rings, star traces, and derived profiles can be selected before later 3D lifting, folding, sweeping, or extrusion.",
+  "required_inputs": {
+    "divisions": "int",
+    "rings": "radial_ring[]",
+    "star_connections": "star_step[]",
+    "selections": "subgraph_selection[]"
+  },
+  "outputs": {
+    "type": "construction_graph_2d",
+    "coordinate_space": "local_xy",
+    "selection_ready": true
+  },
+  "constraints": {
+    "divisions_min": 3,
+    "ring_radii_must_increase": true,
+    "star_steps_must_be_coprime_with_divisions": true,
+    "selections_reference_named_graph_parts": true
+  },
+  "common_uses": [
+    "star columns",
+    "rose windows",
+    "ribbed vault plans",
+    "muqarnas cell fields",
+    "tracery construction drawings"
+  ],
+  "blender_method": "Blender does not build the source graph; adapters consume selected graph outputs as profiles, ribs, panels, or guide curves.",
+  "validation": [
+    "closed_profile",
+    "nonzero_area",
+    "scale_within_bounds"
+  ]
+}

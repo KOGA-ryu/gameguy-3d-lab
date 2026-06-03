@@ -281,6 +281,34 @@ def validate_source_profile_bundle(item: Any, index: int, known_labels: set[str]
     }
 
 
+def validate_source_graph_bundle(item: Any, index: int, known_labels: set[str]) -> dict[str, Any]:
+    bundle_ref = require_object(item, f"source_graph_bundles[{index}]")
+    path = repo_path(bundle_ref.get("path"), f"source_graph_bundles[{index}].path")
+    bundle = load_json(path)
+    expected_schema = require_string(bundle_ref.get("schema"), f"source_graph_bundles[{index}].schema")
+    if bundle.get("schema") != expected_schema:
+        fail(f"{display_path(path)} schema must be {expected_schema}")
+    bundle_id = require_string(bundle_ref.get("bundle_id"), f"source_graph_bundles[{index}].bundle_id")
+    if bundle.get("bundle_id") != bundle_id:
+        fail(f"{display_path(path)} bundle_id must be {bundle_id}")
+    expected_count = require_int(bundle_ref.get("expected_graph_count"), f"source_graph_bundles[{index}].expected_graph_count", minimum=1)
+    graphs = require_list(bundle.get("graphs"), f"source_graph_bundles[{index}].graphs")
+    if len(graphs) != expected_count:
+        fail(f"source_graph_bundles[{index}].expected_graph_count must match graphs length")
+    if bundle.get("graph_count") != expected_count:
+        fail(f"source_graph_bundles[{index}].expected_graph_count must match bundle graph_count")
+    compiler = script_path(bundle_ref.get("compiler"), f"source_graph_bundles[{index}].compiler")
+    assert_no_blender_import(compiler, f"source_graph_bundles[{index}].compiler")
+    labels = validate_pipeline_labels(bundle_ref.get("pipeline_labels"), known_labels, f"source_graph_bundles[{index}].pipeline_labels")
+    return {
+        "bundle_id": bundle_id,
+        "path": display_path(path),
+        "schema": expected_schema,
+        "graph_count": expected_count,
+        "pipeline_label_count": len(labels),
+    }
+
+
 def validate_reference_recipe(item: Any, index: int, canonical_paths: set[str]) -> dict[str, Any]:
     reference = require_object(item, f"reference_only_recipe_bundles[{index}]")
     path = repo_path(reference.get("path"), f"reference_only_recipe_bundles[{index}].path")
@@ -335,7 +363,14 @@ def validate_registry(path: Path) -> dict[str, Any]:
     source_profile_paths = {result["path"] for result in source_profile_results}
     if len(source_profile_paths) != len(source_profile_results):
         fail("source_profile_bundles paths must be unique")
-    canonical_paths = geometry_paths | {tool_plan_result["path"]} | source_profile_paths
+    source_graph_results = [
+        validate_source_graph_bundle(item, index, known_labels)
+        for index, item in enumerate(require_list(registry.get("source_graph_bundles"), "source_graph_bundles"))
+    ]
+    source_graph_paths = {result["path"] for result in source_graph_results}
+    if len(source_graph_paths) != len(source_graph_results):
+        fail("source_graph_bundles paths must be unique")
+    canonical_paths = geometry_paths | {tool_plan_result["path"]} | source_profile_paths | source_graph_paths
     reference_results = [
         validate_reference_recipe(item, index, canonical_paths)
         for index, item in enumerate(require_list(registry.get("reference_only_recipe_bundles"), "reference_only_recipe_bundles"))
@@ -361,6 +396,8 @@ def validate_registry(path: Path) -> dict[str, Any]:
         "canonical_tool_plan_bundle": tool_plan_result,
         "source_profile_bundle_count": len(source_profile_results),
         "source_profile_count": sum(result["profile_count"] for result in source_profile_results),
+        "source_graph_bundle_count": len(source_graph_results),
+        "source_graph_count": sum(result["graph_count"] for result in source_graph_results),
         "reference_only_recipe_count": len(reference_results),
         "pipeline_label_count": len(known_labels),
         "generated_outputs_created": False,
@@ -372,6 +409,7 @@ def validate_registry(path: Path) -> dict[str, Any]:
             "creates_media_or_mesh": False,
             "validates_pipeline_label_coverage": True,
             "validates_source_profile_boundaries": True,
+            "validates_source_graph_boundaries": True,
             "validates_reference_only_boundaries": True,
         },
     }
@@ -397,6 +435,7 @@ def main(argv: list[str] | None = None) -> int:
         f"geometry_bundles={result['canonical_geometry_bundle_count']} "
         f"geometry_assets={result['canonical_geometry_asset_count']} "
         f"source_profiles={result['source_profile_count']} "
+        f"source_graphs={result['source_graph_count']} "
         f"reference_only={result['reference_only_recipe_count']}"
     )
     return 0
