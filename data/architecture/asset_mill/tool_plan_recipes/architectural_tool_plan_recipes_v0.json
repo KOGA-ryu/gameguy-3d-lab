@@ -625,7 +625,18 @@
         "profiled_plinth_depth_m": 0.32,
         "profiled_plinth_height_m": 0.22,
         "profiled_plinth_base_z_m": 0.0,
-        "bevel_width_m": 0.01,
+        "profiled_plinth_corner_chamfer_ratio": 0.18,
+        "profiled_plinth_profile_rings": [
+          { "z_ratio": 0.0, "footprint_ratio": 1.0, "role": "bottom_foot" },
+          { "z_ratio": 0.22, "footprint_ratio": 1.0, "role": "lower_vertical_foot" },
+          { "z_ratio": 0.22, "footprint_ratio": 0.92, "role": "lower_ledge_inset" },
+          { "z_ratio": 0.36, "footprint_ratio": 0.78, "role": "lower_slope" },
+          { "z_ratio": 0.58, "footprint_ratio": 0.64, "role": "ogee_slope" },
+          { "z_ratio": 0.78, "footprint_ratio": 0.46, "role": "upper_neck_setback" },
+          { "z_ratio": 1.0, "footprint_ratio": 0.46, "role": "upper_neck" }
+        ],
+        "bevel_width_m": 0.008,
+        "bevel_segments": 1,
         "stone_noise_scale": 46.0,
         "uv_margin": 0.018,
         "lod_decimate_ratio": 0.7

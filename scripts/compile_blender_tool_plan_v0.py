@@ -33,6 +33,7 @@ GUARD_PANEL_RAILING_DETAIL_PROFILE_IDS = [
     "railing_trapezoid_transition_collar_v0",
 ]
 PROFILED_PLINTH_BASE_DETAIL_PROFILE_ID = "railing_plinth_ogee_base_side_profile_v0"
+PROFILED_PLINTH_SOURCE_CONTROL_POINT_COUNT = 14
 FINISH_FEATURE_TOOL_IDS = {
     "hard_edge_bevels": ["modifier_bevel", "mark_sharp"],
     "weighted_normals": ["modifier_weighted_normal"],
@@ -549,6 +550,10 @@ def validate_profiled_plinth_base_detail(asset: dict[str, Any], geometry_terms: 
     positive_number(params.get("profiled_plinth_depth_m", 0.32), f"{asset_id}.style_parameters.profiled_plinth_depth_m")
     positive_number(params.get("profiled_plinth_height_m", 0.22), f"{asset_id}.style_parameters.profiled_plinth_height_m")
     finite_number(params.get("profiled_plinth_base_z_m", 0.0), f"{asset_id}.style_parameters.profiled_plinth_base_z_m")
+    chamfer_ratio = positive_number(params.get("profiled_plinth_corner_chamfer_ratio", 0.18), f"{asset_id}.style_parameters.profiled_plinth_corner_chamfer_ratio")
+    if chamfer_ratio >= 0.45:
+        fail(f"{asset_id}.style_parameters.profiled_plinth_corner_chamfer_ratio must be less than 0.45")
+    profiled_plinth_ring_specs(asset_id, params)
 
 
 def resolve_finish_tool_stack(asset: dict[str, Any], finish_stack_map: dict[str, dict[str, Any]]) -> None:
@@ -735,30 +740,100 @@ def ogee_points(center_x: float, center_z: float, width: float, height: float) -
     ]
 
 
-def profiled_plinth_base_points(center_x: float, base_z: float, width: float, height: float) -> list[list[float]]:
+DEFAULT_PROFILED_PLINTH_RING_SPECS = [
+    {"z_ratio": 0.0, "footprint_ratio": 1.0, "role": "bottom_foot"},
+    {"z_ratio": 0.22, "footprint_ratio": 1.0, "role": "lower_vertical_foot"},
+    {"z_ratio": 0.22, "footprint_ratio": 0.92, "role": "lower_ledge_inset"},
+    {"z_ratio": 0.36, "footprint_ratio": 0.78, "role": "lower_slope"},
+    {"z_ratio": 0.58, "footprint_ratio": 0.64, "role": "ogee_slope"},
+    {"z_ratio": 0.78, "footprint_ratio": 0.46, "role": "upper_neck_setback"},
+    {"z_ratio": 1.0, "footprint_ratio": 0.46, "role": "upper_neck"},
+]
+
+
+def profiled_plinth_ring_specs(asset_id: str, params: dict[str, Any]) -> list[dict[str, Any]]:
+    raw_specs = params.get("profiled_plinth_profile_rings", DEFAULT_PROFILED_PLINTH_RING_SPECS)
+    specs = require_list(raw_specs, f"{asset_id}.style_parameters.profiled_plinth_profile_rings")
+    if len(specs) < 2:
+        fail(f"{asset_id}.style_parameters.profiled_plinth_profile_rings must contain at least two rings")
+    result = []
+    previous_z = -1.0
+    for index, value in enumerate(specs):
+        spec = require_object(value, f"{asset_id}.style_parameters.profiled_plinth_profile_rings[{index}]")
+        z_ratio = finite_number(spec.get("z_ratio"), f"{asset_id}.style_parameters.profiled_plinth_profile_rings[{index}].z_ratio")
+        footprint_ratio = positive_number(
+            spec.get("footprint_ratio"),
+            f"{asset_id}.style_parameters.profiled_plinth_profile_rings[{index}].footprint_ratio",
+        )
+        if z_ratio < 0.0 or z_ratio > 1.0:
+            fail(f"{asset_id}.style_parameters.profiled_plinth_profile_rings[{index}].z_ratio must be between 0 and 1")
+        if z_ratio < previous_z:
+            fail(f"{asset_id}.style_parameters.profiled_plinth_profile_rings must be ordered by z_ratio")
+        if footprint_ratio > 1.25:
+            fail(f"{asset_id}.style_parameters.profiled_plinth_profile_rings[{index}].footprint_ratio must be <= 1.25")
+        role = require_string(spec.get("role", f"ring_{index:02d}"), f"{asset_id}.style_parameters.profiled_plinth_profile_rings[{index}].role")
+        result.append({"z_ratio": z_ratio, "footprint_ratio": footprint_ratio, "role": role})
+        previous_z = z_ratio
+    if result[0]["z_ratio"] != 0.0:
+        fail(f"{asset_id}.style_parameters.profiled_plinth_profile_rings first z_ratio must be 0")
+    if result[-1]["z_ratio"] != 1.0:
+        fail(f"{asset_id}.style_parameters.profiled_plinth_profile_rings last z_ratio must be 1")
+    return result
+
+
+def chamfered_square_footprint_points(width: float, depth: float, chamfer: float, y_center: float) -> list[list[float]]:
     half_width = width * 0.5
-    z0 = base_z
-    z1 = base_z + height * 0.22
-    z2 = base_z + height * 0.36
-    z3 = base_z + height * 0.58
-    z4 = base_z + height * 0.78
-    z5 = base_z + height
+    half_depth = depth * 0.5
+    if chamfer <= 0.0 or chamfer >= min(half_width, half_depth):
+        fail("chamfered square footprint requires chamfer smaller than half extents")
     return [
-        [round(center_x - half_width, 6), round(z0, 6)],
-        [round(center_x + half_width, 6), round(z0, 6)],
-        [round(center_x + half_width, 6), round(z1, 6)],
-        [round(center_x + half_width * 0.92, 6), round(z1, 6)],
-        [round(center_x + half_width * 0.78, 6), round(z2, 6)],
-        [round(center_x + half_width * 0.64, 6), round(z3, 6)],
-        [round(center_x + half_width * 0.46, 6), round(z4, 6)],
-        [round(center_x + half_width * 0.46, 6), round(z5, 6)],
-        [round(center_x - half_width * 0.46, 6), round(z5, 6)],
-        [round(center_x - half_width * 0.46, 6), round(z4, 6)],
-        [round(center_x - half_width * 0.64, 6), round(z3, 6)],
-        [round(center_x - half_width * 0.78, 6), round(z2, 6)],
-        [round(center_x - half_width * 0.92, 6), round(z1, 6)],
-        [round(center_x - half_width, 6), round(z1, 6)],
+        [round(-half_width + chamfer, 6), round(y_center - half_depth, 6)],
+        [round(half_width - chamfer, 6), round(y_center - half_depth, 6)],
+        [round(half_width, 6), round(y_center - half_depth + chamfer, 6)],
+        [round(half_width, 6), round(y_center + half_depth - chamfer, 6)],
+        [round(half_width - chamfer, 6), round(y_center + half_depth, 6)],
+        [round(-half_width + chamfer, 6), round(y_center + half_depth, 6)],
+        [round(-half_width, 6), round(y_center + half_depth - chamfer, 6)],
+        [round(-half_width, 6), round(y_center - half_depth + chamfer, 6)],
     ]
+
+
+def profiled_plinth_base_wrapped_mesh(
+    *,
+    width: float,
+    depth: float,
+    height: float,
+    base_z: float,
+    y_center: float,
+    ring_specs: list[dict[str, Any]],
+    corner_chamfer_ratio: float,
+) -> dict[str, Any]:
+    vertices = []
+    point_count = 8
+    for spec in ring_specs:
+        footprint_ratio = float(spec["footprint_ratio"])
+        ring_width = width * footprint_ratio
+        ring_depth = depth * footprint_ratio
+        chamfer = min(ring_width, ring_depth) * corner_chamfer_ratio
+        z = base_z + height * float(spec["z_ratio"])
+        for x, y in chamfered_square_footprint_points(ring_width, ring_depth, chamfer, y_center):
+            vertices.append([round(x, 6), round(y, 6), round(z, 6)])
+
+    faces: list[list[int]] = [list(range(point_count - 1, -1, -1))]
+    for ring_index in range(len(ring_specs) - 1):
+        current = ring_index * point_count
+        next_ring = (ring_index + 1) * point_count
+        for point_index in range(point_count):
+            next_point = (point_index + 1) % point_count
+            faces.append([current + point_index, current + next_point, next_ring + next_point, next_ring + point_index])
+    top_start = (len(ring_specs) - 1) * point_count
+    faces.append(list(range(top_start, top_start + point_count)))
+    return {
+        "vertices": vertices,
+        "faces": faces,
+        "ring_count": len(ring_specs),
+        "footprint_point_count": point_count,
+    }
 
 
 def rail_segment_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
@@ -871,26 +946,43 @@ def gothic_panel_guard_mesh_step(
 
 
 def profiled_plinth_base_detail_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
+    asset_id = require_string(asset.get("asset_id"), "asset_id")
     params = style_params(asset)
     width = number_param(params, "profiled_plinth_width_m", 0.62)
     depth = number_param(params, "profiled_plinth_depth_m", 0.32)
     height = number_param(params, "profiled_plinth_height_m", 0.22)
     base_z = number_param(params, "profiled_plinth_base_z_m", 0.0)
     y_center = number_param(params, "profiled_plinth_center_y_m", 0.0)
-    profile_id = require_string(params.get("profiled_plinth_profile_id", PROFILED_PLINTH_BASE_DETAIL_PROFILE_ID), f"{asset['asset_id']}.style_parameters.profiled_plinth_profile_id")
-    points = profiled_plinth_base_points(0.0, base_z, width, height)
+    corner_chamfer_ratio = number_param(params, "profiled_plinth_corner_chamfer_ratio", 0.18)
+    profile_id = require_string(params.get("profiled_plinth_profile_id", PROFILED_PLINTH_BASE_DETAIL_PROFILE_ID), f"{asset_id}.style_parameters.profiled_plinth_profile_id")
+    ring_specs = profiled_plinth_ring_specs(asset_id, params)
+    mesh = profiled_plinth_base_wrapped_mesh(
+        width=width,
+        depth=depth,
+        height=height,
+        base_z=base_z,
+        y_center=y_center,
+        ring_specs=ring_specs,
+        corner_chamfer_ratio=corner_chamfer_ratio,
+    )
     return [
-        gothic_panel_guard_mesh_step(
-            "create_profiled_plinth_base_detail",
-            "Create one source-owned profiled plinth base detail from a low-point 2D custom polygon.",
-            points,
-            y_center=y_center,
-            depth_y=depth,
-            material_role="base",
-            source_profile="custom_polygon",
-            source_detail_profile=profile_id,
-            group="base",
-        ),
+        {
+            "step_id": "create_profiled_plinth_base_detail",
+            "tool_id": "mesh_from_pydata",
+            "purpose": "Create one source-owned four-sided profiled plinth base from chamfered-square footprint rings.",
+            "params": {
+                "vertices": mesh["vertices"],
+                "faces": mesh["faces"],
+                "material_role": "base",
+                "source_profile": "custom_polygon",
+                "source_detail_profile": profile_id,
+                "group": "base",
+                "wraps_all_sides": True,
+                "profile_ring_count": mesh["ring_count"],
+                "footprint_point_count": mesh["footprint_point_count"],
+                "corner_chamfer_ratio": corner_chamfer_ratio,
+            },
+        },
         {
             "step_id": "join_profiled_plinth_base_detail",
             "tool_id": "join_objects",
@@ -898,7 +990,10 @@ def profiled_plinth_base_detail_steps(asset: dict[str, Any]) -> list[dict[str, A
             "params": {
                 "objects": ["base"],
                 "source_detail_profile": profile_id,
-                "source_control_point_count": len(points),
+                "source_control_point_count": PROFILED_PLINTH_SOURCE_CONTROL_POINT_COUNT,
+                "profile_ring_count": mesh["ring_count"],
+                "footprint_point_count": mesh["footprint_point_count"],
+                "corner_chamfer_ratio": corner_chamfer_ratio,
                 "profile_width_m": width,
                 "profile_depth_m": depth,
                 "profile_height_m": height,
@@ -1637,7 +1732,16 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
         ]
     if feature == "hard_edge_bevels":
         return [
-            {"step_id": "add_hard_edge_bevels", "tool_id": "modifier_bevel", "purpose": "Add small bevels so block edges catch light.", "params": {"width_m": params.get("bevel_width_m", 0.018), "segments": 2, "affect": "ANGLE"}},
+            {
+                "step_id": "add_hard_edge_bevels",
+                "tool_id": "modifier_bevel",
+                "purpose": "Add small bevels so block edges catch light.",
+                "params": {
+                    "width_m": params.get("bevel_width_m", 0.018),
+                    "segments": int_param(params, "bevel_segments", 2, minimum=1),
+                    "affect": "ANGLE",
+                },
+            },
             {"step_id": "mark_primary_sharp_edges", "tool_id": "mark_sharp", "purpose": "Preserve important silhouette edges after beveling.", "params": {"selection_policy": "outer_silhouette_and_socket_edges"}},
         ]
     if feature == "weighted_normals":
@@ -1828,6 +1932,7 @@ def source_terms_for_asset(asset: dict[str, Any]) -> dict[str, Any]:
             params.get("profiled_plinth_profile_id", PROFILED_PLINTH_BASE_DETAIL_PROFILE_ID),
             f"{asset_id}.style_parameters.profiled_plinth_profile_id",
         )
+        ring_specs = profiled_plinth_ring_specs(asset_id, params)
         profile_map = profile_map_from_bundle(bundle, f"{asset_id}.profiled_plinth_profile_bundle")
         profile = require_object(profile_map.get(profile_id), f"{asset_id}.profiled_plinth_base_detail.{profile_id}")
         append_unique("geometry", require_string_list(profile.get("geometry_terms_used"), f"{profile_id}.geometry_terms_used"))
@@ -1842,8 +1947,11 @@ def source_terms_for_asset(asset: dict[str, Any]) -> dict[str, Any]:
         result["profiled_plinth_base_detail"] = {
             "bundle_path": repo_display_path(bundle_path),
             "profile_id": profile_id,
-            "compile_mode": "single_custom_polygon_extrusion_v0",
-            "source_control_point_count": 14,
+            "compile_mode": "wrapped_chamfered_square_ring_mesh_v0",
+            "source_control_point_count": PROFILED_PLINTH_SOURCE_CONTROL_POINT_COUNT,
+            "profile_ring_count": len(ring_specs),
+            "footprint_point_count": 8,
+            "corner_chamfer_ratio": number_param(params, "profiled_plinth_corner_chamfer_ratio", 0.18),
             "tool_ids": tool_ids,
         }
     if "finish_tool_stack" in features:
