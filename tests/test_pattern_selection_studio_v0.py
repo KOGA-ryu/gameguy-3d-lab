@@ -127,6 +127,15 @@ class PatternSelectionStudioTests(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 studio.normalize_selection_recipe(recipe, graph, Path("/tmp/tiny_segments.json"))
 
+    def test_html_uses_lightweight_segment_rendering_controls(self) -> None:
+        studio = load_studio()
+
+        self.assertIn('id="detailSelect"', studio.HTML)
+        self.assertIn("function renderSubset", studio.HTML)
+        self.assertIn('els.segmentsLayer.addEventListener("pointerdown"', studio.HTML)
+        self.assertNotIn('line.addEventListener("pointerdown"', studio.HTML)
+        self.assertNotIn('line.addEventListener("pointerenter"', studio.HTML)
+
 
 if __name__ == "__main__":
     unittest.main()

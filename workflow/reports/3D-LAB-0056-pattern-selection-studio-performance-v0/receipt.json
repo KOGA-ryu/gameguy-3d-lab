@@ -1,0 +1,58 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0056-pattern-selection-studio-performance-v0",
+  "created_utc": "2026-06-03T20:44:34Z",
+  "summary": "Reduced the default browser load for the pattern selection studio by rendering a prioritized light subset, delegating segment events, and lazily rendering intersections.",
+  "source_inputs": {
+    "studio": "scripts/serve_pattern_selection_studio_v0.py",
+    "test": "tests/test_pattern_selection_studio_v0.py",
+    "source_segment_set_default": "/tmp/gameguy_pattern_segments_v0/segment_sets/hex_rosette_pattern_segments_v0.json"
+  },
+  "studio": {
+    "url": "http://127.0.0.1:8765",
+    "default_detail_value": "1200",
+    "full_source_segment_count": 14324,
+    "default_rendered_segment_count": 1200,
+    "intersection_count": 7751,
+    "intersections_rendered_by_default": 0,
+    "performance_changes": [
+      "default_light_detail",
+      "prioritized_segment_subset",
+      "delegated_svg_segment_events",
+      "lazy_intersection_rendering",
+      "rendered_subset_select_clear"
+    ]
+  },
+  "validation": {
+    "python_compile": {
+      "command": "python3 -m py_compile scripts/serve_pattern_selection_studio_v0.py",
+      "result": "PASS"
+    },
+    "targeted_tests": {
+      "command": "python3 -m unittest tests/test_pattern_selection_studio_v0.py",
+      "result": "OK",
+      "test_count": 4
+    },
+    "pattern_selection_studio_validate_only": {
+      "command": "python3 scripts/serve_pattern_selection_studio_v0.py --validate-only",
+      "result": "PASS pattern selection studio validation: segment_set=hex_rosette_pattern_segments_v0 segments=14324 default_selection=hex_rosette_user_selection_v0"
+    },
+    "browser_smoke": {
+      "url": "http://127.0.0.1:8765",
+      "default_detail_value": "1200",
+      "rendered_line_count": 1200,
+      "matching_line_count": 14324,
+      "intersection_node_count": 0,
+      "click_selection_result": "selected 1",
+      "reset_result": "selected 0"
+    }
+  },
+  "rules": {
+    "manual_source_selection": true,
+    "does_not_modify_source_segment_graph": true,
+    "generated_outputs_stay_under_tmp": true,
+    "no_blender_validation_for_ui_performance_slice": true,
+    "no_mesh_output": true
+  },
+  "recommended_next_goal": "Use the lighter studio to save a first user-selected motif recipe, then compile an omission preview."
+}

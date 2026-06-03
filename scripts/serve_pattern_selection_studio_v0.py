@@ -276,6 +276,14 @@ HTML = r"""<!doctype html>
           <label>Filter
             <input id="filterInput" type="text" placeholder="tag or segment id" />
           </label>
+          <label>Detail
+            <select id="detailSelect">
+              <option value="1200" selected>light</option>
+              <option value="2600">normal</option>
+              <option value="5200">dense</option>
+              <option value="all">full</option>
+            </select>
+          </label>
           <div class="row">
             <label>Role
               <select id="roleSelect">
@@ -309,8 +317,8 @@ HTML = r"""<!doctype html>
         </div>
         <div class="group">
           <div class="btnrow">
-            <button id="selectVisibleBtn">Select visible</button>
-            <button id="clearVisibleBtn">Clear visible</button>
+            <button id="selectVisibleBtn">Select rendered</button>
+            <button id="clearVisibleBtn">Clear rendered</button>
             <button id="clearAllBtn" class="warn">Clear all</button>
           </div>
           <div class="btnrow">
@@ -349,12 +357,15 @@ HTML = r"""<!doctype html>
       lineById: new Map(),
       selected: new Map(),
       visibleIds: new Set(),
+      matchIds: new Set(),
+      renderedIds: new Set(),
       lastSegmentId: null,
       viewSize: 1100,
       margin: 70,
       scale: 1,
       drag: null,
-      savePath: null
+      savePath: null,
+      intersectionsRendered: false
     };
 
     const els = {
@@ -363,6 +374,7 @@ HTML = r"""<!doctype html>
       intersectionsLayer: document.getElementById("intersectionsLayer"),
       marquee: document.getElementById("marquee"),
       filterInput: document.getElementById("filterInput"),
+      detailSelect: document.getElementById("detailSelect"),
       roleSelect: document.getElementById("roleSelect"),
       widthInput: document.getElementById("widthInput"),
       colorInput: document.getElementById("colorInput"),
@@ -444,7 +456,7 @@ HTML = r"""<!doctype html>
       }
       const roleText = Object.keys(roles).sort().map(role => `${role}:${roles[role]}`).join(" ");
       els.selectionReadout.textContent =
-        `selected ${state.selected.size}\nvisible ${state.visibleIds.size}\n${roleText || "none"}\n${state.savePath || ""}`;
+        `selected ${state.selected.size}\nrendered ${state.visibleIds.size}\nmatching ${state.matchIds.size}\n${roleText || "none"}\n${state.savePath || ""}`;
     }
 
     function showSegment(segmentId) {
@@ -478,31 +490,74 @@ HTML = r"""<!doctype html>
       applyFilters();
     }
 
+    function detailLimit() {
+      const value = els.detailSelect.value;
+      if (value === "all") return Infinity;
+      return Math.max(200, Number(value || 2600));
+    }
+
+    function hasTag(segment, tag) {
+      return segment.tags.includes(tag);
+    }
+
+    function hasTagPrefix(segment, prefix) {
+      return segment.tags.some(tag => tag.startsWith(prefix));
+    }
+
+    function segmentPriority(segment) {
+      let score = 0;
+      if (state.selected.has(segment.segment_id)) score -= 100000;
+      if (hasTag(segment, "source:guide")) score += 1000;
+      if (hasTag(segment, "source:ring:inner")) score -= 650;
+      if (hasTagPrefix(segment, "source:selected:")) score -= 550;
+      if (hasTag(segment, "source:connector")) score -= 420;
+      if (hasTag(segment, "source:ring_chord")) score -= 320;
+      if (hasTag(segment, "source:ring_point_bridge")) score -= 240;
+      if (hasTag(segment, "source:linework_family")) score -= 160;
+      if (hasTag(segment, "source:ring:outer")) score += 80;
+      score += Math.min(80, Number(segment.length_m || 0) * 100);
+      return score;
+    }
+
+    function renderSubset(matchedSegments) {
+      const limit = detailLimit();
+      const sorted = [...matchedSegments].sort((a, b) => {
+        const priority = segmentPriority(a) - segmentPriority(b);
+        if (priority !== 0) return priority;
+        return a.segment_id.localeCompare(b.segment_id);
+      });
+      if (limit !== Infinity && sorted.length > limit) return sorted.slice(0, limit);
+      return sorted;
+    }
+
     function applyFilters() {
       const filter = els.filterInput.value.trim();
       const selectedOnly = els.showSelectedOnly.checked;
-      state.visibleIds.clear();
+      const matchedSegments = [];
+      state.matchIds.clear();
       for (const segment of state.graph.segments) {
-        const visible = segmentMatches(segment, filter) && (!selectedOnly || state.selected.has(segment.segment_id));
-        const line = state.lineById.get(segment.segment_id);
-        if (line) {
-          line.style.display = visible ? "" : "none";
-          line.classList.toggle("visible", visible);
+        if (segmentMatches(segment, filter) && (!selectedOnly || state.selected.has(segment.segment_id))) {
+          matchedSegments.push(segment);
+          state.matchIds.add(segment.segment_id);
         }
-        if (visible) state.visibleIds.add(segment.segment_id);
       }
+      renderSegments(renderSubset(matchedSegments));
+      if (els.showIntersections.checked) ensureIntersectionsRendered();
       els.intersectionsLayer.style.display = els.showIntersections.checked ? "" : "none";
       updateReadout();
     }
 
-    function renderSegments() {
+    function renderSegments(segments) {
+      state.visibleIds.clear();
       const bounds = state.graph.bounds_m;
       state.scale = Math.min((state.viewSize - state.margin * 2) / bounds.width, (state.viewSize - state.margin * 2) / bounds.height);
       const sheet = document.querySelector(".sheet");
       sheet.setAttribute("width", (bounds.width * state.scale).toFixed(3));
       sheet.setAttribute("height", (bounds.height * state.scale).toFixed(3));
       const frag = document.createDocumentFragment();
-      for (const segment of state.graph.segments) {
+      state.lineById.clear();
+      state.renderedIds.clear();
+      for (const segment of segments) {
         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
         line.setAttribute("x1", sx(segment.start_xy_m[0]).toFixed(3));
         line.setAttribute("y1", sy(segment.start_xy_m[1]).toFixed(3));
@@ -510,16 +565,19 @@ HTML = r"""<!doctype html>
         line.setAttribute("y2", sy(segment.end_xy_m[1]).toFixed(3));
         line.setAttribute("class", "segment visible");
         line.dataset.segmentId = segment.segment_id;
-        line.addEventListener("pointerdown", event => {
-          if (els.boxMode.checked) return;
-          event.stopPropagation();
-          toggleSegment(segment.segment_id);
-        });
-        line.addEventListener("pointerenter", () => showSegment(segment.segment_id));
         state.lineById.set(segment.segment_id, line);
+        state.renderedIds.add(segment.segment_id);
+        state.visibleIds.add(segment.segment_id);
+        applyLineStyle(segment.segment_id);
         frag.appendChild(line);
       }
       els.segmentsLayer.replaceChildren(frag);
+    }
+
+    function ensureIntersectionsRendered() {
+      if (state.intersectionsRendered) return;
+      renderIntersections();
+      state.intersectionsRendered = true;
     }
 
     function renderIntersections() {
@@ -568,7 +626,6 @@ HTML = r"""<!doctype html>
         const style = styles[segmentId] || {role: "keep", stroke: "#151817", stroke_width: 2};
         state.selected.set(segmentId, style);
       }
-      for (const segmentId of state.lineById.keys()) applyLineStyle(segmentId);
       state.savePath = recipe.output_path || state.savePath;
       applyFilters();
       updateReadout();
@@ -624,6 +681,12 @@ HTML = r"""<!doctype html>
       updateReadout();
     }
 
+    function segmentElementFromEvent(event) {
+      const target = event.target;
+      if (!target || !target.classList || !target.classList.contains("segment")) return null;
+      return target;
+    }
+
     function pointInBox(x, y, box) {
       return x >= box.x && x <= box.x + box.w && y >= box.y && y <= box.y + box.h;
     }
@@ -649,15 +712,13 @@ HTML = r"""<!doctype html>
       for (const segment of graph.segments) state.segmentById.set(segment.segment_id, segment);
       els.sourceTitle.textContent = graph.segment_set_id;
       els.statsText.textContent = `segments ${graph.summary.segment_count} intersections ${graph.summary.intersection_point_count}`;
-      renderSegments();
-      renderIntersections();
-      applyFilters();
       const recipe = await api("/api/selection");
       loadSelection(recipe);
       toast("Ready");
     }
 
     els.filterInput.addEventListener("input", applyFilters);
+    els.detailSelect.addEventListener("change", applyFilters);
     els.showSelectedOnly.addEventListener("change", applyFilters);
     els.showIntersections.addEventListener("change", applyFilters);
     document.querySelectorAll(".swatch").forEach(button => {
@@ -667,7 +728,6 @@ HTML = r"""<!doctype html>
     document.getElementById("clearVisibleBtn").addEventListener("click", () => setVisible(null));
     document.getElementById("clearAllBtn").addEventListener("click", () => {
       state.selected.clear();
-      for (const segmentId of state.lineById.keys()) applyLineStyle(segmentId);
       applyFilters();
       updateReadout();
     });
@@ -685,6 +745,16 @@ HTML = r"""<!doctype html>
       state.savePath = result.output_path;
       updateReadout();
       toast("Saved");
+    });
+    els.segmentsLayer.addEventListener("pointerdown", event => {
+      const line = segmentElementFromEvent(event);
+      if (!line || els.boxMode.checked) return;
+      event.stopPropagation();
+      toggleSegment(line.dataset.segmentId);
+    });
+    els.segmentsLayer.addEventListener("pointerover", event => {
+      const line = segmentElementFromEvent(event);
+      if (line) showSegment(line.dataset.segmentId);
     });
     els.svg.addEventListener("pointerdown", beginBoxSelect);
     els.svg.addEventListener("pointermove", updateBoxSelect);
