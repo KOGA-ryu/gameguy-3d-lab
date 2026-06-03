@@ -62,6 +62,7 @@ Run from the repo root:
 find data contracts docs geometry_dictionary workflow -name '*.json' -print0 | xargs -0 -n 1 python3 -m json.tool >/dev/null
 python3 -m py_compile scripts/*.py
 python3 -m unittest discover -s tests
+python3 scripts/validate_tiny_fixture_v0.py
 test ! -d pattern_lab_2d
 find . -path '*pattern_lab_2d*' -print
 find . -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.gif' -o -name '*.webp' -o -name '*.blend' -o -name '*.blend1' -o -name '*.obj' -o -name '*.gltf' -o -name '*.glb' -o -name '*.fbx' \) -print
@@ -72,6 +73,7 @@ Expected current checks:
 - JSON parses.
 - Python scripts compile.
 - Asset pump tests pass.
+- Tiny source fixture validation passes.
 - No `pattern_lab_2d` paths.
 - No media, render, mesh, or Blender proof output files.
 
