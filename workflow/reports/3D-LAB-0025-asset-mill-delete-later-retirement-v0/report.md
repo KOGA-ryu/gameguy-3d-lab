@@ -38,7 +38,7 @@ tool-plan source recipe
 Script orbit after deletion:
 
 ```text
-PASS script orbit audit: scripts=72 KEEP_CANONICAL=14, CONVERT_TO_ADAPTER=0, REPLACE_BY_PUMP=0, REFERENCE_ONLY=58, DELETE_LATER=0
+PASS script orbit audit: scripts=73 KEEP_CANONICAL=15, CONVERT_TO_ADAPTER=0, REPLACE_BY_PUMP=0, REFERENCE_ONLY=58, DELETE_LATER=0
 ```
 
 The generation pipeline validator remains the canonical full gate. Generated outputs remain under `/tmp`; no media, mesh, render, export, or `.blend` output is stored in the repo.

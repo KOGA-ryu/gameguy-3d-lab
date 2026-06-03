@@ -56,6 +56,7 @@ class GenerationPipelineValidatorTests(unittest.TestCase):
         self.assertEqual(report["repo_media_mesh_output_count"], 0)
         self.assertFalse(report["rules"]["generated_outputs_in_repo"])
         labels = {command["label"] for command in report["commands"]}
+        self.assertIn("generation_registry_validate", labels)
         self.assertIn("tool_plan_validate", labels)
         self.assertIn("window_frame_blender_adapter_validate_only", labels)
         self.assertIn("simple_asset_validate", labels)

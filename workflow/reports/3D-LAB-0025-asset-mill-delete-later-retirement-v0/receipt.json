@@ -34,8 +34,8 @@
     "pipeline_gate": "scripts/validate_generation_pipeline_v0.py"
   },
   "script_orbit_after": {
-    "script_count": 72,
-    "KEEP_CANONICAL": 14,
+    "script_count": 73,
+    "KEEP_CANONICAL": 15,
     "CONVERT_TO_ADAPTER": 0,
     "REPLACE_BY_PUMP": 0,
     "REFERENCE_ONLY": 58,

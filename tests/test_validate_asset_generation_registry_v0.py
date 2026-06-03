@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""Tests for canonical asset generation registry validation."""
+
+from __future__ import annotations
+
+import json
+import subprocess
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from typing import Any
+
+
+ROOT = Path(__file__).resolve().parents[1]
+VALIDATOR = ROOT / "scripts" / "validate_asset_generation_registry_v0.py"
+REGISTRY = ROOT / "data" / "architecture" / "asset_mill" / "asset_generation_registry_v0.json"
+
+
+def load_json(path: Path) -> dict[str, Any]:
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise AssertionError(f"{path} did not contain a JSON object")
+    return data
+
+
+class AssetGenerationRegistryValidatorTests(unittest.TestCase):
+    def test_default_registry_passes(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            report_path = Path(tmp) / "registry_validation.json"
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "--json-report", str(report_path)],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            report = load_json(report_path)
+
+        self.assertIn("PASS asset generation registry validation", result.stdout)
+        self.assertEqual(report["schema"], "asset_generation_registry_validation_result_v0")
+        self.assertEqual(report["canonical_geometry_bundle_count"], 5)
+        self.assertEqual(report["canonical_geometry_asset_count"], 40)
+        self.assertEqual(report["canonical_tool_plan_bundle"]["default_plan_count"], 2)
+        self.assertEqual(report["reference_only_recipe_count"], 3)
+        self.assertFalse(report["generated_outputs_created"])
+        self.assertTrue(report["rules"]["validates_pipeline_label_coverage"])
+
+    def test_unknown_pipeline_label_fails(self) -> None:
+        registry = load_json(REGISTRY)
+        registry["canonical_geometry_bundles"][0]["pipeline_labels"].append("missing_pipeline_label")
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            registry_path = Path(tmp) / "bad_registry.json"
+            registry_path.write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "--registry", str(registry_path)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("unknown pipeline labels", result.stderr)
+
+    def test_reference_recipe_cannot_also_be_canonical(self) -> None:
+        registry = load_json(REGISTRY)
+        registry["reference_only_recipe_bundles"][0]["path"] = registry["canonical_geometry_bundles"][0]["path"]
+        registry["reference_only_recipe_bundles"][0]["schema"] = registry["canonical_geometry_bundles"][0]["schema"]
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            registry_path = Path(tmp) / "bad_registry.json"
+            registry_path.write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "--registry", str(registry_path)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("must not also be canonical", result.stderr)
+
+
+if __name__ == "__main__":
+    unittest.main()

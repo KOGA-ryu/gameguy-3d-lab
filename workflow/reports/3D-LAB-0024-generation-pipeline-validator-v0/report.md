@@ -31,6 +31,7 @@ It orchestrates:
 - JSON parse over source/contract/workflow trees.
 - Python script compilation.
 - Optional unit test discovery.
+- Asset generation registry validation.
 - Tool-plan compile, `gameguy_tool_plan_v0` validation, and Blender adapter validate-only.
 - Optional Blender render/export plus execution report validation.
 - Tiny fixture and measured component source validation.
@@ -45,13 +46,13 @@ It orchestrates:
 Non-Blender pipeline result:
 
 ```text
-PASS generation pipeline validation: commands=22 json=214 include_blender=false
+PASS generation pipeline validation: commands=23 json=216 include_blender=false
 ```
 
 Full Blender pipeline result:
 
 ```text
-PASS generation pipeline validation: commands=26 json=214 include_blender=true
+PASS generation pipeline validation: commands=27 json=216 include_blender=true
 ```
 
 The full run includes:
@@ -62,7 +63,7 @@ The full run includes:
 - Banister execution report validation: non-manifold `0`, material roles `5`, socket panels `2`
 - Window-frame Blender execution: `25` steps
 - Window-frame execution report validation: non-manifold `0`, material roles `1`, socket panels `0`
-- Script orbit after Asset Mill retirement: `72` scripts, `14` canonical, `0` `DELETE_LATER`
+- Script orbit after Asset Mill retirement: `73` scripts, `15` canonical, `0` `DELETE_LATER`
 
 Generated outputs remain under `/tmp`; the validator rejects generated media/mesh files inside the repo.
 

@@ -28,8 +28,8 @@
     }
   ],
   "full_pipeline": {
-    "command_count": 26,
-    "json_file_count": 214,
+    "command_count": 27,
+    "json_file_count": 216,
     "include_blender": true,
     "status": "pass"
   },

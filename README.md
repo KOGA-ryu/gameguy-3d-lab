@@ -84,6 +84,20 @@ The first stable generated asset schema is:
 contracts/gameguy_asset_v0.json
 ```
 
+The canonical generation surface is declared in:
+
+```text
+data/architecture/asset_mill/asset_generation_registry_v0.json
+```
+
+Validate that registry with:
+
+```bash
+python3 scripts/validate_asset_generation_registry_v0.py
+```
+
+It names the canonical geometry recipe bundles, canonical tool-plan recipe bundle, validators, adapters, and reference-only recipe bundles that are deliberately not pipeline inputs.
+
 The repo now also has a tool-planning layer for near-finished Blender-capable asset construction:
 
 ```text
@@ -177,6 +191,7 @@ The expanded validation sequence is:
 find data contracts docs geometry_dictionary workflow -name '*.json' -print0 | xargs -0 -n 1 python3 -m json.tool >/dev/null
 python3 -m py_compile scripts/*.py
 python3 -m unittest discover -s tests
+python3 scripts/validate_asset_generation_registry_v0.py
 python3 scripts/compile_blender_tool_plan_v0.py --validate-only
 python3 scripts/compile_blender_tool_plan_v0.py --clean --out /tmp/gameguy_blender_tool_plan_v0
 python3 scripts/validate_gameguy_tool_plan_v0.py --manifest /tmp/gameguy_blender_tool_plan_v0/manifest.json
@@ -219,6 +234,7 @@ find . -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.gif' -o -name '*.we
 Expected current checks:
 
 - Generation pipeline validation passes as the canonical orchestration gate.
+- Asset generation registry validation proves the canonical recipe/tool-plan surface and reference-only recipe boundaries.
 - JSON parses.
 - Python scripts compile.
 - Asset pump tests pass.

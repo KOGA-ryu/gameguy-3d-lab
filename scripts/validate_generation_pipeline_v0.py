@@ -120,6 +120,7 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
     window_frame_plan_path = TOOL_PLAN_OUT / "plans" / "gothic_stone_window_frame_tool_plan_v0_compiled.json"
     steps = [
         CommandStep("python_compile", [sys.executable, "-m", "py_compile", *[str(path) for path in sorted((ROOT / "scripts").glob("*.py"))]]),
+        CommandStep("generation_registry_validate", python_script("scripts/validate_asset_generation_registry_v0.py")),
     ]
     if not skip_unit_tests:
         steps.append(CommandStep("unit_tests", [sys.executable, "-m", "unittest", "discover", "-s", "tests"]))

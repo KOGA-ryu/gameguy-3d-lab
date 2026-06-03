@@ -3,10 +3,10 @@
   "packet_id": "3D-LAB-0024",
   "decision": "ADD_GENERATION_PIPELINE_VALIDATOR",
   "validator": "scripts/validate_generation_pipeline_v0.py",
-    "validation_summary": {
-      "json_file_count": 214,
-      "non_blender_command_count": 22,
-      "full_blender_command_count": 26,
+  "validation_summary": {
+      "json_file_count": 216,
+      "non_blender_command_count": 23,
+      "full_blender_command_count": 27,
       "tool_plan_count": 2,
       "tool_plan_step_count": 57,
       "tool_plan_unique_tool_count": 24,
