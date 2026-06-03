@@ -34,11 +34,13 @@ REQUIRED_QUALITY_FLAGS = {
     "future_steps_skipped",
     "source_asset_preserved",
     "source_recipe_not_read",
+    "insets_applied",
     "material_assignment_applied",
     "bevels_applied",
     "weighted_normals_added",
 }
 REQUIRED_UNIQUE_TOOLS = {
+    "inset_faces",
     "material_assign_by_part",
     "modifier_bevel",
     "modifier_weighted_normal",
@@ -171,6 +173,11 @@ def validate_quality(report: dict[str, Any]) -> None:
     material_assignment = require_object(report.get("material_assignment"), "material_assignment")
     require_object(material_assignment.get("assigned_parts_by_role"), "material_assignment.assigned_parts_by_role")
     require_object(material_assignment.get("assigned_faces_by_slot"), "material_assignment.assigned_faces_by_slot")
+    insets = require_list(report.get("inset_applications"), "inset_applications")
+    if len(insets) < 2:
+        fail("inset_applications must include both fielded panel inset steps")
+    if require_int(report.get("inset_panel_face_count"), "inset_panel_face_count", minimum=1) < 8:
+        fail("inset_panel_face_count must include side panels on plinth and shaft")
     weighted_normals = require_object(report.get("weighted_normals"), "weighted_normals")
     require_string(weighted_normals.get("modifier_type"), "weighted_normals.modifier_type")
     if weighted_normals["modifier_type"] != "WEIGHTED_NORMAL":
