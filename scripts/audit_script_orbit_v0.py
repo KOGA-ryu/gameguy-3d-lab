@@ -47,8 +47,8 @@ def classify_script(path: Path) -> dict[str, str]:
     if name in OVERRIDES:
         bucket, reason = OVERRIDES[name]
     elif name.startswith("blender_"):
-        bucket = "CONVERT_TO_ADAPTER"
-        reason = "Blender proof script should consume deterministic JSON instead of carrying source logic"
+        bucket = "REFERENCE_ONLY"
+        reason = "legacy Blender proof script; active Blender work should use export_blender_* adapters that consume source or generated JSON"
     elif name.startswith("compile_"):
         bucket = "REFERENCE_ONLY"
         reason = "compiler lane remains reference material until its source value is ported or retired"

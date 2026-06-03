@@ -1,0 +1,64 @@
+{
+  "schema": "legacy_blender_proof_policy_decision_v0",
+  "packet_id": "3D-LAB-0012",
+  "decision": "DEMOTE_LEGACY_BLENDER_PROOFS_TO_REFERENCE_ONLY",
+  "safe_to_delete_now": false,
+  "reason": "Legacy blender_*.py files are proof scripts, not active engine/source logic. Active Blender work should be done through export_blender_* adapters that consume deterministic generated JSON or promoted source JSON.",
+  "canonical_adapters": [
+    "scripts/export_blender_asset_preview_v0.py",
+    "scripts/export_blender_measured_components_preview_v0.py"
+  ],
+  "legacy_blender_proofs_demoted": [
+    "scripts/blender_arch_bay_kit_v1.py",
+    "scripts/blender_architectural_asset_batch_v0.py",
+    "scripts/blender_architectural_module_proof_v0.py",
+    "scripts/blender_building_assembly_v0.py",
+    "scripts/blender_building_entrance_road_join_v0.py",
+    "scripts/blender_building_graph_attachment_v0.py",
+    "scripts/blender_building_graph_kit_expansion_v0.py",
+    "scripts/blender_building_graph_variation_rules_v0.py",
+    "scripts/blender_hex_plot_vertex_graph_v0.py",
+    "scripts/blender_hex_seam_policy_angle_review_v0.py",
+    "scripts/blender_hex_seam_policy_v0.py",
+    "scripts/blender_hex_terrain_fold_site_v0.py",
+    "scripts/blender_hex_topology_optimized_mesh_v0.py",
+    "scripts/blender_hex_topology_site_v0.py",
+    "scripts/blender_hillwatch_ravine_v0.py",
+    "scripts/blender_integrated_map_scene_v0.py",
+    "scripts/blender_map_template_v2_building_variant_placement.py",
+    "scripts/blender_measured_asset_placement_v1.py",
+    "scripts/blender_pathway_engine_v0.py",
+    "scripts/blender_plug_based_connection_graph_v0.py",
+    "scripts/blender_terrain_profile_bending_v0.py",
+    "scripts/blender_tiled_map_template_asset_instances_v1.py",
+    "scripts/blender_tiled_map_template_v0.py",
+    "scripts/blender_topology_site_v0.py"
+  ],
+  "script_orbit_after": {
+    "CONVERT_TO_ADAPTER": 0,
+    "REPLACE_BY_PUMP": 0
+  },
+  "preserved_value": [
+    "Legacy proof scripts remain in the repo for historical comparison.",
+    "No files are deleted or moved.",
+    "Future adapter work must start from source data or deterministic generated JSON, not by treating old Blender scripts as source."
+  ],
+  "not_preserved_by_design": [
+    {
+      "old_value": "Legacy Blender proof scripts as active migration queue",
+      "reason": "This kept Blender scripts too close to source logic. They are now explicitly reference-only."
+    }
+  ],
+  "follow_up": [
+    "Create new export_blender_* adapters only when a stable source or generated JSON contract exists.",
+    "Delete reference-only proof scripts only in a separate explicit deletion task."
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

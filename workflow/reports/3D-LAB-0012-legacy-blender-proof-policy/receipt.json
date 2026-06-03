@@ -1,0 +1,26 @@
+{
+  "schema": "workflow_receipt_v0",
+  "packet_id": "3D-LAB-0012",
+  "result": "legacy_blender_proofs_demoted_to_reference_only",
+  "files_changed": [
+    "scripts/audit_script_orbit_v0.py",
+    "tests/test_audit_script_orbit_v0.py",
+    "tests/test_legacy_blender_proof_policy_v0.py",
+    "workflow/reports/3D-LAB-0012-legacy-blender-proof-policy/replacement_decision.json",
+    "workflow/reports/3D-LAB-0012-legacy-blender-proof-policy/report.md",
+    "workflow/reports/3D-LAB-0012-legacy-blender-proof-policy/receipt.json"
+  ],
+  "validation": [
+    "script orbit audit reports CONVERT_TO_ADAPTER=0",
+    "script orbit audit reports REPLACE_BY_PUMP=0",
+    "legacy blender proof scripts remain in repo as reference-only"
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

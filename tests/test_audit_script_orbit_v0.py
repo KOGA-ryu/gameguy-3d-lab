@@ -67,7 +67,7 @@ class ScriptOrbitAuditTests(unittest.TestCase):
 
         self.assertEqual(report["script_count"], len(report["scripts"]))
         self.assertEqual(sum(report["bucket_counts"].values()), report["script_count"])
-        self.assertGreater(report["bucket_counts"]["CONVERT_TO_ADAPTER"], 0)
+        self.assertEqual(report["bucket_counts"]["CONVERT_TO_ADAPTER"], 0)
         self.assertGreater(report["bucket_counts"]["REFERENCE_ONLY"], 0)
 
 

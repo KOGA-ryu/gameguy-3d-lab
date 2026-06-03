@@ -90,7 +90,7 @@ class BlenderAssetMillSmokeTestDemotionTests(unittest.TestCase):
 
         rows = {row["script"]: row for row in report["scripts"]}
         self.assertEqual(rows["scripts/blender_asset_mill_smoke_test_v0.py"]["bucket"], "REFERENCE_ONLY")
-        self.assertGreater(report["bucket_counts"]["CONVERT_TO_ADAPTER"], 0)
+        self.assertEqual(report["bucket_counts"]["CONVERT_TO_ADAPTER"], 0)
 
 
 if __name__ == "__main__":
