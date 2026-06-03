@@ -53,7 +53,7 @@
       ]
     }
   ],
-  "asset_count": 7,
+  "asset_count": 8,
   "assets": [
     {
       "asset_id": "gothic_stone_banister_post_tool_plan_v0",
@@ -582,6 +582,53 @@
         "stone_noise_scale": 40.0,
         "uv_margin": 0.018,
         "lod_decimate_ratio": 0.6
+      },
+      "required_stage_coverage": [
+        "base_form",
+        "assembly",
+        "shape_refinement",
+        "sculpt_detail",
+        "retopo_cleanup",
+        "uv_mapping",
+        "material_texture",
+        "validation_export"
+      ],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false
+      }
+    },
+    {
+      "asset_id": "profiled_plinth_base_detail_tool_plan_v0",
+      "asset_family": "profile_detail",
+      "style": "gothic_stone",
+      "detail_level": "prototype_detail",
+      "target_readiness": "single_detail_prototype",
+      "dimensions_m": {
+        "width": 0.62,
+        "depth": 0.32,
+        "height": 0.22
+      },
+      "features": [
+        "profiled_plinth_base_detail",
+        "finish_tool_stack"
+      ],
+      "finish_tool_stack": "gothic_stone_finish_stack_v0",
+      "style_parameters": {
+        "profiled_plinth_profile_bundle": "data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json",
+        "profiled_plinth_profile_id": "railing_plinth_ogee_base_side_profile_v0",
+        "profiled_plinth_width_m": 0.62,
+        "profiled_plinth_depth_m": 0.32,
+        "profiled_plinth_height_m": 0.22,
+        "profiled_plinth_base_z_m": 0.0,
+        "bevel_width_m": 0.01,
+        "stone_noise_scale": 46.0,
+        "uv_margin": 0.018,
+        "lod_decimate_ratio": 0.7
       },
       "required_stage_coverage": [
         "base_form",

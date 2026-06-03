@@ -32,6 +32,7 @@ GUARD_PANEL_RAILING_DETAIL_PROFILE_IDS = [
     "railing_ogee_molding_side_profile_v0",
     "railing_trapezoid_transition_collar_v0",
 ]
+PROFILED_PLINTH_BASE_DETAIL_PROFILE_ID = "railing_plinth_ogee_base_side_profile_v0"
 FINISH_FEATURE_TOOL_IDS = {
     "hard_edge_bevels": ["modifier_bevel", "mark_sharp"],
     "weighted_normals": ["modifier_weighted_normal"],
@@ -503,6 +504,53 @@ def validate_railing_detail_profile_stack(asset: dict[str, Any], geometry_terms:
                 fail(f"{profile_id}.blender_tool_sequence[{step_index}].tool_id uses unknown tool `{tool_id}`")
 
 
+def profile_map_from_bundle(bundle: dict[str, Any], field: str) -> dict[str, dict[str, Any]]:
+    profiles = require_list(bundle.get("profiles"), f"{field}.profiles")
+    if bundle.get("profile_count") != len(profiles):
+        fail(f"{field}.profile_count must match profiles length")
+    profile_map = {}
+    for index, profile_value in enumerate(profiles):
+        profile = require_object(profile_value, f"{field}.profiles[{index}]")
+        profile_id = require_string(profile.get("profile_id"), f"{field}.profiles[{index}].profile_id")
+        profile_map[profile_id] = profile
+    return profile_map
+
+
+def validate_profiled_plinth_base_detail(asset: dict[str, Any], geometry_terms: dict[str, set[str]], tool_map: dict[str, dict[str, Any]]) -> None:
+    asset_id = require_string(asset.get("asset_id"), "asset_id")
+    params = style_params(asset)
+    bundle_path = repo_relative_path(
+        params.get("profiled_plinth_profile_bundle", repo_display_path(DEFAULT_RAILING_DETAIL_PROFILES)),
+        f"{asset_id}.style_parameters.profiled_plinth_profile_bundle",
+    )
+    bundle = load_json(bundle_path)
+    if bundle.get("schema") != "asset_mill_railing_detail_profile_bundle_v0":
+        fail(f"{asset_id}.profiled_plinth_profile_bundle schema must be asset_mill_railing_detail_profile_bundle_v0")
+    profile_id = require_string(
+        params.get("profiled_plinth_profile_id", PROFILED_PLINTH_BASE_DETAIL_PROFILE_ID),
+        f"{asset_id}.style_parameters.profiled_plinth_profile_id",
+    )
+    if profile_id != PROFILED_PLINTH_BASE_DETAIL_PROFILE_ID:
+        fail(f"{asset_id}.style_parameters.profiled_plinth_profile_id must be {PROFILED_PLINTH_BASE_DETAIL_PROFILE_ID}")
+    profile_map = profile_map_from_bundle(bundle, f"{asset_id}.profiled_plinth_profile_bundle")
+    profile = require_object(profile_map.get(profile_id), f"{asset_id}.profiled_plinth_profile_bundle.{profile_id}")
+    shape = require_object(profile.get("source_2d_shape"), f"{profile_id}.source_2d_shape")
+    if require_string(shape.get("term_id"), f"{profile_id}.source_2d_shape.term_id") != "custom_polygon":
+        fail(f"{profile_id}.source_2d_shape.term_id must be custom_polygon for the profiled plinth prototype")
+    require_known_terms(profile.get("geometry_terms_used"), all_geometry_terms(geometry_terms), f"{profile_id}.geometry_terms_used")
+    require_known_terms(profile.get("profile_terms"), geometry_terms["profile_primitive"], f"{profile_id}.profile_terms")
+    require_known_terms(profile.get("operations"), operation_terms(geometry_terms), f"{profile_id}.operations")
+    for step_index, step_value in enumerate(require_list(profile.get("blender_tool_sequence"), f"{profile_id}.blender_tool_sequence")):
+        step = require_object(step_value, f"{profile_id}.blender_tool_sequence[{step_index}]")
+        tool_id = require_string(step.get("tool_id"), f"{profile_id}.blender_tool_sequence[{step_index}].tool_id")
+        if tool_id not in tool_map:
+            fail(f"{profile_id}.blender_tool_sequence[{step_index}].tool_id uses unknown tool `{tool_id}`")
+    positive_number(params.get("profiled_plinth_width_m", 0.62), f"{asset_id}.style_parameters.profiled_plinth_width_m")
+    positive_number(params.get("profiled_plinth_depth_m", 0.32), f"{asset_id}.style_parameters.profiled_plinth_depth_m")
+    positive_number(params.get("profiled_plinth_height_m", 0.22), f"{asset_id}.style_parameters.profiled_plinth_height_m")
+    finite_number(params.get("profiled_plinth_base_z_m", 0.0), f"{asset_id}.style_parameters.profiled_plinth_base_z_m")
+
+
 def resolve_finish_tool_stack(asset: dict[str, Any], finish_stack_map: dict[str, dict[str, Any]]) -> None:
     asset_id = require_string(asset.get("asset_id"), "asset_id")
     if "finish_tool_stack" not in require_list(asset.get("features"), f"{asset_id}.features"):
@@ -544,6 +592,8 @@ def validate_recipe_bundle(
             validate_profile_operation_stack(asset, geometry_terms)
         if "railing_detail_profile_stack" in asset.get("features", []):
             validate_railing_detail_profile_stack(asset, geometry_terms, tool_map)
+        if "profiled_plinth_base_detail" in asset.get("features", []):
+            validate_profiled_plinth_base_detail(asset, geometry_terms, tool_map)
         if "finish_tool_stack" in asset.get("features", []):
             resolve_finish_tool_stack(asset, finish_stack_map)
         for stage_index, stage in enumerate(require_list(asset.get("required_stage_coverage"), f"{asset_id}.required_stage_coverage")):
@@ -685,6 +735,32 @@ def ogee_points(center_x: float, center_z: float, width: float, height: float) -
     ]
 
 
+def profiled_plinth_base_points(center_x: float, base_z: float, width: float, height: float) -> list[list[float]]:
+    half_width = width * 0.5
+    z0 = base_z
+    z1 = base_z + height * 0.22
+    z2 = base_z + height * 0.36
+    z3 = base_z + height * 0.58
+    z4 = base_z + height * 0.78
+    z5 = base_z + height
+    return [
+        [round(center_x - half_width, 6), round(z0, 6)],
+        [round(center_x + half_width, 6), round(z0, 6)],
+        [round(center_x + half_width, 6), round(z1, 6)],
+        [round(center_x + half_width * 0.92, 6), round(z1, 6)],
+        [round(center_x + half_width * 0.78, 6), round(z2, 6)],
+        [round(center_x + half_width * 0.64, 6), round(z3, 6)],
+        [round(center_x + half_width * 0.46, 6), round(z4, 6)],
+        [round(center_x + half_width * 0.46, 6), round(z5, 6)],
+        [round(center_x - half_width * 0.46, 6), round(z5, 6)],
+        [round(center_x - half_width * 0.46, 6), round(z4, 6)],
+        [round(center_x - half_width * 0.64, 6), round(z3, 6)],
+        [round(center_x - half_width * 0.78, 6), round(z2, 6)],
+        [round(center_x - half_width * 0.92, 6), round(z1, 6)],
+        [round(center_x - half_width, 6), round(z1, 6)],
+    ]
+
+
 def rail_segment_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
     params = style_params(asset)
     body_size = vector_param(params, "rail_body_size_m", [1.08, 0.16, 0.14])
@@ -792,6 +868,43 @@ def gothic_panel_guard_mesh_step(
         "purpose": purpose,
         "params": params,
     }
+
+
+def profiled_plinth_base_detail_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
+    params = style_params(asset)
+    width = number_param(params, "profiled_plinth_width_m", 0.62)
+    depth = number_param(params, "profiled_plinth_depth_m", 0.32)
+    height = number_param(params, "profiled_plinth_height_m", 0.22)
+    base_z = number_param(params, "profiled_plinth_base_z_m", 0.0)
+    y_center = number_param(params, "profiled_plinth_center_y_m", 0.0)
+    profile_id = require_string(params.get("profiled_plinth_profile_id", PROFILED_PLINTH_BASE_DETAIL_PROFILE_ID), f"{asset['asset_id']}.style_parameters.profiled_plinth_profile_id")
+    points = profiled_plinth_base_points(0.0, base_z, width, height)
+    return [
+        gothic_panel_guard_mesh_step(
+            "create_profiled_plinth_base_detail",
+            "Create one source-owned profiled plinth base detail from a low-point 2D custom polygon.",
+            points,
+            y_center=y_center,
+            depth_y=depth,
+            material_role="base",
+            source_profile="custom_polygon",
+            source_detail_profile=profile_id,
+            group="base",
+        ),
+        {
+            "step_id": "join_profiled_plinth_base_detail",
+            "tool_id": "join_objects",
+            "purpose": "Finalize the single profiled plinth mesh as an isolated detail prototype.",
+            "params": {
+                "objects": ["base"],
+                "source_detail_profile": profile_id,
+                "source_control_point_count": len(points),
+                "profile_width_m": width,
+                "profile_depth_m": depth,
+                "profile_height_m": height,
+            },
+        },
+    ]
 
 
 def railing_detail_profile_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
@@ -1395,6 +1508,8 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
         return profile_operation_stack_steps(asset)
     if feature == "railing_detail_profile_stack":
         return railing_detail_profile_steps(asset)
+    if feature == "profiled_plinth_base_detail":
+        return profiled_plinth_base_detail_steps(asset)
     if feature == "finish_tool_stack":
         return finish_tool_stack_steps(asset)
     if feature == "stepped_square_base":
@@ -1574,6 +1689,12 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
                 "collar": "gothic_stone_collar",
                 "default": "gothic_stone",
             }
+        if asset.get("asset_family") == "profile_detail":
+            material_map = {
+                "base": "gothic_stone_dark",
+                "trim": "gothic_stone_trim",
+                "default": "gothic_stone",
+            }
         return [
             {"step_id": "add_stone_displacement", "tool_id": "modifier_displace", "purpose": "Add restrained procedural stone surface variation.", "params": {"strength_m": 0.006, "texture": "stone_noise"}},
             {"step_id": "create_stone_material", "tool_id": "material_principled_shader", "purpose": "Create the base gothic stone material.", "params": {"base_color": [0.48, 0.46, 0.39], "roughness": 0.82, "metallic": 0.0}},
@@ -1695,6 +1816,35 @@ def source_terms_for_asset(asset: dict[str, Any]) -> dict[str, Any]:
             "placement_regions": placement_regions,
             "tool_ids": tool_ids,
             "compile_mode": "guard_panel_cut_shadow_and_trim_v0",
+        }
+    if "profiled_plinth_base_detail" in features:
+        params = style_params(asset)
+        bundle_path = repo_relative_path(
+            params.get("profiled_plinth_profile_bundle", repo_display_path(DEFAULT_RAILING_DETAIL_PROFILES)),
+            f"{asset_id}.style_parameters.profiled_plinth_profile_bundle",
+        )
+        bundle = load_json(bundle_path)
+        profile_id = require_string(
+            params.get("profiled_plinth_profile_id", PROFILED_PLINTH_BASE_DETAIL_PROFILE_ID),
+            f"{asset_id}.style_parameters.profiled_plinth_profile_id",
+        )
+        profile_map = profile_map_from_bundle(bundle, f"{asset_id}.profiled_plinth_profile_bundle")
+        profile = require_object(profile_map.get(profile_id), f"{asset_id}.profiled_plinth_base_detail.{profile_id}")
+        append_unique("geometry", require_string_list(profile.get("geometry_terms_used"), f"{profile_id}.geometry_terms_used"))
+        append_unique("profiles", require_string_list(profile.get("profile_terms"), f"{profile_id}.profile_terms"))
+        append_unique("operators", require_string_list(profile.get("operations"), f"{profile_id}.operations"))
+        tool_ids = []
+        for step_value in require_list(profile.get("blender_tool_sequence"), f"{profile_id}.blender_tool_sequence"):
+            step = require_object(step_value, f"{profile_id}.blender_tool_sequence[]")
+            tool_id = require_string(step.get("tool_id"), f"{profile_id}.blender_tool_sequence.tool_id")
+            if tool_id not in tool_ids:
+                tool_ids.append(tool_id)
+        result["profiled_plinth_base_detail"] = {
+            "bundle_path": repo_display_path(bundle_path),
+            "profile_id": profile_id,
+            "compile_mode": "single_custom_polygon_extrusion_v0",
+            "source_control_point_count": 14,
+            "tool_ids": tool_ids,
         }
     if "finish_tool_stack" in features:
         finish_stack = resolved_finish_tool_stack(asset)

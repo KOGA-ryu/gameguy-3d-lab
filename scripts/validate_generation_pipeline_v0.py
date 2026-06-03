@@ -128,6 +128,7 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
     window_frame_plan_path = TOOL_PLAN_OUT / "plans" / "gothic_stone_window_frame_tool_plan_v0_compiled.json"
     door_frame_plan_path = TOOL_PLAN_OUT / "plans" / "gothic_stone_door_frame_tool_plan_v0_compiled.json"
     guard_panel_plan_path = TOOL_PLAN_OUT / "plans" / "gothic_panel_guard_tool_plan_v0_compiled.json"
+    profile_detail_plan_path = TOOL_PLAN_OUT / "plans" / "profiled_plinth_base_detail_tool_plan_v0_compiled.json"
     steps = [
         CommandStep("python_compile", [sys.executable, "-m", "py_compile", *[str(path) for path in sorted((ROOT / "scripts").glob("*.py"))]]),
         CommandStep("generation_registry_validate", python_script("scripts/validate_asset_generation_registry_v0.py")),
@@ -149,6 +150,7 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
             CommandStep("window_frame_blender_adapter_validate_only", python_script("scripts/execute_blender_tool_plan_v0.py", "--plan", window_frame_plan_path, "--validate-only")),
             CommandStep("door_frame_blender_adapter_validate_only", python_script("scripts/execute_blender_tool_plan_v0.py", "--plan", door_frame_plan_path, "--validate-only")),
             CommandStep("guard_panel_blender_adapter_validate_only", python_script("scripts/execute_blender_tool_plan_v0.py", "--plan", guard_panel_plan_path, "--validate-only")),
+            CommandStep("profile_detail_blender_adapter_validate_only", python_script("scripts/execute_blender_tool_plan_v0.py", "--plan", profile_detail_plan_path, "--validate-only")),
         ]
     )
     if include_blender:

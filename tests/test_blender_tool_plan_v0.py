@@ -102,9 +102,12 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(policy["schema"], "asset_family_tool_sequence_policy_v0")
         self.assertEqual(policy["tool_dictionary"], dictionary["dictionary_id"])
         self.assertEqual(policy["stage_order"], dictionary["stages"])
-        self.assertEqual(policy["asset_family_policy_count"], 7)
+        self.assertEqual(policy["asset_family_policy_count"], 8)
         families = {item["asset_family"]: item for item in policy["asset_family_policies"]}
-        self.assertEqual(set(families), {"column", "banister_post", "fence_post", "rail_segment", "guard_panel", "window_frame", "door_frame"})
+        self.assertEqual(
+            set(families),
+            {"column", "banister_post", "fence_post", "rail_segment", "guard_panel", "window_frame", "door_frame", "profile_detail"},
+        )
 
         for family, item in families.items():
             self.assertIn("finish_tool_stack", item["allowed_features"], family)
@@ -143,7 +146,7 @@ class BlenderToolPlanTests(unittest.TestCase):
 
         self.assertEqual(manifest["schema"], "gameguy_tool_plan_manifest_v0")
         self.assertEqual(manifest["tool_sequence_policy"], "asset_family_tool_sequence_policy_v0")
-        self.assertEqual(manifest["plan_count"], 7)
+        self.assertEqual(manifest["plan_count"], 8)
         self.assertEqual(manifest["plans"][0]["step_count"], 32)
         self.assertEqual(manifest["plans"][0]["unique_tool_count"], 24)
         self.assertEqual(plan["asset_family"], "banister_post")
@@ -488,6 +491,47 @@ class BlenderToolPlanTests(unittest.TestCase):
             {"frame": "gothic_stone_frame", "default": "gothic_stone_frame"},
         )
 
+    def test_profiled_plinth_base_detail_compiles_as_one_shape_prototype(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "plans"
+            run_compiler(out_root)
+            plan = plan_by_asset(out_root, "profiled_plinth_base_detail_tool_plan_v0")
+
+        self.assertEqual(plan["asset_family"], "profile_detail")
+        self.assertEqual(plan["asset_family_policy"], "profile_detail")
+        self.assertEqual(plan["features"], ["profiled_plinth_base_detail", "finish_tool_stack"])
+        self.assertEqual(plan["summary"]["step_count"], 22)
+        self.assertEqual(plan["summary"]["unique_tool_count"], 22)
+        self.assertIn("mesh_from_pydata", plan["summary"]["unique_tools"])
+        self.assertNotIn("primitive_cube_add", plan["summary"]["unique_tools"])
+        self.assertNotIn("modifier_boolean", plan["summary"]["unique_tools"])
+        self.assertEqual(plan["source_terms"]["profiles"], ["custom_polygon"])
+        self.assertEqual(
+            plan["source_terms"]["profiled_plinth_base_detail"],
+            {
+                "bundle_path": "data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json",
+                "profile_id": "railing_plinth_ogee_base_side_profile_v0",
+                "compile_mode": "single_custom_polygon_extrusion_v0",
+                "source_control_point_count": 14,
+                "tool_ids": ["mesh_from_pydata", "join_objects", "modifier_bevel", "modifier_weighted_normal"],
+            },
+        )
+
+        by_step = {step["step_id"]: step for step in plan["steps"]}
+        mesh_params = by_step["create_profiled_plinth_base_detail"]["params"]
+        self.assertEqual(mesh_params["source_detail_profile"], "railing_plinth_ogee_base_side_profile_v0")
+        self.assertEqual(mesh_params["source_profile"], "custom_polygon")
+        self.assertEqual(mesh_params["material_role"], "base")
+        self.assertEqual(mesh_params["group"], "base")
+        self.assertEqual(len(mesh_params["vertices"]), 28)
+        self.assertEqual(len(mesh_params["faces"]), 16)
+        self.assertEqual(by_step["join_profiled_plinth_base_detail"]["params"]["source_control_point_count"], 14)
+        self.assertEqual(by_step["join_profiled_plinth_base_detail"]["params"]["profile_width_m"], 0.62)
+        self.assertEqual(
+            by_step["assign_material_regions"]["params"]["material_map"],
+            {"base": "gothic_stone_dark", "trim": "gothic_stone_trim", "default": "gothic_stone"},
+        )
+
     def test_validate_only_writes_no_manifest(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             out_root = Path(tmp) / "plans"
@@ -499,7 +543,7 @@ class BlenderToolPlanTests(unittest.TestCase):
                 text=True,
             )
 
-        self.assertIn("compiled tool plans=7 steps=230 tools=97 out=<validate-only>", result.stdout)
+        self.assertIn("compiled tool plans=8 steps=252 tools=97 out=<validate-only>", result.stdout)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_unknown_feature_fails_before_output(self) -> None:

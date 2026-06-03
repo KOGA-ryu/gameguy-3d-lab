@@ -1,0 +1,70 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0043-profiled-plinth-base-detail-v0",
+  "status": "pass",
+  "summary": "Added the first standalone profile-detail tool-plan prototype: a profiled plinth base generated from one source-owned 2D custom polygon profile.",
+  "source_profile": {
+    "bundle": "data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json",
+    "profile_id": "railing_plinth_ogee_base_side_profile_v0",
+    "source_control_point_count": 14,
+    "compile_mode": "single_custom_polygon_extrusion_v0"
+  },
+  "compiled_tool_plan": {
+    "asset_id": "profiled_plinth_base_detail_tool_plan_v0",
+    "asset_family": "profile_detail",
+    "plan_id": "profiled_plinth_base_detail_tool_plan_v0_compiled",
+    "step_count": 22,
+    "unique_tool_count": 22,
+    "initial_mesh_vertex_count": 28,
+    "initial_mesh_face_count": 16,
+    "uses_primitive_cube_add": false,
+    "uses_modifier_boolean": false
+  },
+  "default_tool_plan_bundle": {
+    "plan_count": 8,
+    "total_steps": 252,
+    "asset_family_policy_count": 8,
+    "unique_tool_count": 28
+  },
+  "blender_profile_detail_execution": {
+    "render_path": "/tmp/gameguy_profiled_plinth_detail_execution_v0/tool_plan_execution_v0_workbench.png",
+    "export_path": "/tmp/gameguy_profiled_plinth_detail_execution_v0/tool_plan_execution_v0.glb",
+    "blend_path": "/tmp/gameguy_profiled_plinth_detail_execution_v0/tool_plan_execution_v0.blend",
+    "final_vertex_count": 164,
+    "final_edge_count": 313,
+    "final_face_count": 151,
+    "non_manifold_edge_count": 0,
+    "generated_outputs_in_repo": false
+  },
+  "validation": {
+    "unit_tests": {
+      "command": "python3 -m unittest discover -s tests",
+      "test_count": 124,
+      "status": "pass"
+    },
+    "non_blender_pipeline": {
+      "command": "python3 scripts/validate_generation_pipeline_v0.py --json-report /tmp/gameguy_pipeline_0043_final.json",
+      "command_count": 32,
+      "json_file_count": 237,
+      "status": "pass"
+    },
+    "full_blender_pipeline": {
+      "command": "python3 scripts/validate_generation_pipeline_v0.py --include-blender --json-report /tmp/gameguy_pipeline_blender_0043_final.json",
+      "command_count": 46,
+      "json_file_count": 237,
+      "status": "pass"
+    },
+    "diff_check": {
+      "command": "git diff --check",
+      "status": "pass"
+    }
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  }
+}

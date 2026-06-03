@@ -725,12 +725,18 @@ def execute_join_objects(bpy: Any, plan: dict[str, Any], step: dict[str, Any], c
     objects = [context["objects"][name] for name in names if name in context["objects"] and not context["objects"][name].hide_viewport]
     if not objects:
         fail("join_visible_post_parts found no visible objects")
-    bpy.ops.object.select_all(action="DESELECT")
-    for obj in objects:
-        obj.select_set(True)
-    bpy.context.view_layer.objects.active = objects[0]
-    bpy.ops.object.join()
-    final_obj = bpy.context.object
+    if len(objects) == 1:
+        final_obj = objects[0]
+        bpy.ops.object.select_all(action="DESELECT")
+        final_obj.select_set(True)
+        bpy.context.view_layer.objects.active = final_obj
+    else:
+        bpy.ops.object.select_all(action="DESELECT")
+        for obj in objects:
+            obj.select_set(True)
+        bpy.context.view_layer.objects.active = objects[0]
+        bpy.ops.object.join()
+        final_obj = bpy.context.object
     final_obj.name = plan["asset_id"]
     final_obj["plan_id"] = plan["plan_id"]
     final_obj["asset_family"] = plan["asset_family"]
