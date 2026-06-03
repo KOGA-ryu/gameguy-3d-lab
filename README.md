@@ -40,7 +40,7 @@ python3 scripts/compile_sacred_graph_v0.py \
   --out /tmp/gameguy_sacred_graph_v0
 ```
 
-The first graph bundle is `data/architecture/sacred_geometry/sacred_graph_recipes_v0.json`. It compiles `sacred_22_star_construction_graph_v0` into `89` named points, `220` named edges, an SVG construction preview, and a selected `column_star_outline` profile with `66` vertices. The existing `star_column_22_v0` section-stack asset is the first downstream proof that a selected sacred-geometry profile can become deterministic 3D geometry.
+The first graph bundle is `data/architecture/sacred_geometry/sacred_graph_recipes_v0.json`. It compiles `sacred_22_star_construction_graph_v0` into `89` named points, `220` named edges, an SVG construction preview, and named selections for the center boss, radial ribs, and primary star-step trace. It deliberately does not emit a derived column profile; this layer is now a clean construction field for later cell, rib, and vault selection.
 
 The first lean command is:
 

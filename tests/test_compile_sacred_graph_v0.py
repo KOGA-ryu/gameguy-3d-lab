@@ -48,32 +48,23 @@ class SacredGraphCompilerTests(unittest.TestCase):
         self.assertEqual(manifest["graph_count"], 1)
         self.assertEqual(manifest["graphs"][0]["point_count"], 89)
         self.assertEqual(manifest["graphs"][0]["edge_count"], 220)
-        self.assertEqual(manifest["graphs"][0]["selection_count"], 4)
+        self.assertEqual(manifest["graphs"][0]["selection_count"], 3)
         self.assertEqual(graph["schema"], "gameguy_sacred_graph_v0")
         self.assertEqual(graph["graph_id"], "sacred_22_star_construction_graph_v0")
         self.assertEqual(graph["geometry_operation"], "sacred_graph")
         self.assertEqual(graph["divisions"], 22)
         self.assertEqual(graph["summary"]["point_count"], 89)
         self.assertEqual(graph["summary"]["edge_count"], 220)
-        self.assertEqual(graph["summary"]["profile_bounds_m"]["column_star_outline"]["min"], [-0.429463, -0.338536])
-        self.assertEqual(graph["summary"]["profile_bounds_m"]["column_star_outline"]["max"], [0.429463, 0.338536])
+        self.assertEqual(graph["summary"]["derived_profile_count"], 0)
+        self.assertEqual(graph["summary"]["selection_count"], 3)
+        self.assertEqual(graph["summary"]["profile_bounds_m"], {})
 
         selections = {selection["selection_id"]: selection for selection in graph["selections"]}
         self.assertEqual(selections["center_boss_node"]["point_ids"], ["center"])
         self.assertEqual(len(selections["primary_radial_ribs"]["edge_ids"]), 88)
         self.assertEqual(len(selections["outer_star_step_5_trace"]["edge_ids"]), 22)
-        column_profile = selections["column_star_outline"]["profile"]
-        self.assertIsInstance(column_profile, dict)
-        self.assertEqual(column_profile["vertex_count"], 66)
-        self.assertEqual(
-            column_profile["vertices"][:3],
-            [
-                [0.429463, -0.016986],
-                [0.429463, 0.016986],
-                [0.364254, 0.039421],
-            ],
-        )
-        self.assertIn('<polygon class="outline"', svg)
+        self.assertNotIn("column_star_outline", selections)
+        self.assertNotIn('<polygon class="outline"', svg)
         self.assertIn("sacred_22_star_construction_graph_v0", svg)
 
     def test_validate_only_writes_no_manifest(self) -> None:

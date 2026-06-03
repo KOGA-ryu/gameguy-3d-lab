@@ -6,8 +6,8 @@
   "source_inputs": {
     "sacred_graph_bundle": "data/architecture/sacred_geometry/sacred_graph_recipes_v0.json",
     "geometry_operation": "geometry_dictionary/operations/sacred_graph.json",
-    "downstream_asset_bundle": "data/architecture/asset_mill/recipes/section_stack_assets_v0.json",
-    "downstream_asset_id": "star_column_22_v0"
+    "downstream_asset_bundle": null,
+    "downstream_asset_id": null
   },
   "compiled_graph": {
     "graph_id": "sacred_22_star_construction_graph_v0",
@@ -17,9 +17,8 @@
     "ring_count": 4,
     "point_count": 89,
     "edge_count": 220,
-    "selection_count": 4,
-    "derived_profile_count": 1,
-    "column_star_outline_vertex_count": 66,
+    "selection_count": 3,
+    "derived_profile_count": 0,
     "graph_path": "/tmp/gameguy_sacred_graph_v0_0048/graphs/sacred_22_star_construction_graph_v0.json",
     "svg_preview_path": "/tmp/gameguy_sacred_graph_v0_0048/svg/sacred_22_star_construction_graph_v0.svg",
     "png_preview_path": "/tmp/gameguy_sacred_graph_v0_0048_preview/sacred_22_star_construction_graph_v0.svg.png"
@@ -42,12 +41,6 @@
       "selection_type": "edges",
       "selected_count": 22,
       "roles": ["tracery_trace", "rib_network", "faceted_fold_line"]
-    },
-    {
-      "selection_id": "column_star_outline",
-      "selection_type": "profile",
-      "selected_count": 66,
-      "roles": ["column_profile", "section_stack_profile"]
     }
   ],
   "validation": {

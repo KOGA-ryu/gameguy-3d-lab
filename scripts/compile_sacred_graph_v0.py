@@ -560,9 +560,6 @@ def compile_graph(bundle: dict[str, Any], graph: dict[str, Any]) -> dict[str, An
     for key, value in checks.items():
         if expected.get(key) != value:
             fail(f"{graph['graph_id']}.validation_expectations.{key} must be {value}")
-    column = next((profile for profile in graph["derived_profiles"] if profile["profile_id"] == "column_star_outline"), None)
-    if column and expected.get("column_star_outline_vertex_count") != column["vertex_count"]:
-        fail(f"{graph['graph_id']}.validation_expectations.column_star_outline_vertex_count must be {column['vertex_count']}")
     return compiled
 
 
@@ -585,7 +582,7 @@ def render_svg(graph: dict[str, Any]) -> str:
     lines = [
         '<svg xmlns="http://www.w3.org/2000/svg" width="960" height="960" viewBox="0 0 960 960">',
         "<style>",
-        ".bg{fill:#fbfaf6}.ring{fill:none;stroke:#b9b3a7;stroke-width:1.2}.radial{stroke:#7aa6b8;stroke-width:1.1;opacity:.8}.star_step{stroke:#d66b3d;stroke-width:1;opacity:.55}.outline{fill:none;stroke:#16884f;stroke-width:3}.point{fill:#202020}.label{font:18px monospace;fill:#202020}",
+        ".bg{fill:#fbfaf6}.ring{fill:none;stroke:#b9b3a7;stroke-width:1.2}.radial{stroke:#7aa6b8;stroke-width:1.1;opacity:.8}.star_step{stroke:#d66b3d;stroke-width:1;opacity:.55}.point{fill:#202020}.label{font:18px monospace;fill:#202020}",
         "</style>",
         '<rect class="bg" x="0" y="0" width="960" height="960" />',
     ]
@@ -594,12 +591,6 @@ def render_svg(graph: dict[str, Any]) -> str:
     for edge in graph["edges"]:
         if edge["edge_type"] in {"radial", "star_step"}:
             lines.append(svg_line(point_by_id[edge["from"]], point_by_id[edge["to"]], scale, center, edge["edge_type"]))
-    profile = next(profile for profile in graph["derived_profiles"] if profile["profile_id"] == "column_star_outline")
-    outline = []
-    for point in profile["vertices"]:
-        x, y = svg_point(point, scale, center)
-        outline.append(f"{x:.3f},{y:.3f}")
-    lines.append(f'<polygon class="outline" points="{" ".join(outline)}" />')
     for point_id, xy in point_by_id.items():
         if point_id == "center" or point_id.startswith("outer_tip_p_"):
             x, y = svg_point(xy, scale, center)

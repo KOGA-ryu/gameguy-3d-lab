@@ -8,10 +8,8 @@ Added the first source-owned sacred-geometry construction graph compiler.
 sacred graph recipe
 -> radial rings and star-step edges
 -> named selections
--> selected 22-star column outline profile
 -> deterministic graph JSON
 -> SVG construction preview
--> existing star_column_22_v0 remains the first 3D consumer
 ```
 
 ## Source Decisions
@@ -20,8 +18,8 @@ sacred graph recipe
 - The graph compiler writes JSON and SVG previews under `/tmp`; it writes no repo-local generated media or mesh outputs.
 - Version 0 uses deterministic Python math only: radial divisions, rings, radial edges, star-step edges, and a derived `star_polygon` profile.
 - The first graph uses `22` radial divisions and four rings: `boss`, `inner_cell`, `shaft_valley`, and `outer_tip`.
-- The first named selections are `center_boss_node`, `primary_radial_ribs`, `outer_star_step_5_trace`, and `column_star_outline`.
-- `column_star_outline` matches the current section-stack star-column intent with `66` profile vertices.
+- The first named selections are `center_boss_node`, `primary_radial_ribs`, and `outer_star_step_5_trace`.
+- The graph no longer emits a derived column outline; downstream assets should select cells, ribs, or profiles explicitly in their own recipes.
 
 ## Compiled Graph
 
@@ -33,8 +31,8 @@ sacred graph recipe
 - PNG preview: `/tmp/gameguy_sacred_graph_v0_0048_preview/sacred_22_star_construction_graph_v0.svg.png`
 - Points: `89`
 - Edges: `220`
-- Selections: `4`
-- Derived profiles: `1`
+- Selections: `3`
+- Derived profiles: `0`
 
 ## Validation
 

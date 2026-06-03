@@ -31,26 +31,7 @@
         { "connection_id": "outer_step_5", "ring_id": "outer_tip", "step": 5, "role_hint": "primary_star_trace" },
         { "connection_id": "outer_step_7", "ring_id": "outer_tip", "step": 7, "role_hint": "secondary_star_trace" }
       ],
-      "derived_profiles": [
-        {
-          "profile_id": "column_star_outline",
-          "profile_type": "star_polygon",
-          "role_hint": "column_profile",
-          "params": {
-            "points": 22,
-            "outer_radius_x": 0.43,
-            "outer_radius_y": 0.34,
-            "inner_radius_x": 0.368,
-            "inner_radius_y": 0.277,
-            "flat_edge_ratio": 0.35
-          },
-          "architectural_roles": [
-            "column_profile",
-            "ribbed_shaft_profile",
-            "rose_window_outer_trace"
-          ]
-        }
-      ],
+      "derived_profiles": [],
       "selections": [
         {
           "selection_id": "center_boss_node",
@@ -69,29 +50,15 @@
           "selection_type": "edges",
           "selector": { "kind": "edge_tag_query", "tag": "star_step:5" },
           "architectural_roles": ["tracery_trace", "rib_network", "faceted_fold_line"]
-        },
-        {
-          "selection_id": "column_star_outline",
-          "selection_type": "profile",
-          "selector": { "kind": "derived_profile", "profile_id": "column_star_outline" },
-          "architectural_roles": ["column_profile", "section_stack_profile"]
         }
       ],
-      "downstream_proofs": [
-        {
-          "asset_bundle": "data/architecture/asset_mill/recipes/section_stack_assets_v0.json",
-          "asset_id": "star_column_22_v0",
-          "uses_selection": "column_star_outline",
-          "relationship": "first 3D consumer of the 22-division construction graph"
-        }
-      ],
+      "downstream_proofs": [],
       "validation_expectations": {
         "point_count": 89,
         "edge_count": 220,
         "ring_count": 4,
         "star_connection_count": 2,
-        "derived_profile_count": 1,
-        "column_star_outline_vertex_count": 66,
+        "derived_profile_count": 0,
         "known_geometry_operation": true
       },
       "no_claims": {
