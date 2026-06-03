@@ -68,6 +68,7 @@ class GenerationPipelineValidatorTests(unittest.TestCase):
         self.assertIn("door_frame_blender_adapter_validate_only", labels)
         self.assertIn("guard_panel_blender_adapter_validate_only", labels)
         self.assertIn("profile_detail_blender_adapter_validate_only", labels)
+        self.assertIn("post_context_blender_adapter_validate_only", labels)
         self.assertIn("simple_asset_validate", labels)
         self.assertIn("measured_asset_adapter_validate", labels)
         self.assertIn("script_orbit_audit", labels)

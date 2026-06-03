@@ -55,6 +55,9 @@ REQUIRED_GUARD_PANEL_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
     "explicit_socket_boolean_targets",
     "socket_cutters_removed",
 }
+REQUIRED_CONTEXT_PROTOTYPE_QUALITY_FLAGS = REQUIRED_COMMON_QUALITY_FLAGS | {
+    "socket_boolean_not_required",
+}
 REQUIRED_BANISTER_MATERIAL_ROLES = ("base", "cap", "shaft", "rib", "socket_shadow")
 REQUIRED_FENCE_POST_MATERIAL_ROLES = ("base", "cap", "shaft", "rib", "socket_shadow")
 REQUIRED_COLUMN_MATERIAL_ROLES = ("base", "cap", "transition", "shaft", "rib")
@@ -62,6 +65,7 @@ REQUIRED_RAIL_SEGMENT_MATERIAL_ROLES = ("body", "base", "cap", "connector", "rib
 REQUIRED_WINDOW_FRAME_MATERIAL_ROLES = ("frame",)
 REQUIRED_DOOR_FRAME_MATERIAL_ROLES = ("frame",)
 REQUIRED_GUARD_PANEL_MATERIAL_ROLES = ("pier", "base", "cap", "panel", "coping", "trim", "recess", "finial", "collar")
+REQUIRED_CONTEXT_PROTOTYPE_MATERIAL_ROLES = ("base", "shaft")
 REQUIRED_SOCKET_CUTTERS = ("east_socket_cutter", "west_socket_cutter")
 REQUIRED_GUARD_PANEL_DETAIL_CUTTERS = ("center_panel_arch_cutter", "left_panel_capsule_slot_cutter", "right_panel_capsule_slot_cutter")
 
@@ -196,6 +200,8 @@ def validate_quality_flags(report: dict[str, Any], asset_family: str) -> None:
         required_flags = REQUIRED_DOOR_FRAME_QUALITY_FLAGS
     elif asset_family == "guard_panel":
         required_flags = REQUIRED_GUARD_PANEL_QUALITY_FLAGS
+    elif asset_family == "context_prototype":
+        required_flags = REQUIRED_CONTEXT_PROTOTYPE_QUALITY_FLAGS
     else:
         fail(f"unsupported asset_family quality profile `{asset_family}`")
     for key in sorted(required_flags):
@@ -353,6 +359,10 @@ def validate_report(
             require_shadow_panels_for_cutters=False,
         )
         socket_shadow_panel_count = report["socket_pass"]["socket_shadow_panel_count"]
+    elif asset_family == "context_prototype":
+        face_counts = validate_material_regions(report, len(REQUIRED_CONTEXT_PROTOTYPE_MATERIAL_ROLES), REQUIRED_CONTEXT_PROTOTYPE_MATERIAL_ROLES)
+        validate_socket_not_required(report)
+        socket_shadow_panel_count = 0
     else:
         fail(f"unsupported asset_family quality profile `{asset_family}`")
     validate_topology(report, max_non_manifold_edges, max_non_manifold_edges_before_cleanup)

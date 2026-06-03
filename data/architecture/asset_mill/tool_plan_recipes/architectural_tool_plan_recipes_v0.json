@@ -53,7 +53,7 @@
       ]
     }
   ],
-  "asset_count": 8,
+  "asset_count": 9,
   "assets": [
     {
       "asset_id": "gothic_stone_banister_post_tool_plan_v0",
@@ -643,6 +643,75 @@
           { "z_ratio": 0.84, "footprint_ratio": 0.64, "role": "top_landing_projection" },
           { "z_ratio": 1.0, "footprint_ratio": 0.64, "role": "top_landing" }
         ],
+        "bevel_width_m": 0.008,
+        "bevel_segments": 1,
+        "stone_noise_scale": 46.0,
+        "uv_margin": 0.018,
+        "lod_decimate_ratio": 0.7
+      },
+      "required_stage_coverage": [
+        "base_form",
+        "assembly",
+        "shape_refinement",
+        "sculpt_detail",
+        "retopo_cleanup",
+        "uv_mapping",
+        "material_texture",
+        "validation_export"
+      ],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false
+      }
+    },
+    {
+      "asset_id": "profiled_plinth_post_context_tool_plan_v0",
+      "asset_family": "context_prototype",
+      "style": "gothic_stone",
+      "detail_level": "prototype_context",
+      "target_readiness": "single_detail_context_fit",
+      "dimensions_m": {
+        "width": 0.62,
+        "depth": 0.32,
+        "height": 0.828
+      },
+      "features": [
+        "profiled_plinth_post_context",
+        "finish_tool_stack"
+      ],
+      "finish_tool_stack": "gothic_stone_finish_stack_v0",
+      "style_parameters": {
+        "profiled_plinth_profile_bundle": "data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json",
+        "profiled_plinth_profile_id": "railing_plinth_ogee_base_side_profile_v0",
+        "profiled_plinth_width_m": 0.62,
+        "profiled_plinth_depth_m": 0.32,
+        "profiled_plinth_height_m": 0.22,
+        "profiled_plinth_base_z_m": 0.0,
+        "profiled_plinth_corner_chamfer_ratio": 0.18,
+        "profiled_plinth_profile_rings": [
+          { "z_ratio": 0.0, "footprint_ratio": 1.0, "role": "bottom_foot" },
+          { "z_ratio": 0.08, "footprint_ratio": 1.0, "role": "lower_foot_riser" },
+          { "z_ratio": 0.10, "footprint_ratio": 0.96, "role": "lower_chamfer_inset" },
+          { "z_ratio": 0.14, "footprint_ratio": 0.96, "role": "lower_landing" },
+          { "z_ratio": 0.14, "footprint_ratio": 0.86, "role": "shadow_groove_inset" },
+          { "z_ratio": 0.20, "footprint_ratio": 0.86, "role": "shadow_groove_riser" },
+          { "z_ratio": 0.20, "footprint_ratio": 0.98, "role": "bead_projection" },
+          { "z_ratio": 0.26, "footprint_ratio": 0.98, "role": "bead_riser" },
+          { "z_ratio": 0.30, "footprint_ratio": 0.90, "role": "bead_upper_chamfer" },
+          { "z_ratio": 0.42, "footprint_ratio": 0.78, "role": "lower_cove_slope" },
+          { "z_ratio": 0.56, "footprint_ratio": 0.66, "role": "upper_cove_slope" },
+          { "z_ratio": 0.68, "footprint_ratio": 0.56, "role": "neck_setback" },
+          { "z_ratio": 0.84, "footprint_ratio": 0.56, "role": "neck_riser" },
+          { "z_ratio": 0.84, "footprint_ratio": 0.64, "role": "top_landing_projection" },
+          { "z_ratio": 1.0, "footprint_ratio": 0.64, "role": "top_landing" }
+        ],
+        "context_post_core_size_m": [0.18, 0.18, 0.62],
+        "context_post_core_center_xy_m": [0.0, 0.0],
+        "context_post_core_overlap_m": 0.012,
         "bevel_width_m": 0.008,
         "bevel_segments": 1,
         "stone_noise_scale": 46.0,

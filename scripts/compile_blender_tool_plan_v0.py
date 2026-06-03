@@ -556,6 +556,28 @@ def validate_profiled_plinth_base_detail(asset: dict[str, Any], geometry_terms: 
     profiled_plinth_ring_specs(asset_id, params)
 
 
+def validate_profiled_plinth_post_context(asset: dict[str, Any], geometry_terms: dict[str, set[str]], tool_map: dict[str, dict[str, Any]]) -> None:
+    asset_id = require_string(asset.get("asset_id"), "asset_id")
+    validate_profiled_plinth_base_detail(asset, geometry_terms, tool_map)
+    params = style_params(asset)
+    plinth_width = positive_number(params.get("profiled_plinth_width_m", 0.62), f"{asset_id}.style_parameters.profiled_plinth_width_m")
+    plinth_depth = positive_number(params.get("profiled_plinth_depth_m", 0.32), f"{asset_id}.style_parameters.profiled_plinth_depth_m")
+    plinth_height = positive_number(params.get("profiled_plinth_height_m", 0.22), f"{asset_id}.style_parameters.profiled_plinth_height_m")
+    post_size = positive_vector(params.get("context_post_core_size_m", [0.18, 0.18, 0.62]), f"{asset_id}.style_parameters.context_post_core_size_m", 3)
+    post_xy = finite_vector(params.get("context_post_core_center_xy_m", [0.0, 0.0]), f"{asset_id}.style_parameters.context_post_core_center_xy_m", 2)
+    overlap = positive_number(params.get("context_post_core_overlap_m", 0.012), f"{asset_id}.style_parameters.context_post_core_overlap_m")
+    if overlap >= min(plinth_height, post_size[2]):
+        fail(f"{asset_id}.style_parameters.context_post_core_overlap_m must be smaller than the plinth and post heights")
+    ring_specs = profiled_plinth_ring_specs(asset_id, params)
+    top_landing_ratio = float(ring_specs[-1]["footprint_ratio"])
+    top_landing_width = plinth_width * top_landing_ratio
+    top_landing_depth = plinth_depth * top_landing_ratio
+    if abs(post_xy[0]) + post_size[0] * 0.5 > top_landing_width * 0.5:
+        fail(f"{asset_id}.style_parameters.context_post_core_size_m.x must fit inside the profiled plinth top landing")
+    if abs(post_xy[1]) + post_size[1] * 0.5 > top_landing_depth * 0.5:
+        fail(f"{asset_id}.style_parameters.context_post_core_size_m.y must fit inside the profiled plinth top landing")
+
+
 def resolve_finish_tool_stack(asset: dict[str, Any], finish_stack_map: dict[str, dict[str, Any]]) -> None:
     asset_id = require_string(asset.get("asset_id"), "asset_id")
     if "finish_tool_stack" not in require_list(asset.get("features"), f"{asset_id}.features"):
@@ -599,6 +621,8 @@ def validate_recipe_bundle(
             validate_railing_detail_profile_stack(asset, geometry_terms, tool_map)
         if "profiled_plinth_base_detail" in asset.get("features", []):
             validate_profiled_plinth_base_detail(asset, geometry_terms, tool_map)
+        if "profiled_plinth_post_context" in asset.get("features", []):
+            validate_profiled_plinth_post_context(asset, geometry_terms, tool_map)
         if "finish_tool_stack" in asset.get("features", []):
             resolve_finish_tool_stack(asset, finish_stack_map)
         for stage_index, stage in enumerate(require_list(asset.get("required_stage_coverage"), f"{asset_id}.required_stage_coverage")):
@@ -1005,6 +1029,87 @@ def profiled_plinth_base_detail_steps(asset: dict[str, Any]) -> list[dict[str, A
                 "profile_width_m": width,
                 "profile_depth_m": depth,
                 "profile_height_m": height,
+            },
+        },
+    ]
+
+
+def profiled_plinth_post_context_steps(asset: dict[str, Any]) -> list[dict[str, Any]]:
+    asset_id = require_string(asset.get("asset_id"), "asset_id")
+    params = style_params(asset)
+    width = number_param(params, "profiled_plinth_width_m", 0.62)
+    depth = number_param(params, "profiled_plinth_depth_m", 0.32)
+    height = number_param(params, "profiled_plinth_height_m", 0.22)
+    base_z = number_param(params, "profiled_plinth_base_z_m", 0.0)
+    y_center = number_param(params, "profiled_plinth_center_y_m", 0.0)
+    corner_chamfer_ratio = number_param(params, "profiled_plinth_corner_chamfer_ratio", 0.18)
+    profile_id = require_string(params.get("profiled_plinth_profile_id", PROFILED_PLINTH_BASE_DETAIL_PROFILE_ID), f"{asset_id}.style_parameters.profiled_plinth_profile_id")
+    ring_specs = profiled_plinth_ring_specs(asset_id, params)
+    mesh = profiled_plinth_base_wrapped_mesh(
+        width=width,
+        depth=depth,
+        height=height,
+        base_z=base_z,
+        y_center=y_center,
+        ring_specs=ring_specs,
+        corner_chamfer_ratio=corner_chamfer_ratio,
+    )
+    post_size = vector_param(params, "context_post_core_size_m", [0.18, 0.18, 0.62])
+    post_xy = vector_param(params, "context_post_core_center_xy_m", [0.0, 0.0])
+    post_overlap = number_param(params, "context_post_core_overlap_m", 0.012)
+    post_location_z = round(base_z + height - post_overlap + post_size[2] * 0.5, 6)
+    top_landing_ratio = float(ring_specs[-1]["footprint_ratio"])
+    top_landing_size = [round(width * top_landing_ratio, 6), round(depth * top_landing_ratio, 6)]
+    fit_clearance = [round(top_landing_size[0] - post_size[0], 6), round(top_landing_size[1] - post_size[1], 6)]
+    return [
+        {
+            "step_id": "create_profiled_context_plinth_base",
+            "tool_id": "mesh_from_pydata",
+            "purpose": "Create the profiled plinth as a wrapped chamfered-square base mesh for post-fit context.",
+            "params": {
+                "vertices": mesh["vertices"],
+                "faces": mesh["faces"],
+                "material_role": "base",
+                "source_profile": "custom_polygon",
+                "source_detail_profile": profile_id,
+                "group": "base",
+                "wraps_all_sides": True,
+                "profile_ring_count": mesh["ring_count"],
+                "footprint_point_count": mesh["footprint_point_count"],
+                "corner_chamfer_ratio": corner_chamfer_ratio,
+            },
+        },
+        {
+            "step_id": "create_square_post_context_core",
+            "tool_id": "primitive_cube_add",
+            "purpose": "Create the plain square post core that proves the profiled top landing connection.",
+            "params": {
+                "size_m": post_size,
+                "location_m": [post_xy[0], post_xy[1], post_location_z],
+                "source_profile": "square",
+                "source_operation": "extrude",
+                "material_role": "shaft",
+                "overlaps_plinth_m": post_overlap,
+            },
+        },
+        {
+            "step_id": "join_profiled_plinth_post_context",
+            "tool_id": "join_objects",
+            "purpose": "Join the profiled plinth and square post core into one context-fit prototype.",
+            "params": {
+                "objects": ["base", "square_post_context_core"],
+                "source_detail_profile": profile_id,
+                "source_control_point_count": PROFILED_PLINTH_SOURCE_CONTROL_POINT_COUNT,
+                "profile_ring_count": mesh["ring_count"],
+                "footprint_point_count": mesh["footprint_point_count"],
+                "corner_chamfer_ratio": corner_chamfer_ratio,
+                "profile_width_m": width,
+                "profile_depth_m": depth,
+                "profile_height_m": height,
+                "top_landing_size_m": top_landing_size,
+                "post_core_size_m": post_size,
+                "post_core_overlap_m": post_overlap,
+                "post_core_fit_clearance_m": fit_clearance,
             },
         },
     ]
@@ -1613,6 +1718,8 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
         return railing_detail_profile_steps(asset)
     if feature == "profiled_plinth_base_detail":
         return profiled_plinth_base_detail_steps(asset)
+    if feature == "profiled_plinth_post_context":
+        return profiled_plinth_post_context_steps(asset)
     if feature == "finish_tool_stack":
         return finish_tool_stack_steps(asset)
     if feature == "stepped_square_base":
@@ -1807,6 +1914,13 @@ def feature_steps(asset: dict[str, Any], feature: str) -> list[dict[str, Any]]:
                 "trim": "gothic_stone_trim",
                 "default": "gothic_stone",
             }
+        if asset.get("asset_family") == "context_prototype":
+            material_map = {
+                "base": "gothic_stone_dark",
+                "shaft": "gothic_stone",
+                "trim": "gothic_stone_trim",
+                "default": "gothic_stone",
+            }
         return [
             {"step_id": "add_stone_displacement", "tool_id": "modifier_displace", "purpose": "Add restrained procedural stone surface variation.", "params": {"strength_m": 0.006, "texture": "stone_noise"}},
             {"step_id": "create_stone_material", "tool_id": "material_principled_shader", "purpose": "Create the base gothic stone material.", "params": {"base_color": [0.48, 0.46, 0.39], "roughness": 0.82, "metallic": 0.0}},
@@ -1960,6 +2074,46 @@ def source_terms_for_asset(asset: dict[str, Any]) -> dict[str, Any]:
             "profile_ring_count": len(ring_specs),
             "footprint_point_count": 8,
             "corner_chamfer_ratio": number_param(params, "profiled_plinth_corner_chamfer_ratio", 0.18),
+            "tool_ids": tool_ids,
+        }
+    if "profiled_plinth_post_context" in features:
+        params = style_params(asset)
+        bundle_path = repo_relative_path(
+            params.get("profiled_plinth_profile_bundle", repo_display_path(DEFAULT_RAILING_DETAIL_PROFILES)),
+            f"{asset_id}.style_parameters.profiled_plinth_profile_bundle",
+        )
+        bundle = load_json(bundle_path)
+        profile_id = require_string(
+            params.get("profiled_plinth_profile_id", PROFILED_PLINTH_BASE_DETAIL_PROFILE_ID),
+            f"{asset_id}.style_parameters.profiled_plinth_profile_id",
+        )
+        ring_specs = profiled_plinth_ring_specs(asset_id, params)
+        profile_map = profile_map_from_bundle(bundle, f"{asset_id}.profiled_plinth_profile_bundle")
+        profile = require_object(profile_map.get(profile_id), f"{asset_id}.profiled_plinth_post_context.{profile_id}")
+        append_unique("geometry", require_string_list(profile.get("geometry_terms_used"), f"{profile_id}.geometry_terms_used") + ["square"])
+        append_unique("profiles", require_string_list(profile.get("profile_terms"), f"{profile_id}.profile_terms") + ["square"])
+        append_unique("operators", require_string_list(profile.get("operations"), f"{profile_id}.operations"))
+        tool_ids = []
+        for step_value in require_list(profile.get("blender_tool_sequence"), f"{profile_id}.blender_tool_sequence"):
+            step = require_object(step_value, f"{profile_id}.blender_tool_sequence[]")
+            tool_id = require_string(step.get("tool_id"), f"{profile_id}.blender_tool_sequence.tool_id")
+            if tool_id not in tool_ids:
+                tool_ids.append(tool_id)
+        for tool_id in ("primitive_cube_add",):
+            if tool_id not in tool_ids:
+                tool_ids.append(tool_id)
+        result["profiled_plinth_post_context"] = {
+            "bundle_path": repo_display_path(bundle_path),
+            "profile_id": profile_id,
+            "compile_mode": "wrapped_plinth_with_square_post_context_v0",
+            "source_control_point_count": PROFILED_PLINTH_SOURCE_CONTROL_POINT_COUNT,
+            "profile_ring_count": len(ring_specs),
+            "footprint_point_count": 8,
+            "corner_chamfer_ratio": number_param(params, "profiled_plinth_corner_chamfer_ratio", 0.18),
+            "post_core_profile": "square",
+            "post_core_operation": "extrude",
+            "post_core_size_m": vector_param(params, "context_post_core_size_m", [0.18, 0.18, 0.62]),
+            "post_core_overlap_m": number_param(params, "context_post_core_overlap_m", 0.012),
             "tool_ids": tool_ids,
         }
     if "finish_tool_stack" in features:

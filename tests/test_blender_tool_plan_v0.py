@@ -102,11 +102,21 @@ class BlenderToolPlanTests(unittest.TestCase):
         self.assertEqual(policy["schema"], "asset_family_tool_sequence_policy_v0")
         self.assertEqual(policy["tool_dictionary"], dictionary["dictionary_id"])
         self.assertEqual(policy["stage_order"], dictionary["stages"])
-        self.assertEqual(policy["asset_family_policy_count"], 8)
+        self.assertEqual(policy["asset_family_policy_count"], 9)
         families = {item["asset_family"]: item for item in policy["asset_family_policies"]}
         self.assertEqual(
             set(families),
-            {"column", "banister_post", "fence_post", "rail_segment", "guard_panel", "window_frame", "door_frame", "profile_detail"},
+            {
+                "column",
+                "banister_post",
+                "fence_post",
+                "rail_segment",
+                "guard_panel",
+                "window_frame",
+                "door_frame",
+                "profile_detail",
+                "context_prototype",
+            },
         )
 
         for family, item in families.items():
@@ -146,7 +156,7 @@ class BlenderToolPlanTests(unittest.TestCase):
 
         self.assertEqual(manifest["schema"], "gameguy_tool_plan_manifest_v0")
         self.assertEqual(manifest["tool_sequence_policy"], "asset_family_tool_sequence_policy_v0")
-        self.assertEqual(manifest["plan_count"], 8)
+        self.assertEqual(manifest["plan_count"], 9)
         self.assertEqual(manifest["plans"][0]["step_count"], 32)
         self.assertEqual(manifest["plans"][0]["unique_tool_count"], 24)
         self.assertEqual(plan["asset_family"], "banister_post")
@@ -543,6 +553,60 @@ class BlenderToolPlanTests(unittest.TestCase):
             {"base": "gothic_stone_dark", "trim": "gothic_stone_trim", "default": "gothic_stone"},
         )
 
+    def test_profiled_plinth_post_context_compiles_to_fit_prototype(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "plans"
+            run_compiler(out_root)
+            plan = plan_by_asset(out_root, "profiled_plinth_post_context_tool_plan_v0")
+
+        self.assertEqual(plan["asset_family"], "context_prototype")
+        self.assertEqual(plan["asset_family_policy"], "context_prototype")
+        self.assertEqual(plan["features"], ["profiled_plinth_post_context", "finish_tool_stack"])
+        self.assertEqual(plan["summary"]["step_count"], 23)
+        self.assertEqual(plan["summary"]["unique_tool_count"], 23)
+        self.assertIn("mesh_from_pydata", plan["summary"]["unique_tools"])
+        self.assertIn("primitive_cube_add", plan["summary"]["unique_tools"])
+        self.assertNotIn("modifier_boolean", plan["summary"]["unique_tools"])
+        self.assertNotIn("object_duplicate_radial", plan["summary"]["unique_tools"])
+        self.assertEqual(plan["source_terms"]["profiles"], ["custom_polygon", "square"])
+        self.assertEqual(
+            plan["source_terms"]["profiled_plinth_post_context"],
+            {
+                "bundle_path": "data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json",
+                "profile_id": "railing_plinth_ogee_base_side_profile_v0",
+                "compile_mode": "wrapped_plinth_with_square_post_context_v0",
+                "source_control_point_count": 14,
+                "profile_ring_count": 15,
+                "footprint_point_count": 8,
+                "corner_chamfer_ratio": 0.18,
+                "post_core_profile": "square",
+                "post_core_operation": "extrude",
+                "post_core_size_m": [0.18, 0.18, 0.62],
+                "post_core_overlap_m": 0.012,
+                "tool_ids": ["mesh_from_pydata", "join_objects", "modifier_bevel", "modifier_weighted_normal", "primitive_cube_add"],
+            },
+        )
+
+        by_step = {step["step_id"]: step for step in plan["steps"]}
+        mesh_params = by_step["create_profiled_context_plinth_base"]["params"]
+        self.assertEqual(len(mesh_params["vertices"]), 120)
+        self.assertEqual(len(mesh_params["faces"]), 114)
+        self.assertTrue(mesh_params["wraps_all_sides"])
+        self.assertEqual(mesh_params["material_role"], "base")
+        self.assertEqual(by_step["create_square_post_context_core"]["params"]["size_m"], [0.18, 0.18, 0.62])
+        self.assertEqual(by_step["create_square_post_context_core"]["params"]["location_m"], [0.0, 0.0, 0.518])
+        self.assertEqual(by_step["create_square_post_context_core"]["params"]["source_profile"], "square")
+        self.assertEqual(by_step["create_square_post_context_core"]["params"]["material_role"], "shaft")
+        join_params = by_step["join_profiled_plinth_post_context"]["params"]
+        self.assertEqual(join_params["objects"], ["base", "square_post_context_core"])
+        self.assertEqual(join_params["top_landing_size_m"], [0.3968, 0.2048])
+        self.assertEqual(join_params["post_core_fit_clearance_m"], [0.2168, 0.0248])
+        self.assertEqual(by_step["add_hard_edge_bevels"]["params"]["segments"], 1)
+        self.assertEqual(
+            by_step["assign_material_regions"]["params"]["material_map"],
+            {"base": "gothic_stone_dark", "shaft": "gothic_stone", "trim": "gothic_stone_trim", "default": "gothic_stone"},
+        )
+
     def test_validate_only_writes_no_manifest(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             out_root = Path(tmp) / "plans"
@@ -554,7 +618,7 @@ class BlenderToolPlanTests(unittest.TestCase):
                 text=True,
             )
 
-        self.assertIn("compiled tool plans=8 steps=252 tools=97 out=<validate-only>", result.stdout)
+        self.assertIn("compiled tool plans=9 steps=275 tools=97 out=<validate-only>", result.stdout)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_unknown_feature_fails_before_output(self) -> None:

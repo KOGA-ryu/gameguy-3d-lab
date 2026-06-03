@@ -306,6 +306,39 @@ class BlenderToolPlanExecutionAdapterTests(unittest.TestCase):
         self.assertNotIn("primitive_cube_add", report["unique_tools"])
         self.assertTrue(report["rules"]["consumes_gameguy_tool_plan_v0"])
 
+    def test_validate_only_accepts_post_context_plan(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            tmp_root = Path(tmp)
+            plan_path = compile_plan_for_asset(tmp_root / "plans", "profiled_plinth_post_context_tool_plan_v0")
+            report_path = tmp_root / "executor_report.json"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(EXECUTOR),
+                    "--plan",
+                    str(plan_path),
+                    "--validate-only",
+                    "--json-report",
+                    str(report_path),
+                ],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            report = load_json(report_path)
+
+        self.assertIn("PASS Blender tool-plan adapter validation", result.stdout)
+        self.assertEqual(report["plan_id"], "profiled_plinth_post_context_tool_plan_v0_compiled")
+        self.assertEqual(report["asset_family"], "context_prototype")
+        self.assertEqual(report["step_count"], 23)
+        self.assertEqual(report["supported_step_count"], 23)
+        self.assertEqual(report["unique_tool_count"], 23)
+        self.assertIn("mesh_from_pydata", report["unique_tools"])
+        self.assertIn("primitive_cube_add", report["unique_tools"])
+        self.assertNotIn("modifier_boolean", report["unique_tools"])
+        self.assertTrue(report["rules"]["consumes_gameguy_tool_plan_v0"])
+
     def test_validate_only_rejects_unsupported_tool_id_before_output(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             tmp_root = Path(tmp)
