@@ -15,10 +15,10 @@
   "segment_set_count": 1,
   "segment_sets": [
     {
-      "segment_set_id": "multi_rosette_pattern_segments_v0",
-      "source_field_id": "multi_rosette_pattern_field_v0",
+      "segment_set_id": "hex_rosette_pattern_segments_v0",
+      "source_field_id": "hex_rosette_pattern_field_v0",
       "geometry_operation": "pattern_segment_split",
-      "description": "First segment graph from the multi-rosette field: split guide and selected edges at intersections so later recipes can omit guides and promote smaller traces.",
+      "description": "First segment graph from the hex rosette field: split guide and selected inner-ring edges at intersections so later recipes can omit guides and promote smaller traces.",
       "intersection_policy": {
         "scope": "all_edges",
         "include_endpoint_intersections": false,
@@ -27,16 +27,16 @@
       },
       "selections": [
         {
-          "selection_id": "selected_large_rosette_segments",
+          "selection_id": "selected_center_rosette_segments",
           "selection_type": "segments",
-          "selector": { "kind": "segment_tag_query", "tag": "source:selected:large_rosette_star_trace" },
-          "architectural_roles": ["rosette_outline_segment", "tracery_candidate"]
+          "selector": { "kind": "segment_tag_query", "tag": "source:selected:center_inner_star_trace" },
+          "architectural_roles": ["center_rosette_segment", "tracery_candidate"]
         },
         {
-          "selection_id": "selected_small_rosette_segments",
+          "selection_id": "selected_surrounding_rosette_segments",
           "selection_type": "segments",
-          "selector": { "kind": "segment_tag_query", "tag": "source:selected:small_rosette_star_trace" },
-          "architectural_roles": ["bridge_rosette_segment", "ornament_trace"]
+          "selector": { "kind": "segment_tag_query", "tag": "source:selected:surrounding_inner_star_trace" },
+          "architectural_roles": ["surrounding_rosette_segment", "ornament_trace"]
         },
         {
           "selection_id": "selected_connector_segments",
@@ -46,12 +46,12 @@
         }
       ],
       "validation_expectations": {
-        "source_edge_count": 540,
-        "intersection_point_count": 1020,
-        "segment_count": 2402,
+        "source_edge_count": 432,
+        "intersection_point_count": 504,
+        "segment_count": 1656,
         "selection_count": 3,
-        "selected_segment_reference_count": 1333,
-        "unique_selected_segment_count": 1333
+        "selected_segment_reference_count": 984,
+        "unique_selected_segment_count": 984
       },
       "no_claims": {
         "production_approval": false,

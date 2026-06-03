@@ -61,26 +61,34 @@ class PatternSegmentCompilerTests(unittest.TestCase):
             run_field_compiler(field_out)
             result = run_segment_compiler(field_out, segment_out)
             manifest = load_json(segment_out / "manifest.json")
-            segment_set = load_json(segment_out / "segment_sets" / "multi_rosette_pattern_segments_v0.json")
-            svg = (segment_out / "svg" / "multi_rosette_pattern_segments_v0.svg").read_text(encoding="utf-8")
+            segment_set = load_json(segment_out / "segment_sets" / "hex_rosette_pattern_segments_v0.json")
+            svg = (segment_out / "svg" / "hex_rosette_pattern_segments_v0.svg").read_text(encoding="utf-8")
 
         self.assertIn("compiled pattern segment sets=1", result.stdout)
         self.assertEqual(manifest["schema"], "gameguy_pattern_segment_manifest_v0")
         self.assertEqual(manifest["segment_set_count"], 1)
         self.assertEqual(segment_set["schema"], "gameguy_pattern_segment_graph_v0")
-        self.assertEqual(segment_set["source_field_id"], "multi_rosette_pattern_field_v0")
-        self.assertEqual(segment_set["summary"]["source_edge_count"], 540)
-        self.assertEqual(segment_set["summary"]["intersection_point_count"], 1020)
-        self.assertEqual(segment_set["summary"]["segment_count"], 2402)
+        self.assertEqual(segment_set["source_field_id"], "hex_rosette_pattern_field_v0")
+        self.assertEqual(segment_set["summary"]["source_edge_count"], 432)
+        self.assertEqual(segment_set["summary"]["intersection_point_count"], 504)
+        self.assertEqual(segment_set["summary"]["segment_count"], 1656)
         self.assertEqual(segment_set["summary"]["selection_count"], 3)
-        self.assertEqual(segment_set["summary"]["selected_segment_reference_count"], 1333)
-        self.assertEqual(segment_set["summary"]["unique_selected_segment_count"], 1333)
+        self.assertEqual(segment_set["summary"]["selected_segment_reference_count"], 984)
+        self.assertEqual(segment_set["summary"]["unique_selected_segment_count"], 984)
 
         selections = {selection["selection_id"]: selection for selection in segment_set["selections"]}
-        self.assertEqual(selections["selected_large_rosette_segments"]["selected_count"], 984)
-        self.assertEqual(selections["selected_small_rosette_segments"]["selected_count"], 254)
-        self.assertEqual(selections["selected_connector_segments"]["selected_count"], 95)
-        self.assertIn("multi_rosette_pattern_segments_v0", svg)
+        self.assertEqual(selections["selected_center_rosette_segments"]["selected_count"], 132)
+        self.assertEqual(selections["selected_surrounding_rosette_segments"]["selected_count"], 792)
+        self.assertEqual(selections["selected_connector_segments"]["selected_count"], 60)
+        segment_by_id = {segment["segment_id"]: segment for segment in segment_set["segments"]}
+        selected_rosette_ids = (
+            selections["selected_center_rosette_segments"]["segment_ids"]
+            + selections["selected_surrounding_rosette_segments"]["segment_ids"]
+        )
+        selected_rosette_segments = [segment_by_id[segment_id] for segment_id in selected_rosette_ids]
+        self.assertTrue(all("source:ring:star" in segment["tags"] for segment in selected_rosette_segments))
+        self.assertTrue(all("source:ring:outer" not in segment["tags"] for segment in selected_rosette_segments))
+        self.assertIn("hex_rosette_pattern_segments_v0", svg)
         self.assertIn('class="intersection"', svg)
 
     def test_validate_only_uses_source_field_without_writing_manifest(self) -> None:

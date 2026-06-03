@@ -14,77 +14,76 @@
   "field_count": 1,
   "fields": [
     {
-      "field_id": "multi_rosette_pattern_field_v0",
+      "field_id": "hex_rosette_pattern_field_v0",
       "geometry_operation": "pattern_field",
-      "description": "First multi-center rosette construction field inspired by a hand-drawn compass-and-straightedge pattern sheet: large repeated rosettes, smaller bridge rosettes, faint guides, and selected dark star/connector traces.",
+      "description": "Hexagonal compass field: one center rosette and six surrounding tangent rosettes, with outer circles kept as guides and selected star linework generated from the inner star ring.",
       "bounds_m": {
         "width": 1.0,
-        "height": 0.68
+        "height": 0.86
       },
       "modules": [
         {
-          "module_id": "large_rosette_16_v0",
+          "module_id": "center_rosette_12_v0",
           "module_type": "radial_rosette",
-          "divisions": 16,
+          "divisions": 12,
           "rings": [
-            { "ring_id": "inner", "radius_m": 0.045, "role_hint": "boss_ring" },
-            { "ring_id": "star", "radius_m": 0.085, "role_hint": "petal_ring" },
-            { "ring_id": "outer", "radius_m": 0.14, "role_hint": "outer_construction_ring" }
+            { "ring_id": "inner", "radius_m": 0.04, "role_hint": "center_boss_ring" },
+            { "ring_id": "star", "radius_m": 0.078, "role_hint": "center_inner_linework_ring" },
+            { "ring_id": "outer", "radius_m": 0.12, "role_hint": "center_outer_guide_ring" }
           ],
           "star_traces": [
-            { "trace_id": "outer_step_5", "ring_id": "outer", "step": 5, "selected": true, "role_hint": "large_rosette_star_trace" }
+            { "trace_id": "center_inner_step_5", "ring_id": "star", "step": 5, "selected": true, "role_hint": "center_inner_star_trace" }
           ]
         },
         {
-          "module_id": "small_rosette_8_v0",
+          "module_id": "surrounding_rosette_12_v0",
           "module_type": "radial_rosette",
-          "divisions": 8,
+          "divisions": 12,
           "rings": [
-            { "ring_id": "inner", "radius_m": 0.032, "role_hint": "small_boss_ring" },
-            { "ring_id": "outer", "radius_m": 0.075, "role_hint": "small_outer_ring" }
+            { "ring_id": "inner", "radius_m": 0.04, "role_hint": "surrounding_boss_ring" },
+            { "ring_id": "star", "radius_m": 0.078, "role_hint": "surrounding_inner_linework_ring" },
+            { "ring_id": "outer", "radius_m": 0.12, "role_hint": "surrounding_outer_guide_ring" }
           ],
           "star_traces": [
-            { "trace_id": "outer_step_3", "ring_id": "outer", "step": 3, "selected": true, "role_hint": "small_rosette_star_trace" }
+            { "trace_id": "surrounding_inner_step_5", "ring_id": "star", "step": 5, "selected": true, "role_hint": "surrounding_inner_star_trace" }
           ]
         }
       ],
       "instances": [
-        { "instance_id": "large_top_left", "module_id": "large_rosette_16_v0", "center_m": [0.18, 0.49], "role_hint": "large_corner_rosette" },
-        { "instance_id": "large_top_right", "module_id": "large_rosette_16_v0", "center_m": [0.82, 0.49], "role_hint": "large_corner_rosette" },
-        { "instance_id": "large_bottom_left", "module_id": "large_rosette_16_v0", "center_m": [0.18, 0.20], "role_hint": "large_corner_rosette" },
-        { "instance_id": "large_bottom_right", "module_id": "large_rosette_16_v0", "center_m": [0.82, 0.20], "role_hint": "large_corner_rosette" },
-        { "instance_id": "large_center", "module_id": "large_rosette_16_v0", "center_m": [0.50, 0.34], "role_hint": "central_rosette" },
-        { "instance_id": "small_mid_left", "module_id": "small_rosette_8_v0", "center_m": [0.34, 0.34], "role_hint": "bridge_rosette" },
-        { "instance_id": "small_mid_right", "module_id": "small_rosette_8_v0", "center_m": [0.66, 0.34], "role_hint": "bridge_rosette" },
-        { "instance_id": "small_top_mid", "module_id": "small_rosette_8_v0", "center_m": [0.50, 0.51], "role_hint": "bridge_rosette" },
-        { "instance_id": "small_bottom_mid", "module_id": "small_rosette_8_v0", "center_m": [0.50, 0.17], "role_hint": "bridge_rosette" }
+        { "instance_id": "center_rosette", "module_id": "center_rosette_12_v0", "center_m": [0.50, 0.43], "role_hint": "center_pattern" },
+        { "instance_id": "surrounding_e", "module_id": "surrounding_rosette_12_v0", "center_m": [0.74, 0.43], "role_hint": "surrounding_pattern" },
+        { "instance_id": "surrounding_ne", "module_id": "surrounding_rosette_12_v0", "center_m": [0.62, 0.637846], "role_hint": "surrounding_pattern" },
+        { "instance_id": "surrounding_nw", "module_id": "surrounding_rosette_12_v0", "center_m": [0.38, 0.637846], "role_hint": "surrounding_pattern" },
+        { "instance_id": "surrounding_w", "module_id": "surrounding_rosette_12_v0", "center_m": [0.26, 0.43], "role_hint": "surrounding_pattern" },
+        { "instance_id": "surrounding_sw", "module_id": "surrounding_rosette_12_v0", "center_m": [0.38, 0.222154], "role_hint": "surrounding_pattern" },
+        { "instance_id": "surrounding_se", "module_id": "surrounding_rosette_12_v0", "center_m": [0.62, 0.222154], "role_hint": "surrounding_pattern" }
       ],
       "connector_lines": [
-        { "connector_id": "connector_left_column", "from_instance_id": "large_top_left", "to_instance_id": "large_bottom_left", "selected": false, "role_hint": "alignment_axis" },
-        { "connector_id": "connector_right_column", "from_instance_id": "large_top_right", "to_instance_id": "large_bottom_right", "selected": false, "role_hint": "alignment_axis" },
-        { "connector_id": "connector_top_row", "from_instance_id": "large_top_left", "to_instance_id": "large_top_right", "selected": false, "role_hint": "alignment_axis" },
-        { "connector_id": "connector_bottom_row", "from_instance_id": "large_bottom_left", "to_instance_id": "large_bottom_right", "selected": false, "role_hint": "alignment_axis" },
-        { "connector_id": "connector_center_to_top_left", "from_instance_id": "large_center", "to_instance_id": "large_top_left", "selected": true, "role_hint": "candidate_tracery_axis" },
-        { "connector_id": "connector_center_to_top_right", "from_instance_id": "large_center", "to_instance_id": "large_top_right", "selected": true, "role_hint": "candidate_tracery_axis" },
-        { "connector_id": "connector_center_to_bottom_left", "from_instance_id": "large_center", "to_instance_id": "large_bottom_left", "selected": true, "role_hint": "candidate_tracery_axis" },
-        { "connector_id": "connector_center_to_bottom_right", "from_instance_id": "large_center", "to_instance_id": "large_bottom_right", "selected": true, "role_hint": "candidate_tracery_axis" },
-        { "connector_id": "connector_small_left_to_center", "from_instance_id": "small_mid_left", "to_instance_id": "large_center", "selected": true, "role_hint": "bridge_trace" },
-        { "connector_id": "connector_small_right_to_center", "from_instance_id": "small_mid_right", "to_instance_id": "large_center", "selected": true, "role_hint": "bridge_trace" },
-        { "connector_id": "connector_small_top_to_center", "from_instance_id": "small_top_mid", "to_instance_id": "large_center", "selected": true, "role_hint": "bridge_trace" },
-        { "connector_id": "connector_small_bottom_to_center", "from_instance_id": "small_bottom_mid", "to_instance_id": "large_center", "selected": true, "role_hint": "bridge_trace" }
+        { "connector_id": "spoke_center_to_e", "from_instance_id": "center_rosette", "to_instance_id": "surrounding_e", "selected": true, "role_hint": "center_spoke_axis" },
+        { "connector_id": "spoke_center_to_ne", "from_instance_id": "center_rosette", "to_instance_id": "surrounding_ne", "selected": true, "role_hint": "center_spoke_axis" },
+        { "connector_id": "spoke_center_to_nw", "from_instance_id": "center_rosette", "to_instance_id": "surrounding_nw", "selected": true, "role_hint": "center_spoke_axis" },
+        { "connector_id": "spoke_center_to_w", "from_instance_id": "center_rosette", "to_instance_id": "surrounding_w", "selected": true, "role_hint": "center_spoke_axis" },
+        { "connector_id": "spoke_center_to_sw", "from_instance_id": "center_rosette", "to_instance_id": "surrounding_sw", "selected": true, "role_hint": "center_spoke_axis" },
+        { "connector_id": "spoke_center_to_se", "from_instance_id": "center_rosette", "to_instance_id": "surrounding_se", "selected": true, "role_hint": "center_spoke_axis" },
+        { "connector_id": "orbit_e_to_ne", "from_instance_id": "surrounding_e", "to_instance_id": "surrounding_ne", "selected": true, "role_hint": "surrounding_orbit_axis" },
+        { "connector_id": "orbit_ne_to_nw", "from_instance_id": "surrounding_ne", "to_instance_id": "surrounding_nw", "selected": true, "role_hint": "surrounding_orbit_axis" },
+        { "connector_id": "orbit_nw_to_w", "from_instance_id": "surrounding_nw", "to_instance_id": "surrounding_w", "selected": true, "role_hint": "surrounding_orbit_axis" },
+        { "connector_id": "orbit_w_to_sw", "from_instance_id": "surrounding_w", "to_instance_id": "surrounding_sw", "selected": true, "role_hint": "surrounding_orbit_axis" },
+        { "connector_id": "orbit_sw_to_se", "from_instance_id": "surrounding_sw", "to_instance_id": "surrounding_se", "selected": true, "role_hint": "surrounding_orbit_axis" },
+        { "connector_id": "orbit_se_to_e", "from_instance_id": "surrounding_se", "to_instance_id": "surrounding_e", "selected": true, "role_hint": "surrounding_orbit_axis" }
       ],
       "selections": [
         {
-          "selection_id": "large_rosette_star_traces",
+          "selection_id": "center_rosette_inner_star_traces",
           "selection_type": "edges",
-          "selector": { "kind": "edge_tag_query", "tag": "selected:large_rosette_star_trace" },
-          "architectural_roles": ["rosette_outline", "tracery_candidate", "ornament_trace"]
+          "selector": { "kind": "edge_tag_query", "tag": "selected:center_inner_star_trace" },
+          "architectural_roles": ["center_rosette_outline", "tracery_candidate", "ornament_trace"]
         },
         {
-          "selection_id": "small_rosette_star_traces",
+          "selection_id": "surrounding_rosette_inner_star_traces",
           "selection_type": "edges",
-          "selector": { "kind": "edge_tag_query", "tag": "selected:small_rosette_star_trace" },
-          "architectural_roles": ["bridge_rosette_outline", "ornament_trace"]
+          "selector": { "kind": "edge_tag_query", "tag": "selected:surrounding_inner_star_trace" },
+          "architectural_roles": ["surrounding_rosette_outline", "ornament_trace"]
         },
         {
           "selection_id": "selected_connector_traces",
@@ -94,13 +93,13 @@
         }
       ],
       "validation_expectations": {
-        "instance_count": 9,
-        "circle_count": 23,
-        "point_count": 313,
-        "edge_count": 540,
+        "instance_count": 7,
+        "circle_count": 21,
+        "point_count": 259,
+        "edge_count": 432,
         "selection_count": 3,
-        "selected_edge_reference_count": 120,
-        "unique_selected_edge_count": 120
+        "selected_edge_reference_count": 96,
+        "unique_selected_edge_count": 96
       },
       "no_claims": {
         "production_approval": false,

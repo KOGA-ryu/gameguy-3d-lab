@@ -127,7 +127,7 @@ python3 scripts/compile_pattern_field_v0.py \
   --out /tmp/gameguy_pattern_field_v0
 ```
 
-It creates a construction drawing closer to the user's paper reference: repeated large rosettes, smaller bridge rosettes, guide circles, radial rays, ring segments, selected star traces, selected connector traces, JSON output, and SVG preview.
+It creates a construction drawing closer to the user's paper reference: one center rosette, six surrounding tangent rosettes, outer guide circles, radial rays, ring segments, selected inner-ring star traces, selected connector traces, JSON output, and SVG preview.
 
 `3D-LAB-0052 pattern_segment_split_v0` adds the first intersection splitter:
 
@@ -138,7 +138,7 @@ python3 scripts/compile_pattern_segments_v0.py \
   --out /tmp/gameguy_pattern_segments_v0
 ```
 
-It computes line intersections in the multi-center pattern field, splits source edges into candidate segments, preserves selected source-trace tags, and previews the intersection points. The next compiler should either omit guide segments and extract closed motif loops, or promote selected cells/edges into operation stacks:
+It computes line intersections in the hex rosette pattern field, splits source edges into candidate segments, preserves selected source-trace tags, and previews the intersection points. The next compiler should either omit guide segments and extract closed motif loops, or promote selected cells/edges into operation stacks:
 
 ```text
 selected construction cells/edges

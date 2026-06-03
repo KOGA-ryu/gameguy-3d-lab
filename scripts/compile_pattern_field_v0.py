@@ -414,6 +414,7 @@ def compile_field(bundle: dict[str, Any], field: dict[str, Any]) -> dict[str, An
                             selected_tag,
                             f"instance:{instance_id}",
                             f"module:{module['module_id']}",
+                            f"ring:{trace['ring_id']}",
                             f"trace:{trace['trace_id']}",
                         ],
                     )
