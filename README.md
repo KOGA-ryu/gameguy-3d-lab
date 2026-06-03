@@ -96,8 +96,10 @@ python3 -m unittest discover -s tests
 python3 scripts/validate_tiny_fixture_v0.py
 python3 scripts/validate_measured_component_source_v0.py
 python3 scripts/asset_pump_v0.py --clean --out /tmp/gameguy_asset_pump_v0
+python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_asset_pump_v0/manifest.json
 python3 scripts/export_blender_asset_preview_v0.py --manifest /tmp/gameguy_asset_pump_v0/manifest.json --validate-only
 python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/measured_components_v0.json --clean --out /tmp/gameguy_measured_asset_pump_v0
+python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_measured_asset_pump_v0/manifest.json
 python3 scripts/export_blender_measured_components_preview_v0.py --manifest /tmp/gameguy_measured_asset_pump_v0/manifest.json --validate-only
 python3 scripts/audit_script_orbit_v0.py
 test ! -d pattern_lab_2d
@@ -112,6 +114,7 @@ Expected current checks:
 - Asset pump tests pass.
 - Tiny source fixture validation passes.
 - Measured component source validation passes.
+- Generated `gameguy_asset_v0` validation passes for simple and measured pump output.
 - Blender adapter validation consumes generated asset JSON.
 - Measured component Blender adapter validation consumes generated measured asset JSON.
 - Script orbit audit runs without deleting or moving files.
