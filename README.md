@@ -67,6 +67,16 @@ python3 scripts/compile_construction_cell_selection_v0.py \
 
 The first cell-selection bundle is `data/architecture/sacred_geometry/construction_cell_selection_recipes_v0.json`. It compiles `sacred_22_star_radial_cell_selection_v0` into `66` closed cells across `3` adjacent ring bands, with named selections for vault web cells, outer tracery opening cells, and railing recess panel cells.
 
+Multi-center pattern fields are the source layer for hand-drawn rosette sheets like the user references:
+
+```bash
+python3 scripts/compile_pattern_field_v0.py \
+  --clean \
+  --out /tmp/gameguy_pattern_field_v0
+```
+
+The first pattern-field bundle is `data/architecture/sacred_geometry/pattern_field_recipes_v0.json`. It compiles `multi_rosette_pattern_field_v0` into repeated large and small rosette modules, guide circles, radial rays, ring segments, star traces, connector lines, and named selected edge groups. It is a construction drawing source, not a final ornament or mesh.
+
 The first lean command is:
 
 ```bash
@@ -265,6 +275,7 @@ python3 scripts/validate_railing_detail_profiles_v0.py
 python3 scripts/validate_construction_geometry_taxonomy_v0.py
 python3 scripts/compile_sacred_graph_v0.py --clean --out /tmp/gameguy_sacred_graph_v0
 python3 scripts/compile_construction_cell_selection_v0.py --clean --graph-manifest /tmp/gameguy_sacred_graph_v0/manifest.json --out /tmp/gameguy_construction_cell_selection_v0
+python3 scripts/compile_pattern_field_v0.py --clean --out /tmp/gameguy_pattern_field_v0
 python3 scripts/compile_blender_tool_plan_v0.py --validate-only
 python3 scripts/compile_blender_tool_plan_v0.py --clean --out /tmp/gameguy_blender_tool_plan_v0
 python3 scripts/validate_gameguy_tool_plan_v0.py --manifest /tmp/gameguy_blender_tool_plan_v0/manifest.json
@@ -350,6 +361,7 @@ Expected current checks:
 - Construction geometry taxonomy validation proves the source-language terms for construction fields, selection/omission, role promotion, motif orbits, tracery, muqarnas cell plans, and lift/fold/sweep/thicken/bevel operations.
 - Sacred graph compilation proves a source-owned 22-division construction graph with named point, edge, and star-trace selections before 3D lifting/folding.
 - Construction cell selection compilation proves `66` closed ring-band cells and named cell selections for vault webs, tracery openings, and railing recess panels before 3D lifting/folding/sweeping.
+- Pattern field compilation proves a source-owned multi-center rosette construction field with faint guide layers and named selected trace groups before intersections, omission rules, or 3D promotion.
 - JSON parses.
 - Python scripts compile.
 - Asset pump tests pass.

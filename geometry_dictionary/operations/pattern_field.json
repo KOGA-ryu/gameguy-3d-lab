@@ -1,0 +1,38 @@
+{
+  "term_id": "pattern_field",
+  "category": "composition_operation",
+  "plain_name": "Pattern Field",
+  "description": "Creates a multi-center 2D construction field from repeated rosette modules, guide circles, radial rays, star traces, and connector lines before later selection or 3D promotion.",
+  "required_inputs": {
+    "bounds_m": "rect_2d",
+    "modules": "rosette_module[]",
+    "instances": "pattern_module_instance[]",
+    "connector_lines": "connector_line[]",
+    "selections": "subgraph_selection[]"
+  },
+  "outputs": {
+    "type": "multi_center_construction_field_2d",
+    "coordinate_space": "local_xy",
+    "selection_ready": true
+  },
+  "constraints": {
+    "module_ids_must_be_unique": true,
+    "instances_reference_known_modules": true,
+    "rings_must_increase_per_module": true,
+    "connector_instances_must_exist": true,
+    "selected_edges_reference_generated_layers": true
+  },
+  "common_uses": [
+    "multi-rosette construction drawings",
+    "Islamic geometric pattern fields",
+    "gothic tracery source fields",
+    "railing panel ornament planning",
+    "vault and dome pattern planning"
+  ],
+  "blender_method": "Blender does not create or choose the field; adapters consume selected field edges or cells after source recipes declare role promotion.",
+  "validation": [
+    "scale_within_bounds",
+    "nonzero_area",
+    "closed_profile"
+  ]
+}

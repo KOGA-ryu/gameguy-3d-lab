@@ -155,6 +155,16 @@
       "pipeline_labels": ["construction_cell_selection_compile"]
     }
   ],
+  "source_pattern_field_bundles": [
+    {
+      "bundle_id": "pattern_field_recipes_v0",
+      "path": "data/architecture/sacred_geometry/pattern_field_recipes_v0.json",
+      "schema": "pattern_field_recipe_bundle_v0",
+      "expected_field_count": 1,
+      "compiler": "scripts/compile_pattern_field_v0.py",
+      "pipeline_labels": ["pattern_field_compile"]
+    }
+  ],
   "source_taxonomy_bundles": [
     {
       "bundle_id": "construction_geometry_taxonomy_v0",

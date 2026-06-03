@@ -351,7 +351,7 @@
       "source_support": ["getty_topkapi_scroll", "archnet_islamic_geometric_design", "columbia_amiens_dynamic_geometry"]
     }
   ],
-  "repo_mapping_count": 7,
+  "repo_mapping_count": 8,
   "repo_mappings": [
     {
       "mapping_id": "sacred_graph_bundle",
@@ -382,10 +382,17 @@
       "status": "implemented_v0"
     },
     {
-      "mapping_id": "future_cell_selection_compiler",
+      "mapping_id": "construction_cell_selection_compiler",
       "repo_path": "scripts/compile_construction_cell_selection_v0.py",
       "path_status": "exists",
       "taxonomy_terms_used": ["construction_cell", "selected_subgraph", "cell_promotion", "cascade_order"],
+      "status": "implemented_v0"
+    },
+    {
+      "mapping_id": "pattern_field_compiler",
+      "repo_path": "scripts/compile_pattern_field_v0.py",
+      "path_status": "exists",
+      "taxonomy_terms_used": ["construction_field", "motif_module", "motif_orbit", "rosette", "selected_subgraph"],
       "status": "implemented_v0"
     },
     {

@@ -119,10 +119,20 @@ python3 scripts/compile_construction_cell_selection_v0.py \
 
 It reads the existing sacred graph output, derives simple closed cells between adjacent radial divisions and rings, selects cells by ring band and radial orbit, labels them with roles such as `vault_web_cell`, `tracery_opening_cell`, and `railing_panel_face`, previews selected cells in SVG, and emits JSON only.
 
-The next compiler should promote those selected cells into operation stacks:
+`3D-LAB-0051 pattern_field_v0` adds the first multi-center rosette field compiler:
+
+```bash
+python3 scripts/compile_pattern_field_v0.py \
+  --clean \
+  --out /tmp/gameguy_pattern_field_v0
+```
+
+It creates a construction drawing closer to the user's paper reference: repeated large rosettes, smaller bridge rosettes, guide circles, radial rays, ring segments, selected star traces, selected connector traces, JSON output, and SVG preview.
+
+The next compiler should either split field intersections into selectable segments or promote selected cells/edges into operation stacks:
 
 ```text
-selected construction cells
+selected construction cells/edges
 -> role promotion records
 -> lift/fold/sweep/thicken/chamfer operations
 -> railing panel or vault-web prototype

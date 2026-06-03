@@ -1,0 +1,58 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0051-pattern-field-v0",
+  "created_utc": "2026-06-03T00:00:00Z",
+  "summary": "Added a source-only multi-center rosette pattern-field compiler that emits deterministic construction JSON and SVG previews before selection refinement or 3D promotion.",
+  "source_inputs": {
+    "pattern_field_bundle": "data/architecture/sacred_geometry/pattern_field_recipes_v0.json",
+    "geometry_operation": "geometry_dictionary/operations/pattern_field.json",
+    "compiler": "scripts/compile_pattern_field_v0.py"
+  },
+  "compiled_pattern_field": {
+    "field_id": "multi_rosette_pattern_field_v0",
+    "instance_count": 9,
+    "circle_count": 23,
+    "point_count": 313,
+    "edge_count": 540,
+    "selection_count": 3,
+    "selected_edge_reference_count": 120,
+    "unique_selected_edge_count": 120,
+    "manifest_path": "/tmp/gameguy_pattern_field_v0_0051/manifest.json",
+    "field_path": "/tmp/gameguy_pattern_field_v0_0051/fields/multi_rosette_pattern_field_v0.json",
+    "svg_preview_path": "/tmp/gameguy_pattern_field_v0_0051/svg/multi_rosette_pattern_field_v0.svg",
+    "png_preview_path": "/tmp/gameguy_pattern_field_v0_0051_preview/multi_rosette_pattern_field_v0.svg.png"
+  },
+  "validation": {
+    "pattern_field_validate_only": {
+      "command": "python3 scripts/compile_pattern_field_v0.py --validate-only",
+      "result": "compiled pattern fields=1 edges=540 out=<validate-only>"
+    },
+    "pattern_field_compile": {
+      "command": "python3 scripts/compile_pattern_field_v0.py --clean --out /tmp/gameguy_pattern_field_v0_0051",
+      "result": "compiled pattern fields=1 edges=540 selected=120 out=/tmp/gameguy_pattern_field_v0_0051"
+    },
+    "targeted_tests": {
+      "command": "python3 -m unittest tests/test_compile_pattern_field_v0.py tests/test_validate_asset_generation_registry_v0.py tests/test_validate_generation_pipeline_v0.py tests/test_validate_construction_geometry_taxonomy_v0.py",
+      "result": "OK",
+      "test_count": 18
+    },
+    "asset_generation_registry": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS asset generation registry validation: geometry_bundles=5 geometry_assets=40 source_profiles=19 source_graphs=1 source_cell_selections=1 source_pattern_fields=1 source_taxonomies=23 reference_only=3"
+    },
+    "generation_pipeline_non_blender_skip_unit_tests": {
+      "command": "python3 scripts/validate_generation_pipeline_v0.py --skip-unit-tests --json-report /tmp/gameguy_pipeline_0051_final.json",
+      "result": "PASS generation pipeline validation: commands=37 json=253 include_blender=false",
+      "command_count": 37,
+      "json_file_count": 253
+    }
+  },
+  "rules": {
+    "source_field_only": true,
+    "selected_edges_named": true,
+    "blender_is_adapter_layer": true,
+    "generated_outputs_stay_under_tmp": true,
+    "no_production_or_structural_claims": true
+  },
+  "recommended_next_goal": "Add intersection splitting and omission rules so selected pattern-field segments can become clean tracery or railing ornament sources."
+}

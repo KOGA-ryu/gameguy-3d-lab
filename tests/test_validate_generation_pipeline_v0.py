@@ -63,6 +63,7 @@ class GenerationPipelineValidatorTests(unittest.TestCase):
         self.assertIn("construction_geometry_taxonomy_validate", labels)
         self.assertIn("sacred_graph_compile", labels)
         self.assertIn("construction_cell_selection_compile", labels)
+        self.assertIn("pattern_field_compile", labels)
         self.assertIn("tool_plan_validate", labels)
         self.assertIn("fence_post_blender_adapter_validate_only", labels)
         self.assertIn("rail_segment_blender_adapter_validate_only", labels)

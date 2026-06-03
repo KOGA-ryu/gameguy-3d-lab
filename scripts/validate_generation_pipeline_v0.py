@@ -34,6 +34,7 @@ BLOCKY_COLUMN_ASSET_OUT = Path("/tmp/gameguy_blocky_column_asset_pump_v0")
 BLOCKY_SHAPE_ASSET_OUT = Path("/tmp/gameguy_blocky_shape_grammar_asset_pump_v0")
 SACRED_GRAPH_OUT = Path("/tmp/gameguy_sacred_graph_v0")
 CONSTRUCTION_CELL_SELECTION_OUT = Path("/tmp/gameguy_construction_cell_selection_v0")
+PATTERN_FIELD_OUT = Path("/tmp/gameguy_pattern_field_v0")
 FORBIDDEN_OUTPUT_SUFFIXES = {
     ".png",
     ".jpg",
@@ -152,6 +153,7 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
                 CONSTRUCTION_CELL_SELECTION_OUT,
             ),
         ),
+        CommandStep("pattern_field_compile", python_script("scripts/compile_pattern_field_v0.py", "--clean", "--out", PATTERN_FIELD_OUT)),
     ]
     if not skip_unit_tests:
         steps.append(CommandStep("unit_tests", [sys.executable, "-m", "unittest", "discover", "-s", "tests"]))
