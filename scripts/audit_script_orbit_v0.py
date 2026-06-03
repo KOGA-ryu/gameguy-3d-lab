@@ -30,6 +30,7 @@ OVERRIDES: dict[str, tuple[str, str]] = {
     "export_blender_asset_preview_v0.py": ("KEEP_CANONICAL", "first adapter that consumes gameguy_asset_v0 JSON"),
     "export_blender_measured_components_preview_v0.py": ("KEEP_CANONICAL", "adapter that consumes measured gameguy_asset_v0 JSON from the asset pump"),
     "validate_generation_pipeline_v0.py": ("KEEP_CANONICAL", "orchestrates canonical deterministic 3D generation validation gates"),
+    "validate_reference_dissection_packet_v0.py": ("KEEP_CANONICAL", "guards reference-led shape and Blender tool dissection packets before geometry generation"),
     "validate_asset_generation_registry_v0.py": ("KEEP_CANONICAL", "guards the declared canonical generation recipe/tool-plan surface and reference-only boundaries"),
     "validate_blender_tool_plan_execution_report_v0.py": ("KEEP_CANONICAL", "guards Blender execution quality reports without importing Blender or source recipes"),
     "validate_gameguy_tool_plan_v0.py": ("KEEP_CANONICAL", "guards deterministic gameguy_tool_plan_v0 compiler output before Blender adapter execution"),

@@ -57,6 +57,7 @@ class GenerationPipelineValidatorTests(unittest.TestCase):
         self.assertFalse(report["rules"]["generated_outputs_in_repo"])
         labels = {command["label"] for command in report["commands"]}
         self.assertIn("generation_registry_validate", labels)
+        self.assertIn("reference_dissection_validate", labels)
         self.assertIn("tool_plan_validate", labels)
         self.assertIn("fence_post_blender_adapter_validate_only", labels)
         self.assertIn("rail_segment_blender_adapter_validate_only", labels)

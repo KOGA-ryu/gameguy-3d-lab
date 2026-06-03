@@ -1,0 +1,200 @@
+{
+  "schema": "asset_reference_dissection_packet_v0",
+  "packet_id": "gothic_panel_guard_reference_v0",
+  "purpose": "Reference-led dissection for a gothic stone post-panel-post guard asset before generating the next tool plan.",
+  "reference": {
+    "source_id": "pexels_konrads_gothic_balcony_31473119",
+    "title": "Historic Gothic Architectural Stone Balcony",
+    "author": "Konrad's Photo",
+    "source_page_url": "https://www.pexels.com/photo/historic-gothic-architectural-stone-balcony-31473119/",
+    "image_url": "https://images.pexels.com/photos/31473119/pexels-photo-31473119.jpeg",
+    "license_or_access_note": "Pexels public page; use here is limited to morphology reference and workflow discussion, not texture or mesh copying.",
+    "access_date": "2026-06-03",
+    "use_policy": "morphology_reference_only"
+  },
+  "asset_target": {
+    "working_asset_id": "gothic_panel_guard_tool_plan_v0",
+    "asset_family": "guard_panel",
+    "style": "gothic_stone",
+    "target_status": "reference_dissection_only",
+    "code_status": "decorative_or_game_asset_only"
+  },
+  "rules": {
+    "reference_first": true,
+    "morphology_reference_only": true,
+    "no_direct_texture_copy": true,
+    "no_mesh_copy": true,
+    "no_code_compliance_claim": true,
+    "blender_tool_choices_declared": true,
+    "generated_outputs_in_repo": false
+  },
+  "component_count": 9,
+  "components": [
+    {
+      "component_id": "left_square_pier",
+      "observed_reference_shape": "Left square stone pier with vertical mass, side shadow, and carved face zones.",
+      "generation_role": "support_post",
+      "geometry_terms_used": ["rectangle", "extrude", "compound_asset", "bevel_edges"],
+      "candidate_blender_tools": [
+        {"tool_id": "primitive_cube_add", "v0_use": "preferred", "use": "Create stacked pier body blocks and broad cap/base slabs."},
+        {"tool_id": "modifier_bevel", "v0_use": "supporting", "use": "Soften pier edges after block assembly."},
+        {"tool_id": "material_assign_by_part", "v0_use": "supporting", "use": "Keep pier, trim, and shadow recess material roles distinct."}
+      ]
+    },
+    {
+      "component_id": "right_square_pier",
+      "observed_reference_shape": "Right square stone pier matching the left pier, used to prove symmetry and modular spacing.",
+      "generation_role": "support_post",
+      "geometry_terms_used": ["rectangle", "extrude", "compound_asset", "mirror_axis", "bevel_edges"],
+      "candidate_blender_tools": [
+        {"tool_id": "primitive_cube_add", "v0_use": "preferred", "use": "Build one pier from block parts."},
+        {"tool_id": "modifier_mirror", "v0_use": "supporting", "use": "Mirror repeated pier-side trim when the source declares symmetry."},
+        {"tool_id": "modifier_bevel", "v0_use": "supporting", "use": "Match softened stone block edges."}
+      ]
+    },
+    {
+      "component_id": "pier_pointed_arch_recess",
+      "observed_reference_shape": "Tall pointed-arch recesses inset into the pier faces, with raised border trim.",
+      "generation_role": "recessed_ornament",
+      "geometry_terms_used": ["pointed_arch_profile", "boolean_cut", "bevel_edges"],
+      "candidate_blender_tools": [
+        {"tool_id": "curve_bezier_add", "v0_use": "preferred", "use": "Define the pointed arch curve/profile before cutter creation."},
+        {"tool_id": "mesh_from_pydata", "v0_use": "supporting", "use": "Convert sampled arch profile points into a deterministic cutter or raised trim mesh."},
+        {"tool_id": "modifier_boolean", "v0_use": "supporting", "use": "Cut a shallow arch recess into a pier face."},
+        {"tool_id": "modifier_bevel", "v0_use": "supporting", "use": "Bevel the arch trim and recess rim."}
+      ]
+    },
+    {
+      "component_id": "slab_cap_and_base_stack",
+      "observed_reference_shape": "Heavy square cap slabs and stepped base slabs that make each pier feel anchored.",
+      "generation_role": "mass_and_silhouette",
+      "geometry_terms_used": ["rectangle", "extrude", "compound_asset", "bevel_edges"],
+      "candidate_blender_tools": [
+        {"tool_id": "primitive_cube_add", "v0_use": "preferred", "use": "Create cap, necking, and base step slabs."},
+        {"tool_id": "modifier_bevel", "v0_use": "supporting", "use": "Round tiny stone edges without changing block proportions."},
+        {"tool_id": "mark_sharp", "v0_use": "supporting", "use": "Keep the cap and base silhouette crisp after beveling."}
+      ]
+    },
+    {
+      "component_id": "small_top_finial",
+      "observed_reference_shape": "Small vertical accent above the cap line, simplified for v0 as a low-poly stone knob or capstone.",
+      "generation_role": "silhouette_accent",
+      "geometry_terms_used": ["circle", "extrude", "bevel_edges"],
+      "candidate_blender_tools": [
+        {"tool_id": "primitive_cylinder_add", "v0_use": "preferred", "use": "Create a low-vertex finial or capstone cylinder."},
+        {"tool_id": "modifier_bevel", "v0_use": "supporting", "use": "Soften the finial rim."}
+      ]
+    },
+    {
+      "component_id": "center_solid_guard_panel",
+      "observed_reference_shape": "Solid rectangular center panel between piers rather than open balusters.",
+      "generation_role": "infill_panel",
+      "geometry_terms_used": ["rectangle", "extrude", "compound_asset", "bevel_edges"],
+      "candidate_blender_tools": [
+        {"tool_id": "primitive_cube_add", "v0_use": "preferred", "use": "Create the main solid guard panel block."},
+        {"tool_id": "inset_faces", "v0_use": "supporting", "use": "Plan inner face offsets before raised/recessed panel detailing."},
+        {"tool_id": "modifier_bevel", "v0_use": "supporting", "use": "Give the panel stone-edge highlights."}
+      ]
+    },
+    {
+      "component_id": "top_coping_rail",
+      "observed_reference_shape": "Thick horizontal top coping/rail crossing between piers, visually heavier than the current prototype rail.",
+      "generation_role": "top_rail_coping",
+      "geometry_terms_used": ["rectangle", "extrude", "bevel_edges"],
+      "candidate_blender_tools": [
+        {"tool_id": "primitive_cube_add", "v0_use": "preferred", "use": "Create the long coping block."},
+        {"tool_id": "modifier_bevel", "v0_use": "supporting", "use": "Make the coping feel rounded enough to catch light."},
+        {"tool_id": "modifier_weighted_normal", "v0_use": "supporting", "use": "Improve the hard-surface shading after bevels."}
+      ]
+    },
+    {
+      "component_id": "lower_molding_stack",
+      "observed_reference_shape": "Layered lower moldings under the center panel with narrow horizontal steps.",
+      "generation_role": "horizontal_trim",
+      "geometry_terms_used": ["rectangle", "extrude", "array_linear", "bevel_edges"],
+      "candidate_blender_tools": [
+        {"tool_id": "primitive_cube_add", "v0_use": "preferred", "use": "Create one trim strip block."},
+        {"tool_id": "modifier_array", "v0_use": "supporting", "use": "Repeat horizontal molding strips when the source declares count and offset."},
+        {"tool_id": "modifier_bevel", "v0_use": "supporting", "use": "Bevel strip edges so stacked moldings remain readable."}
+      ]
+    },
+    {
+      "component_id": "repeated_side_ornament_strips",
+      "observed_reference_shape": "Narrow repeated vertical/rectangular ornaments near the panel sides and pier edges.",
+      "generation_role": "repeated_trim",
+      "geometry_terms_used": ["rectangle", "extrude", "array_linear", "mirror_axis", "bevel_edges"],
+      "candidate_blender_tools": [
+        {"tool_id": "primitive_cube_add", "v0_use": "preferred", "use": "Create one narrow ornament block."},
+        {"tool_id": "modifier_array", "v0_use": "supporting", "use": "Repeat ornaments along a declared local axis."},
+        {"tool_id": "modifier_mirror", "v0_use": "supporting", "use": "Mirror side ornament placement across the panel."},
+        {"tool_id": "modifier_bevel", "v0_use": "supporting", "use": "Keep small trim blocks visible after shading."}
+      ]
+    }
+  ],
+  "blender_tool_sequence_proposal": [
+    {
+      "stage": "base_form",
+      "tool_ids": ["primitive_cube_add", "primitive_cylinder_add", "curve_bezier_add", "mesh_from_pydata"],
+      "reason": "Create simple masses, low-poly cap/finial forms, and pointed-arch cutter/trim profiles."
+    },
+    {
+      "stage": "assembly",
+      "tool_ids": ["modifier_boolean", "modifier_array", "modifier_mirror"],
+      "reason": "Cut pier recesses, repeat trim/molding, and mirror symmetric details."
+    },
+    {
+      "stage": "shape_refinement",
+      "tool_ids": ["inset_faces", "modifier_bevel", "mark_sharp", "modifier_weighted_normal"],
+      "reason": "Push block faces into panel/recess hierarchy and make stone edges read under lighting."
+    },
+    {
+      "stage": "sculpt_detail",
+      "tool_ids": ["modifier_displace"],
+      "reason": "Add deterministic stone surface variation only after the forms are settled."
+    },
+    {
+      "stage": "uv_mapping",
+      "tool_ids": ["uv_smart_project", "uv_pack_islands"],
+      "reason": "Generate stable UVs for procedural material review."
+    },
+    {
+      "stage": "material_texture",
+      "tool_ids": ["material_assign_by_part", "procedural_noise_texture", "procedural_bump_map"],
+      "reason": "Separate pier, panel, trim, recess, cap, and shadow roles before preview."
+    },
+    {
+      "stage": "validation_export",
+      "tool_ids": ["calculate_bounds", "validate_non_manifold", "create_collision_proxy", "create_lod_variant", "render_workbench_preview", "export_gltf"],
+      "reason": "Prove the generated model can be bounded, validated, previewed, and exported by the adapter."
+    }
+  ],
+  "future_reference_only_tools": [
+    {
+      "tool_id": "sculpt_crease",
+      "use": "Later hand-detail pass for emblem cracks or chipped stone, after deterministic block generation is stable."
+    },
+    {
+      "tool_id": "texture_paint_brush",
+      "use": "Later texture-paint pass only if a separate authored texture workflow is created."
+    }
+  ],
+  "review_questions": [
+    "Should the center infill stay solid like the reference, or become a code-like open guard with balusters?",
+    "Should pointed-arch pier recesses be shallow boolean cuts or raised trim laid over a flat pier face?",
+    "Should the top coping act as a decorative cap only, or should a later profile also model handrail-like graspability?"
+  ],
+  "next_generation_goal": {
+    "recommended_slice": "3D-LAB-0037-gothic-panel-guard-tool-plan-v0",
+    "asset_to_generate": "gothic_panel_guard_tool_plan_v0",
+    "first_geometry_change": "Replace exposed rail connector tabs with a solid panel and socket-collar composition derived from this packet."
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false,
+    "building_code_compliance": false
+  }
+}

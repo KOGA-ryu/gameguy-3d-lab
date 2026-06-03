@@ -1,0 +1,44 @@
+{
+  "schema": "reference_dissection_packet_receipt_v0",
+  "packet_id": "3D-LAB-0036",
+  "decision": "ADD_REFERENCE_LED_DISSECTION_GATE",
+  "reference_packet": "data/architecture/asset_mill/reference_packets/gothic_panel_guard_reference_v0.json",
+  "validator": "scripts/validate_reference_dissection_packet_v0.py",
+  "pipeline_validator": "scripts/validate_generation_pipeline_v0.py",
+  "tests": "tests/test_validate_reference_dissection_packet_v0.py",
+  "source_reference": {
+    "source_id": "pexels_konrads_gothic_balcony_31473119",
+    "source_page_url": "https://www.pexels.com/photo/historic-gothic-architectural-stone-balcony-31473119/",
+    "use_policy": "morphology_reference_only"
+  },
+  "validation_summary": {
+    "component_count": 9,
+    "component_tool_count": 12,
+    "geometry_term_count": 9,
+    "future_reference_only_tool_count": 2,
+    "json_file_count": 228,
+    "non_blender_command_count": 28,
+    "full_blender_command_count": 40,
+    "repo_media_mesh_output_count": 0
+  },
+  "rules": {
+    "reference_first": true,
+    "geometry_terms_validated": true,
+    "blender_tool_ids_validated": true,
+    "deterministic_v0_tools_required": true,
+    "future_nondeterministic_tools_reference_only": true,
+    "downloads_reference_images": false,
+    "runs_blender": false,
+    "creates_media_or_mesh": false,
+    "generated_outputs_in_repo": false
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false,
+    "building_code_compliance": false
+  }
+}
