@@ -1,0 +1,43 @@
+{
+  "term_id": "star_polygon",
+  "category": "profile_primitive",
+  "plain_name": "Star Polygon Profile",
+  "description": "A closed radial profile with alternating outer star tips and inner valleys, optionally flattening each tip into a short outer edge.",
+  "required_params": {
+    "points": "int",
+    "outer_radius_x": "float",
+    "outer_radius_y": "float",
+    "inner_radius_x": "float",
+    "inner_radius_y": "float",
+    "flat_edge_ratio": "float"
+  },
+  "optional_params": {
+    "winding": "clockwise | counter_clockwise"
+  },
+  "units": "meters",
+  "outputs": {
+    "type": "closed_2d_profile",
+    "coordinate_space": "local_xy",
+    "must_be_closed": true
+  },
+  "constraints": {
+    "points": ">= 3",
+    "outer_radius_x": "> inner_radius_x > 0",
+    "outer_radius_y": "> inner_radius_y > 0",
+    "flat_edge_ratio": ">= 0 and < 1",
+    "vertex_count": "points * 2 when flat_edge_ratio is 0, else points * 3"
+  },
+  "common_uses": [
+    "star column",
+    "ribbed shaft",
+    "ornamental pier",
+    "radial landmark support"
+  ],
+  "blender_method": "generate ordered local XY points from declared radii, create face, then extrude or loft by section stack",
+  "validation": [
+    "closed_profile",
+    "nonzero_area",
+    "matching_vertex_count_if_lofted",
+    "vertex_order_is_clockwise_or_declared"
+  ]
+}

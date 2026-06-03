@@ -85,6 +85,21 @@ def positive_float(value: Any, field: str) -> float:
     return number
 
 
+def integer_at_least(value: Any, minimum: int, field: str) -> int:
+    if not isinstance(value, int) or isinstance(value, bool):
+        fail(f"{field} must be an integer")
+    if value < minimum:
+        fail(f"{field} must be >= {minimum}")
+    return value
+
+
+def ratio_less_than_one(value: Any, field: str) -> float:
+    number = finite_float(value, field)
+    if number < 0.0 or number >= 1.0:
+        fail(f"{field} must be >= 0 and < 1")
+    return number
+
+
 def require_string(value: Any, field: str) -> str:
     if not isinstance(value, str) or not value:
         fail(f"{field} must be a non-empty string")
@@ -452,6 +467,35 @@ def capsule_points(length: float, radius: float, segments: int) -> list[list[flo
     return points
 
 
+def ellipse_point(angle: float, radius_x: float, radius_y: float) -> list[float]:
+    return [round(math.cos(angle) * radius_x, 6), round(math.sin(angle) * radius_y, 6)]
+
+
+def star_polygon_points(point_count: int, outer_radius_x: float, outer_radius_y: float, inner_radius_x: float, inner_radius_y: float, flat_edge_ratio: float) -> list[list[float]]:
+    if inner_radius_x >= outer_radius_x:
+        fail("profile.params.inner_radius_x must be less than outer_radius_x")
+    if inner_radius_y >= outer_radius_y:
+        fail("profile.params.inner_radius_y must be less than outer_radius_y")
+
+    step = math.tau / point_count
+    half_step = step * 0.5
+    points: list[list[float]] = []
+    if flat_edge_ratio == 0.0:
+        for index in range(point_count):
+            angle = step * index
+            points.append(ellipse_point(angle, outer_radius_x, outer_radius_y))
+            points.append(ellipse_point(angle + half_step, inner_radius_x, inner_radius_y))
+        return points
+
+    flat_half_angle = half_step * flat_edge_ratio
+    for index in range(point_count):
+        angle = step * index
+        points.append(ellipse_point(angle - flat_half_angle, outer_radius_x, outer_radius_y))
+        points.append(ellipse_point(angle + flat_half_angle, outer_radius_x, outer_radius_y))
+        points.append(ellipse_point(angle + half_step, inner_radius_x, inner_radius_y))
+    return points
+
+
 def profile_points(profile: dict[str, Any]) -> list[list[float]]:
     profile_type = require_string(profile.get("type"), "profile.type")
     params = require_object(profile.get("params", {}), "profile.params")
@@ -483,6 +527,21 @@ def profile_points(profile: dict[str, Any]) -> list[list[float]]:
             positive_float(params.get("radius"), "profile.params.radius"),
             int(params.get("segments", 12)),
         )
+    if profile_type == "star_polygon":
+        result = star_polygon_points(
+            integer_at_least(params.get("points"), 3, "profile.params.points"),
+            positive_float(params.get("outer_radius_x"), "profile.params.outer_radius_x"),
+            positive_float(params.get("outer_radius_y"), "profile.params.outer_radius_y"),
+            positive_float(params.get("inner_radius_x"), "profile.params.inner_radius_x"),
+            positive_float(params.get("inner_radius_y"), "profile.params.inner_radius_y"),
+            ratio_less_than_one(params.get("flat_edge_ratio", 0.0), "profile.params.flat_edge_ratio"),
+        )
+        winding = params.get("winding", "counter_clockwise")
+        if winding not in {"clockwise", "counter_clockwise"}:
+            fail("profile.params.winding must be clockwise or counter_clockwise")
+        if winding == "clockwise":
+            result = list(reversed(result))
+        return result
     if profile_type == "custom_polygon":
         points = require_list(params.get("points"), "profile.params.points")
         if len(points) < 3:

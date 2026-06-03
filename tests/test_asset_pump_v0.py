@@ -218,7 +218,7 @@ class AssetPumpTests(unittest.TestCase):
             out_root = Path(tmp) / "pump"
             run_section_stack_pump(out_root)
             manifest = load_json(out_root / "manifest.json")
-            column = load_json(out_root / "assets" / "star_column_v0.json")
+            column = load_json(out_root / "assets" / "star_column_22_v0.json")
 
         self.assertEqual(manifest["source_bundle_schema"], "asset_mill_section_stack_bundle_v0")
         self.assertEqual(manifest["asset_count"], 1)
@@ -226,25 +226,25 @@ class AssetPumpTests(unittest.TestCase):
         self.assertEqual(column["source_schema"], "asset_mill_section_stack_bundle_v0")
         self.assertEqual(column["source_operation"], "section_stack")
         self.assertEqual(column["asset_kind"], "section_stack")
-        self.assertEqual(column["dimensions_m"], {"width": 0.811378, "depth": 0.811378, "height": 2.46})
-        self.assertEqual(len(column["mesh"]["vertices"]), 84)
-        self.assertEqual(len(column["mesh"]["faces"]), 74)
+        self.assertEqual(column["dimensions_m"], {"width": 0.958802, "depth": 0.756728, "height": 2.46})
+        self.assertEqual(len(column["mesh"]["vertices"]), 462)
+        self.assertEqual(len(column["mesh"]["faces"]), 398)
         self.assertEqual(
             column["mesh"]["parts"],
             [
                 {
                     "part_id": "section_stack_body",
                     "source_primitive": "section_stack",
-                    "vertex_range": [0, 83],
-                    "face_range": [0, 73],
+                    "vertex_range": [0, 461],
+                    "face_range": [0, 397],
                 }
             ],
         )
         self.assertEqual(column["mesh"]["section_stack"]["axis"], "z")
         self.assertEqual(column["mesh"]["section_stack"]["ring_count"], 7)
         self.assertEqual(column["mesh"]["section_stack"]["rings"][0]["ring_id"], "base_foot")
-        self.assertEqual(column["mesh"]["section_stack"]["rings"][-1]["vertex_range"], [72, 83])
-        self.assertEqual(column["source_terms"]["profiles"], ["custom_polygon"])
+        self.assertEqual(column["mesh"]["section_stack"]["rings"][-1]["vertex_range"], [396, 461])
+        self.assertEqual(column["source_terms"]["profiles"], ["star_polygon"])
         self.assertEqual(column["source_terms"]["operators"], ["section_stack", "loft_sections"])
         self.assert_mesh_is_well_formed(column)
 
@@ -309,7 +309,7 @@ class AssetPumpTests(unittest.TestCase):
 
     def test_section_stack_mismatched_ring_vertex_count_fails_before_output(self) -> None:
         source_bundle = load_json(SECTION_STACK_BUNDLE)
-        source_bundle["assets"][0]["section_stack"]["rings"][1]["profile"]["params"]["points"].pop()
+        source_bundle["assets"][0]["section_stack"]["rings"][1]["profile"]["params"]["points"] = 21
 
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             bundle_path = Path(tmp) / "bad_section_stack_bundle.json"
@@ -319,6 +319,20 @@ class AssetPumpTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("rings must have matching vertex counts", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
+
+    def test_star_polygon_rejects_inner_radius_outside_outer_radius(self) -> None:
+        source_bundle = load_json(SECTION_STACK_BUNDLE)
+        source_bundle["assets"][0]["section_stack"]["rings"][0]["profile"]["params"]["inner_radius_x"] = 0.5
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            bundle_path = Path(tmp) / "bad_star_profile_bundle.json"
+            out_root = Path(tmp) / "pump"
+            bundle_path.write_text(json.dumps(source_bundle, indent=2) + "\n", encoding="utf-8")
+            result = run_pump_with_bundle(bundle_path, out_root)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("inner_radius_x must be less than outer_radius_x", result.stderr)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def assert_mesh_is_well_formed(self, asset: dict[str, Any]) -> None:

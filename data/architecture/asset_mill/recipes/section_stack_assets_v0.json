@@ -1,7 +1,7 @@
 {
   "schema": "asset_mill_section_stack_bundle_v0",
   "bundle_id": "section_stack_assets_v0",
-  "purpose": "First section-stack source asset bundle for deterministic ring-loft geometry generation.",
+  "purpose": "Section-stack source asset bundle for deterministic ring-loft geometry generation.",
   "units": "abstract_meter",
   "rules": {
     "source_lane": true,
@@ -13,10 +13,10 @@
   "asset_count": 1,
   "assets": [
     {
-      "asset_id": "star_column_v0",
+      "asset_id": "star_column_22_v0",
       "asset_kind": "section_stack",
       "operation": "section_stack",
-      "architectural_role": "star_profile_column_blockout",
+      "architectural_role": "twenty_two_point_star_profile_column_blockout",
       "generation_use": [
         "column",
         "support_marker",
@@ -40,7 +40,7 @@
         "vertical_rib"
       ],
       "geometry_terms_used": [
-        "custom_polygon",
+        "star_polygon",
         "section_stack",
         "loft_sections",
         "floor",
@@ -52,7 +52,7 @@
         "landmark"
       ],
       "profile_terms": [
-        "custom_polygon"
+        "star_polygon"
       ],
       "operations": [
         "section_stack",
@@ -65,10 +65,14 @@
             "ring_id": "base_foot",
             "at": 0.0,
             "profile": {
-              "type": "custom_polygon",
+              "type": "star_polygon",
               "params": {
-                "winding": "counter_clockwise",
-                "points": [[0.405689, 0.108704], [0.172251, 0.172251], [0.108704, 0.405689], [-0.063048, 0.2353], [-0.296985, 0.296985], [-0.2353, 0.063048], [-0.405689, -0.108704], [-0.172251, -0.172251], [-0.108704, -0.405689], [0.063048, -0.2353], [0.296985, -0.296985], [0.2353, -0.063048]]
+                "points": 22,
+                "outer_radius_x": 0.48,
+                "outer_radius_y": 0.38,
+                "inner_radius_x": 0.41,
+                "inner_radius_y": 0.31,
+                "flat_edge_ratio": 0.35
               }
             }
           },
@@ -76,10 +80,14 @@
             "ring_id": "base_neck",
             "at": 0.18,
             "profile": {
-              "type": "custom_polygon",
+              "type": "star_polygon",
               "params": {
-                "winding": "counter_clockwise",
-                "points": [[0.347733, 0.093175], [0.147644, 0.147644], [0.093175, 0.347733], [-0.054041, 0.201685], [-0.254558, 0.254558], [-0.201685, 0.054041], [-0.347733, -0.093175], [-0.147644, -0.147644], [-0.093175, -0.347733], [0.054041, -0.201685], [0.254558, -0.254558], [0.201685, -0.054041]]
+                "points": 22,
+                "outer_radius_x": 0.4128,
+                "outer_radius_y": 0.3268,
+                "inner_radius_x": 0.3526,
+                "inner_radius_y": 0.2666,
+                "flat_edge_ratio": 0.35
               }
             }
           },
@@ -87,10 +95,14 @@
             "ring_id": "lower_shaft",
             "at": 0.36,
             "profile": {
-              "type": "custom_polygon",
+              "type": "star_polygon",
               "params": {
-                "winding": "counter_clockwise",
-                "points": [[0.289778, 0.077646], [0.123037, 0.123037], [0.077646, 0.289778], [-0.045035, 0.168071], [-0.212132, 0.212132], [-0.168071, 0.045035], [-0.289778, -0.077646], [-0.123037, -0.123037], [-0.077646, -0.289778], [0.045035, -0.168071], [0.212132, -0.212132], [0.168071, -0.045035]]
+                "points": 22,
+                "outer_radius_x": 0.3456,
+                "outer_radius_y": 0.2736,
+                "inner_radius_x": 0.2952,
+                "inner_radius_y": 0.2232,
+                "flat_edge_ratio": 0.35
               }
             }
           },
@@ -98,10 +110,14 @@
             "ring_id": "waist_swell",
             "at": 1.2,
             "profile": {
-              "type": "custom_polygon",
+              "type": "star_polygon",
               "params": {
-                "winding": "counter_clockwise",
-                "points": [[0.328415, 0.087998], [0.139441, 0.139441], [0.087998, 0.328415], [-0.051039, 0.190481], [-0.240416, 0.240416], [-0.190481, 0.051039], [-0.328415, -0.087998], [-0.139441, -0.139441], [-0.087998, -0.328415], [0.051039, -0.190481], [0.240416, -0.240416], [0.190481, -0.051039]]
+                "points": 22,
+                "outer_radius_x": 0.3936,
+                "outer_radius_y": 0.3116,
+                "inner_radius_x": 0.3362,
+                "inner_radius_y": 0.2542,
+                "flat_edge_ratio": 0.35
               }
             }
           },
@@ -109,10 +125,14 @@
             "ring_id": "upper_shaft",
             "at": 2.04,
             "profile": {
-              "type": "custom_polygon",
+              "type": "star_polygon",
               "params": {
-                "winding": "counter_clockwise",
-                "points": [[0.251141, 0.067293], [0.106632, 0.106632], [0.067293, 0.251141], [-0.03903, 0.145662], [-0.183848, 0.183848], [-0.145662, 0.03903], [-0.251141, -0.067293], [-0.106632, -0.106632], [-0.067293, -0.251141], [0.03903, -0.145662], [0.183848, -0.183848], [0.145662, -0.03903]]
+                "points": 22,
+                "outer_radius_x": 0.3072,
+                "outer_radius_y": 0.2432,
+                "inner_radius_x": 0.2624,
+                "inner_radius_y": 0.1984,
+                "flat_edge_ratio": 0.35
               }
             }
           },
@@ -120,10 +140,14 @@
             "ring_id": "capital_neck",
             "at": 2.28,
             "profile": {
-              "type": "custom_polygon",
+              "type": "star_polygon",
               "params": {
-                "winding": "counter_clockwise",
-                "points": [[0.309096, 0.082822], [0.131239, 0.131239], [0.082822, 0.309096], [-0.048037, 0.179276], [-0.226274, 0.226274], [-0.179276, 0.048037], [-0.309096, -0.082822], [-0.131239, -0.131239], [-0.082822, -0.309096], [0.048037, -0.179276], [0.226274, -0.226274], [0.179276, -0.048037]]
+                "points": 22,
+                "outer_radius_x": 0.3648,
+                "outer_radius_y": 0.2888,
+                "inner_radius_x": 0.3116,
+                "inner_radius_y": 0.2356,
+                "flat_edge_ratio": 0.35
               }
             }
           },
@@ -131,10 +155,14 @@
             "ring_id": "capital_cap",
             "at": 2.46,
             "profile": {
-              "type": "custom_polygon",
+              "type": "star_polygon",
               "params": {
-                "winding": "counter_clockwise",
-                "points": [[0.405689, 0.108704], [0.172251, 0.172251], [0.108704, 0.405689], [-0.063048, 0.2353], [-0.296985, 0.296985], [-0.2353, 0.063048], [-0.405689, -0.108704], [-0.172251, -0.172251], [-0.108704, -0.405689], [0.063048, -0.2353], [0.296985, -0.296985], [0.2353, -0.063048]]
+                "points": 22,
+                "outer_radius_x": 0.48,
+                "outer_radius_y": 0.38,
+                "inner_radius_x": 0.41,
+                "inner_radius_y": 0.31,
+                "flat_edge_ratio": 0.35
               }
             }
           }
@@ -142,7 +170,8 @@
       },
       "validation_expectations": {
         "ring_count": 7,
-        "ring_vertex_count": 12,
+        "star_points": 22,
+        "ring_vertex_count": 66,
         "nonzero_bounds": true,
         "known_geometry_terms": true
       },

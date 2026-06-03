@@ -38,6 +38,10 @@
     "capsule": {
       "required_params": ["length", "radius", "segments"],
       "use": ["rounded_rail", "soft_beam", "sci_fi_panel"]
+    },
+    "star_polygon": {
+      "required_params": ["points", "outer_radius_x", "outer_radius_y", "inner_radius_x", "inner_radius_y", "flat_edge_ratio"],
+      "use": ["star_column", "ribbed_shaft", "ornamental_pier", "radial_landmark_support"]
     }
   },
   "operations": {
@@ -52,6 +56,10 @@
     "compound": {
       "required_fields": ["components"],
       "output": "assembly of already compiled asset definitions"
+    },
+    "section_stack": {
+      "required_fields": ["section_stack"],
+      "output": "ordered profile rings connected along one axis"
     }
   },
   "required_asset_fields": [

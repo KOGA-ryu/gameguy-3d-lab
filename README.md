@@ -49,7 +49,7 @@ python3 scripts/asset_pump_v0.py \
   --out /tmp/gameguy_measured_asset_pump_v0
 ```
 
-Section-stack assets are also pumped to deterministic JSON first:
+Section-stack assets are also pumped to deterministic JSON first. The current column source uses a `star_polygon` profile so each ring declares radii and star-tip count instead of baked point arrays:
 
 ```bash
 python3 scripts/asset_pump_v0.py \

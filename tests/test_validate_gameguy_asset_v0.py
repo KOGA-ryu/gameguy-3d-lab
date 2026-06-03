@@ -90,8 +90,8 @@ class GameguyAssetValidatorTests(unittest.TestCase):
         self.assertEqual(report["source_bundle_schema"], "asset_mill_section_stack_bundle_v0")
         self.assertEqual(report["asset_count"], 1)
         self.assertEqual(report["measured_asset_count"], 0)
-        self.assertEqual(report["total_vertices"], 84)
-        self.assertEqual(report["total_faces"], 74)
+        self.assertEqual(report["total_vertices"], 462)
+        self.assertEqual(report["total_faces"], 398)
         self.assertEqual(report["total_parts"], 1)
 
     def test_rejects_invalid_mesh_face_index(self) -> None:
