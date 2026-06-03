@@ -1,0 +1,415 @@
+{
+  "schema": "construction_geometry_taxonomy_v0",
+  "bundle_id": "construction_geometry_taxonomy_v0",
+  "purpose": "Define the source-language taxonomy for turning dense 2D construction geometry into selected architectural forms before asset pumping or Blender execution.",
+  "rules": {
+    "construction_geometry_is_source_language": true,
+    "dense_guides_are_not_final_art": true,
+    "visible_form_comes_from_selection_and_omission": true,
+    "architectural_roles_are_promoted_from_selected_nodes_edges_and_cells": true,
+    "3d_generation_uses_declared_lift_sweep_fold_thicken_operations": true,
+    "blender_is_adapter_layer": true
+  },
+  "source_count": 9,
+  "sources": [
+    {
+      "source_id": "archnet_islamic_geometric_design",
+      "title": "ArchNet: Islamic Geometric Design",
+      "url": "https://www.archnet.org/collections/864?media_content_id=7657",
+      "source_type": "architectural_reference_note",
+      "support_summary": "Supports the idea that geometric patterns begin from circle division, intersections, and deliberate choices about which segments remain visible.",
+      "relevance": ["construction_field", "selected_subgraph", "selective_omission"]
+    },
+    {
+      "source_id": "met_geometric_patterns_islamic_art",
+      "title": "The Metropolitan Museum of Art: Geometric Patterns in Islamic Art",
+      "url": "https://www.metmuseum.org/essays/geometric-patterns-in-islamic-art",
+      "source_type": "museum_essay",
+      "support_summary": "Supports repeated geometric motifs, grids, circles, polygons, and star patterns as durable design systems.",
+      "relevance": ["construction_field", "motif_module", "rosette", "motif_orbit"]
+    },
+    {
+      "source_id": "tilings_girih",
+      "title": "Tilings Encyclopedia: Girih",
+      "url": "https://tilings.math.uni-bielefeld.de/glossary/girih/",
+      "source_type": "mathematical_glossary",
+      "support_summary": "Supports girih as interlaced strapwork and polygonal tiling vocabulary for pattern construction.",
+      "relevance": ["girih_strapwork", "motif_module", "construction_cell"]
+    },
+    {
+      "source_id": "lu_steinhardt_girih_quasicrystals",
+      "title": "Lu and Steinhardt: Decagonal and Quasi-Crystalline Tilings in Medieval Islamic Architecture",
+      "url": "https://colab.ws/articles/10.1126/science.1135491",
+      "source_type": "research_article_record",
+      "support_summary": "Supports the claim that historical architectural patterns can be generated from formal tile sets and matching rules.",
+      "relevance": ["motif_module", "construction_cell", "motif_orbit"]
+    },
+    {
+      "source_id": "bork_dynamic_unfolding_gothic_procedure",
+      "title": "Robert Bork: Dynamic Unfolding and the Conventions of Procedure",
+      "url": "https://iro.uiowa.edu/esploro/outputs/journalArticle/Dynamic-Unfolding-and-the-Conventions-of/9984398190202771?institution=01IOWA_INST&recordUsage=false&skipUsageReporting=true",
+      "source_type": "research_article_record",
+      "support_summary": "Supports procedural geometric construction as a serious lens for Gothic design analysis.",
+      "relevance": ["construction_field", "cascade_order", "role_promotion"]
+    },
+    {
+      "source_id": "columbia_amiens_dynamic_geometry",
+      "title": "Columbia: Amiens Cathedral Dynamic Geometry",
+      "url": "https://projects.mcah.columbia.edu/amiens-arthum/dynamic-geometry",
+      "source_type": "academic_project_note",
+      "support_summary": "Supports Gothic cathedral analysis through proportional and geometric construction diagrams.",
+      "relevance": ["construction_field", "tracery", "role_promotion"]
+    },
+    {
+      "source_id": "drawing_matter_tracing_floors",
+      "title": "Drawing Matter: Medieval Masons and Tracing Floors",
+      "url": "https://drawingmatter.org/medieval-masons-and-tracing-floors/",
+      "source_type": "architectural_history_article",
+      "support_summary": "Supports the practical use of full-scale geometric drawing surfaces for medieval stonework design and transfer.",
+      "relevance": ["construction_field", "guide_line", "role_promotion"]
+    },
+    {
+      "source_id": "getty_topkapi_scroll",
+      "title": "Getty Virtual Library: The Topkapi Scroll",
+      "url": "https://www.getty.edu/publications/virtuallibrary/9780892363353.html",
+      "source_type": "book_record",
+      "support_summary": "Supports geometric design drawings as reusable construction records for architectural ornament and vaulting.",
+      "relevance": ["construction_field", "motif_module", "muqarnas_cell_plan"]
+    },
+    {
+      "source_id": "nexus_muqarnas_geometry",
+      "title": "Nexus Network Journal: Muqarnas Geometry Research",
+      "url": "https://link.springer.com/article/10.1007/s00004-026-00878-8",
+      "source_type": "research_article_record",
+      "support_summary": "Supports muqarnas as geometry that can be studied through two-dimensional plans, tiers, cells, and three-dimensional projection.",
+      "relevance": ["muqarnas_cell_plan", "lift_operation", "cascade_order"]
+    }
+  ],
+  "taxonomy_term_count": 23,
+  "taxonomy_terms": [
+    {
+      "term_id": "construction_field",
+      "plain_name": "Construction Field",
+      "category": "source_geometry",
+      "definition": "The full dense 2D guide network: points, circles, rings, chords, diagonals, star traces, tangents, axes, and cells.",
+      "repo_use": "Stored as source data before any asset recipe or Blender adapter consumes it.",
+      "future_recipe_fields": ["graph_id", "points", "edges", "rings", "cells", "guide_layers"],
+      "related_terms": ["guide_line", "construction_node", "construction_edge", "construction_cell"],
+      "source_support": ["archnet_islamic_geometric_design", "met_geometric_patterns_islamic_art", "bork_dynamic_unfolding_gothic_procedure"]
+    },
+    {
+      "term_id": "construction_node",
+      "plain_name": "Construction Node",
+      "category": "source_geometry",
+      "definition": "A named point in the field, usually an intersection, center, tangent point, radial division, or cell corner.",
+      "repo_use": "Can become a socket, boss center, rib convergence, column placement, ornament anchor, or validation point.",
+      "future_recipe_fields": ["point_id", "position_m", "node_tags", "source_layers"],
+      "related_terms": ["construction_field", "node_promotion"],
+      "source_support": ["archnet_islamic_geometric_design", "drawing_matter_tracing_floors"]
+    },
+    {
+      "term_id": "construction_edge",
+      "plain_name": "Construction Edge",
+      "category": "source_geometry",
+      "definition": "A named line, arc segment, chord, radial, polygon side, star step, or guide connection between construction nodes.",
+      "repo_use": "Can become a rib, rail, mullion, trim strip, flute axis, cut line, fold line, or sweep path.",
+      "future_recipe_fields": ["edge_id", "start_point_id", "end_point_id", "edge_kind", "edge_tags"],
+      "related_terms": ["line_promotion", "selected_subgraph", "selective_omission"],
+      "source_support": ["archnet_islamic_geometric_design", "columbia_amiens_dynamic_geometry"]
+    },
+    {
+      "term_id": "construction_cell",
+      "plain_name": "Construction Cell",
+      "category": "source_geometry",
+      "definition": "A closed 2D region formed by construction edges.",
+      "repo_use": "Can become a panel, recess, web surface, muqarnas unit, cutout island, floor bay, or dome/vault patch.",
+      "future_recipe_fields": ["cell_id", "boundary_edge_ids", "cell_tags", "winding"],
+      "related_terms": ["cell_promotion", "muqarnas_cell_plan", "lift_operation"],
+      "source_support": ["tilings_girih", "lu_steinhardt_girih_quasicrystals", "nexus_muqarnas_geometry"]
+    },
+    {
+      "term_id": "guide_line",
+      "plain_name": "Guide Line",
+      "category": "source_geometry",
+      "definition": "A construction edge that exists to locate relationships but is not automatically visible in the final model.",
+      "repo_use": "Kept in JSON/SVG previews for reasoning, omitted from mesh output unless explicitly promoted.",
+      "future_recipe_fields": ["edge_id", "guide_layer", "visible_by_default"],
+      "related_terms": ["selective_omission", "role_promotion"],
+      "source_support": ["drawing_matter_tracing_floors", "archnet_islamic_geometric_design"]
+    },
+    {
+      "term_id": "selected_subgraph",
+      "plain_name": "Selected Subgraph",
+      "category": "selection_rule",
+      "definition": "A named subset of nodes, edges, and cells chosen from the construction field.",
+      "repo_use": "Current sacred graph selections already use this idea for center boss, radial ribs, and star traces.",
+      "future_recipe_fields": ["selection_id", "selection_type", "selector", "selected_ids"],
+      "related_terms": ["construction_field", "role_promotion", "selective_omission"],
+      "source_support": ["archnet_islamic_geometric_design", "met_geometric_patterns_islamic_art"]
+    },
+    {
+      "term_id": "selective_omission",
+      "plain_name": "Selective Omission",
+      "category": "selection_rule",
+      "definition": "The rule that most construction lines remain hidden and only selected parts are promoted into final architectural form.",
+      "repo_use": "Prevents the repo from turning every guide line into visible mesh.",
+      "future_recipe_fields": ["omitted_layers", "visible_layers", "promotion_rules"],
+      "related_terms": ["guide_line", "selected_subgraph", "role_promotion"],
+      "source_support": ["archnet_islamic_geometric_design", "drawing_matter_tracing_floors"]
+    },
+    {
+      "term_id": "role_promotion",
+      "plain_name": "Role Promotion",
+      "category": "selection_rule",
+      "definition": "Assigning architectural meaning to a selected node, edge, or cell.",
+      "repo_use": "Turns abstract graph pieces into ribs, columns, panels, rails, arches, trim, sockets, and ornament anchors.",
+      "future_recipe_fields": ["selection_id", "architectural_role", "operation_stack"],
+      "related_terms": ["line_promotion", "node_promotion", "cell_promotion"],
+      "source_support": ["bork_dynamic_unfolding_gothic_procedure", "columbia_amiens_dynamic_geometry"]
+    },
+    {
+      "term_id": "line_promotion",
+      "plain_name": "Line Promotion",
+      "category": "selection_rule",
+      "definition": "Promoting a selected construction edge into a physical or visual architectural element.",
+      "repo_use": "Used for rails, vault ribs, rose spokes, mullions, bead strips, flutes, and fold seams.",
+      "future_recipe_fields": ["edge_selection_id", "profile_ref", "sweep_path", "thickness_m"],
+      "related_terms": ["construction_edge", "sweep_operation", "thicken_operation"],
+      "source_support": ["columbia_amiens_dynamic_geometry", "getty_topkapi_scroll"]
+    },
+    {
+      "term_id": "node_promotion",
+      "plain_name": "Node Promotion",
+      "category": "selection_rule",
+      "definition": "Promoting selected construction nodes into anchors, bosses, sockets, capitals, intersections, or placement points.",
+      "repo_use": "Used when a center, tangent, or intersection point determines where a detail must land.",
+      "future_recipe_fields": ["node_selection_id", "architectural_role", "attachment_policy"],
+      "related_terms": ["construction_node", "role_promotion"],
+      "source_support": ["drawing_matter_tracing_floors", "nexus_muqarnas_geometry"]
+    },
+    {
+      "term_id": "cell_promotion",
+      "plain_name": "Cell Promotion",
+      "category": "selection_rule",
+      "definition": "Promoting a closed 2D construction cell into a panel, recess, infill, web, cutout, or lifted 3D patch.",
+      "repo_use": "Needed for windows, guard panels, dome ceilings, muqarnas tiers, and relief fields.",
+      "future_recipe_fields": ["cell_selection_id", "surface_role", "depth_m", "height_rule"],
+      "related_terms": ["construction_cell", "lift_operation"],
+      "source_support": ["nexus_muqarnas_geometry", "getty_topkapi_scroll"]
+    },
+    {
+      "term_id": "motif_module",
+      "plain_name": "Motif Module",
+      "category": "pattern_unit",
+      "definition": "A reusable local pattern extracted from the construction field.",
+      "repo_use": "A motif can be repeated, mirrored, rotated, omitted, or lifted into a detail family.",
+      "future_recipe_fields": ["motif_id", "source_selection_id", "repeat_policy", "symmetry_group"],
+      "related_terms": ["motif_orbit", "girih_strapwork", "rosette"],
+      "source_support": ["met_geometric_patterns_islamic_art", "tilings_girih", "lu_steinhardt_girih_quasicrystals"]
+    },
+    {
+      "term_id": "motif_orbit",
+      "plain_name": "Motif Orbit",
+      "category": "pattern_unit",
+      "definition": "A repeated set of motif instances generated by rotation, reflection, translation, or radial placement around a center.",
+      "repo_use": "Used for rose windows, circular ceiling fields, railing repeats, post sides, and radial dome patterns.",
+      "future_recipe_fields": ["orbit_id", "motif_id", "center_point_id", "count", "rotation_step_degrees"],
+      "related_terms": ["motif_module", "rosette"],
+      "source_support": ["met_geometric_patterns_islamic_art", "lu_steinhardt_girih_quasicrystals"]
+    },
+    {
+      "term_id": "rosette",
+      "plain_name": "Rosette",
+      "category": "pattern_unit",
+      "definition": "A radial motif family organized around a center point.",
+      "repo_use": "Useful for rose windows, bosses, ceiling centers, medallions, column caps, and ornamental post faces.",
+      "future_recipe_fields": ["center_point_id", "division_count", "ring_refs", "motif_refs"],
+      "related_terms": ["motif_orbit", "construction_field"],
+      "source_support": ["met_geometric_patterns_islamic_art", "getty_topkapi_scroll"]
+    },
+    {
+      "term_id": "girih_strapwork",
+      "plain_name": "Girih Strapwork",
+      "category": "historical_pattern_family",
+      "definition": "Interlaced geometric strap patterns generated from polygonal construction and tiling relationships.",
+      "repo_use": "A reference family for line promotion, trim/rib networks, and decorative panel selections.",
+      "future_recipe_fields": ["tile_set", "strap_width_m", "interlace_policy"],
+      "related_terms": ["motif_module", "construction_cell", "line_promotion"],
+      "source_support": ["tilings_girih", "lu_steinhardt_girih_quasicrystals", "getty_topkapi_scroll"]
+    },
+    {
+      "term_id": "tracery",
+      "plain_name": "Tracery",
+      "category": "historical_pattern_family",
+      "definition": "A stone or modeled line network, often used in Gothic windows, screens, panels, and ornamental frames.",
+      "repo_use": "A role family for selected subgraphs promoted into mullions, arches, foils, circles, and panel ribs.",
+      "future_recipe_fields": ["tracery_field_id", "mullion_profile_ref", "foil_selection_ids", "opening_cell_ids"],
+      "related_terms": ["line_promotion", "cell_promotion", "selected_subgraph"],
+      "source_support": ["columbia_amiens_dynamic_geometry", "bork_dynamic_unfolding_gothic_procedure"]
+    },
+    {
+      "term_id": "muqarnas_cell_plan",
+      "plain_name": "Muqarnas Cell Plan",
+      "category": "historical_pattern_family",
+      "definition": "A 2D cell map that can be lifted or tiered into a three-dimensional vault, niche, dome, or transition surface.",
+      "repo_use": "The clean vocabulary for the user's dome-ceiling idea: select cells, assign cascade order, lift surfaces, then bevel/thicken ribs.",
+      "future_recipe_fields": ["cell_plan_id", "cell_ids", "tier_rules", "height_rules", "cascade_order"],
+      "related_terms": ["construction_cell", "lift_operation", "cascade_order"],
+      "source_support": ["nexus_muqarnas_geometry", "getty_topkapi_scroll"]
+    },
+    {
+      "term_id": "lift_operation",
+      "plain_name": "Lift Operation",
+      "category": "generation_operation",
+      "definition": "Turning a 2D node, edge, or cell selection into measured height or depth.",
+      "repo_use": "Used for relief depth, dome patches, vault webs, muqarnas tiers, raised lips, and recessed panels.",
+      "future_recipe_fields": ["source_selection_id", "height_rule", "depth_m", "normal_axis"],
+      "related_terms": ["cell_promotion", "muqarnas_cell_plan"],
+      "source_support": ["nexus_muqarnas_geometry", "getty_topkapi_scroll"]
+    },
+    {
+      "term_id": "fold_operation",
+      "plain_name": "Fold Operation",
+      "category": "generation_operation",
+      "definition": "Bending or angling selected cells or edges around declared fold lines.",
+      "repo_use": "Useful for faceted paper-model-like vaults, folded domes, ribbed ceilings, and angular ornamental relief.",
+      "future_recipe_fields": ["fold_edge_ids", "fold_angle_degrees", "cell_ids", "cascade_order"],
+      "related_terms": ["construction_edge", "construction_cell", "cascade_order"],
+      "source_support": ["nexus_muqarnas_geometry", "bork_dynamic_unfolding_gothic_procedure"]
+    },
+    {
+      "term_id": "sweep_operation",
+      "plain_name": "Sweep Operation",
+      "category": "generation_operation",
+      "definition": "Pushing a 2D profile along a selected edge, arc, or curve path.",
+      "repo_use": "Used for rails, ribs, mullions, trim, flutes, bead strips, and arch moldings.",
+      "future_recipe_fields": ["profile_ref", "path_selection_id", "orientation_policy", "caps"],
+      "related_terms": ["line_promotion", "thicken_operation"],
+      "source_support": ["columbia_amiens_dynamic_geometry", "drawing_matter_tracing_floors"]
+    },
+    {
+      "term_id": "thicken_operation",
+      "plain_name": "Thicken Operation",
+      "category": "generation_operation",
+      "definition": "Giving a promoted 2D line, surface, or profile physical width, depth, or material thickness.",
+      "repo_use": "Used when guide geometry becomes actual stone, iron, wood, trim, lips, or raised relief.",
+      "future_recipe_fields": ["source_selection_id", "thickness_m", "side_policy", "material_role"],
+      "related_terms": ["line_promotion", "cell_promotion", "chamfer_bevel_operation"],
+      "source_support": ["drawing_matter_tracing_floors", "getty_topkapi_scroll"]
+    },
+    {
+      "term_id": "chamfer_bevel_operation",
+      "plain_name": "Chamfer/Bevel Operation",
+      "category": "generation_operation",
+      "definition": "Softening or cutting the edge of a thickened shape while preserving the low-control source profile.",
+      "repo_use": "The correct answer to low-vertex blocky details: simple source outlines can still gain lips, edge catchlights, and stone-like transitions.",
+      "future_recipe_fields": ["target_selection_id", "width_m", "segments", "limit_method"],
+      "related_terms": ["thicken_operation", "lift_operation"],
+      "source_support": ["drawing_matter_tracing_floors", "getty_topkapi_scroll"]
+    },
+    {
+      "term_id": "cascade_order",
+      "plain_name": "Cascade Order",
+      "category": "selection_rule",
+      "definition": "The declared order in which selected cells, nodes, or rings are lifted, folded, repeated, or suppressed.",
+      "repo_use": "Needed for large assets where one master pattern becomes many tiers, ribs, openings, and support placements.",
+      "future_recipe_fields": ["order_id", "ordered_selection_ids", "dependency_rules", "height_progression"],
+      "related_terms": ["muqarnas_cell_plan", "lift_operation", "fold_operation"],
+      "source_support": ["nexus_muqarnas_geometry", "bork_dynamic_unfolding_gothic_procedure"]
+    }
+  ],
+  "claim_count": 5,
+  "claim_support": [
+    {
+      "claim_id": "patterns_come_from_selection_and_omission",
+      "claim": "A dense construction field can produce different visible patterns by connecting, selecting, and omitting different lines.",
+      "repo_translation": "The sacred graph compiler should emit more guides than the final asset uses, then downstream recipes should select and promote named subsets.",
+      "source_support": ["archnet_islamic_geometric_design", "met_geometric_patterns_islamic_art"]
+    },
+    {
+      "claim_id": "repeated_motifs_form_larger_systems",
+      "claim": "Rosettes, girih, strapwork, and tile-like modules form larger patterns through repetition and geometric matching.",
+      "repo_translation": "Recipes need motif modules and motif orbits, not just one-off hand-drawn tile outlines.",
+      "source_support": ["tilings_girih", "lu_steinhardt_girih_quasicrystals", "met_geometric_patterns_islamic_art"]
+    },
+    {
+      "claim_id": "gothic_form_can_be_read_as_procedural_geometry",
+      "claim": "Gothic architectural form can be analyzed through geometric construction procedures, proportional systems, and drawing practices.",
+      "repo_translation": "The repo should preserve the construction procedure as source metadata instead of hiding decisions in Blender scripts.",
+      "source_support": ["bork_dynamic_unfolding_gothic_procedure", "columbia_amiens_dynamic_geometry", "drawing_matter_tracing_floors"]
+    },
+    {
+      "claim_id": "2d_cell_plans_can_lift_into_vaults",
+      "claim": "Two-dimensional cell plans can drive three-dimensional vault, dome, niche, and muqarnas-like forms.",
+      "repo_translation": "A future compiler should select construction cells, assign tier/cascade order, then lift or fold them into deterministic 3D asset JSON.",
+      "source_support": ["nexus_muqarnas_geometry", "getty_topkapi_scroll"]
+    },
+    {
+      "claim_id": "same_master_pattern_can_feed_many_asset_roles",
+      "claim": "One master geometric field can supply different architectural roles when different subgraphs are promoted.",
+      "repo_translation": "The same field can feed railing panels, windows, arches, rib vaults, columns, bosses, and trim as long as roles are declared explicitly.",
+      "source_support": ["getty_topkapi_scroll", "archnet_islamic_geometric_design", "columbia_amiens_dynamic_geometry"]
+    }
+  ],
+  "repo_mapping_count": 7,
+  "repo_mappings": [
+    {
+      "mapping_id": "sacred_graph_bundle",
+      "repo_path": "data/architecture/sacred_geometry/sacred_graph_recipes_v0.json",
+      "path_status": "exists",
+      "taxonomy_terms_used": ["construction_field", "construction_node", "construction_edge", "selected_subgraph", "role_promotion"],
+      "status": "implemented_v0"
+    },
+    {
+      "mapping_id": "sacred_graph_compiler",
+      "repo_path": "scripts/compile_sacred_graph_v0.py",
+      "path_status": "exists",
+      "taxonomy_terms_used": ["construction_field", "selected_subgraph", "guide_line"],
+      "status": "implemented_v0"
+    },
+    {
+      "mapping_id": "railing_detail_profiles",
+      "repo_path": "data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json",
+      "path_status": "exists",
+      "taxonomy_terms_used": ["cell_promotion", "line_promotion", "thicken_operation", "chamfer_bevel_operation"],
+      "status": "implemented_v0"
+    },
+    {
+      "mapping_id": "relief_stack_operation",
+      "repo_path": "geometry_dictionary/operations/relief_stack.json",
+      "path_status": "exists",
+      "taxonomy_terms_used": ["lift_operation", "cell_promotion", "thicken_operation"],
+      "status": "implemented_v0"
+    },
+    {
+      "mapping_id": "future_cell_selection_compiler",
+      "repo_path": "scripts/compile_construction_cell_selection_v0.py",
+      "path_status": "planned",
+      "taxonomy_terms_used": ["construction_cell", "selected_subgraph", "cell_promotion", "cascade_order"],
+      "status": "planned"
+    },
+    {
+      "mapping_id": "future_vault_lift_compiler",
+      "repo_path": "scripts/compile_cell_plan_lift_v0.py",
+      "path_status": "planned",
+      "taxonomy_terms_used": ["muqarnas_cell_plan", "lift_operation", "fold_operation", "cascade_order"],
+      "status": "planned"
+    },
+    {
+      "mapping_id": "future_railing_master_pattern_recipe",
+      "repo_path": "data/architecture/asset_mill/recipes/railing_master_pattern_assets_v0.json",
+      "path_status": "planned",
+      "taxonomy_terms_used": ["construction_field", "selected_subgraph", "line_promotion", "cell_promotion", "sweep_operation"],
+      "status": "planned"
+    }
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "building_code_compliance": false,
+    "game_engine_integration": false
+  }
+}

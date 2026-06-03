@@ -1,0 +1,57 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0049-construction-geometry-taxonomy-v0",
+  "created_utc": "2026-06-03T00:00:00Z",
+  "summary": "Added a source-language construction geometry taxonomy with validation, registry coverage, pipeline coverage, and a design note for selecting, omitting, and promoting construction graph pieces into architectural assets.",
+  "source_inputs": {
+    "taxonomy_bundle": "data/architecture/taxonomy/construction_geometry/construction_geometry_taxonomy_v0.json",
+    "design_note": "docs/asset_pump/procedural_construction_geometry_taxonomy_v0.md",
+    "validator": "scripts/validate_construction_geometry_taxonomy_v0.py"
+  },
+  "taxonomy": {
+    "schema": "construction_geometry_taxonomy_v0",
+    "source_count": 9,
+    "taxonomy_term_count": 23,
+    "claim_count": 5,
+    "repo_mapping_count": 7,
+    "required_terms_present": true
+  },
+  "validation": {
+    "construction_geometry_taxonomy": {
+      "command": "python3 scripts/validate_construction_geometry_taxonomy_v0.py",
+      "result": "PASS construction geometry taxonomy validation: sources=9 terms=23 claims=5 repo_mappings=7"
+    },
+    "unit_tests": {
+      "command": "python3 -m unittest discover -s tests",
+      "result": "OK",
+      "test_count": 138
+    },
+    "asset_generation_registry": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS asset generation registry validation: geometry_bundles=5 geometry_assets=40 source_profiles=19 source_graphs=1 source_taxonomies=23 reference_only=3"
+    },
+    "generation_pipeline": {
+      "non_blender": {
+        "command": "python3 scripts/validate_generation_pipeline_v0.py --json-report /tmp/gameguy_pipeline_0049_final.json",
+        "result": "PASS generation pipeline validation: commands=36 json=247 include_blender=false",
+        "command_count": 36,
+        "json_file_count": 247
+      },
+      "full_blender": {
+        "command": "python3 scripts/validate_generation_pipeline_v0.py --include-blender --json-report /tmp/gameguy_pipeline_blender_0049_final.json",
+        "result": "PASS generation pipeline validation: commands=50 json=247 include_blender=true",
+        "command_count": 50,
+        "json_file_count": 247
+      }
+    }
+  },
+  "rules": {
+    "construction_geometry_is_source_language": true,
+    "selection_and_omission_are_explicit": true,
+    "role_promotion_is_explicit": true,
+    "blender_is_adapter_layer": true,
+    "generated_outputs_stay_under_tmp": true,
+    "no_production_or_structural_claims": true
+  },
+  "recommended_next_goal": "3D-LAB-0050 construction_cell_selection_v0"
+}

@@ -145,6 +145,16 @@
       "pipeline_labels": ["sacred_graph_compile"]
     }
   ],
+  "source_taxonomy_bundles": [
+    {
+      "bundle_id": "construction_geometry_taxonomy_v0",
+      "path": "data/architecture/taxonomy/construction_geometry/construction_geometry_taxonomy_v0.json",
+      "schema": "construction_geometry_taxonomy_v0",
+      "expected_term_count": 23,
+      "validator": "scripts/validate_construction_geometry_taxonomy_v0.py",
+      "pipeline_labels": ["construction_geometry_taxonomy_validate"]
+    }
+  ],
   "reference_only_recipe_bundles": [
     {
       "path": "data/architecture/asset_mill/recipes/architectural_asset_batch_v0.json",

@@ -138,6 +138,7 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
         CommandStep("reference_dissection_validate", python_script("scripts/validate_reference_dissection_packet_v0.py")),
         CommandStep("measured_molding_profile_validate", python_script("scripts/validate_measured_molding_profiles_v0.py")),
         CommandStep("railing_detail_profile_validate", python_script("scripts/validate_railing_detail_profiles_v0.py")),
+        CommandStep("construction_geometry_taxonomy_validate", python_script("scripts/validate_construction_geometry_taxonomy_v0.py")),
         CommandStep("sacred_graph_compile", python_script("scripts/compile_sacred_graph_v0.py", "--clean", "--out", SACRED_GRAPH_OUT)),
     ]
     if not skip_unit_tests:

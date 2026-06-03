@@ -48,11 +48,14 @@ class AssetGenerationRegistryValidatorTests(unittest.TestCase):
         self.assertEqual(report["source_profile_count"], 19)
         self.assertEqual(report["source_graph_bundle_count"], 1)
         self.assertEqual(report["source_graph_count"], 1)
+        self.assertEqual(report["source_taxonomy_bundle_count"], 1)
+        self.assertEqual(report["source_taxonomy_term_count"], 23)
         self.assertEqual(report["reference_only_recipe_count"], 3)
         self.assertFalse(report["generated_outputs_created"])
         self.assertTrue(report["rules"]["validates_pipeline_label_coverage"])
         self.assertTrue(report["rules"]["validates_source_profile_boundaries"])
         self.assertTrue(report["rules"]["validates_source_graph_boundaries"])
+        self.assertTrue(report["rules"]["validates_source_taxonomy_boundaries"])
 
     def test_unknown_pipeline_label_fails(self) -> None:
         registry = load_json(REGISTRY)
@@ -139,6 +142,23 @@ class AssetGenerationRegistryValidatorTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("expected_graph_count must match graphs length", result.stderr)
+
+    def test_source_taxonomy_count_mismatch_fails(self) -> None:
+        registry = load_json(REGISTRY)
+        registry["source_taxonomy_bundles"][0]["expected_term_count"] = 999
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            registry_path = Path(tmp) / "bad_registry.json"
+            registry_path.write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "--registry", str(registry_path)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("expected_term_count must match taxonomy_terms length", result.stderr)
 
 
 if __name__ == "__main__":

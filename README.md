@@ -29,7 +29,21 @@ The source repo remains the historical prototype/reference. This repo is a flatt
 The durable core of this repo is:
 
 ```text
-sacred construction graph -> selected subgraph/profile -> source asset recipe -> profile/operation compiler -> deterministic asset geometry JSON
+construction geometry taxonomy -> sacred construction graph -> selected subgraph/profile -> source asset recipe -> profile/operation compiler -> deterministic asset geometry JSON
+```
+
+The taxonomy layer gives the repo names for the user's core demand:
+
+```text
+dense construction field -> selection/omission -> role promotion -> lift/fold/sweep/thicken/bevel
+```
+
+The machine-readable taxonomy is `data/architecture/taxonomy/construction_geometry/construction_geometry_taxonomy_v0.json`; the design note is `docs/asset_pump/procedural_construction_geometry_taxonomy_v0.md`.
+
+Validate it with:
+
+```bash
+python3 scripts/validate_construction_geometry_taxonomy_v0.py
 ```
 
 The graph layer is source-only. It creates named 2D points, edges, rings, star traces, and profile selections before any asset pump or Blender adapter sees the shape:
@@ -237,6 +251,7 @@ python3 scripts/validate_asset_generation_registry_v0.py
 python3 scripts/validate_reference_dissection_packet_v0.py
 python3 scripts/validate_measured_molding_profiles_v0.py
 python3 scripts/validate_railing_detail_profiles_v0.py
+python3 scripts/validate_construction_geometry_taxonomy_v0.py
 python3 scripts/compile_sacred_graph_v0.py --clean --out /tmp/gameguy_sacred_graph_v0
 python3 scripts/compile_blender_tool_plan_v0.py --validate-only
 python3 scripts/compile_blender_tool_plan_v0.py --clean --out /tmp/gameguy_blender_tool_plan_v0
@@ -320,7 +335,8 @@ Expected current checks:
 - Reference dissection packet validation proves visible shapes, geometry terms, and candidate Blender tools before the next geometry pass.
 - Measured molding profile validation proves user-supplied cap/base/flute/plinth/compound-pier profile sources before the next geometry pass.
 - Railing detail profile validation proves 2D detail shape placement, detail roles, application methods, and Blender tool stage order before the next geometry pass.
-- Sacred graph compilation proves a source-owned 22-division construction graph with named point, edge, star-trace, and derived profile selections before 3D lifting/folding.
+- Construction geometry taxonomy validation proves the source-language terms for construction fields, selection/omission, role promotion, motif orbits, tracery, muqarnas cell plans, and lift/fold/sweep/thicken/bevel operations.
+- Sacred graph compilation proves a source-owned 22-division construction graph with named point, edge, and star-trace selections before 3D lifting/folding.
 - JSON parses.
 - Python scripts compile.
 - Asset pump tests pass.
