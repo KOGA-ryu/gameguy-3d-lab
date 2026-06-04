@@ -1,0 +1,50 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0079-craft-fabrication-detail-pass-v0",
+  "title": "Craft fabrication detail pass v0",
+  "status": "complete",
+  "new_files": [
+    "data/architecture/taxonomy/craft_methods/craft_fabrication_methods_v0.json",
+    "docs/research/craft_fabrication_methods_v0/README.md",
+    "docs/research/craft_fabrication_methods_v0/craft_source_index_v0.md",
+    "docs/research/craft_fabrication_methods_v0/asset_family_fabrication_build_plans_v0.md",
+    "docs/research/craft_fabrication_methods_v0/operator_fabrication_handoff_v0.md",
+    "scripts/validate_craft_fabrication_methods_v0.py",
+    "tests/test_validate_craft_fabrication_methods_v0.py"
+  ],
+  "updated_files": [
+    "README.md"
+  ],
+  "method_count": 10,
+  "rules": {
+    "fabrication_informed_modeling_only": true,
+    "not_shop_drawings": true,
+    "not_structural_guidance": true,
+    "not_building_code_guidance": true,
+    "no_blender_execution": true,
+    "no_generated_assets": true
+  },
+  "validation": {
+    "craft_methods_json_parse": {
+      "command": "python3 -m json.tool data/architecture/taxonomy/craft_methods/craft_fabrication_methods_v0.json",
+      "result": "PASS"
+    },
+    "validator_compile": {
+      "command": "python3 -m py_compile scripts/validate_craft_fabrication_methods_v0.py",
+      "result": "PASS"
+    },
+    "craft_methods_validate": {
+      "command": "python3 scripts/validate_craft_fabrication_methods_v0.py",
+      "result": "PASS methods=10 geometry_terms=75 tools=97"
+    },
+    "unit_test": {
+      "command": "python3 -m unittest tests/test_validate_craft_fabrication_methods_v0.py",
+      "result": "PASS"
+    },
+    "asset_generation_registry_validate": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS source_component_style_sheets=5"
+    }
+  },
+  "recommended_next_goal": "Add craft_method_ids to per-asset workcards and draft construction_graph_v0 so UI tags can select fabrication-informed Blender tool sequences."
+}

@@ -1,0 +1,335 @@
+{
+  "schema": "craft_fabrication_methods_v0",
+  "bundle_id": "craft_fabrication_methods_v0",
+  "purpose": "Map real-world craft fabrication methods to asset-family build logic, drawing UI tags, Blender tool choices, and operator checks.",
+  "rules": {
+    "fabrication_informed_modeling_only": true,
+    "not_shop_drawings": true,
+    "not_structural_guidance": true,
+    "not_building_code_guidance": true,
+    "requires_reference_packet_before_asset_use": true
+  },
+  "methods": [
+    {
+      "method_id": "stone_tracing_floor_template_transfer_v0",
+      "craft_domain": "stone_masonry_layout",
+      "plain_name": "Full-scale tracing floor and template transfer",
+      "source_support": [
+        {
+          "label": "Drawing Matter medieval masons and tracing floors",
+          "url": "https://drawingmatter.org/medieval-masons-and-tracing-floors/",
+          "support_summary": "Supports full-scale geometric drawing surfaces as practical medieval masonry design and transfer tools."
+        },
+        {
+          "label": "Museum of the History of Science medieval drawing",
+          "url": "https://www.mhs.ox.ac.uk/geometry/content/cathedral.html",
+          "support_summary": "Supports compass/straightedge geometry as a construction basis for cathedral forms."
+        }
+      ],
+      "real_tools": ["tracing floor", "compass", "straightedge", "square", "chalk or scribe", "rod", "wood or metal template"],
+      "real_sequence": [
+        "Establish centerlines, axes, and main proportional divisions.",
+        "Draw full-scale arcs, circles, offsets, and intersections.",
+        "Select the visible profiles from the construction geometry.",
+        "Make templates for repeated ribs, mouldings, arch stones, or tracery pieces.",
+        "Transfer template edges to stone or timber stock."
+      ],
+      "mechanics": "The construction drawing is not decoration. It is a source graph for repeatable parts, offsets, centers, radii, and cut profiles.",
+      "asset_families": ["windows", "arches", "vaults", "columns", "railings", "trim_moulding"],
+      "drawing_ui_tags": ["construction_line", "selected_line", "center_point", "circle", "arc", "template", "profile", "omitted_line"],
+      "geometry_terms": ["circle_profile", "arch_profile", "pointed_arch_profile", "custom_polygon_profile", "pattern_field", "pattern_segment_split", "contour_points", "radius", "angle"],
+      "blender_tool_ids": ["mesh_from_pydata", "curve_bezier_add", "curve_bevel_profile", "curve_to_mesh", "modifier_mirror", "modifier_array"],
+      "source_fields_needed": ["center_points", "axes", "radii_m", "arc_angles", "selected_segments", "template_profiles", "scale_reference"],
+      "operator_checks": ["Are construction lines separated from visible lines?", "Are repeated pieces driven by one template?", "Are centers and radii recoverable from the drawing?"],
+      "repo_use": "Foundation method for the future drafting UI and construction_graph_v0 schema."
+    },
+    {
+      "method_id": "stone_dressing_and_carving_sequence_v0",
+      "craft_domain": "stone_masonry_carving",
+      "plain_name": "Roughing, dressing, chiseling, and finishing stone",
+      "source_support": [
+        {
+          "label": "Regency Town House stone carving tools",
+          "url": "https://www.rth.org.uk/building-regency-houses/building-crafts-and-skills/stone-carving",
+          "support_summary": "Supports point, claw, flat chisel, mallet, banker, and staged stone carving workflow."
+        },
+        {
+          "label": "Nasher Museum stone carving tools",
+          "url": "https://nasher.duke.edu/stories/2019/02/carving-stone-tools/",
+          "support_summary": "Supports tool-mark vocabulary and the physical sequence from rough shaping to refined carving."
+        }
+      ],
+      "real_tools": ["banker bench", "mason's mallet", "point chisel", "claw chisel", "flat chisel", "pitching tool", "rasp", "straightedge"],
+      "real_sequence": [
+        "Rough out the block and remove waste.",
+        "Dress the main faces and establish square/level reference faces.",
+        "Pitch or chamfer broad edges.",
+        "Use point and claw work to approach the profile.",
+        "Use flat chisels and abrasives for final arrises, grooves, and surface finish."
+      ],
+      "mechanics": "Stone detail reads through planes, arrises, tool marks, bevels, shadow grooves, and staged depth changes rather than arbitrary high-resolution sculpting.",
+      "asset_families": ["columns", "railings", "walls", "arches", "doors", "windows", "trim_moulding"],
+      "drawing_ui_tags": ["waste", "dressed_face", "arris", "chamfer", "groove", "tool_mark", "finish_pass"],
+      "geometry_terms": ["rectangle_profile", "custom_polygon_profile", "extrude", "bevel_edges", "relief_stack", "offset_profile", "width", "height"],
+      "blender_tool_ids": ["mesh_from_pydata", "extrude_faces", "inset_faces", "modifier_bevel", "modifier_weighted_normal", "modifier_displace", "material_assign_by_part"],
+      "source_fields_needed": ["block_bounds_m", "waste_regions", "face_roles", "bevel_width_m", "groove_depth_m", "tool_mark_policy", "material_role"],
+      "operator_checks": ["Do bevels preserve shallow detail?", "Do major faces stay readable?", "Are grooves deep enough to catch shadow before texture work?"],
+      "repo_use": "Default mental model for stone posts, plinths, capitals, trim, and wall blocks."
+    },
+    {
+      "method_id": "gothic_tracery_template_and_cutout_v0",
+      "craft_domain": "stone_tracery",
+      "plain_name": "Tracery layout, template profiles, and cutout logic",
+      "source_support": [
+        {
+          "label": "Columbia Amiens dynamic geometry",
+          "url": "https://projects.mcah.columbia.edu/amiens-arthum/dynamic-geometry",
+          "support_summary": "Supports Gothic composition through dynamic geometric layout and proportional relationships."
+        },
+        {
+          "label": "Drawing Matter medieval masons and tracing floors",
+          "url": "https://drawingmatter.org/medieval-masons-and-tracing-floors/",
+          "support_summary": "Supports layout-to-template workflow for masonry geometry."
+        }
+      ],
+      "real_tools": ["compass", "straightedge", "template", "scribe", "drill or waste piercer", "chisels", "mallet"],
+      "real_sequence": [
+        "Draw the opening, centerlines, circles, foils, cusps, and bars.",
+        "Select the lines that become stone bars or voids.",
+        "Make templates for repeated foils, lancets, and bar profiles.",
+        "Rough out openings and preserve the bar network.",
+        "Carve bevels, cusps, moulded arrises, and shadow lines."
+      ],
+      "mechanics": "Tracery is a selected-line problem: the construction grid is larger than the final visible stone, and omitted lines matter as much as selected ones.",
+      "asset_families": ["windows", "railings", "screen_panels", "doors", "walls"],
+      "drawing_ui_tags": ["construction_line", "selected_line", "omitted_line", "closed_cell", "cutter", "bar", "foil", "cusp", "mullion"],
+      "geometry_terms": ["pointed_arch_profile", "circle_profile", "custom_polygon_profile", "boolean_cut", "offset_profile", "mirror_axis", "pattern_field", "contour_points"],
+      "blender_tool_ids": ["mesh_from_pydata", "modifier_boolean", "modifier_mirror", "modifier_array", "modifier_bevel", "modifier_weighted_normal"],
+      "source_fields_needed": ["opening_profile", "bar_width_m", "selected_cells", "cutter_profiles", "cusp_radius_m", "bevel_width_m", "mirror_axis"],
+      "operator_checks": ["Can every visible bar be traced to selected construction lines?", "Do voids remain readable after beveling?", "Are foils/cusps symmetrical where intended?"],
+      "repo_use": "Core method for windows, blind panels, railing infill, and sacred-geometry-selected linework."
+    },
+    {
+      "method_id": "masonry_arch_centering_voussoir_v0",
+      "craft_domain": "masonry_arch",
+      "plain_name": "Arch centering, voussoir layout, and keystone sequence",
+      "source_support": [
+        {
+          "label": "Brick Industry Association Technical Notes on brick masonry arches",
+          "url": "https://gobrick.com/media/file/31-Technical-Notes-31-Brick-Masonry-Arches.pdf",
+          "support_summary": "Supports arch terminology, voussoir geometry, centering, and construction sequence concepts."
+        }
+      ],
+      "real_tools": ["centering frame", "template", "plumb line", "level", "mason's trowel", "mallet", "straightedge"],
+      "real_sequence": [
+        "Set out springline, span, rise, intrados, and extrados.",
+        "Build temporary centering to hold arch stones/brick until self-supporting.",
+        "Lay voussoirs symmetrically from springing toward crown.",
+        "Set keystone/crown closure.",
+        "Remove centering only after the arch is stable."
+      ],
+      "mechanics": "Arch form depends on wedge action, compression, springline alignment, and temporary support. In game assets, this maps to visible voussoir segmentation, keystone emphasis, and springline sockets.",
+      "asset_families": ["arches", "doors", "windows", "walls", "bridges"],
+      "drawing_ui_tags": ["springline", "intrados", "extrados", "voussoir", "keystone", "centering", "span", "rise"],
+      "geometry_terms": ["arch_profile", "pointed_arch_profile", "array_radial", "mirror_axis", "angle", "radius", "width", "height", "arch_springline"],
+      "blender_tool_ids": ["mesh_from_pydata", "modifier_array", "modifier_mirror", "modifier_bevel", "material_assign_by_part"],
+      "source_fields_needed": ["span_m", "rise_m", "springline_z_m", "voussoir_count", "arch_thickness_m", "keystone_profile", "material_roles"],
+      "operator_checks": ["Does the arch have a readable springline?", "Are voussoirs wedge-like or at least segmented?", "Does the keystone/crown read from gameplay distance?"],
+      "repo_use": "Default arch/door/window build plan before decorative tracery is added."
+    },
+    {
+      "method_id": "rib_vault_rib_web_boss_sequence_v0",
+      "craft_domain": "stone_vaulting",
+      "plain_name": "Rib vault layout, ribs, webbing, and bosses",
+      "source_support": [
+        {
+          "label": "Looking at Buildings rib vaults",
+          "url": "https://www.lookingatbuildings.org.uk/styles/medieval/roofs-and-vaults/stone-vaulting/rib-vaults.html",
+          "support_summary": "Supports rib vault anatomy: ribs, webbing, bosses, springing, and vault-bay vocabulary."
+        },
+        {
+          "label": "Drawing Matter medieval masons and tracing floors",
+          "url": "https://drawingmatter.org/medieval-masons-and-tracing-floors/",
+          "support_summary": "Supports full-scale geometric layout for ribs and vault components."
+        }
+      ],
+      "real_tools": ["tracing floor", "compass", "templates", "centering", "chisels", "mallet", "lifting tackle"],
+      "real_sequence": [
+        "Lay out bay geometry, springing points, rib paths, and crown/boss centers.",
+        "Cut or prepare rib stones from templates.",
+        "Assemble ribs over centering or temporary support.",
+        "Fill webbing between ribs.",
+        "Add bosses or carved nodes at rib intersections."
+      ],
+      "mechanics": "The ribs are a path network; webbing is the surface between paths; bosses mark intersections and help make the structure legible.",
+      "asset_families": ["ceilings_vaults", "arches", "columns", "walls"],
+      "drawing_ui_tags": ["rib_path", "springing_point", "boss", "web_cell", "vault_bay", "intersection"],
+      "geometry_terms": ["pattern_field", "pattern_segment_split", "arch_profile", "custom_polygon_profile", "shared_endpoint", "anchor", "height"],
+      "blender_tool_ids": ["curve_bezier_add", "curve_bevel_profile", "mesh_from_pydata", "modifier_mirror", "modifier_array", "modifier_bevel", "material_assign_by_part"],
+      "source_fields_needed": ["bay_bounds_m", "springing_points", "rib_paths", "rib_profile", "web_cells", "boss_points", "web_thickness_m"],
+      "operator_checks": ["Can the rib network be read before adding texture?", "Do bosses sit at real intersections?", "Are web cells separate from rib geometry?"],
+      "repo_use": "Primary craft logic for future vaulted ceilings and sacred-geometry-to-dome experiments."
+    },
+    {
+      "method_id": "timber_frame_mortise_tenon_panel_v0",
+      "craft_domain": "wood_joinery",
+      "plain_name": "Frame-and-panel joinery with mortise and tenon logic",
+      "source_support": [
+        {
+          "label": "Common Woodworking mortise and tenon",
+          "url": "https://commonwoodworking.com/mortise-and-tenon/",
+          "support_summary": "Supports mortise-and-tenon vocabulary and frame-joinery mechanics."
+        },
+        {
+          "label": "Woodworkers Institute frame and panel doors",
+          "url": "https://woodworkersinstitute.com/techniques/2022/01/frame-panel-doors/",
+          "support_summary": "Supports frame-and-panel door construction concepts and member vocabulary."
+        }
+      ],
+      "real_tools": ["marking gauge", "try square", "saw", "mortise chisel", "mallet", "shoulder plane", "router plane", "clamps"],
+      "real_sequence": [
+        "Mark rails, stiles, shoulders, mortises, and tenons.",
+        "Cut mortises in stiles or posts.",
+        "Cut tenons on rails.",
+        "Fit shoulders flush and keep the frame square.",
+        "Insert floating or raised panel inside grooves."
+      ],
+      "mechanics": "A frame is a load/shape boundary; panels sit inside it. The joinery creates sockets, shoulders, reveals, and grooves that should appear in the model.",
+      "asset_families": ["doors", "windows", "wall_panels", "furniture_props"],
+      "drawing_ui_tags": ["stile", "rail", "mortise", "tenon", "shoulder", "groove", "floating_panel", "reveal"],
+      "geometry_terms": ["rectangle_profile", "extrude", "boolean_cut", "offset_profile", "relief_stack", "socket", "edge_join", "width", "height"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "modifier_boolean", "inset_faces", "extrude_faces", "modifier_bevel", "modifier_weighted_normal"],
+      "source_fields_needed": ["stile_width_m", "rail_height_m", "mortise_size_m", "tenon_size_m", "panel_inset_m", "groove_depth_m", "reveal_width_m"],
+      "operator_checks": ["Are stiles and rails named separately?", "Are grooves/reveals visible?", "Can the panel read as separate from the frame?"],
+      "repo_use": "Default method for doors, wood windows, wall panels, and furniture-like props."
+    },
+    {
+      "method_id": "wood_moulding_profile_plane_sequence_v0",
+      "craft_domain": "wood_moulding",
+      "plain_name": "Moulding profile layout and plane/router sequence",
+      "source_support": [
+        {
+          "label": "Encyclopaedia Britannica plane tool",
+          "url": "https://www.britannica.com/technology/plane-tool",
+          "support_summary": "Supports hand plane vocabulary and the idea of shaped planes cutting profiles."
+        },
+        {
+          "label": "Woodworkers Institute moulding planes",
+          "url": "https://woodworkersinstitute.com/techniques/2022/02/moulding-planes/",
+          "support_summary": "Supports moulding plane use for shaped profiles and traditional trim production."
+        }
+      ],
+      "real_tools": ["profile gauge", "marking gauge", "rebate plane", "plough plane", "hollow plane", "round plane", "moulding plane", "scraper"],
+      "real_sequence": [
+        "Draw or choose the side profile.",
+        "Mark shoulders, fillets, rabbets, coves, rounds, beads, and flats.",
+        "Remove waste with straight/rabbet cuts.",
+        "Shape coves/rounds/beads with profile tools.",
+        "Scrape/sand and fit as trim."
+      ],
+      "mechanics": "Moulding is a side-profile stack. A complex trim often comes from simple flats, rounds, coves, beads, and shadow grooves in sequence.",
+      "asset_families": ["trim_moulding", "doors", "windows", "railings", "columns", "ceilings_vaults"],
+      "drawing_ui_tags": ["side_profile", "fillet", "bead", "cove", "round", "rabbet", "shadow_line", "profile_stack"],
+      "geometry_terms": ["profile_operation_stack", "rectangle_profile", "circle_profile", "offset_profile", "scale_profile", "extrude", "bevel_edges", "contour_points"],
+      "blender_tool_ids": ["mesh_from_pydata", "extrude_faces", "curve_bevel_profile", "curve_to_mesh", "modifier_bevel", "modifier_weighted_normal"],
+      "source_fields_needed": ["profile_points", "run_length_m", "bead_radius_m", "cove_radius_m", "fillet_width_m", "shadow_groove_depth_m", "material_role"],
+      "operator_checks": ["Does the side profile read before texture?", "Are beads/coves named as profile zones?", "Are shadow grooves deep enough to survive bevels?"],
+      "repo_use": "Core method for ornament railings, cap lips, bases, trim, and plinth stacks."
+    },
+    {
+      "method_id": "wrought_iron_scroll_bending_jig_v0",
+      "craft_domain": "wrought_iron_blacksmithing",
+      "plain_name": "Heated bar, bending jig, scrollwork, and repeated iron ornament",
+      "source_support": [
+        {
+          "label": "The Wroughtworks past and present methods",
+          "url": "https://www.thewroughtworks.com/resources",
+          "support_summary": "Supports traditional wrought iron processes, hand forging, and architectural ironwork context."
+        },
+        {
+          "label": "National Park Service preservation brief on historic ornamental metal",
+          "url": "https://www.nps.gov/orgs/1739/upload/preservation-brief-27-architectural-metal.pdf",
+          "support_summary": "Supports ornamental metal preservation vocabulary and architectural metal component awareness."
+        }
+      ],
+      "real_tools": ["forge", "anvil", "hammer", "tongs", "scroll jig", "bending fork", "swage block", "vise"],
+      "real_sequence": [
+        "Heat bar stock until workable.",
+        "Taper, flatten, or upset ends if needed.",
+        "Bend around scroll jigs or anvil horns.",
+        "Repeat mirrored scrolls or modules.",
+        "Join with collars, rivets, forge welds, or mechanical fasteners."
+      ],
+      "mechanics": "Iron ornament is path and repetition driven: bar thickness, bend radius, mirrored scrolls, collars, and connection nodes carry the look.",
+      "asset_families": ["railings", "gates_grates_barriers", "doors", "lighting_fixtures", "mechanisms"],
+      "drawing_ui_tags": ["bar_path", "scroll", "bend_radius", "collar", "rivet", "mirror", "repeat_module"],
+      "geometry_terms": ["pattern_segment_split", "array_linear", "mirror_axis", "circle_profile", "radius", "shared_endpoint", "socket"],
+      "blender_tool_ids": ["curve_bezier_add", "curve_bevel_profile", "curve_to_mesh", "modifier_mirror", "modifier_array", "modifier_bevel", "material_assign_by_part"],
+      "source_fields_needed": ["bar_path_points", "bar_radius_m", "bend_radius_m", "module_count", "collar_positions", "join_points", "material_role"],
+      "operator_checks": ["Do scrolls look like bent bar rather than flat drawing lines?", "Are collars/joints named?", "Can repeated modules be changed from one source curve?"],
+      "repo_use": "Default method for iron railings, gates, grilles, scroll brackets, and lantern cages."
+    },
+    {
+      "method_id": "wrought_iron_rivet_collar_join_v0",
+      "craft_domain": "wrought_iron_joinery",
+      "plain_name": "Rivets, collars, tenons, and mechanical iron joints",
+      "source_support": [
+        {
+          "label": "National Park Service preservation brief on historic ornamental metal",
+          "url": "https://www.nps.gov/orgs/1739/upload/preservation-brief-27-architectural-metal.pdf",
+          "support_summary": "Supports historic architectural metal components and preservation-sensitive metal joinery vocabulary."
+        },
+        {
+          "label": "The Wroughtworks resources",
+          "url": "https://www.thewroughtworks.com/resources",
+          "support_summary": "Supports traditional forged ironwork and hand-worked joining context."
+        }
+      ],
+      "real_tools": ["drift punch", "rivet set", "hammer", "anvil", "collar stock", "vise", "forge"],
+      "real_sequence": [
+        "Lay out crossing bars and join points.",
+        "Punch or drill holes where rivets are needed.",
+        "Add collars around bundled or crossing members.",
+        "Set rivets or peen tenons.",
+        "Dress and finish edges."
+      ],
+      "mechanics": "Joints are visible logic. Collars and rivets should be modeled as named connector details, not random beads.",
+      "asset_families": ["railings", "gates_grates_barriers", "doors", "mechanisms", "lighting_fixtures"],
+      "drawing_ui_tags": ["join_point", "rivet", "collar", "crossing_bar", "tenon", "socket"],
+      "geometry_terms": ["circle_profile", "rectangle_profile", "socket", "shared_endpoint", "array_linear", "bevel_edges", "anchor"],
+      "blender_tool_ids": ["primitive_cylinder_add", "mesh_from_pydata", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "source_fields_needed": ["join_points", "rivet_radius_m", "collar_width_m", "collar_thickness_m", "bar_radius_m", "material_role"],
+      "operator_checks": ["Do rivets/collars align with actual intersections?", "Are join points part of the drawing graph?", "Can LOD remove small rivets without losing main bars?"],
+      "repo_use": "Adds believable mechanics to metal railings, gates, hardware, and mechanisms."
+    },
+    {
+      "method_id": "sheet_metal_bossing_repousse_reference_v0",
+      "craft_domain": "sheet_metal_relief",
+      "plain_name": "Sheet-metal raising, bossing, and low relief",
+      "source_support": [
+        {
+          "label": "Victoria and Albert Museum metalworking techniques",
+          "url": "https://www.vam.ac.uk/articles/metalworking-techniques",
+          "support_summary": "Supports repoussé, chasing, engraving, and metal surface-relief technique vocabulary."
+        }
+      ],
+      "real_tools": ["pitch bowl", "raising hammer", "chasing tools", "punches", "stakes", "annealing heat", "scraper"],
+      "real_sequence": [
+        "Draw or transfer the relief pattern.",
+        "Support the metal sheet on pitch or a forming surface.",
+        "Raise broad forms from the back or sink from the front.",
+        "Chase crisp lines and details.",
+        "Planish or finish exposed surfaces."
+      ],
+      "mechanics": "Relief is layered depth: broad pushed forms, crisp chased lines, edge highlights, and material-specific deformation.",
+      "asset_families": ["doors", "armor", "props", "lighting_fixtures", "mechanisms", "trim_moulding"],
+      "drawing_ui_tags": ["relief_region", "raised_boss", "chased_line", "punch_mark", "metal_sheet", "depth_band"],
+      "geometry_terms": ["relief_stack", "circle_profile", "custom_polygon_profile", "offset_profile", "bevel_edges", "scale_profile", "height"],
+      "blender_tool_ids": ["mesh_from_pydata", "inset_faces", "extrude_faces", "modifier_displace", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "source_fields_needed": ["relief_regions", "depth_bands_m", "boss_centers", "chased_line_paths", "sheet_thickness_m", "material_role"],
+      "operator_checks": ["Are broad relief forms separated from fine chased lines?", "Do highlights work before procedural texture?", "Can low hardware drop fine marks but keep bosses?"],
+      "repo_use": "Useful for metal door panels, armor, treasure props, sconces, and decorative trim."
+    }
+  ]
+}
+
