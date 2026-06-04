@@ -16,6 +16,10 @@ characters, clothing, armor, props, tools, materials, and drafting workflows.
   starter musical-instrument prop families, visible anatomy, source support,
   geometry terms, Blender tool IDs, drawing UI tags, operator checks, and lore
   book hooks.
+- `furniture_v0/furniture_asset_taxonomy_v0.json` records furniture families,
+  furniture caste/status tiers, styles, visible anatomy, source support,
+  geometry terms, Blender tool IDs, drawing UI tags, operator checks, and lore
+  book hooks.
 
 ## Boundary
 
@@ -26,3 +30,7 @@ slice promotes specific terms into validated repo schemas.
 Musical-instrument records are source planning data only. They are not acoustic
 engineering, fabrication guidance, historical-authenticity proof, playable-audio
 implementation, or active generated-asset inputs.
+
+Furniture records are source planning data only. They are not fabrication
+guidance, ergonomic/safety guidance, historical-authenticity proof, conservation
+guidance, or active generated-asset inputs.

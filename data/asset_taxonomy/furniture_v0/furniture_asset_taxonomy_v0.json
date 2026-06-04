@@ -1,0 +1,688 @@
+{
+  "schema": "furniture_asset_taxonomy_v0",
+  "bundle_id": "furniture_asset_taxonomy_v0",
+  "purpose": "Document furniture props by family, social/status tier, style, visible anatomy, craft logic, geometry terms, Blender tool IDs, drawing UI tags, source fields, operator checks, and lore hooks.",
+  "rules": {
+    "game_asset_planning_only": true,
+    "not_fabrication_ready": true,
+    "not_ergonomic_or_safety_guidance": true,
+    "not_historical_authenticity_claim": true,
+    "no_generated_assets": true,
+    "requires_reference_packet_before_asset_use": true
+  },
+  "furniture_caste_tiers": [
+    {
+      "caste_tier_id": "rough_utility_v0",
+      "plain_name": "Rough utility",
+      "social_read": "Servant, camp, dungeon, workshop, temporary, or scavenged use.",
+      "material_rules": ["plain planks", "visible fasteners", "patches", "rough bevels", "dark worn edges"],
+      "silhouette_rules": ["low ornament", "chunky support", "short build time", "asymmetry allowed"],
+      "starter_furniture": ["rough_plank_stool_v0", "workbench_tool_rack_v0"]
+    },
+    {
+      "caste_tier_id": "common_household_v0",
+      "plain_name": "Common household",
+      "social_read": "Everyday domestic furniture for taverns, kitchens, modest homes, barracks, or guest rooms.",
+      "material_rules": ["stained wood", "simple iron straps", "flat panels", "repair marks"],
+      "silhouette_rules": ["stable simple proportions", "few profiles", "functional joins visible"],
+      "starter_furniture": ["joined_bench_v0", "boarded_chest_coffer_v0", "trestle_table_v0"]
+    },
+    {
+      "caste_tier_id": "monastic_guild_v0",
+      "plain_name": "Monastic or guild",
+      "social_read": "Plain but disciplined furniture for refectories, scriptoria, guild halls, and training rooms.",
+      "material_rules": ["durable oak-like wood", "repeatable joinery", "limited carving", "clean wear lanes"],
+      "silhouette_rules": ["ordered repetition", "long shared forms", "upright reading surfaces"],
+      "starter_furniture": ["trestle_table_v0", "lectern_reading_desk_v0", "workbench_tool_rack_v0"]
+    },
+    {
+      "caste_tier_id": "merchant_bourgeois_v0",
+      "plain_name": "Merchant or bourgeois",
+      "social_read": "Owned display furniture showing household wealth, trade goods, locks, shelves, and carved fronts.",
+      "material_rules": ["panelled faces", "hinges and locks", "visible shelves", "moulded rails", "polished wear"],
+      "silhouette_rules": ["taller storage", "regular panels", "front-facing ornament"],
+      "starter_furniture": ["panelled_cupboard_v0", "boarded_chest_coffer_v0", "high_back_chair_v0"]
+    },
+    {
+      "caste_tier_id": "noble_household_v0",
+      "plain_name": "Noble household",
+      "social_read": "Furniture meant to display rank through carving, canopies, textiles, height, and controlled symmetry.",
+      "material_rules": ["carved wood", "cloth panels", "cushions", "polished trim", "metal mounts"],
+      "silhouette_rules": ["taller backs", "canopies", "symmetrical ornament", "raised seating or sleeping zones"],
+      "starter_furniture": ["high_back_chair_v0", "canopy_bed_v0", "panelled_cupboard_v0"]
+    },
+    {
+      "caste_tier_id": "royal_ritual_v0",
+      "plain_name": "Royal or ritual",
+      "social_read": "Authority furniture for thrones, altars, ceremonial halls, chapels, and boss-room landmarks.",
+      "material_rules": ["gilded trim hint", "stone or metal mounts", "symbol panels", "heavy cloth", "high contrast material roles"],
+      "silhouette_rules": ["central axis", "elevated seat or top", "wide arms", "crest or canopy signal"],
+      "starter_furniture": ["throne_court_chair_v0", "lectern_reading_desk_v0"]
+    },
+    {
+      "caste_tier_id": "scholarly_arcane_v0",
+      "plain_name": "Scholarly or arcane",
+      "social_read": "Research, map, scriptorium, laboratory, and puzzle furniture.",
+      "material_rules": ["ink stains", "map edges", "brass hardware", "small drawers", "book stops"],
+      "silhouette_rules": ["sloped surfaces", "compartments", "socketed tools", "repeatable shelves"],
+      "starter_furniture": ["lectern_reading_desk_v0", "panelled_cupboard_v0", "workbench_tool_rack_v0"]
+    },
+    {
+      "caste_tier_id": "ruin_salvage_v0",
+      "plain_name": "Ruin salvage",
+      "social_read": "Broken, repaired, stripped, burned, or reused furniture found in ruined spaces.",
+      "material_rules": ["missing boards", "broken legs", "splintered edges", "dark water marks", "replacement patches"],
+      "silhouette_rules": ["readable original form", "localized damage", "low-cost broken variants"],
+      "starter_furniture": ["boarded_chest_coffer_v0", "joined_bench_v0", "rough_plank_stool_v0"]
+    }
+  ],
+  "furniture_styles": [
+    {
+      "style_id": "rough_plank_vernacular_v0",
+      "plain_name": "Rough plank vernacular",
+      "visual_rules": ["flat boards", "square legs", "visible nail or peg heads", "uneven plank lengths"],
+      "geometry_terms": ["rectangle_profile", "extrude", "array_linear", "bevel_edges", "width", "height", "length"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["plank", "peg", "patch", "rough_edge", "support_block"]
+    },
+    {
+      "style_id": "joined_oak_frame_v0",
+      "plain_name": "Joined oak frame",
+      "visual_rules": ["stiles and rails", "mortise-and-tenon hints", "stretchers", "fielded panels", "square shoulders"],
+      "geometry_terms": ["rectangle_profile", "extrude", "boolean_cut", "offset_profile", "relief_stack", "socket", "edge_join", "width", "height", "length"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "modifier_boolean", "inset_faces", "extrude_faces", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["stile", "rail", "mortise", "tenon", "panel", "stretcher", "shoulder"]
+    },
+    {
+      "style_id": "gothic_panelled_v0",
+      "plain_name": "Gothic panelled",
+      "visual_rules": ["pointed arches", "tracery panels", "quatrefoil or rosette hints", "moulded rails", "dark recesses"],
+      "geometry_terms": ["pointed_arch_profile", "arch_profile", "circle_profile", "rectangle_profile", "boolean_cut", "relief_stack", "mirror_axis", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "modifier_boolean", "modifier_mirror", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["pointed_arch", "tracery_panel", "foil", "recess", "moulded_rail", "dark_void"]
+    },
+    {
+      "style_id": "monastic_plain_v0",
+      "plain_name": "Monastic plain",
+      "visual_rules": ["long shared furniture", "plain edges", "small bevels", "ordered repetition", "limited ornament"],
+      "geometry_terms": ["rectangle_profile", "extrude", "array_linear", "bevel_edges", "support", "width", "length", "height"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["long_plank", "plain_leg", "shared_surface", "reading_slope", "wear_lane"]
+    },
+    {
+      "style_id": "merchant_display_v0",
+      "plain_name": "Merchant display",
+      "visual_rules": ["doors", "locks", "shelves", "regular panels", "display ledges", "metal hardware"],
+      "geometry_terms": ["rectangle_profile", "rounded_rectangle_profile", "extrude", "boolean_cut", "offset_profile", "relief_stack", "socket", "height", "width"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "modifier_boolean", "inset_faces", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["door", "shelf", "lock_plate", "hinge", "display_ledge", "raised_panel"]
+    },
+    {
+      "style_id": "noble_carved_textile_v0",
+      "plain_name": "Noble carved and textile",
+      "visual_rules": ["high backs", "canopies", "cushions", "carved arms", "cloth hangings", "polished trim"],
+      "geometry_terms": ["rectangle_profile", "rounded_rectangle_profile", "arch_profile", "extrude", "relief_stack", "array_linear", "decorative_only", "height", "width"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "curve_bezier_add", "curve_bevel_profile", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map"],
+      "drawing_ui_tags": ["high_back", "arm_rest", "canopy", "cushion", "cloth_panel", "carved_trim"]
+    },
+    {
+      "style_id": "royal_ritual_axis_v0",
+      "plain_name": "Royal ritual axis",
+      "visual_rules": ["central crest", "raised dais relation", "wide arms", "symmetry", "symbol panel", "landmark silhouette"],
+      "geometry_terms": ["rectangle_profile", "arch_profile", "pointed_arch_profile", "mirror_axis", "relief_stack", "array_radial", "landmark", "height", "width"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cube_add", "primitive_uv_sphere_add", "modifier_mirror", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["central_axis", "crest", "symbol_panel", "dais_socket", "wide_arm", "landmark_back"]
+    },
+    {
+      "style_id": "ruin_repaired_v0",
+      "plain_name": "Ruin repaired",
+      "visual_rules": ["missing planks", "replacement patches", "broken legs", "split panels", "burned or water-darkened zones"],
+      "geometry_terms": ["rectangle_profile", "custom_polygon_profile", "boolean_cut", "bevel_edges", "offset_profile", "decorative_only", "bounds"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cube_add", "modifier_boolean", "bisect_mesh", "split_separate", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map"],
+      "drawing_ui_tags": ["missing_board", "patch", "broken_leg", "split", "char_mark", "waterline"]
+    }
+  ],
+  "furniture_families": [
+    {
+      "family_id": "seating_v0",
+      "plain_name": "Seating",
+      "core_function": "Objects designed for sitting, resting, waiting, eating, authority display, or social rank.",
+      "starter_furniture": ["rough_plank_stool_v0", "joined_bench_v0", "high_back_chair_v0", "throne_court_chair_v0"],
+      "drawing_ui_tags": ["seat_slab", "leg", "stretcher", "back", "arm", "cushion"]
+    },
+    {
+      "family_id": "tables_surfaces_v0",
+      "plain_name": "Tables and work surfaces",
+      "core_function": "Raised surfaces for eating, writing, trade, ritual, workshop labor, or maps.",
+      "starter_furniture": ["trestle_table_v0", "workbench_tool_rack_v0"],
+      "drawing_ui_tags": ["top_slab", "trestle", "leg", "stretcher", "apron", "work_surface"]
+    },
+    {
+      "family_id": "storage_v0",
+      "plain_name": "Storage",
+      "core_function": "Containers and case furniture for goods, clothing, tools, books, plate, and valuables.",
+      "starter_furniture": ["boarded_chest_coffer_v0", "panelled_cupboard_v0"],
+      "drawing_ui_tags": ["case", "lid", "door", "hinge", "lock_plate", "shelf", "strap"]
+    },
+    {
+      "family_id": "beds_sleeping_v0",
+      "plain_name": "Beds and sleeping furniture",
+      "core_function": "Sleeping platforms and status beds with posts, curtains, textiles, and raised frames.",
+      "starter_furniture": ["canopy_bed_v0"],
+      "drawing_ui_tags": ["bed_frame", "post", "canopy", "curtain", "mattress", "headboard"]
+    },
+    {
+      "family_id": "reading_scribing_v0",
+      "plain_name": "Reading and scribing furniture",
+      "core_function": "Sloped and organized furniture for books, writing, scripture, maps, and study.",
+      "starter_furniture": ["lectern_reading_desk_v0"],
+      "drawing_ui_tags": ["sloped_top", "book_stop", "side_panel", "shelf", "drawer", "ink_well_socket"]
+    },
+    {
+      "family_id": "workshop_utility_v0",
+      "plain_name": "Workshop utility",
+      "core_function": "Durable support furniture for crafting stations, tools, racks, repairs, and game interaction.",
+      "starter_furniture": ["workbench_tool_rack_v0"],
+      "drawing_ui_tags": ["bench_top", "vise_hint", "tool_slot", "peg_row", "lower_shelf", "scar"]
+    }
+  ],
+  "furniture_items": [
+    {
+      "furniture_id": "rough_plank_stool_v0",
+      "plain_name": "Rough plank stool",
+      "family_id": "seating_v0",
+      "caste_tier_ids": ["rough_utility_v0", "common_household_v0", "ruin_salvage_v0"],
+      "style_ids": ["rough_plank_vernacular_v0", "ruin_repaired_v0"],
+      "source_support": [
+        {
+          "label": "Britannica furniture overview",
+          "url": "https://www.britannica.com/topic/furniture",
+          "support_summary": "Supports furniture as movable household equipment ranging from simple chests and country chairs to elaborate display pieces."
+        },
+        {
+          "label": "Britannica chair",
+          "url": "https://www.britannica.com/topic/chair",
+          "support_summary": "Supports seating as a major furniture category and a status-sensitive object family."
+        }
+      ],
+      "game_use_roles": ["tavern seat", "camp clutter", "dungeon prop", "breakable object", "height step"],
+      "anatomy_parts": [
+        {"part_id": "seat_slab", "plain_name": "seat slab", "geometry_role": "flat rectangular sitting surface"},
+        {"part_id": "legs", "plain_name": "legs", "geometry_role": "three or four simple supports"},
+        {"part_id": "cross_braces", "plain_name": "cross braces", "geometry_role": "low stretchers or support planks"},
+        {"part_id": "peg_heads", "plain_name": "peg heads", "geometry_role": "small visible fastener hints"}
+      ],
+      "materials": ["rough wood planks", "wood pegs", "dark worn edge material"],
+      "real_tools": ["saw", "knife", "chisel", "mallet", "drill", "plane"],
+      "craft_sequence": [
+        "Block the seat slab and legs as separate named parts.",
+        "Add low stretchers only if they help the silhouette or breakability.",
+        "Place a few peg heads or patch planks for readable rough utility.",
+        "Use small bevels so the stool is not a perfect cube cluster.",
+        "Reserve broken-leg variants for ruin or salvage caste."
+      ],
+      "geometry_terms": ["rectangle_profile", "extrude", "array_linear", "bevel_edges", "width", "height", "length", "bounds", "walkable"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "create_collision_proxy", "create_lod_variant"],
+      "drawing_ui_tags": ["seat_slab", "leg", "stretcher", "peg", "rough_edge", "broken_leg"],
+      "source_fields_needed": ["seat_bounds_m", "leg_count", "leg_bounds_m", "stretcher_count", "peg_count", "bevel_width_m", "breakable_policy"],
+      "operator_checks": ["Does the stool read in silhouette with no texture?", "Are legs separate enough for break variants?", "Can collision proxy stay simpler than render geometry?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "A Stool is Never Just a Stool",
+          "player_reward": "Teaches plank, leg, stretcher, peg, and repair-patch vocabulary for common props.",
+          "detail_prompt": "The cheapest seat in a room still tells you who was expected to wait."
+        }
+      ],
+      "deferred_details": ["accurate period stool variants", "animated break pieces", "sit interaction offsets"]
+    },
+    {
+      "furniture_id": "joined_bench_v0",
+      "plain_name": "Joined bench",
+      "family_id": "seating_v0",
+      "caste_tier_ids": ["common_household_v0", "monastic_guild_v0", "ruin_salvage_v0"],
+      "style_ids": ["joined_oak_frame_v0", "monastic_plain_v0", "ruin_repaired_v0"],
+      "source_support": [
+        {
+          "label": "Britannica furniture overview",
+          "url": "https://www.britannica.com/topic/furniture",
+          "support_summary": "Supports furniture materials, wood treatment, constructional style, and broad furniture categories."
+        },
+        {
+          "label": "Common Woodworking mortise and tenon",
+          "url": "https://commonwoodworking.com/mortise-and-tenon/",
+          "support_summary": "Supports mortise-and-tenon joinery as a useful vocabulary model for joined furniture assets."
+        }
+      ],
+      "game_use_roles": ["refectory seating", "tavern bench", "hall seating", "barracks prop", "cover edge"],
+      "anatomy_parts": [
+        {"part_id": "seat_board", "plain_name": "seat board", "geometry_role": "long rectangular sitting surface"},
+        {"part_id": "end_supports", "plain_name": "end supports", "geometry_role": "side frames or legs"},
+        {"part_id": "stretchers", "plain_name": "stretchers", "geometry_role": "horizontal rails tying supports together"},
+        {"part_id": "apron", "plain_name": "apron", "geometry_role": "side rail below the seat"},
+        {"part_id": "joinery_hints", "plain_name": "joinery hints", "geometry_role": "small shoulders, pegs, or socket marks"}
+      ],
+      "materials": ["oak-like wood", "wood pegs", "dark recess material"],
+      "real_tools": ["saw", "plane", "mortise chisel", "mallet", "marking gauge", "drill", "clamps"],
+      "craft_sequence": [
+        "Set the long seat board and end support locations.",
+        "Add side aprons and stretchers as named rail parts.",
+        "Use shallow boolean or relief marks for mortise/tenon hints.",
+        "Create monastic, tavern, and ruined variants by toggling ornament and damage.",
+        "Keep the bench collision proxy as one long box."
+      ],
+      "geometry_terms": ["rectangle_profile", "extrude", "boolean_cut", "array_linear", "socket", "edge_join", "bevel_edges", "length", "width", "height", "cover"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "modifier_boolean", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "create_collision_proxy", "create_lod_variant"],
+      "drawing_ui_tags": ["seat_board", "end_support", "apron", "stretcher", "mortise", "peg", "wear_lane"],
+      "source_fields_needed": ["seat_length_m", "seat_width_m", "seat_height_m", "support_count", "stretcher_positions_m", "joinery_mark_depth_m", "damage_policy"],
+      "operator_checks": ["Does the bench read as joined furniture rather than stacked blocks?", "Are apron and stretchers named?", "Is the wear lane on the seat top?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Long Seat of the Hall",
+          "player_reward": "Names apron, stretcher, peg, and wear lane for benches and refectory furniture.",
+          "detail_prompt": "A bench remembers the room by where its edges shine."
+        }
+      ],
+      "deferred_details": ["accurate regional bench profiles", "sitting animation targets", "cloth runner variants"]
+    },
+    {
+      "furniture_id": "boarded_chest_coffer_v0",
+      "plain_name": "Boarded chest or coffer",
+      "family_id": "storage_v0",
+      "caste_tier_ids": ["common_household_v0", "merchant_bourgeois_v0", "ruin_salvage_v0"],
+      "style_ids": ["rough_plank_vernacular_v0", "joined_oak_frame_v0", "gothic_panelled_v0", "ruin_repaired_v0"],
+      "source_support": [
+        {
+          "label": "Britannica furniture overview",
+          "url": "https://www.britannica.com/topic/furniture",
+          "support_summary": "Supports chests as simple furniture and metal bands as medieval strengthening and ornament."
+        },
+        {
+          "label": "V&A furniture collection",
+          "url": "https://www.vam.ac.uk/collections/furniture",
+          "support_summary": "Supports museum-level furniture variety and technique context for collection references."
+        }
+      ],
+      "game_use_roles": ["loot container", "household storage", "merchant good", "trap container", "quest evidence"],
+      "anatomy_parts": [
+        {"part_id": "box_case", "plain_name": "box case", "geometry_role": "rectangular storage body"},
+        {"part_id": "lid", "plain_name": "lid", "geometry_role": "top-opening slab or shallow peaked lid"},
+        {"part_id": "iron_straps", "plain_name": "iron straps", "geometry_role": "metal reinforcement bands across planks"},
+        {"part_id": "hinges", "plain_name": "hinges", "geometry_role": "rear or side rotating hardware hints"},
+        {"part_id": "lock_plate", "plain_name": "lock plate", "geometry_role": "front metal plate and keyhole"},
+        {"part_id": "panel_front", "plain_name": "panel front", "geometry_role": "plain or carved visible front face"}
+      ],
+      "materials": ["wood boards", "iron straps", "dark lock recess", "optional cloth lining"],
+      "real_tools": ["saw", "plane", "chisel", "mallet", "drill", "strap iron", "hinge hardware"],
+      "craft_sequence": [
+        "Build the storage box before ornament or hardware.",
+        "Add lid, straps, hinges, lock plate, and handles as separate named parts.",
+        "Use panel relief or simple Gothic cuts for higher caste variants.",
+        "Use boolean/damage cuts for salvage and looted variants.",
+        "Create collision and interaction sockets separately from visible lid geometry."
+      ],
+      "geometry_terms": ["rectangle_profile", "extrude", "boolean_cut", "offset_profile", "relief_stack", "array_linear", "socket", "width", "height", "length", "cover"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "modifier_boolean", "inset_faces", "extrude_faces", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "create_collision_proxy"],
+      "drawing_ui_tags": ["case", "lid", "strap", "hinge", "lock_plate", "handle", "panel", "loot_socket"],
+      "source_fields_needed": ["case_bounds_m", "lid_profile", "strap_count", "strap_width_m", "hinge_count", "lock_plate_bounds_m", "panel_style_id", "interaction_socket"],
+      "operator_checks": ["Does the lid read as openable?", "Are metal straps separate from wood?", "Can the same chest become common, merchant, noble, or ruined by toggles?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Straps, Locks, and Secrets",
+          "player_reward": "Teaches lid, strap, hinge, lock plate, and coffer vocabulary for loot containers.",
+          "detail_prompt": "A chest with iron bands is not just guarded from thieves; it is guarded from time."
+        }
+      ],
+      "deferred_details": ["animated lid hinge", "lockpicking mechanics", "exact historical lock hardware", "interior contents layout"]
+    },
+    {
+      "furniture_id": "trestle_table_v0",
+      "plain_name": "Trestle table",
+      "family_id": "tables_surfaces_v0",
+      "caste_tier_ids": ["common_household_v0", "monastic_guild_v0", "merchant_bourgeois_v0"],
+      "style_ids": ["rough_plank_vernacular_v0", "monastic_plain_v0", "joined_oak_frame_v0"],
+      "source_support": [
+        {
+          "label": "Britannica table",
+          "url": "https://www.britannica.com/topic/table-furniture",
+          "support_summary": "Supports tables as flat slabs supported by trestles, legs, or pillars and specifically notes medieval trestle construction."
+        },
+        {
+          "label": "Britannica furniture overview",
+          "url": "https://www.britannica.com/topic/furniture",
+          "support_summary": "Supports furniture function, material, and social/decorative variation."
+        }
+      ],
+      "game_use_roles": ["great hall table", "tavern dining table", "merchant counter", "map surface", "cover object"],
+      "anatomy_parts": [
+        {"part_id": "top_boards", "plain_name": "top boards", "geometry_role": "long flat tabletop slab or board group"},
+        {"part_id": "trestles", "plain_name": "trestles", "geometry_role": "removable central support frames"},
+        {"part_id": "feet", "plain_name": "feet", "geometry_role": "bottom supports for each trestle"},
+        {"part_id": "long_stretcher", "plain_name": "long stretcher", "geometry_role": "beam tying trestles together"},
+        {"part_id": "peg_holes", "plain_name": "peg holes", "geometry_role": "small assembly marks or removable-join hints"}
+      ],
+      "materials": ["wood boards", "oak-like trestle frame", "peg heads", "worn tabletop material"],
+      "real_tools": ["saw", "plane", "chisel", "mallet", "drill", "straightedge", "clamps"],
+      "craft_sequence": [
+        "Lay out tabletop boards as one slab or named planks.",
+        "Place two or more trestle frames under the top.",
+        "Add long stretcher and peg-hole hints to show knockdown construction.",
+        "Scale table length for hall, tavern, or workroom variants.",
+        "Use material slots for worn eating/work surface and dark underside."
+      ],
+      "geometry_terms": ["rectangle_profile", "trapezoid_profile", "extrude", "array_linear", "edge_join", "bevel_edges", "length", "width", "height", "cover"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "uv_cube_project", "create_collision_proxy", "create_lod_variant"],
+      "drawing_ui_tags": ["top_board", "trestle", "foot", "long_stretcher", "peg_hole", "wear_lane"],
+      "source_fields_needed": ["tabletop_bounds_m", "board_count", "trestle_count", "trestle_profile", "stretcher_bounds_m", "peg_hole_positions", "surface_role"],
+      "operator_checks": ["Do trestles clearly support the top?", "Is the table scalable without redesigning supports?", "Does the top surface carry the wear/material story?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Board and the Trestle",
+          "player_reward": "Explains trestles, top boards, stretchers, peg holes, and hall-table rank.",
+          "detail_prompt": "The table can be struck down and moved, but the seating order follows it like a shadow."
+        }
+      ],
+      "deferred_details": ["folding trestle animation", "place-setting sockets", "exact hall seating rules"]
+    },
+    {
+      "furniture_id": "panelled_cupboard_v0",
+      "plain_name": "Panelled cupboard",
+      "family_id": "storage_v0",
+      "caste_tier_ids": ["merchant_bourgeois_v0", "noble_household_v0", "scholarly_arcane_v0"],
+      "style_ids": ["merchant_display_v0", "gothic_panelled_v0", "joined_oak_frame_v0"],
+      "source_support": [
+        {
+          "label": "Britannica cupboard",
+          "url": "https://www.britannica.com/topic/cupboard",
+          "support_summary": "Supports cupboard history from medieval board/display furniture to enclosed cases with doors, panels, carving, shelves, and display uses."
+        },
+        {
+          "label": "V&A furniture collection",
+          "url": "https://www.vam.ac.uk/collections/furniture",
+          "support_summary": "Supports museum furniture reference and style/technique variety for case furniture."
+        }
+      ],
+      "game_use_roles": ["merchant storage", "display cabinet", "library storage", "quest clue container", "locked case"],
+      "anatomy_parts": [
+        {"part_id": "carcass", "plain_name": "carcass", "geometry_role": "main case body"},
+        {"part_id": "doors", "plain_name": "doors", "geometry_role": "front-opening panels"},
+        {"part_id": "shelves", "plain_name": "shelves", "geometry_role": "horizontal storage surfaces"},
+        {"part_id": "raised_panels", "plain_name": "raised panels", "geometry_role": "fielded or framed decorative door faces"},
+        {"part_id": "hinges", "plain_name": "hinges", "geometry_role": "small side hardware"},
+        {"part_id": "lock_plate", "plain_name": "lock plate", "geometry_role": "front security detail"},
+        {"part_id": "cornice", "plain_name": "cornice", "geometry_role": "top moulding band"}
+      ],
+      "materials": ["joined wood", "iron or brass hardware", "dark shelf interior", "optional painted panel"],
+      "real_tools": ["saw", "plane", "mortise chisel", "mallet", "router plane", "drill", "carving gouge", "clamps"],
+      "craft_sequence": [
+        "Build the carcass as a box with named side, back, shelf, and door parts.",
+        "Add door panels, hinges, lock plate, and cornice as separate details.",
+        "Use relief stacks for raised panels before adding carved or Gothic cuts.",
+        "Create open-shelf and closed-door variants from the same source fields.",
+        "Keep display contents out of the core furniture asset unless declared as sockets."
+      ],
+      "geometry_terms": ["rectangle_profile", "rounded_rectangle_profile", "pointed_arch_profile", "extrude", "boolean_cut", "offset_profile", "relief_stack", "socket", "height", "width", "length"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "modifier_boolean", "inset_faces", "extrude_faces", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "create_collision_proxy"],
+      "drawing_ui_tags": ["carcass", "door", "shelf", "raised_panel", "hinge", "lock_plate", "cornice", "display_socket"],
+      "source_fields_needed": ["case_bounds_m", "door_count", "shelf_count", "panel_grid", "cornice_profile", "hinge_positions", "lock_plate_bounds_m", "display_socket_policy"],
+      "operator_checks": ["Does it read as cupboard rather than chest?", "Are doors, shelves, and panels named separately?", "Can it switch between merchant display and scholarly storage?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Cupboard Learns to Stand",
+          "player_reward": "Names carcass, raised panel, hinge, shelf, cornice, and display ledge.",
+          "detail_prompt": "When storage learned doors, wealth learned how to show itself."
+        }
+      ],
+      "deferred_details": ["animated doors", "contents generation", "complex intarsia", "accurate regional cupboard forms"]
+    },
+    {
+      "furniture_id": "high_back_chair_v0",
+      "plain_name": "High-back chair",
+      "family_id": "seating_v0",
+      "caste_tier_ids": ["merchant_bourgeois_v0", "noble_household_v0"],
+      "style_ids": ["joined_oak_frame_v0", "gothic_panelled_v0", "noble_carved_textile_v0"],
+      "source_support": [
+        {
+          "label": "Britannica chair",
+          "url": "https://www.britannica.com/topic/chair",
+          "support_summary": "Supports chairs as a distinct seating type with changing form, ornament, and status associations."
+        },
+        {
+          "label": "Britannica furniture overview",
+          "url": "https://www.britannica.com/topic/furniture",
+          "support_summary": "Supports furniture social variation from simple seating to elaborate decorated forms."
+        }
+      ],
+      "game_use_roles": ["dining chair", "noble chamber seat", "merchant office seat", "status prop", "reading nook prop"],
+      "anatomy_parts": [
+        {"part_id": "seat_frame", "plain_name": "seat frame", "geometry_role": "square or trapezoid base frame"},
+        {"part_id": "front_legs", "plain_name": "front legs", "geometry_role": "front support pair"},
+        {"part_id": "rear_legs", "plain_name": "rear legs", "geometry_role": "rear supports continuing into back posts"},
+        {"part_id": "back_panel", "plain_name": "back panel", "geometry_role": "tall panel or rail-and-slat back"},
+        {"part_id": "arms", "plain_name": "optional arms", "geometry_role": "side supports for higher-rank variants"},
+        {"part_id": "cushion", "plain_name": "optional cushion", "geometry_role": "soft seat or back pad"}
+      ],
+      "materials": ["joined wood", "optional textile cushion", "dark panel recesses", "polished edge material"],
+      "real_tools": ["saw", "plane", "chisel", "mallet", "drill", "scraper", "clamps", "needle for cushion variant"],
+      "craft_sequence": [
+        "Build seat frame, legs, and back posts from simple named solids.",
+        "Add back panel or rail/slat layout before carved decoration.",
+        "Add arms and cushion only for higher status variants.",
+        "Use relief or Gothic panel cuts on the back for merchant/noble versions.",
+        "Keep sitting/interaction socket separate from chair geometry."
+      ],
+      "geometry_terms": ["rectangle_profile", "rounded_rectangle_profile", "pointed_arch_profile", "extrude", "relief_stack", "mirror_axis", "array_linear", "socket", "height", "width", "decorative_only"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "modifier_mirror", "modifier_array", "modifier_boolean", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map", "create_collision_proxy"],
+      "drawing_ui_tags": ["seat_frame", "leg", "back_post", "back_panel", "arm_rest", "cushion", "sit_socket"],
+      "source_fields_needed": ["seat_bounds_m", "leg_profile", "back_height_m", "back_panel_profile", "arm_enabled", "cushion_profile", "sit_socket"],
+      "operator_checks": ["Does the back height communicate status?", "Can arms/cushion be toggled independently?", "Is the sitting socket simpler than render geometry?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Back of Rank",
+          "player_reward": "Teaches chair parts and why high backs, arms, and cushions signal social rank.",
+          "detail_prompt": "A chair grows taller when the owner expects others to look up."
+        }
+      ],
+      "deferred_details": ["ergonomic animation fit", "cloth simulation", "regional chair profile variants"]
+    },
+    {
+      "furniture_id": "canopy_bed_v0",
+      "plain_name": "Canopy bed",
+      "family_id": "beds_sleeping_v0",
+      "caste_tier_ids": ["noble_household_v0", "royal_ritual_v0"],
+      "style_ids": ["noble_carved_textile_v0", "royal_ritual_axis_v0"],
+      "source_support": [
+        {
+          "label": "Britannica bed",
+          "url": "https://www.britannica.com/topic/bed-furniture",
+          "support_summary": "Supports bed furniture forms, platform/canopy context, and sleeping furniture as a status-sensitive asset family."
+        },
+        {
+          "label": "Britannica furniture overview",
+          "url": "https://www.britannica.com/topic/furniture",
+          "support_summary": "Supports textiles, upholstery/covers, decorative processes, and wood furniture materials."
+        }
+      ],
+      "game_use_roles": ["noble bedroom landmark", "royal chamber prop", "quest evidence scene", "safe-room rest object", "textile showcase"],
+      "anatomy_parts": [
+        {"part_id": "bed_frame", "plain_name": "bed frame", "geometry_role": "raised rectangular sleeping frame"},
+        {"part_id": "posts", "plain_name": "corner posts", "geometry_role": "four vertical supports"},
+        {"part_id": "canopy_frame", "plain_name": "canopy frame", "geometry_role": "top rectangular rail assembly"},
+        {"part_id": "curtains", "plain_name": "curtains", "geometry_role": "hanging cloth panels or simplified planes"},
+        {"part_id": "mattress", "plain_name": "mattress", "geometry_role": "soft rectangular pad"},
+        {"part_id": "headboard", "plain_name": "headboard", "geometry_role": "decorative vertical end panel"}
+      ],
+      "materials": ["carved wood", "cloth curtains", "mattress textile", "dark underside", "optional metal mounts"],
+      "real_tools": ["saw", "plane", "chisel", "mallet", "drill", "carving gouge", "needle", "clamps"],
+      "craft_sequence": [
+        "Build the bed frame and mattress first.",
+        "Place four posts and connect them with a canopy frame.",
+        "Add headboard and footboard as separate panels.",
+        "Represent curtains as low-cost hanging planes or thicker folded strips.",
+        "Use material slots and optional trim to establish noble or royal status."
+      ],
+      "geometry_terms": ["rectangle_profile", "rounded_rectangle_profile", "extrude", "array_linear", "mirror_axis", "bevel_edges", "socket", "height", "width", "length", "decorative_only"],
+      "blender_tool_ids": ["primitive_cube_add", "primitive_plane_add", "mesh_from_pydata", "modifier_mirror", "modifier_array", "modifier_bevel", "modifier_solidify", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map", "create_collision_proxy"],
+      "drawing_ui_tags": ["bed_frame", "post", "canopy", "curtain", "mattress", "headboard", "rest_socket"],
+      "source_fields_needed": ["frame_bounds_m", "post_height_m", "post_profile", "canopy_height_m", "curtain_panel_count", "mattress_bounds_m", "headboard_profile", "rest_socket"],
+      "operator_checks": ["Does the canopy establish noble status before texture?", "Are cloth panels low-cost and optional?", "Can frame, mattress, posts, and curtains be selected separately?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Curtains Around Sleep",
+          "player_reward": "Names canopy, post, curtain, headboard, mattress, and rest socket.",
+          "detail_prompt": "In a cold hall, cloth around a bed is privacy, warmth, and rank at once."
+        }
+      ],
+      "deferred_details": ["cloth folds by simulation", "sleep animation fit", "accurate textile fasteners", "bedding variations"]
+    },
+    {
+      "furniture_id": "lectern_reading_desk_v0",
+      "plain_name": "Lectern or reading desk",
+      "family_id": "reading_scribing_v0",
+      "caste_tier_ids": ["monastic_guild_v0", "royal_ritual_v0", "scholarly_arcane_v0"],
+      "style_ids": ["monastic_plain_v0", "gothic_panelled_v0", "royal_ritual_axis_v0"],
+      "source_support": [
+        {
+          "label": "Britannica desk",
+          "url": "https://www.britannica.com/topic/desk",
+          "support_summary": "Supports desks as writing/reading furniture and a source for specialized furniture forms."
+        },
+        {
+          "label": "Britannica furniture overview",
+          "url": "https://www.britannica.com/topic/furniture",
+          "support_summary": "Supports specialized furniture, wood material, and decorative/function variation."
+        }
+      ],
+      "game_use_roles": ["scriptorium prop", "chapel lectern", "quest book stand", "map reading station", "spellbook pedestal"],
+      "anatomy_parts": [
+        {"part_id": "sloped_top", "plain_name": "sloped top", "geometry_role": "angled reading or writing surface"},
+        {"part_id": "book_stop", "plain_name": "book stop", "geometry_role": "raised ledge stopping the book or scroll"},
+        {"part_id": "side_panels", "plain_name": "side panels", "geometry_role": "support cheeks below the slope"},
+        {"part_id": "base", "plain_name": "base", "geometry_role": "foot or pedestal support"},
+        {"part_id": "shelf", "plain_name": "optional shelf", "geometry_role": "storage shelf under the top"},
+        {"part_id": "symbol_panel", "plain_name": "optional symbol panel", "geometry_role": "front ritual or arcane motif field"}
+      ],
+      "materials": ["joined wood", "dark recess material", "optional brass mounts", "ink-stained surface"],
+      "real_tools": ["saw", "plane", "chisel", "mallet", "drill", "carving gouge", "clamps"],
+      "craft_sequence": [
+        "Establish sloped top angle and book-stop ledge.",
+        "Build side panels and base as stable supports.",
+        "Add shelf, drawer, or symbol panel as caste/style toggles.",
+        "Use dark material or relief cuts for book rest and front panel.",
+        "Keep readable/book socket separate from the wood mesh."
+      ],
+      "geometry_terms": ["rectangle_profile", "trapezoid_profile", "pointed_arch_profile", "extrude", "boolean_cut", "relief_stack", "socket", "angle", "height", "width", "decorative_only"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "modifier_boolean", "modifier_mirror", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "uv_cube_project", "create_collision_proxy"],
+      "drawing_ui_tags": ["sloped_top", "book_stop", "side_panel", "base", "shelf", "symbol_panel", "book_socket"],
+      "source_fields_needed": ["top_bounds_m", "slope_angle_deg", "book_stop_height_m", "side_panel_profile", "base_profile", "shelf_enabled", "book_socket", "symbol_panel_id"],
+      "operator_checks": ["Does the slope read clearly?", "Is the book socket independent?", "Can it switch from plain scriptorium to ritual/arcane by changing the front panel?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Desk That Faces Upward",
+          "player_reward": "Teaches sloped top, book stop, side panel, shelf, and book socket vocabulary.",
+          "detail_prompt": "The angle of a desk tells you whether the hand writes, the eye reads, or the room worships."
+        }
+      ],
+      "deferred_details": ["actual book prop binding", "writing animation target", "turning pages", "complex eagle lectern variants"]
+    },
+    {
+      "furniture_id": "workbench_tool_rack_v0",
+      "plain_name": "Workbench and tool rack",
+      "family_id": "workshop_utility_v0",
+      "caste_tier_ids": ["rough_utility_v0", "monastic_guild_v0", "scholarly_arcane_v0"],
+      "style_ids": ["rough_plank_vernacular_v0", "monastic_plain_v0", "merchant_display_v0"],
+      "source_support": [
+        {
+          "label": "Britannica furniture overview",
+          "url": "https://www.britannica.com/topic/furniture",
+          "support_summary": "Supports specialized furniture and material/tool treatment for furniture construction."
+        },
+        {
+          "label": "Common Woodworking mortise and tenon",
+          "url": "https://commonwoodworking.com/mortise-and-tenon/",
+          "support_summary": "Supports joinery terms that make workshop furniture readable and tool-rack parts plausible."
+        }
+      ],
+      "game_use_roles": ["crafting station", "repair bench", "smith or carpenter prop", "alchemy table base", "tool storage"],
+      "anatomy_parts": [
+        {"part_id": "bench_top", "plain_name": "bench top", "geometry_role": "thick work surface"},
+        {"part_id": "legs", "plain_name": "legs", "geometry_role": "heavy supports"},
+        {"part_id": "lower_shelf", "plain_name": "lower shelf", "geometry_role": "storage plank below the top"},
+        {"part_id": "peg_row", "plain_name": "peg row", "geometry_role": "repeated wall or back-board tool hangers"},
+        {"part_id": "tool_slots", "plain_name": "tool slots", "geometry_role": "sockets for future tool props"},
+        {"part_id": "vise_hint", "plain_name": "vise hint", "geometry_role": "simple clamp or jaw detail"}
+      ],
+      "materials": ["scarred wood", "iron clamp hardware", "dark tool slots", "stain and cut marks"],
+      "real_tools": ["saw", "plane", "chisel", "mallet", "drill", "clamps", "marking gauge"],
+      "craft_sequence": [
+        "Build the thick bench top and support frame.",
+        "Add lower shelf, peg row, and tool sockets as separate interactable zones.",
+        "Use shallow cuts, scars, and material slots to show heavy use.",
+        "Attach optional vise or clamp hint to one side.",
+        "Keep tool props as sockets unless a later asset explicitly includes them."
+      ],
+      "geometry_terms": ["rectangle_profile", "extrude", "boolean_cut", "array_linear", "socket", "anchor", "bevel_edges", "width", "height", "length", "support"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "modifier_boolean", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_noise_texture", "procedural_bump_map", "create_collision_proxy"],
+      "drawing_ui_tags": ["bench_top", "leg", "lower_shelf", "peg_row", "tool_slot", "vise_hint", "scar"],
+      "source_fields_needed": ["bench_bounds_m", "leg_profile", "shelf_bounds_m", "peg_count", "tool_socket_ids", "vise_enabled", "scar_pattern_policy", "crafting_socket"],
+      "operator_checks": ["Are tool slots sockets rather than baked guesses?", "Does the top show a work surface role?", "Can the same bench become carpenter, alchemist, or smith with attachments?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "A Bench is a Map of Work",
+          "player_reward": "Names bench top, peg row, tool slot, lower shelf, and vise hint for crafting stations.",
+          "detail_prompt": "The scars on a bench are measurements left behind by hands."
+        }
+      ],
+      "deferred_details": ["tool prop population", "crafting UI integration", "animated vise", "specialized trade variants"]
+    },
+    {
+      "furniture_id": "throne_court_chair_v0",
+      "plain_name": "Throne or court chair",
+      "family_id": "seating_v0",
+      "caste_tier_ids": ["royal_ritual_v0", "noble_household_v0"],
+      "style_ids": ["royal_ritual_axis_v0", "gothic_panelled_v0", "noble_carved_textile_v0"],
+      "source_support": [
+        {
+          "label": "Britannica furniture overview",
+          "url": "https://www.britannica.com/topic/furniture",
+          "support_summary": "Supports elaborate, gilded, ceremonial, and status furniture as part of the furniture range."
+        },
+        {
+          "label": "Britannica chair",
+          "url": "https://www.britannica.com/topic/chair",
+          "support_summary": "Supports chair forms and authority/status readings for seating."
+        }
+      ],
+      "game_use_roles": ["boss room landmark", "royal hall prop", "ritual seat", "quest target", "faction identity marker"],
+      "anatomy_parts": [
+        {"part_id": "raised_seat", "plain_name": "raised seat", "geometry_role": "elevated sitting slab or cushion"},
+        {"part_id": "high_back", "plain_name": "high back", "geometry_role": "large vertical landmark panel"},
+        {"part_id": "arms", "plain_name": "wide arms", "geometry_role": "broad side supports"},
+        {"part_id": "crest", "plain_name": "crest", "geometry_role": "top symbolic silhouette"},
+        {"part_id": "symbol_panel", "plain_name": "symbol panel", "geometry_role": "central relief or heraldic field"},
+        {"part_id": "dais_socket", "plain_name": "dais socket", "geometry_role": "placement relation to raised floor or platform"}
+      ],
+      "materials": ["carved wood or stone-like frame", "cloth cushion", "metal or gilded trim hint", "dark relief recess"],
+      "real_tools": ["saw", "plane", "chisel", "mallet", "carving gouge", "drill", "clamps", "upholstery needle"],
+      "craft_sequence": [
+        "Build the chair as a central-axis landmark, not ordinary seating.",
+        "Add raised seat, wide arms, and high back before ornament.",
+        "Place crest and symbol panel on the main axis.",
+        "Add cushion or cloth panel for noble/royal versions.",
+        "Declare dais or platform socket separately so the chair can fit rooms."
+      ],
+      "geometry_terms": ["rectangle_profile", "pointed_arch_profile", "arch_profile", "relief_stack", "mirror_axis", "array_radial", "socket", "landmark", "height", "width", "decorative_only"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "primitive_uv_sphere_add", "modifier_mirror", "modifier_array", "modifier_boolean", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "create_collision_proxy"],
+      "drawing_ui_tags": ["central_axis", "raised_seat", "high_back", "wide_arm", "crest", "symbol_panel", "dais_socket"],
+      "source_fields_needed": ["seat_bounds_m", "back_height_m", "arm_width_m", "crest_profile", "symbol_panel_id", "dais_socket", "cushion_enabled", "landmark_priority"],
+      "operator_checks": ["Does it read as authority furniture from silhouette alone?", "Is the symbol panel source-owned, not invented in Blender?", "Can the dais relation be adjusted without changing the chair mesh?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Seat that Makes a Room Kneel",
+          "player_reward": "Teaches central axis, crest, symbol panel, dais socket, and authority silhouette.",
+          "detail_prompt": "A throne is a chair only to the one allowed to sit in it."
+        }
+      ],
+      "deferred_details": ["heraldry generation", "animation sit offsets", "faction-specific symbol packs", "complex upholstery folds"]
+    }
+  ]
+}

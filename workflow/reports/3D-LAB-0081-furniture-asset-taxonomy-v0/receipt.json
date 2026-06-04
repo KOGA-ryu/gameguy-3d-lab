@@ -1,0 +1,56 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0081-furniture-asset-taxonomy-v0",
+  "title": "Furniture asset taxonomy v0",
+  "status": "complete",
+  "new_files": [
+    "data/asset_taxonomy/furniture_v0/furniture_asset_taxonomy_v0.json",
+    "docs/research/furniture_assets_v0/README.md",
+    "docs/research/furniture_assets_v0/furniture_source_index_v0.md",
+    "docs/research/furniture_assets_v0/furniture_style_caste_system_v0.md",
+    "docs/research/furniture_assets_v0/furniture_family_build_plans_v0.md",
+    "docs/research/furniture_assets_v0/furniture_lore_book_hooks_v0.md",
+    "docs/research/furniture_assets_v0/operator_furniture_handoff_v0.md",
+    "scripts/validate_furniture_asset_taxonomy_v0.py",
+    "tests/test_validate_furniture_asset_taxonomy_v0.py"
+  ],
+  "updated_files": [
+    "README.md",
+    "data/asset_taxonomy/README.md"
+  ],
+  "caste_tier_count": 8,
+  "style_count": 8,
+  "family_count": 6,
+  "furniture_count": 10,
+  "rules": {
+    "game_asset_planning_only": true,
+    "not_fabrication_ready": true,
+    "not_ergonomic_or_safety_guidance": true,
+    "not_historical_authenticity_claim": true,
+    "no_blender_execution": true,
+    "no_generated_assets": true
+  },
+  "validation": {
+    "furniture_json_parse": {
+      "command": "python3 -m json.tool data/asset_taxonomy/furniture_v0/furniture_asset_taxonomy_v0.json",
+      "result": "PASS"
+    },
+    "validator_compile": {
+      "command": "python3 -m py_compile scripts/validate_furniture_asset_taxonomy_v0.py",
+      "result": "PASS"
+    },
+    "furniture_validate": {
+      "command": "python3 scripts/validate_furniture_asset_taxonomy_v0.py",
+      "result": "PASS caste_tiers=8 styles=8 families=6 furniture=10 geometry_terms=75 tools=97"
+    },
+    "unit_test": {
+      "command": "python3 -m unittest tests/test_validate_furniture_asset_taxonomy_v0.py",
+      "result": "PASS"
+    },
+    "asset_generation_registry_validate": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS"
+    }
+  },
+  "recommended_next_goal": "Add per-furniture workcards and promote boarded_chest_coffer_v0 or trestle_table_v0 into a deterministic source-to-tool-plan recipe."
+}
