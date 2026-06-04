@@ -506,6 +506,58 @@ def validate_source_taxonomy_bundle(item: Any, index: int, known_labels: set[str
     }
 
 
+def validate_source_component_style_sheet_bundle(item: Any, index: int, known_labels: set[str]) -> dict[str, Any]:
+    bundle_ref = require_object(item, f"source_component_style_sheet_bundles[{index}]")
+    path = repo_path(bundle_ref.get("path"), f"source_component_style_sheet_bundles[{index}].path")
+    registry = load_json(path)
+    expected_schema = require_string(bundle_ref.get("schema"), f"source_component_style_sheet_bundles[{index}].schema")
+    if registry.get("schema") != expected_schema:
+        fail(f"{display_path(path)} schema must be {expected_schema}")
+    bundle_id = require_string(bundle_ref.get("bundle_id"), f"source_component_style_sheet_bundles[{index}].bundle_id")
+    if registry.get("registry_id") != bundle_id:
+        fail(f"{display_path(path)} registry_id must be {bundle_id}")
+    expected_bundle_count = require_int(
+        bundle_ref.get("expected_bundle_count"),
+        f"source_component_style_sheet_bundles[{index}].expected_bundle_count",
+        minimum=1,
+    )
+    style_sheet_bundles = require_list(registry.get("style_sheet_bundles"), f"source_component_style_sheet_bundles[{index}].style_sheet_bundles")
+    if len(style_sheet_bundles) != expected_bundle_count:
+        fail(f"source_component_style_sheet_bundles[{index}].expected_bundle_count must match style_sheet_bundles length")
+    if registry.get("style_sheet_bundle_count") != expected_bundle_count:
+        fail(f"source_component_style_sheet_bundles[{index}].expected_bundle_count must match registry style_sheet_bundle_count")
+    expected_style_sheet_count = require_int(
+        bundle_ref.get("expected_style_sheet_count"),
+        f"source_component_style_sheet_bundles[{index}].expected_style_sheet_count",
+        minimum=1,
+    )
+    actual_style_sheet_count = 0
+    bundle_paths: set[str] = set()
+    for style_index, style_ref in enumerate(style_sheet_bundles):
+        style_item = require_object(style_ref, f"source_component_style_sheet_bundles[{index}].style_sheet_bundles[{style_index}]")
+        style_path = repo_path(style_item.get("path"), f"source_component_style_sheet_bundles[{index}].style_sheet_bundles[{style_index}].path")
+        if display_path(style_path) in bundle_paths:
+            fail(f"source_component_style_sheet_bundles[{index}] style sheet bundle paths must be unique")
+        bundle_paths.add(display_path(style_path))
+        style_bundle = load_json(style_path)
+        if style_bundle.get("schema") != "component_style_sheet_bundle_v0":
+            fail(f"{display_path(style_path)} schema must be component_style_sheet_bundle_v0")
+        actual_style_sheet_count += len(require_list(style_bundle.get("style_sheets"), f"{display_path(style_path)}.style_sheets"))
+    if actual_style_sheet_count != expected_style_sheet_count:
+        fail(f"source_component_style_sheet_bundles[{index}].expected_style_sheet_count must match style_sheets total")
+    validator = script_path(bundle_ref.get("validator"), f"source_component_style_sheet_bundles[{index}].validator")
+    assert_no_blender_import(validator, f"source_component_style_sheet_bundles[{index}].validator")
+    labels = validate_pipeline_labels(bundle_ref.get("pipeline_labels"), known_labels, f"source_component_style_sheet_bundles[{index}].pipeline_labels")
+    return {
+        "bundle_id": bundle_id,
+        "path": display_path(path),
+        "schema": expected_schema,
+        "bundle_count": expected_bundle_count,
+        "style_sheet_count": expected_style_sheet_count,
+        "pipeline_label_count": len(labels),
+    }
+
+
 def validate_reference_recipe(item: Any, index: int, canonical_paths: set[str]) -> dict[str, Any]:
     reference = require_object(item, f"reference_only_recipe_bundles[{index}]")
     path = repo_path(reference.get("path"), f"reference_only_recipe_bundles[{index}].path")
@@ -602,6 +654,13 @@ def validate_registry(path: Path) -> dict[str, Any]:
     source_taxonomy_paths = {result["path"] for result in source_taxonomy_results}
     if len(source_taxonomy_paths) != len(source_taxonomy_results):
         fail("source_taxonomy_bundles paths must be unique")
+    source_component_style_sheet_results = [
+        validate_source_component_style_sheet_bundle(item, index, known_labels)
+        for index, item in enumerate(require_list(registry.get("source_component_style_sheet_bundles"), "source_component_style_sheet_bundles"))
+    ]
+    source_component_style_sheet_paths = {result["path"] for result in source_component_style_sheet_results}
+    if len(source_component_style_sheet_paths) != len(source_component_style_sheet_results):
+        fail("source_component_style_sheet_bundles paths must be unique")
     canonical_paths = (
         geometry_paths
         | {tool_plan_result["path"]}
@@ -612,6 +671,7 @@ def validate_registry(path: Path) -> dict[str, Any]:
         | source_pattern_field_paths
         | source_pattern_segment_paths
         | source_taxonomy_paths
+        | source_component_style_sheet_paths
     )
     reference_results = [
         validate_reference_recipe(item, index, canonical_paths)
@@ -651,6 +711,8 @@ def validate_registry(path: Path) -> dict[str, Any]:
         "source_pattern_segment_set_count": sum(result["segment_set_count"] for result in source_pattern_segment_results),
         "source_taxonomy_bundle_count": len(source_taxonomy_results),
         "source_taxonomy_term_count": sum(result["term_count"] for result in source_taxonomy_results),
+        "source_component_style_sheet_bundle_count": len(source_component_style_sheet_results),
+        "source_component_style_sheet_count": sum(result["style_sheet_count"] for result in source_component_style_sheet_results),
         "reference_only_recipe_count": len(reference_results),
         "pipeline_label_count": len(known_labels),
         "generated_outputs_created": False,
@@ -668,6 +730,7 @@ def validate_registry(path: Path) -> dict[str, Any]:
             "validates_source_pattern_field_boundaries": True,
             "validates_source_pattern_segment_boundaries": True,
             "validates_source_taxonomy_boundaries": True,
+            "validates_source_component_style_sheet_boundaries": True,
             "validates_reference_only_boundaries": True,
         },
     }
@@ -699,6 +762,7 @@ def main(argv: list[str] | None = None) -> int:
         f"source_pattern_fields={result['source_pattern_field_count']} "
         f"source_pattern_segments={result['source_pattern_segment_set_count']} "
         f"source_taxonomies={result['source_taxonomy_term_count']} "
+        f"source_component_style_sheets={result['source_component_style_sheet_count']} "
         f"reference_only={result['reference_only_recipe_count']}"
     )
     return 0

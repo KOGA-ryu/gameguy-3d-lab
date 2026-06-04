@@ -1,0 +1,164 @@
+{
+  "schema": "component_domain_taxonomy_bundle_v0",
+  "bundle_id": "component_domain_taxonomy_v0",
+  "purpose": "Name architectural asset domains, their reusable components, and the style families that can attach geometric shaping ledgers to those components.",
+  "status": "source_taxonomy_only",
+  "rules": {
+    "taxonomy_names_components_only": true,
+    "styles_define_geometry_later": true,
+    "component_style_sheets_bind_shapes_to_taxonomy": true,
+    "blender_tools_are_declared_in_style_sheets": true,
+    "recipes_compile_after_style_selection": true
+  },
+  "domain_count": 7,
+  "domains": [
+    {
+      "domain_id": "railings",
+      "plain_name": "Railings and Balustrades",
+      "role": "Edge protection, boundary, procession, balcony, stair, and terrace rail assets.",
+      "component_count": 10,
+      "components": [
+        { "component_id": "newel_post", "plain_name": "Newel Post", "role": "Large terminal, corner, or turn post." },
+        { "component_id": "intermediate_post", "plain_name": "Intermediate Post", "role": "Repeated support post within a railing run." },
+        { "component_id": "baluster", "plain_name": "Baluster", "role": "Small vertical support between rails." },
+        { "component_id": "handrail", "plain_name": "Handrail", "role": "Top rail or grip profile." },
+        { "component_id": "base_rail", "plain_name": "Base Rail", "role": "Lower rail tying posts and balusters together." },
+        { "component_id": "infill_panel", "plain_name": "Infill Panel", "role": "Panel, grille, tracery, or guard field between posts." },
+        { "component_id": "rail_socket", "plain_name": "Rail Socket", "role": "Joinery pocket or connector where rails enter posts." },
+        { "component_id": "bracket", "plain_name": "Bracket", "role": "Small support, brace, or ornamental connector." },
+        { "component_id": "cap", "plain_name": "Cap", "role": "Top closure for a post, wall, or rail." },
+        { "component_id": "finial", "plain_name": "Finial", "role": "Terminal ornament at the top of a post or rail run." }
+      ]
+    },
+    {
+      "domain_id": "stairs",
+      "plain_name": "Stairs",
+      "role": "Vertical circulation assets and their structural or ornamental parts.",
+      "component_count": 10,
+      "components": [
+        { "component_id": "tread", "plain_name": "Tread", "role": "Horizontal stepping surface." },
+        { "component_id": "riser", "plain_name": "Riser", "role": "Vertical face between treads." },
+        { "component_id": "stringer", "plain_name": "Stringer", "role": "Side support profile for a stair run." },
+        { "component_id": "landing", "plain_name": "Landing", "role": "Flat transition platform." },
+        { "component_id": "nosing", "plain_name": "Nosing", "role": "Projecting front lip of a tread." },
+        { "component_id": "central_newel", "plain_name": "Central Newel", "role": "Vertical core for spiral or winding stairs." },
+        { "component_id": "stair_handrail", "plain_name": "Stair Handrail", "role": "Sloped top rail following a stair run." },
+        { "component_id": "stair_baluster", "plain_name": "Stair Baluster", "role": "Sloped or vertical support along stairs." },
+        { "component_id": "skirt_board", "plain_name": "Skirt Board", "role": "Side trim board or stone strip along steps." },
+        { "component_id": "winder", "plain_name": "Winder", "role": "Tapered stair step around a turn." }
+      ]
+    },
+    {
+      "domain_id": "windows",
+      "plain_name": "Windows",
+      "role": "Openings, frames, tracery, glass, and reveal assets.",
+      "component_count": 10,
+      "components": [
+        { "component_id": "jamb", "plain_name": "Jamb", "role": "Vertical side of an opening." },
+        { "component_id": "sill", "plain_name": "Sill", "role": "Bottom horizontal support or weathering member." },
+        { "component_id": "head", "plain_name": "Head", "role": "Top horizontal opening member." },
+        { "component_id": "arch_head", "plain_name": "Arch Head", "role": "Curved or pointed top of an opening." },
+        { "component_id": "mullion", "plain_name": "Mullion", "role": "Vertical divider between lights." },
+        { "component_id": "transom", "plain_name": "Transom", "role": "Horizontal divider between lights." },
+        { "component_id": "tracery", "plain_name": "Tracery", "role": "Patterned stone or modeled linework within an opening." },
+        { "component_id": "glass_panel", "plain_name": "Glass Panel", "role": "Flat or colored transparent panel." },
+        { "component_id": "reveal", "plain_name": "Reveal", "role": "Inset side surface around an opening." },
+        { "component_id": "hood_mould", "plain_name": "Hood Mould", "role": "Projecting trim above an opening." }
+      ]
+    },
+    {
+      "domain_id": "doors",
+      "plain_name": "Doors and Portals",
+      "role": "Door leaves, structural surrounds, thresholds, and portal trim.",
+      "component_count": 10,
+      "components": [
+        { "component_id": "door_slab", "plain_name": "Door Slab", "role": "Main door plane." },
+        { "component_id": "stile", "plain_name": "Stile", "role": "Vertical member of a framed door." },
+        { "component_id": "rail", "plain_name": "Rail", "role": "Horizontal member of a framed door." },
+        { "component_id": "door_panel", "plain_name": "Door Panel", "role": "Inset or raised field inside a frame." },
+        { "component_id": "door_jamb", "plain_name": "Door Jamb", "role": "Vertical side of a door opening." },
+        { "component_id": "lintel", "plain_name": "Lintel", "role": "Horizontal top support over an opening." },
+        { "component_id": "portal_arch", "plain_name": "Portal Arch", "role": "Arched or pointed portal surround." },
+        { "component_id": "threshold", "plain_name": "Threshold", "role": "Bottom crossing member." },
+        { "component_id": "hinge_strap", "plain_name": "Hinge Strap", "role": "Surface hinge or ironwork strap." },
+        { "component_id": "surround", "plain_name": "Surround", "role": "Trim or stonework framing the door." }
+      ]
+    },
+    {
+      "domain_id": "trim_moulding",
+      "plain_name": "Trim and Moulding",
+      "role": "Profiled edges, lips, bands, cornices, bases, and decorative runs.",
+      "component_count": 10,
+      "components": [
+        { "component_id": "fillet", "plain_name": "Fillet", "role": "Small flat separating band." },
+        { "component_id": "torus", "plain_name": "Torus", "role": "Rounded convex moulding." },
+        { "component_id": "bead", "plain_name": "Bead", "role": "Small round moulding or repeated dot." },
+        { "component_id": "cove", "plain_name": "Cove", "role": "Concave moulding." },
+        { "component_id": "ovolo", "plain_name": "Ovolo", "role": "Convex quarter-round moulding." },
+        { "component_id": "ogee", "plain_name": "Ogee", "role": "S-shaped moulding profile." },
+        { "component_id": "cyma_recta", "plain_name": "Cyma Recta", "role": "Ogee variant with concave over convex curve." },
+        { "component_id": "cyma_reversa", "plain_name": "Cyma Reversa", "role": "Ogee variant with convex over concave curve." },
+        { "component_id": "dentil", "plain_name": "Dentil", "role": "Repeated small block under a cornice." },
+        { "component_id": "cornice", "plain_name": "Cornice", "role": "Projecting top moulding or crown." }
+      ]
+    },
+    {
+      "domain_id": "ceilings",
+      "plain_name": "Ceilings and Vaults",
+      "role": "Overhead ribs, cells, bosses, vault webs, domes, and patterned ceiling fields.",
+      "component_count": 10,
+      "components": [
+        { "component_id": "rib", "plain_name": "Rib", "role": "Projected or swept line support in a vault." },
+        { "component_id": "vault_web", "plain_name": "Vault Web", "role": "Curved or folded surface between ribs." },
+        { "component_id": "boss", "plain_name": "Boss", "role": "Central or intersection ornament." },
+        { "component_id": "pendant", "plain_name": "Pendant", "role": "Hanging ornament or downward element." },
+        { "component_id": "dome_segment", "plain_name": "Dome Segment", "role": "Radial surface segment of a dome." },
+        { "component_id": "muqarnas_cell", "plain_name": "Muqarnas Cell", "role": "Tiered cell lifted from a 2D plan." },
+        { "component_id": "coffer", "plain_name": "Coffer", "role": "Recessed ceiling panel." },
+        { "component_id": "rosette", "plain_name": "Rosette", "role": "Radial ornament or central ceiling pattern." },
+        { "component_id": "fan_rib", "plain_name": "Fan Rib", "role": "Radiating rib group in fan vaulting." },
+        { "component_id": "arch_band", "plain_name": "Arch Band", "role": "Curved band framing a ceiling bay or vault." }
+      ]
+    },
+    {
+      "domain_id": "walls",
+      "plain_name": "Walls and Vertical Bays",
+      "role": "Wall fields, supports, openings, courses, niches, and parapets.",
+      "component_count": 10,
+      "components": [
+        { "component_id": "pier", "plain_name": "Pier", "role": "Massive vertical support." },
+        { "component_id": "buttress", "plain_name": "Buttress", "role": "Projecting wall support." },
+        { "component_id": "pilaster", "plain_name": "Pilaster", "role": "Flattened attached pier or column." },
+        { "component_id": "bay", "plain_name": "Bay", "role": "Repeated wall span." },
+        { "component_id": "arcade", "plain_name": "Arcade", "role": "Series of arches." },
+        { "component_id": "course", "plain_name": "Course", "role": "Horizontal row of stone or blocks." },
+        { "component_id": "block", "plain_name": "Block", "role": "Single masonry or game-asset wall unit." },
+        { "component_id": "niche", "plain_name": "Niche", "role": "Recessed wall opening." },
+        { "component_id": "blind_tracery_panel", "plain_name": "Blind Tracery Panel", "role": "Decorative linework on a closed wall face." },
+        { "component_id": "parapet", "plain_name": "Parapet", "role": "Low protective wall or cresting edge." }
+      ]
+    }
+  ],
+  "component_total_count": 70,
+  "style_family_count": 10,
+  "style_families": [
+    "gothic",
+    "romanesque",
+    "renaissance",
+    "baroque",
+    "victorian",
+    "art_nouveau",
+    "arts_and_crafts",
+    "islamic_geometric",
+    "modern",
+    "rustic"
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false,
+    "building_code_compliance": false
+  }
+}

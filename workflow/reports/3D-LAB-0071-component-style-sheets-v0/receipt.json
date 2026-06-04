@@ -1,0 +1,77 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0071-component-style-sheets-v0",
+  "title": "Component style sheets v0",
+  "status": "complete",
+  "source_taxonomy": "data/architecture/taxonomy/component_domains/component_domain_taxonomy_v0.json",
+  "style_sheet_registry": "data/architecture/component_style_sheets/component_style_sheet_registry_v0.json",
+  "first_style_sheet_bundle": "data/architecture/component_style_sheets/railings/gothic_railing_post_style_sheets_v0.json",
+  "operation_term": "geometry_dictionary/operations/component_style_sheet.json",
+  "validator": "scripts/validate_component_style_sheets_v0.py",
+  "test_file": "tests/test_validate_component_style_sheets_v0.py",
+  "docs": [
+    "docs/research/component_style_system_v0/README.md",
+    "docs/research/component_style_system_v0/component_style_system_v0.md",
+    "docs/research/component_style_system_v0/gothic_railing_post_research_findings_v0.md",
+    "docs/research/component_style_system_v0/gothic_railing_post_build_plans_v0.md"
+  ],
+  "taxonomy": {
+    "domain_count": 7,
+    "component_count": 70,
+    "style_family_count": 10,
+    "domains": ["railings", "stairs", "windows", "doors", "trim_moulding", "ceilings", "walls"]
+  },
+  "style_sheet_bundle": {
+    "bundle_id": "gothic_railing_post_style_sheets_v0",
+    "domain": "railings",
+    "style_family": "gothic",
+    "source_count": 7,
+    "style_sheet_count": 5,
+    "ledger_entry_count": 11,
+    "source_shape_term_count": 11,
+    "operation_term_count": 12,
+    "blender_tool_count": 23,
+    "style_ids": [
+      "gothic_railing_post.buttress_newel_v0",
+      "gothic_railing_post.clustered_shaft_newel_v0",
+      "gothic_railing_post.blind_tracery_box_newel_v0",
+      "gothic_railing_post.pinnacle_newel_v0",
+      "gothic_railing_post.crocketed_finial_newel_v0"
+    ]
+  },
+  "validation": {
+    "component_style_sheet_validate": {
+      "command": "python3 scripts/validate_component_style_sheets_v0.py --json-report /tmp/component_style_sheet_validation_v0.json",
+      "result": "PASS domains=7 components=70 style_sheets=5 ledger_entries=11 sources=7 tools=23"
+    },
+    "asset_generation_registry_validate": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py --json-report /tmp/asset_generation_registry_validation_v0.json",
+      "result": "PASS source_component_style_sheets=5"
+    },
+    "targeted_unit_tests": {
+      "command": "python3 -m unittest tests/test_validate_component_style_sheets_v0.py tests/test_validate_asset_generation_registry_v0.py",
+      "result": "PASS 17 tests"
+    },
+    "json_parse": {
+      "command": "find data contracts docs geometry_dictionary workflow -name '*.json' -print0 | xargs -0 -n 1 python3 -m json.tool >/dev/null",
+      "result": "PASS"
+    },
+    "python_compile": {
+      "command": "python3 -m py_compile scripts/*.py",
+      "result": "PASS"
+    },
+    "pipeline_skip_unit_tests": {
+      "command": "python3 scripts/validate_generation_pipeline_v0.py --skip-unit-tests --json-report /tmp/gameguy_pipeline_component_style_sheets_v0_final.json",
+      "result": "PASS commands=50 json=285 include_blender=false"
+    }
+  },
+  "rules": {
+    "source_style_sheets_only": true,
+    "taxonomy_names_components": true,
+    "style_sheets_bind_geometry_and_tools": true,
+    "blender_is_adapter_layer": true,
+    "generated_media_in_repo": false,
+    "building_code_compliance_claim": false
+  },
+  "recommended_next_goal": "Compile gothic_railing_post.blind_tracery_box_newel_v0 into the first deterministic post recipe without adding Blender design decisions."
+}

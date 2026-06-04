@@ -225,6 +225,16 @@ python3 scripts/validate_railing_detail_profiles_v0.py
 
 The current bundle is `data/architecture/asset_mill/profile_sources/railing_detail_profiles_v0.json`. It declares square frame blocks, pointed-arch and round-arch recesses, capsule vertical slots, circular bead strips, ogee side moldings, trapezoid transition collars, profiled plinth bases, rounded-rectangle handrail grips, triangular chamfers, octagonal baluster cross-sections, star rosettes, quatrefoil cutouts, and lobed post cross-sections. Each profile must say where it is used, what detail role it has, how it is applied, and which staged Blender tools may execute it later.
 
+Component style sheets are the new source layer for scaling this beyond one railing asset:
+
+```bash
+python3 scripts/validate_component_style_sheets_v0.py
+```
+
+The domain taxonomy is `data/architecture/taxonomy/component_domains/component_domain_taxonomy_v0.json`. It names seven domains and seventy reusable components across railings, stairs, windows, doors, trim/moulding, ceilings, and walls. The style-sheet registry is `data/architecture/component_style_sheets/component_style_sheet_registry_v0.json`, and the first bundle is `data/architecture/component_style_sheets/railings/gothic_railing_post_style_sheets_v0.json`.
+
+That first bundle declares five Gothic railing post style sheets: buttress newel, clustered shaft newel, blind tracery box newel, pinnacle newel, and crocketed finial newel. Each style sheet owns a geometric shaping ledger that maps component anatomy to source shape terms, construction rules, edit knobs, operation terms, and legal Blender tool sequences. Research and build-plan notes live in `docs/research/component_style_system_v0/`.
+
 The gothic guard-panel tool-plan recipe now selects six of those profiles as a source-owned `railing_detail_profile_stack`. The compiler expands them into a 57-step guard-panel plan with pointed-arch and capsule cutters, shadow recess plates, mirrored side details, a linearly arrayed bead strip, ogee trim, tapered socket collars, and the normal shared finish stack. Blender remains an adapter: it consumes the compiled `gameguy_tool_plan_v0` JSON and executes `mesh_from_pydata`, `modifier_boolean`, `modifier_mirror`, and `modifier_array` steps rather than deciding those details itself.
 
 The profiled plinth base is now the first standalone `profile_detail` prototype. Its source recipe uses `railing_plinth_ogee_base_side_profile_v0` to compile one 14-control-point side profile into fifteen chamfered-square footprint rings with a foot, shadow groove, bead projection, cove slope, neck, and top landing, producing a four-sided wrapped `mesh_from_pydata` detail plan before the shared finish stack is applied. Separate `context_prototype` plans reuse that wrapped plinth mesh with a centered square post core: one verifies the plain top-landing fit, and one adds a four-sided `relief_stack` with recessed fields, raised outer lips, and higher inner bead lips.
@@ -331,6 +341,7 @@ python3 scripts/validate_reference_dissection_packet_v0.py
 python3 scripts/validate_measured_molding_profiles_v0.py
 python3 scripts/validate_railing_detail_profiles_v0.py
 python3 scripts/validate_construction_geometry_taxonomy_v0.py
+python3 scripts/validate_component_style_sheets_v0.py
 python3 scripts/compile_sacred_graph_v0.py --clean --out /tmp/gameguy_sacred_graph_v0
 python3 scripts/compile_construction_cell_selection_v0.py --clean --graph-manifest /tmp/gameguy_sacred_graph_v0/manifest.json --out /tmp/gameguy_construction_cell_selection_v0
 python3 scripts/compile_pattern_field_v0.py --clean --out /tmp/gameguy_pattern_field_v0
@@ -425,6 +436,7 @@ Expected current checks:
 - Measured molding profile validation proves user-supplied cap/base/flute/plinth/compound-pier profile sources before the next geometry pass.
 - Railing detail profile validation proves 2D detail shape placement, detail roles, application methods, and Blender tool stage order before the next geometry pass.
 - Construction geometry taxonomy validation proves the source-language terms for construction fields, selection/omission, role promotion, motif orbits, tracery, muqarnas cell plans, and lift/fold/sweep/thicken/bevel operations.
+- Component style sheet validation proves component taxonomy, Gothic railing post style sheets, geometric shaping ledgers, source shape terms, operation terms, edit knobs, and Blender tool stage order before style sheets are promoted into recipes.
 - Sacred graph compilation proves a source-owned 22-division construction graph with named point, edge, and star-trace selections before 3D lifting/folding.
 - Construction cell selection compilation proves `66` closed ring-band cells and named cell selections for vault webs, tracery openings, and railing recess panels before 3D lifting/folding/sweeping.
 - Pattern field compilation proves a source-owned hex rosette construction field with one center pattern, six surrounding patterns, faint guide layers, and named selected inner-ring trace/linework groups before intersections, omission rules, or 3D promotion.

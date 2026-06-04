@@ -1,0 +1,41 @@
+{
+  "term_id": "component_style_sheet",
+  "category": "composition_operation",
+  "plain_name": "Component Style Sheet",
+  "description": "A source-only contract that binds an architectural taxonomy component to its geometric shaping ledger, source shape terms, operation stack, and legal Blender tool sequence.",
+  "required_inputs": {
+    "domain_taxonomy": "component_domain_taxonomy_bundle_v0",
+    "component": "domain component id",
+    "source_shapes": "geometry_dictionary profile terms",
+    "operations": "geometry_dictionary operation terms",
+    "blender_tool_sequence": "known tool ids from blender_tool_dictionary_v0"
+  },
+  "outputs": {
+    "type": "source_plan",
+    "generated_mesh": false
+  },
+  "constraints": {
+    "taxonomy_component_required": true,
+    "source_shapes_must_exist": true,
+    "operations_must_exist": true,
+    "blender_tools_must_exist": true,
+    "blender_stage_order_must_hold": true,
+    "no_blender_execution": true
+  },
+  "common_uses": [
+    "railing post styles",
+    "stair parts",
+    "window tracery",
+    "door surrounds",
+    "moulding profiles",
+    "vault and ceiling cells",
+    "wall bay parts"
+  ],
+  "blender_method": "Blender remains an adapter; it executes a compiled plan after this source sheet has been selected and compiled.",
+  "validation": [
+    "taxonomy_component_exists",
+    "geometry_terms_exist",
+    "blender_tools_exist",
+    "stage_order_valid"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "component_style_sheet_registry_v0",
+  "registry_id": "component_style_sheet_registry_v0",
+  "purpose": "Register source-owned component style sheets that bind taxonomy components to geometric shaping ledgers and legal Blender tool sequences.",
+  "rules": {
+    "style_sheets_are_source_only": true,
+    "style_sheets_bind_taxonomy_to_shapes": true,
+    "style_sheets_declare_blender_tools": true,
+    "style_sheets_do_not_execute_blender": true,
+    "style_sheets_do_not_generate_assets": true
+  },
+  "domain_taxonomy": "data/architecture/taxonomy/component_domains/component_domain_taxonomy_v0.json",
+  "domain_taxonomy_schema": "component_domain_taxonomy_bundle_v0",
+  "geometry_dictionary": "geometry_dictionary",
+  "tool_dictionary": "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json",
+  "tool_dictionary_schema": "blender_tool_dictionary_v0",
+  "style_sheet_bundle_count": 1,
+  "style_sheet_bundles": [
+    {
+      "bundle_id": "gothic_railing_post_style_sheets_v0",
+      "path": "data/architecture/component_style_sheets/railings/gothic_railing_post_style_sheets_v0.json",
+      "schema": "component_style_sheet_bundle_v0",
+      "domain": "railings",
+      "style_family": "gothic",
+      "expected_style_sheet_count": 5,
+      "validator": "scripts/validate_component_style_sheets_v0.py",
+      "pipeline_labels": ["component_style_sheet_validate"]
+    }
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false,
+    "building_code_compliance": false
+  }
+}

@@ -1,0 +1,397 @@
+{
+  "schema": "component_style_sheet_bundle_v0",
+  "bundle_id": "gothic_railing_post_style_sheets_v0",
+  "purpose": "Bind Gothic railing post taxonomy names to source-owned geometric shaping ledgers and Blender tool sequences before any recipe or adapter generates mesh.",
+  "status": "source_style_sheet_only",
+  "domain": "railings",
+  "style_family": "gothic",
+  "domain_taxonomy_ref": "data/architecture/taxonomy/component_domains/component_domain_taxonomy_v0.json",
+  "geometry_dictionary": "geometry_dictionary",
+  "tool_dictionary": "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json",
+  "rules": {
+    "taxonomy_component_required": true,
+    "geometric_shaping_ledger_required": true,
+    "source_shapes_must_be_geometry_terms": true,
+    "operations_must_be_geometry_terms": true,
+    "blender_tools_must_be_known": true,
+    "blender_stage_order_must_hold": true,
+    "no_blender_execution": true,
+    "no_generated_outputs": true
+  },
+  "source_count": 7,
+  "sources": [
+    {
+      "source_id": "britannica_gothic_architecture_v0",
+      "title": "Encyclopaedia Britannica: Gothic Architecture",
+      "url": "https://www.britannica.com/art/Gothic-architecture",
+      "source_type": "architectural_reference",
+      "support_summary": "Supports pointed arches, rib vaulting, tracery, vertical emphasis, and buttress vocabulary used as morphology references.",
+      "use_policy": "morphology_reference_only"
+    },
+    {
+      "source_id": "riba_gothic_architecture_v0",
+      "title": "Royal Institute of British Architects: Gothic Architecture",
+      "url": "https://www.architecture.com/knowledge-and-resources/knowledge-landing-page/gothic-gothic-revival-neo-gothic",
+      "source_type": "architectural_reference",
+      "support_summary": "Supports Gothic elements such as pointed arches, ribbed vaults, flying buttresses, and decorative stone detail.",
+      "use_policy": "morphology_reference_only"
+    },
+    {
+      "source_id": "britannica_foil_architecture_v0",
+      "title": "Encyclopaedia Britannica: Foil",
+      "url": "https://www.britannica.com/technology/foil-architecture",
+      "source_type": "architectural_glossary",
+      "support_summary": "Supports trefoil, quatrefoil, and cinquefoil vocabulary as lobed Gothic and tracery shapes.",
+      "use_policy": "morphology_reference_only"
+    },
+    {
+      "source_id": "national_gallery_quatrefoil_v0",
+      "title": "The National Gallery: Quatrefoils",
+      "url": "https://www.nationalgallery.org.uk/paintings/glossary/quatrefoils",
+      "source_type": "art_architecture_glossary",
+      "support_summary": "Supports quatrefoil as four-lobed ornament vocabulary.",
+      "use_policy": "morphology_reference_only"
+    },
+    {
+      "source_id": "britannica_newel_v0",
+      "title": "Encyclopaedia Britannica: Newel",
+      "url": "https://www.britannica.com/technology/newel",
+      "source_type": "architectural_glossary",
+      "support_summary": "Supports newel as the large post at the foot, landing, or turn of a staircase.",
+      "use_policy": "morphology_reference_only"
+    },
+    {
+      "source_id": "user_compound_pier_reference_v0",
+      "title": "User-Supplied Compound Pier Reference",
+      "url": "local_user_supplied_reference",
+      "source_type": "user_reference",
+      "support_summary": "Supports clustered shafts, lobed cross sections, capitals, and arch-to-pier transitions for Gothic post thinking.",
+      "use_policy": "morphology_reference_only"
+    },
+    {
+      "source_id": "user_gothic_railing_reference_v0",
+      "title": "User-Supplied Gothic Railing and Pattern References",
+      "url": "local_user_supplied_reference",
+      "source_type": "user_reference",
+      "support_summary": "Supports translating dense 2D pattern work into selected ribs, tracery, post faces, and repeated ornamental modules.",
+      "use_policy": "morphology_reference_only"
+    }
+  ],
+  "style_sheet_count": 5,
+  "style_sheets": [
+    {
+      "style_id": "gothic_railing_post.buttress_newel_v0",
+      "plain_name": "Gothic Buttress Newel",
+      "domain": "railings",
+      "component": "newel_post",
+      "style_family": "gothic",
+      "style_intent": "A square post that reads like a miniature buttress: chamfered plinth, vertical face strips, rail sockets, blind pointed-arch panels, and a stepped cap.",
+      "source_support": ["britannica_gothic_architecture_v0", "riba_gothic_architecture_v0", "user_gothic_railing_reference_v0"],
+      "component_anatomy": ["plinth", "buttress_shaft", "rail_socket", "blind_tracery_panel", "cap"],
+      "geometric_shaping_ledger": [
+        {
+          "part": "plinth",
+          "taxonomy_name": "railings.newel_post.plinth.chamfered_square",
+          "role": "stable base mass with softened corners",
+          "source_shapes": [
+            { "term_id": "square", "shape_role": "main footprint", "control_policy": "width and depth set the base footprint" },
+            { "term_id": "octagon", "shape_role": "corner chamfer target", "control_policy": "chamfer amount converts square to low octagon" }
+          ],
+          "operations": ["extrude", "bevel_edges", "compound_asset"],
+          "construction_rules": ["base footprint remains square-reading", "corner bevels are smaller than one sixth of footprint"],
+          "edit_knobs": ["footprint_m", "height_m", "corner_chamfer_m", "bevel_width_m"],
+          "blender_tool_sequence": [
+            { "stage": "base_form", "tool_id": "primitive_cube_add", "use": "Create the primary plinth block." },
+            { "stage": "shape_refinement", "tool_id": "modifier_bevel", "use": "Chamfer exposed plinth edges and corners." },
+            { "stage": "shape_refinement", "tool_id": "modifier_weighted_normal", "use": "Keep the low-poly stone faces clean after beveling." }
+          ]
+        },
+        {
+          "part": "buttress_shaft",
+          "taxonomy_name": "railings.newel_post.shaft.buttress_faces",
+          "role": "vertical support with four shallow buttress-like raised strips",
+          "source_shapes": [
+            { "term_id": "rectangle", "shape_role": "shaft core", "control_policy": "height and side width set the straight post body" },
+            { "term_id": "trapezoid", "shape_role": "stepped buttress strip", "control_policy": "strip taper and offset make the face read like a buttress" }
+          ],
+          "operations": ["extrude", "array_radial", "bevel_edges", "relief_stack"],
+          "construction_rules": ["face strips repeat on all four sides", "raised strips stop below cap collar"],
+          "edit_knobs": ["shaft_height_m", "shaft_width_m", "strip_projection_m", "strip_taper_ratio"],
+          "blender_tool_sequence": [
+            { "stage": "base_form", "tool_id": "primitive_cube_add", "use": "Create the square shaft core and raised face strip meshes." },
+            { "stage": "assembly", "tool_id": "object_duplicate_radial", "use": "Place matching buttress strips on four sides." },
+            { "stage": "shape_refinement", "tool_id": "modifier_bevel", "use": "Chamfer strip edges for catch lights." },
+            { "stage": "shape_refinement", "tool_id": "mark_sharp", "use": "Preserve the main arrises." }
+          ]
+        },
+        {
+          "part": "blind_tracery_panel",
+          "taxonomy_name": "railings.newel_post.face.blind_pointed_arch_panel",
+          "role": "recessed decorative Gothic face panel",
+          "source_shapes": [
+            { "term_id": "pointed_arch_profile", "shape_role": "panel opening silhouette", "control_policy": "span, springline, apex, and border thickness define the arch" },
+            { "term_id": "rounded_rectangle", "shape_role": "backer recess", "control_policy": "inset rectangle provides readable shadow field" }
+          ],
+          "operations": ["boolean_cut", "offset_profile", "mirror_axis", "bevel_edges"],
+          "construction_rules": ["arch recess is decorative only", "profile is mirrored to paired faces when used on side views"],
+          "edit_knobs": ["panel_span_m", "panel_height_m", "springline_height_m", "recess_depth_m", "rim_bevel_m"],
+          "blender_tool_sequence": [
+            { "stage": "base_form", "tool_id": "mesh_from_pydata", "use": "Create deterministic pointed-arch cutter or raised rim mesh." },
+            { "stage": "assembly", "tool_id": "modifier_boolean", "use": "Cut a shallow blind arch recess into selected post faces." },
+            { "stage": "assembly", "tool_id": "modifier_mirror", "use": "Mirror paired panels across the post centerlines." },
+            { "stage": "shape_refinement", "tool_id": "modifier_bevel", "use": "Round the arch rim enough to catch light." }
+          ]
+        }
+      ],
+      "compile_targets": ["gameguy_asset_v0", "gameguy_tool_plan_v0"],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "style_id": "gothic_railing_post.clustered_shaft_newel_v0",
+      "plain_name": "Gothic Clustered Shaft Newel",
+      "domain": "railings",
+      "component": "newel_post",
+      "style_family": "gothic",
+      "style_intent": "A post built like a simplified compound pier: central mass, repeated attached ribs, ring collars, and a square-to-round-to-square transition.",
+      "source_support": ["user_compound_pier_reference_v0", "britannica_gothic_architecture_v0"],
+      "component_anatomy": ["plinth", "clustered_shaft", "collar", "capital", "cap"],
+      "geometric_shaping_ledger": [
+        {
+          "part": "clustered_shaft",
+          "taxonomy_name": "railings.newel_post.shaft.clustered_attached_rounds",
+          "role": "compound-pier-like vertical body with low-poly attached ribs",
+          "source_shapes": [
+            { "term_id": "circle", "shape_role": "center shaft section", "control_policy": "low segment count sets cylindrical core" },
+            { "term_id": "capsule", "shape_role": "attached half-round ribs", "control_policy": "rib radius and count set clustered silhouette" }
+          ],
+          "operations": ["radial_stack", "array_radial", "section_stack", "bevel_edges"],
+          "construction_rules": ["ribs are separate named parts before optional join", "entasis can taper section radius from base to cap"],
+          "edit_knobs": ["rib_count", "rib_radius_m", "core_radius_m", "entasis_strength", "segment_count"],
+          "blender_tool_sequence": [
+            { "stage": "base_form", "tool_id": "primitive_cylinder_add", "use": "Create low-segment center shaft volumes." },
+            { "stage": "base_form", "tool_id": "mesh_from_pydata", "use": "Create custom rib cross-section meshes when profile ribs are not circular." },
+            { "stage": "assembly", "tool_id": "object_duplicate_radial", "use": "Repeat attached ribs around the shaft." },
+            { "stage": "shape_refinement", "tool_id": "shade_smooth", "use": "Smooth the round-reading faces while retaining silhouette controls." },
+            { "stage": "shape_refinement", "tool_id": "modifier_weighted_normal", "use": "Clean up shading across joined rib/core surfaces." }
+          ]
+        },
+        {
+          "part": "collar",
+          "taxonomy_name": "railings.newel_post.collar.torus_stack",
+          "role": "ring stack that clamps shaft transitions",
+          "source_shapes": [
+            { "term_id": "circle", "shape_role": "ring cross section", "control_policy": "radius sets collar projection" },
+            { "term_id": "rectangle", "shape_role": "flat fillet band", "control_policy": "height and projection set crisp separating bands" }
+          ],
+          "operations": ["radial_stack", "section_stack", "bevel_edges"],
+          "construction_rules": ["collars appear at base and below capital", "ring heights are independent edit knobs"],
+          "edit_knobs": ["lower_collar_z_m", "upper_collar_z_m", "ring_projection_m", "ring_height_m"],
+          "blender_tool_sequence": [
+            { "stage": "base_form", "tool_id": "primitive_torus_add", "use": "Create round-reading bead or torus collars." },
+            { "stage": "base_form", "tool_id": "modifier_screw", "use": "Revolve a stepped molding profile when the collar needs cove/torus layers." },
+            { "stage": "assembly", "tool_id": "join_objects", "use": "Join collar rings into the post module after part naming is captured." },
+            { "stage": "shape_refinement", "tool_id": "modifier_bevel", "use": "Add crisp edges to flat fillet bands." }
+          ]
+        }
+      ],
+      "compile_targets": ["gameguy_asset_v0", "gameguy_tool_plan_v0"],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "style_id": "gothic_railing_post.blind_tracery_box_newel_v0",
+      "plain_name": "Blind Tracery Box Newel",
+      "domain": "railings",
+      "component": "newel_post",
+      "style_family": "gothic",
+      "style_intent": "A clean square newel whose faces carry selectable blind tracery: pointed arch, quatrefoil, rosette, and bead-strip layers.",
+      "source_support": ["britannica_foil_architecture_v0", "national_gallery_quatrefoil_v0", "user_gothic_railing_reference_v0"],
+      "component_anatomy": ["box_core", "face_recess", "foil_motif", "bead_strip", "cap"],
+      "geometric_shaping_ledger": [
+        {
+          "part": "face_recess",
+          "taxonomy_name": "railings.newel_post.face.recessed_rectangular_field",
+          "role": "flat field that receives selected linework or raised ornament",
+          "source_shapes": [
+            { "term_id": "rectangle", "shape_role": "panel field", "control_policy": "field inset, border width, and depth set shadow layer" },
+            { "term_id": "rounded_rectangle", "shape_role": "softened inset", "control_policy": "corner radius can soften a face recess without changing the box post" }
+          ],
+          "operations": ["relief_stack", "boolean_cut", "bevel_edges"],
+          "construction_rules": ["recess exists on all four sides unless side mask omits faces", "panel field never cuts through the post core"],
+          "edit_knobs": ["panel_width_m", "panel_height_m", "inset_depth_m", "border_width_m", "corner_radius_m"],
+          "blender_tool_sequence": [
+            { "stage": "base_form", "tool_id": "primitive_cube_add", "use": "Create the post box core and flat panel fields." },
+            { "stage": "assembly", "tool_id": "modifier_boolean", "use": "Create shallow recesses without cutting through the post." },
+            { "stage": "assembly", "tool_id": "object_duplicate_radial", "use": "Repeat the face fields on all four sides." },
+            { "stage": "shape_refinement", "tool_id": "modifier_bevel", "use": "Add readable lips around each panel field." }
+          ]
+        },
+        {
+          "part": "foil_motif",
+          "taxonomy_name": "railings.newel_post.face.quatrefoil_rosette",
+          "role": "selectable lobed ornament on the face field",
+          "source_shapes": [
+            { "term_id": "circle", "shape_role": "foil lobes", "control_policy": "lobe radius and offset define trefoil/quatrefoil/cinquefoil variants" },
+            { "term_id": "star_polygon", "shape_role": "low-poly rosette frame", "control_policy": "point count and inner radius define sharp rosette alternatives" }
+          ],
+          "operations": ["array_radial", "offset_profile", "extrude", "bevel_edges"],
+          "construction_rules": ["motif is a raised or recessed layer selected from the same center point", "foil count remains an edit knob instead of separate scripts"],
+          "edit_knobs": ["foil_count", "lobe_radius_m", "center_radius_m", "motif_depth_m", "motif_bevel_m"],
+          "blender_tool_sequence": [
+            { "stage": "base_form", "tool_id": "mesh_from_pydata", "use": "Create low-poly foil or rosette profile geometry." },
+            { "stage": "assembly", "tool_id": "object_duplicate_radial", "use": "Place lobes around the motif center." },
+            { "stage": "shape_refinement", "tool_id": "modifier_solidify", "use": "Give linework or foil profiles a controlled thickness." },
+            { "stage": "shape_refinement", "tool_id": "modifier_bevel", "use": "Round small motif edges for visible highlights." }
+          ]
+        }
+      ],
+      "compile_targets": ["gameguy_asset_v0", "gameguy_tool_plan_v0"],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "style_id": "gothic_railing_post.pinnacle_newel_v0",
+      "plain_name": "Pinnacle Newel",
+      "domain": "railings",
+      "component": "newel_post",
+      "style_family": "gothic",
+      "style_intent": "A vertical Gothic post that terminates in a small spire or pyramidal pinnacle and keeps rail sockets clearly named.",
+      "source_support": ["britannica_gothic_architecture_v0", "riba_gothic_architecture_v0", "britannica_newel_v0"],
+      "component_anatomy": ["plinth", "shaft", "rail_socket", "pinnacle_base", "spire_finial"],
+      "geometric_shaping_ledger": [
+        {
+          "part": "rail_socket",
+          "taxonomy_name": "railings.newel_post.socket.rail_mortise_pair",
+          "role": "explicit rail connector pockets that later recipes can fit rails into",
+          "source_shapes": [
+            { "term_id": "rectangle", "shape_role": "socket cut profile", "control_policy": "width, height, and depth match rail connector envelope" },
+            { "term_id": "rounded_rectangle", "shape_role": "soft socket rim", "control_policy": "corner radius prevents a raw rectangular cut when desired" }
+          ],
+          "operations": ["boolean_cut", "mirror_axis", "bevel_edges"],
+          "construction_rules": ["socket dimensions are source-owned", "opposite sockets mirror around the post centerline"],
+          "edit_knobs": ["socket_width_m", "socket_height_m", "socket_depth_m", "socket_z_m", "rim_bevel_m"],
+          "blender_tool_sequence": [
+            { "stage": "base_form", "tool_id": "mesh_from_pydata", "use": "Create deterministic socket cutters." },
+            { "stage": "assembly", "tool_id": "modifier_boolean", "use": "Cut rail pockets into selected post faces." },
+            { "stage": "assembly", "tool_id": "modifier_mirror", "use": "Mirror the pocket to the opposite face." },
+            { "stage": "shape_refinement", "tool_id": "modifier_bevel", "use": "Chamfer the socket rim." }
+          ]
+        },
+        {
+          "part": "spire_finial",
+          "taxonomy_name": "railings.newel_post.finial.pinnacle_spire",
+          "role": "small vertical top ornament",
+          "source_shapes": [
+            { "term_id": "triangle", "shape_role": "spire side profile", "control_policy": "base width and height control steepness" },
+            { "term_id": "octagon", "shape_role": "pinnacle base section", "control_policy": "octagonal base transitions from square cap into spire" }
+          ],
+          "operations": ["extrude", "section_stack", "bevel_edges", "cap_ends"],
+          "construction_rules": ["spire remains optional and detachable", "spire base footprint stays inside cap footprint"],
+          "edit_knobs": ["spire_height_m", "spire_base_width_m", "base_section_count", "tip_bevel_m"],
+          "blender_tool_sequence": [
+            { "stage": "base_form", "tool_id": "primitive_cone_add", "use": "Create low-poly pyramidal or conic spire geometry." },
+            { "stage": "base_form", "tool_id": "primitive_cube_add", "use": "Create stepped cap blocks below the pinnacle." },
+            { "stage": "assembly", "tool_id": "join_objects", "use": "Join cap and spire after naming separate parts." },
+            { "stage": "shape_refinement", "tool_id": "shade_flat", "use": "Keep the spire faceted instead of over-smoothed." },
+            { "stage": "shape_refinement", "tool_id": "modifier_bevel", "use": "Add tiny bevels to avoid razor edges." }
+          ]
+        }
+      ],
+      "compile_targets": ["gameguy_asset_v0", "gameguy_tool_plan_v0"],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "style_id": "gothic_railing_post.crocketed_finial_newel_v0",
+      "plain_name": "Crocketed Finial Newel",
+      "domain": "railings",
+      "component": "newel_post",
+      "style_family": "gothic",
+      "style_intent": "A more ornamental post variant where small repeated protrusions climb the finial or cap edges while the core post remains simple.",
+      "source_support": ["britannica_gothic_architecture_v0", "riba_gothic_architecture_v0", "user_gothic_railing_reference_v0"],
+      "component_anatomy": ["simple_core", "cap", "finial", "crocket_array", "validation_export"],
+      "geometric_shaping_ledger": [
+        {
+          "part": "crocket_array",
+          "taxonomy_name": "railings.newel_post.finial.repeated_crocket_points",
+          "role": "repeated small leaf-like or tooth-like edge protrusions on a cap or finial",
+          "source_shapes": [
+            { "term_id": "triangle", "shape_role": "low-poly crocket tooth", "control_policy": "height, projection, and pitch define a readable low-cost protrusion" },
+            { "term_id": "capsule", "shape_role": "soft crocket alternative", "control_policy": "rounded low-poly capsule can replace triangular teeth" }
+          ],
+          "operations": ["array_linear", "array_radial", "extrude", "bevel_edges"],
+          "construction_rules": ["crockets are optional named ornaments", "array count and spacing are source parameters", "ornament never changes socket placement"],
+          "edit_knobs": ["crocket_count", "crocket_height_m", "crocket_projection_m", "array_spacing_m", "side_mask"],
+          "blender_tool_sequence": [
+            { "stage": "base_form", "tool_id": "mesh_from_pydata", "use": "Create one low-poly crocket piece from source profile points." },
+            { "stage": "assembly", "tool_id": "modifier_array", "use": "Repeat crocket pieces along cap or finial edges." },
+            { "stage": "assembly", "tool_id": "object_duplicate_radial", "use": "Wrap crocket arrays around four post sides or radial finials." },
+            { "stage": "shape_refinement", "tool_id": "modifier_bevel", "use": "Soften tiny protrusion edges." },
+            { "stage": "shape_refinement", "tool_id": "modifier_weighted_normal", "use": "Keep the small repeated pieces from shading noisily." }
+          ]
+        },
+        {
+          "part": "validation_export",
+          "taxonomy_name": "railings.newel_post.validation.named_parts_and_bounds",
+          "role": "shared export readiness checks for any post style generated from this sheet",
+          "source_shapes": [
+            { "term_id": "bounding_box", "shape_role": "bounds check", "control_policy": "post parts must fit declared post envelope" }
+          ],
+          "operations": ["compound_asset"],
+          "construction_rules": ["all visible pieces must keep stable part names", "generated mesh must stay inside declared asset bounds"],
+          "edit_knobs": ["bounds_margin_m", "lod_policy", "collision_proxy_policy"],
+          "blender_tool_sequence": [
+            { "stage": "uv_mapping", "tool_id": "uv_smart_project", "use": "Assign a basic deterministic UV layout after geometry is compiled." },
+            { "stage": "material_texture", "tool_id": "material_principled_shader", "use": "Assign a plain source-selected preview material." },
+            { "stage": "validation_export", "tool_id": "calculate_bounds", "use": "Measure post bounds after assembly." },
+            { "stage": "validation_export", "tool_id": "validate_non_manifold", "use": "Check mesh validity before preview or export." },
+            { "stage": "validation_export", "tool_id": "render_workbench_preview", "use": "Preview only after deterministic geometry exists." },
+            { "stage": "validation_export", "tool_id": "export_gltf", "use": "Export only after validation passes." }
+          ]
+        }
+      ],
+      "compile_targets": ["gameguy_asset_v0", "gameguy_tool_plan_v0"],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    }
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false,
+    "building_code_compliance": false
+  }
+}

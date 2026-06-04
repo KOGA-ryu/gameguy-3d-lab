@@ -66,6 +66,8 @@ class AssetGenerationRegistryValidatorTests(unittest.TestCase):
         self.assertEqual(report["source_pattern_segment_set_count"], 1)
         self.assertEqual(report["source_taxonomy_bundle_count"], 1)
         self.assertEqual(report["source_taxonomy_term_count"], 23)
+        self.assertEqual(report["source_component_style_sheet_bundle_count"], 1)
+        self.assertEqual(report["source_component_style_sheet_count"], 5)
         self.assertEqual(report["reference_only_recipe_count"], 3)
         self.assertFalse(report["generated_outputs_created"])
         self.assertTrue(report["rules"]["validates_pipeline_label_coverage"])
@@ -76,6 +78,7 @@ class AssetGenerationRegistryValidatorTests(unittest.TestCase):
         self.assertTrue(report["rules"]["validates_source_pattern_field_boundaries"])
         self.assertTrue(report["rules"]["validates_source_pattern_segment_boundaries"])
         self.assertTrue(report["rules"]["validates_source_taxonomy_boundaries"])
+        self.assertTrue(report["rules"]["validates_source_component_style_sheet_boundaries"])
 
     def test_unknown_pipeline_label_fails(self) -> None:
         registry = load_json(REGISTRY)
@@ -247,6 +250,23 @@ class AssetGenerationRegistryValidatorTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("expected_segment_set_count must match segment_sets length", result.stderr)
+
+    def test_source_component_style_sheet_count_mismatch_fails(self) -> None:
+        registry = load_json(REGISTRY)
+        registry["source_component_style_sheet_bundles"][0]["expected_style_sheet_count"] = 999
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            registry_path = Path(tmp) / "bad_registry.json"
+            registry_path.write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(VALIDATOR), "--registry", str(registry_path)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("expected_style_sheet_count must match style_sheets total", result.stderr)
 
 
 if __name__ == "__main__":

@@ -61,6 +61,7 @@ class GenerationPipelineValidatorTests(unittest.TestCase):
         self.assertIn("measured_molding_profile_validate", labels)
         self.assertIn("railing_detail_profile_validate", labels)
         self.assertIn("construction_geometry_taxonomy_validate", labels)
+        self.assertIn("component_style_sheet_validate", labels)
         self.assertIn("sacred_graph_compile", labels)
         self.assertIn("construction_cell_selection_compile", labels)
         self.assertIn("pattern_field_compile", labels)
