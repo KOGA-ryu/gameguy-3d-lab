@@ -1,0 +1,56 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0083-food-drink-asset-taxonomy-v0",
+  "title": "Food drink asset taxonomy v0",
+  "status": "complete",
+  "new_files": [
+    "data/asset_taxonomy/food_drink_v0/food_drink_asset_taxonomy_v0.json",
+    "docs/research/food_drink_assets_v0/README.md",
+    "docs/research/food_drink_assets_v0/food_drink_source_index_v0.md",
+    "docs/research/food_drink_assets_v0/food_drink_style_status_system_v0.md",
+    "docs/research/food_drink_assets_v0/food_drink_family_build_plans_v0.md",
+    "docs/research/food_drink_assets_v0/food_drink_lore_book_hooks_v0.md",
+    "docs/research/food_drink_assets_v0/operator_food_drink_handoff_v0.md",
+    "scripts/validate_food_drink_asset_taxonomy_v0.py",
+    "tests/test_validate_food_drink_asset_taxonomy_v0.py"
+  ],
+  "updated_files": [
+    "README.md",
+    "data/asset_taxonomy/README.md"
+  ],
+  "status_tier_count": 8,
+  "style_count": 10,
+  "family_count": 8,
+  "food_drink_count": 17,
+  "rules": {
+    "game_asset_planning_only": true,
+    "not_food_safety_guidance": true,
+    "not_recipe_instruction": true,
+    "not_historical_authenticity_claim": true,
+    "no_blender_execution": true,
+    "no_generated_assets": true
+  },
+  "validation": {
+    "food_drink_json_parse": {
+      "command": "python3 -m json.tool data/asset_taxonomy/food_drink_v0/food_drink_asset_taxonomy_v0.json",
+      "result": "PASS"
+    },
+    "validator_compile": {
+      "command": "python3 -m py_compile scripts/validate_food_drink_asset_taxonomy_v0.py",
+      "result": "PASS"
+    },
+    "food_drink_validate": {
+      "command": "python3 scripts/validate_food_drink_asset_taxonomy_v0.py",
+      "result": "PASS status_tiers=8 styles=10 families=8 food_drink=17 geometry_terms=75 tools=97"
+    },
+    "unit_test": {
+      "command": "python3 -m unittest tests/test_validate_food_drink_asset_taxonomy_v0.py",
+      "result": "PASS"
+    },
+    "asset_generation_registry_validate": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS"
+    }
+  },
+  "recommended_next_goal": "Add per-food/drink workcards and promote stew_bowl_v0, ceramic_jug_v0, or round_loaf_bread_v0 into a deterministic source-to-tool-plan recipe."
+}

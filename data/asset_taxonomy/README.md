@@ -24,6 +24,10 @@ characters, clothing, armor, props, tools, materials, and drafting workflows.
   accessory families, status tiers, styles, visible anatomy, attachment
   mechanics, source support, geometry terms, Blender tool IDs, drawing UI tags,
   operator checks, and lore book hooks.
+- `food_drink_v0/food_drink_asset_taxonomy_v0.json` records food, drink,
+  tableware, and pantry prop families, status tiers, styles, visible anatomy,
+  serving/storage state, source support, geometry terms, Blender tool IDs,
+  drawing UI tags, operator checks, and lore book hooks.
 
 ## Boundary
 
@@ -42,3 +46,7 @@ guidance, or active generated-asset inputs.
 Accessory records are source planning data only. They are not fabrication
 guidance, costume safety guidance, historical-authenticity proof, conservation
 guidance, or active generated-asset inputs.
+
+Food/drink records are source planning data only. They are not recipe
+instruction, food safety guidance, nutrition guidance, historical-authenticity
+proof, conservation guidance, or active generated-asset inputs.

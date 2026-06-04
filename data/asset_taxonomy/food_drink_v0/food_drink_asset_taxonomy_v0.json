@@ -1,0 +1,1046 @@
+{
+  "schema": "food_drink_asset_taxonomy_v0",
+  "bundle_id": "food_drink_asset_taxonomy_v0",
+  "purpose": "Document food, drink, tableware, and pantry props by family, status tier, style, visible anatomy, serving/storage state, geometry terms, Blender tool IDs, drawing UI tags, source fields, operator checks, and lore hooks.",
+  "rules": {
+    "game_asset_planning_only": true,
+    "not_food_safety_guidance": true,
+    "not_recipe_instruction": true,
+    "not_historical_authenticity_claim": true,
+    "no_generated_assets": true,
+    "requires_reference_packet_before_asset_use": true
+  },
+  "food_drink_status_tiers": [
+    {
+      "status_tier_id": "subsistence_ration_v0",
+      "plain_name": "Subsistence ration",
+      "social_read": "Plain survival food, guard ration, prisoner food, camp food, or emergency stores.",
+      "material_rules": ["dry bread", "plain sack cloth", "wood dish", "low moisture", "few garnishes"],
+      "silhouette_rules": ["simple lumps", "small portions", "rough edges", "low ornament"],
+      "starter_food_items": ["round_loaf_bread_v0", "grain_sack_v0", "waterskin_food_flask_v0"]
+    },
+    {
+      "status_tier_id": "common_tavern_v0",
+      "plain_name": "Common tavern",
+      "social_read": "Everyday food and drink for taverns, kitchens, barracks, markets, and common halls.",
+      "material_rules": ["earthenware bowl", "wood trencher", "beer cup", "simple stew", "rough cheese"],
+      "silhouette_rules": ["readable portions", "stackable dishes", "plain serving vessels"],
+      "starter_food_items": ["stew_bowl_v0", "beer_tankard_v0", "cheese_wedge_v0", "wooden_trencher_plate_v0"]
+    },
+    {
+      "status_tier_id": "monastic_refectory_v0",
+      "plain_name": "Monastic refectory",
+      "social_read": "Ordered shared meals, plain table service, disciplined storage, and repetitive serving.",
+      "material_rules": ["plain bowls", "bread portions", "simple jugs", "shared platters", "limited garnish"],
+      "silhouette_rules": ["repeated place settings", "long-table portions", "quiet symmetry"],
+      "starter_food_items": ["round_loaf_bread_v0", "stew_bowl_v0", "ceramic_jug_v0", "wooden_trencher_plate_v0"]
+    },
+    {
+      "status_tier_id": "market_trade_v0",
+      "plain_name": "Market trade",
+      "social_read": "Goods for sale, baskets, sacks, jars, fresh produce, spices, and visible exchange value.",
+      "material_rules": ["basket weave", "sack cloth", "jar labels", "fresh produce color", "small sealed containers"],
+      "silhouette_rules": ["bundles", "stacks", "repeated goods", "front-facing labels or seals"],
+      "starter_food_items": ["apple_fruit_v0", "carrot_root_bundle_v0", "grain_sack_v0", "spice_jar_v0"]
+    },
+    {
+      "status_tier_id": "noble_banquet_v0",
+      "plain_name": "Noble banquet",
+      "social_read": "High-status table service, polished vessels, arranged platters, wine, meat, and display.",
+      "material_rules": ["metal platter", "glass or polished cup", "wine vessel", "arranged fish or meat", "garnish hint"],
+      "silhouette_rules": ["central platters", "tall cups", "symmetrical arrangement", "larger portions"],
+      "starter_food_items": ["roasted_meat_joint_v0", "fish_on_platter_v0", "wine_goblet_v0", "glass_bottle_v0"]
+    },
+    {
+      "status_tier_id": "ritual_festival_v0",
+      "plain_name": "Ritual or festival",
+      "social_read": "Offering food, feast markers, holy-day bread, ceremonial drink, or symbolic vessel props.",
+      "material_rules": ["central vessel", "symbolic serving face", "clean rim", "special bread shape", "dark offering recess"],
+      "silhouette_rules": ["front-facing symbol", "ordered placement", "clear centerpiece"],
+      "starter_food_items": ["round_loaf_bread_v0", "wine_goblet_v0", "ceramic_jug_v0", "spice_jar_v0"]
+    },
+    {
+      "status_tier_id": "traveler_pack_v0",
+      "plain_name": "Traveler pack",
+      "social_read": "Portable food and drink for roads, scouting, messengers, and survival scenes.",
+      "material_rules": ["wrapped bread", "flask", "dried fruit", "cloth tie", "compact bundle"],
+      "silhouette_rules": ["small portable forms", "tied bundles", "hanging or packed containers"],
+      "starter_food_items": ["flatbread_wrap_v0", "waterskin_food_flask_v0", "cheese_wedge_v0", "apple_fruit_v0"]
+    },
+    {
+      "status_tier_id": "spoiled_ruin_v0",
+      "plain_name": "Spoiled ruin",
+      "social_read": "Abandoned kitchens, rotten stores, spilled food, dried remains, cracked vessels, and stale clutter.",
+      "material_rules": ["darkened edges", "mold material role", "broken ceramics", "shrunk forms", "spilled grain"],
+      "silhouette_rules": ["original form still readable", "localized damage", "small low-cost variants"],
+      "starter_food_items": ["spoiled_fruit_scatter_v0", "grain_sack_v0", "ceramic_jug_v0", "wooden_trencher_plate_v0"]
+    }
+  ],
+  "food_drink_styles": [
+    {
+      "style_id": "rustic_bread_grain_v0",
+      "plain_name": "Rustic bread and grain",
+      "visual_rules": ["rounded loaves", "flat breads", "scored crust lines", "grain sacks", "crumb or flour material roles"],
+      "geometry_terms": ["circle_profile", "rounded_rectangle_profile", "capsule_profile", "custom_polygon_profile", "loft_sections", "relief_stack", "array_linear", "width", "height"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_uv_sphere_add", "primitive_cube_add", "modifier_bevel", "modifier_displace", "modifier_weighted_normal", "material_assign_by_part", "procedural_noise_texture", "procedural_bump_map"],
+      "drawing_ui_tags": ["loaf_body", "crust_score", "flatbread", "grain_sack", "tie_cord", "crumb_edge"]
+    },
+    {
+      "style_id": "fresh_market_produce_v0",
+      "plain_name": "Fresh market produce",
+      "visual_rules": ["rounded fruit", "root taper", "stems", "bundle ties", "small color variation", "basket-ready repetition"],
+      "geometry_terms": ["circle_profile", "capsule_profile", "radial_stack", "section_stack", "array_linear", "array_radial", "height", "radius", "decorative_only"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cone_add", "primitive_cylinder_add", "mesh_from_pydata", "modifier_array", "object_duplicate_radial", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["fruit_body", "stem", "root_taper", "bundle_tie", "leaf_hint", "produce_count"]
+    },
+    {
+      "style_id": "dairy_cheese_cut_v0",
+      "plain_name": "Dairy cheese cut",
+      "visual_rules": ["wedge cuts", "round wheels", "rind edge", "small holes", "crumbled corner", "cloth wrap"],
+      "geometry_terms": ["circle_profile", "triangle_profile", "custom_polygon_profile", "boolean_cut", "relief_stack", "bevel_edges", "width", "height"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cylinder_add", "primitive_uv_sphere_add", "modifier_boolean", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map"],
+      "drawing_ui_tags": ["cheese_wedge", "rind", "cut_face", "hole", "crumb", "cloth_wrap"]
+    },
+    {
+      "style_id": "cured_smoked_salted_v0",
+      "plain_name": "Cured, smoked, or salted",
+      "visual_rules": ["darker preserved surfaces", "string ties", "salt sacks", "hanging hooks", "smoked edge material"],
+      "geometry_terms": ["capsule_profile", "custom_polygon_profile", "array_linear", "socket", "anchor", "bevel_edges", "length", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cube_add", "primitive_cylinder_add", "curve_bezier_add", "curve_bevel_profile", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["cured_surface", "salt_mark", "hanging_hook", "string_tie", "smoked_edge"]
+    },
+    {
+      "style_id": "cooked_platter_service_v0",
+      "plain_name": "Cooked platter service",
+      "visual_rules": ["large serving mass", "platter rim", "bone or fish spine hints", "garnish optional", "dark underside"],
+      "geometry_terms": ["rounded_rectangle_profile", "circle_profile", "capsule_profile", "custom_polygon_profile", "relief_stack", "socket", "height", "width"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_uv_sphere_add", "primitive_cylinder_add", "modifier_bevel", "modifier_displace", "modifier_weighted_normal", "material_assign_by_part", "procedural_noise_texture", "procedural_bump_map"],
+      "drawing_ui_tags": ["platter", "meat_mass", "bone_hint", "fish_spine", "garnish_socket", "serving_rim"]
+    },
+    {
+      "style_id": "ceramic_earthenware_service_v0",
+      "plain_name": "Ceramic earthenware service",
+      "visual_rules": ["bowls", "jugs", "plates", "rim lips", "handles", "glaze or clay material roles"],
+      "geometry_terms": ["circle_profile", "radial_stack", "section_stack", "loft_sections", "offset_profile", "socket", "diameter", "height", "decorative_only"],
+      "blender_tool_ids": ["modifier_screw", "primitive_cylinder_add", "primitive_torus_add", "mesh_from_pydata", "curve_bezier_add", "curve_bevel_profile", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["bowl_profile", "rim_lip", "jug_body", "handle", "spout", "glaze_band", "interior"]
+    },
+    {
+      "style_id": "wood_metal_table_service_v0",
+      "plain_name": "Wood and metal table service",
+      "visual_rules": ["wood trenchers", "metal platters", "tankards", "rim bands", "handle loops", "simple wear zones"],
+      "geometry_terms": ["circle_profile", "rectangle_profile", "rounded_rectangle_profile", "radial_stack", "offset_profile", "bevel_edges", "width", "height"],
+      "blender_tool_ids": ["primitive_cube_add", "primitive_cylinder_add", "primitive_torus_add", "mesh_from_pydata", "curve_bezier_add", "curve_bevel_profile", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["trencher", "platter_rim", "tankard_body", "handle", "metal_band", "wear_zone"]
+    },
+    {
+      "style_id": "glass_bottle_goblet_v0",
+      "plain_name": "Glass bottle and goblet",
+      "visual_rules": ["thin stems", "bowl cups", "narrow necks", "corks", "liquid fill lines", "transparent material role"],
+      "geometry_terms": ["circle_profile", "radial_stack", "section_stack", "loft_sections", "offset_profile", "diameter", "height", "decorative_only"],
+      "blender_tool_ids": ["modifier_screw", "primitive_cylinder_add", "primitive_uv_sphere_add", "primitive_torus_add", "mesh_from_pydata", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "material_principled_shader"],
+      "drawing_ui_tags": ["glass_body", "neck", "stem", "foot", "cork", "liquid_line", "transparent_role"]
+    },
+    {
+      "style_id": "sack_basket_jar_storage_v0",
+      "plain_name": "Sack, basket, and jar storage",
+      "visual_rules": ["sacks", "tied mouths", "small jars", "labels or seals", "stackable goods", "basket-ready counts"],
+      "geometry_terms": ["rounded_rectangle_profile", "capsule_profile", "circle_profile", "radial_stack", "array_linear", "socket", "width", "height"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cube_add", "primitive_cylinder_add", "curve_bezier_add", "curve_bevel_profile", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map"],
+      "drawing_ui_tags": ["sack_body", "tied_mouth", "jar_body", "label", "seal", "basket_socket", "stack_count"]
+    },
+    {
+      "style_id": "spoiled_mold_decay_v0",
+      "plain_name": "Spoiled mold and decay",
+      "visual_rules": ["shrunk produce", "dark spots", "mold material roles", "broken vessels", "spills", "missing chunks"],
+      "geometry_terms": ["custom_polygon_profile", "circle_profile", "boolean_cut", "offset_profile", "array_radial", "decorative_only", "bounds"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_uv_sphere_add", "primitive_cylinder_add", "modifier_boolean", "modifier_displace", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_noise_texture"],
+      "drawing_ui_tags": ["mold_spot", "dark_rot", "missing_chunk", "spilled_grain", "broken_rim", "stale_edge"]
+    }
+  ],
+  "food_drink_families": [
+    {
+      "family_id": "breads_grains_v0",
+      "plain_name": "Breads and grains",
+      "core_function": "Staple food, rations, trenchers, sacks, flour, market goods, and table portions.",
+      "starter_food_items": ["round_loaf_bread_v0", "flatbread_wrap_v0", "grain_sack_v0"],
+      "drawing_ui_tags": ["loaf_body", "flatbread", "crust_score", "grain_sack", "flour_dust", "tied_mouth"]
+    },
+    {
+      "family_id": "produce_fruit_roots_v0",
+      "plain_name": "Produce, fruit, and roots",
+      "core_function": "Fresh, market, garden, travel, and spoiled organic food clutter.",
+      "starter_food_items": ["apple_fruit_v0", "carrot_root_bundle_v0", "spoiled_fruit_scatter_v0"],
+      "drawing_ui_tags": ["fruit_body", "stem", "root_taper", "bundle_tie", "leaf_hint", "rot_spot"]
+    },
+    {
+      "family_id": "dairy_cheese_v0",
+      "plain_name": "Dairy and cheese",
+      "core_function": "Cheese wheels, wedges, cut faces, cloth-wrapped dairy, and table/pantry proteins.",
+      "starter_food_items": ["cheese_wedge_v0"],
+      "drawing_ui_tags": ["cheese_wedge", "wheel", "rind", "cut_face", "hole", "cloth_wrap"]
+    },
+    {
+      "family_id": "meat_fish_v0",
+      "plain_name": "Meat and fish",
+      "core_function": "Cooked, preserved, served, market, banquet, and ruin remains for kitchens and halls.",
+      "starter_food_items": ["roasted_meat_joint_v0", "fish_on_platter_v0"],
+      "drawing_ui_tags": ["meat_mass", "bone_hint", "fish_body", "fish_spine", "platter", "cured_surface"]
+    },
+    {
+      "family_id": "soups_stews_v0",
+      "plain_name": "Soups and stews",
+      "core_function": "Liquid or semi-liquid meals in bowls, cauldrons, tavern dishes, and refectory settings.",
+      "starter_food_items": ["stew_bowl_v0"],
+      "drawing_ui_tags": ["bowl", "liquid_surface", "ingredient_chunk", "rim_lip", "spoon_socket", "steam_hint"]
+    },
+    {
+      "family_id": "drink_vessels_v0",
+      "plain_name": "Drink vessels",
+      "core_function": "Beer, wine, water, jugs, goblets, bottles, cups, flasks, and liquid-state props.",
+      "starter_food_items": ["beer_tankard_v0", "wine_goblet_v0", "ceramic_jug_v0", "glass_bottle_v0", "waterskin_food_flask_v0"],
+      "drawing_ui_tags": ["cup_body", "stem", "handle", "jug_body", "spout", "bottle_neck", "liquid_line"]
+    },
+    {
+      "family_id": "table_service_v0",
+      "plain_name": "Table service",
+      "core_function": "Plates, trenchers, platters, bowls, goblets, tankards, and serving surfaces that organize meals.",
+      "starter_food_items": ["wooden_trencher_plate_v0", "fish_on_platter_v0", "wine_goblet_v0", "stew_bowl_v0"],
+      "drawing_ui_tags": ["plate", "trencher", "platter_rim", "rim_lip", "wear_zone", "serving_socket"]
+    },
+    {
+      "family_id": "pantry_storage_v0",
+      "plain_name": "Pantry storage",
+      "core_function": "Sacks, jars, bottles, sealed spices, labeled goods, and store-room clutter.",
+      "starter_food_items": ["grain_sack_v0", "spice_jar_v0", "glass_bottle_v0", "ceramic_jug_v0"],
+      "drawing_ui_tags": ["sack_body", "jar_body", "label", "seal", "stopper", "shelf_socket"]
+    }
+  ],
+  "food_drink_items": [
+    {
+      "food_drink_id": "round_loaf_bread_v0",
+      "plain_name": "Round loaf of bread",
+      "family_id": "breads_grains_v0",
+      "status_tier_ids": ["subsistence_ration_v0", "monastic_refectory_v0", "ritual_festival_v0"],
+      "style_ids": ["rustic_bread_grain_v0"],
+      "source_support": [
+        {
+          "label": "Britannica bread",
+          "url": "https://www.britannica.com/topic/bread",
+          "support_summary": "Supports bread as a staple baked food with varied forms including flat, raised, round, and scored loaves."
+        },
+        {
+          "label": "Britannica baking",
+          "url": "https://www.britannica.com/topic/baking",
+          "support_summary": "Supports baking context for bread, dough, ovens, and prepared food surfaces."
+        }
+      ],
+      "game_use_roles": ["table food", "ration", "market good", "refectory serving", "ritual offering"],
+      "anatomy_parts": [
+        {"part_id": "loaf_body", "plain_name": "loaf body", "geometry_role": "rounded baked mass"},
+        {"part_id": "crust_scores", "plain_name": "crust scores", "geometry_role": "shallow cut lines across top"},
+        {"part_id": "crumb_edge", "plain_name": "crumb edge", "geometry_role": "cut or broken soft interior hint"},
+        {"part_id": "flour_dust", "plain_name": "flour dust", "geometry_role": "material role for pale powder on surface"}
+      ],
+      "materials": ["crust material", "crumb material", "flour-dust material"],
+      "real_tools": ["kneading board", "knife", "oven", "peel", "cloth"],
+      "craft_sequence": [
+        "Build a low rounded body from a simple profile.",
+        "Add crust scores as shallow relief or dark line details.",
+        "Add optional cut crumb face for half-loaf variants.",
+        "Use material slots for crust, crumb, and flour dust.",
+        "Declare serving or ration state separately from geometry."
+      ],
+      "serving_mechanics": "The loaf can be a whole table item, cut portion, ration, or offering; portion state is source data.",
+      "geometry_terms": ["circle_profile", "rounded_rectangle_profile", "loft_sections", "relief_stack", "bevel_edges", "height", "width", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_uv_sphere_add", "modifier_bevel", "modifier_displace", "modifier_weighted_normal", "material_assign_by_part", "procedural_noise_texture", "procedural_bump_map", "create_lod_variant"],
+      "drawing_ui_tags": ["loaf_body", "crust_score", "crumb_edge", "flour_dust", "portion_state", "serving_socket"],
+      "source_fields_needed": ["loaf_radius_m", "loaf_height_m", "score_pattern", "crumb_cut_enabled", "portion_state", "serving_socket", "material_state"],
+      "operator_checks": ["Does it read as bread without texture?", "Are crust scores shallow enough for low-poly editability?", "Is cut/whole state source-owned?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Bread Before the Bell",
+          "player_reward": "Names loaf body, crust score, crumb edge, flour dust, and portion state.",
+          "detail_prompt": "A loaf tells whether a room was fed, starved, or only staged for ceremony."
+        }
+      ],
+      "deferred_details": ["crumb particle scatter", "exact regional bread forms", "edible inventory mechanics"]
+    },
+    {
+      "food_drink_id": "flatbread_wrap_v0",
+      "plain_name": "Flatbread wrap",
+      "family_id": "breads_grains_v0",
+      "status_tier_ids": ["traveler_pack_v0", "subsistence_ration_v0"],
+      "style_ids": ["rustic_bread_grain_v0"],
+      "source_support": [
+        {
+          "label": "Britannica bread",
+          "url": "https://www.britannica.com/topic/bread",
+          "support_summary": "Supports flatbread as an early and widespread bread form."
+        }
+      ],
+      "game_use_roles": ["travel ration", "camp food", "wrapped meal", "market snack"],
+      "anatomy_parts": [
+        {"part_id": "flatbread_sheet", "plain_name": "flatbread sheet", "geometry_role": "thin irregular oval or disk"},
+        {"part_id": "folded_edge", "plain_name": "folded edge", "geometry_role": "rolled or bent side"},
+        {"part_id": "tie_cord", "plain_name": "tie cord", "geometry_role": "optional cord holding ration bundle"},
+        {"part_id": "filling_socket", "plain_name": "filling socket", "geometry_role": "optional source slot for visible filling"}
+      ],
+      "materials": ["flatbread surface", "dark fold material", "cord material"],
+      "real_tools": ["baking stone", "knife", "cloth wrap", "cord"],
+      "craft_sequence": [
+        "Build a thin irregular disk or folded sheet.",
+        "Add a folded edge and optional cord tie.",
+        "Declare filling as a socket so it can be omitted or varied.",
+        "Use traveler/ration state to switch wrapped or open form."
+      ],
+      "serving_mechanics": "The flatbread is a portable food wrapper; filling and tied state are explicit source fields.",
+      "geometry_terms": ["circle_profile", "custom_polygon_profile", "extrude", "offset_profile", "socket", "width", "height", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "curve_bezier_add", "curve_bevel_profile", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map", "create_lod_variant"],
+      "drawing_ui_tags": ["flatbread", "folded_edge", "tie_cord", "filling_socket", "wrapped_state"],
+      "source_fields_needed": ["outline_points", "thickness_m", "fold_curve", "tie_cord_path", "filling_socket", "wrapped_state"],
+      "operator_checks": ["Is it visibly thin?", "Can the filling be removed for low compute?", "Does the tied state read from top view?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Food for the Road",
+          "player_reward": "Names flatbread, folded edge, tie cord, and filling socket.",
+          "detail_prompt": "The road prefers food that can be held in one hand and defended with the other."
+        }
+      ],
+      "deferred_details": ["filling generation", "cloth wrap variants", "fold deformation"]
+    },
+    {
+      "food_drink_id": "cheese_wedge_v0",
+      "plain_name": "Cheese wedge",
+      "family_id": "dairy_cheese_v0",
+      "status_tier_ids": ["common_tavern_v0", "traveler_pack_v0", "market_trade_v0"],
+      "style_ids": ["dairy_cheese_cut_v0"],
+      "source_support": [
+        {
+          "label": "Britannica cheese",
+          "url": "https://www.britannica.com/topic/cheese",
+          "support_summary": "Supports cheese as a milk-derived food formed from curd, with varied types and cut/served forms."
+        },
+        {
+          "label": "Britannica dairy product",
+          "url": "https://www.britannica.com/topic/dairy-product",
+          "support_summary": "Supports cheese and other foods made from milk as dairy products."
+        }
+      ],
+      "game_use_roles": ["tavern food", "market good", "travel ration", "pantry item", "mouse-bait joke prop"],
+      "anatomy_parts": [
+        {"part_id": "wedge_body", "plain_name": "wedge body", "geometry_role": "triangular cheese cut"},
+        {"part_id": "rind", "plain_name": "rind", "geometry_role": "outer edge material or raised rim"},
+        {"part_id": "cut_face", "plain_name": "cut face", "geometry_role": "soft exposed interior"},
+        {"part_id": "holes", "plain_name": "holes", "geometry_role": "optional shallow or through cuts"},
+        {"part_id": "crumbs", "plain_name": "crumbs", "geometry_role": "small optional fragments"}
+      ],
+      "materials": ["cheese interior", "rind material", "dark hole material", "cloth wrap optional"],
+      "real_tools": ["knife", "cloth", "cheese board"],
+      "craft_sequence": [
+        "Build wedge body from a triangular profile.",
+        "Assign rind and cut-face material roles separately.",
+        "Add small holes by shallow booleans only when needed.",
+        "Add optional crumbs or cloth wrap as separate parts.",
+        "Declare freshness/spoilage state separately."
+      ],
+      "serving_mechanics": "Cheese can be whole wheel, wedge, ration, market item, or spoiled pantry clutter; cut state drives geometry.",
+      "geometry_terms": ["triangle_profile", "circle_profile", "custom_polygon_profile", "boolean_cut", "relief_stack", "bevel_edges", "width", "height"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cylinder_add", "modifier_boolean", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map", "create_lod_variant"],
+      "drawing_ui_tags": ["cheese_wedge", "rind", "cut_face", "hole", "crumb", "freshness_state"],
+      "source_fields_needed": ["wedge_angle_deg", "wedge_radius_m", "height_m", "rind_width_m", "hole_count", "crumb_enabled", "freshness_state"],
+      "operator_checks": ["Does the cut face contrast with rind?", "Are holes optional and low-cost?", "Can the same source become market, ration, or spoiled?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Curd, Rind, and Road Dust",
+          "player_reward": "Names rind, cut face, holes, crumbs, and freshness state.",
+          "detail_prompt": "A cheese wedge keeps its history at the rind and its present on the cut face."
+        }
+      ],
+      "deferred_details": ["specific cheese varieties", "mold shader pass", "bite marks"]
+    },
+    {
+      "food_drink_id": "apple_fruit_v0",
+      "plain_name": "Apple fruit",
+      "family_id": "produce_fruit_roots_v0",
+      "status_tier_ids": ["market_trade_v0", "traveler_pack_v0"],
+      "style_ids": ["fresh_market_produce_v0"],
+      "source_support": [
+        {
+          "label": "Britannica apple",
+          "url": "https://www.britannica.com/plant/apple-fruit-and-tree",
+          "support_summary": "Supports apple as a widely cultivated roundish fruit with food and drink uses."
+        },
+        {
+          "label": "Britannica fruit",
+          "url": "https://www.britannica.com/science/fruit-plant-reproductive-body",
+          "support_summary": "Supports fruit anatomy and broad fruit category vocabulary."
+        }
+      ],
+      "game_use_roles": ["market produce", "travel food", "table garnish", "small pickup", "spoiled variant source"],
+      "anatomy_parts": [
+        {"part_id": "fruit_body", "plain_name": "fruit body", "geometry_role": "rounded apple mass"},
+        {"part_id": "stem", "plain_name": "stem", "geometry_role": "small top cylinder or curve"},
+        {"part_id": "dimple", "plain_name": "top/bottom dimple", "geometry_role": "shallow concave cue"},
+        {"part_id": "skin_spots", "plain_name": "skin spots", "geometry_role": "optional small material marks"}
+      ],
+      "materials": ["fruit skin", "stem material", "spot material"],
+      "real_tools": ["basket", "knife", "cloth"],
+      "craft_sequence": [
+        "Build a slightly squat sphere or radial stack.",
+        "Add top/bottom dimple and stem as small named parts.",
+        "Use color/material role for variety instead of unique geometry.",
+        "Reserve rot spots and missing chunks for spoiled variants."
+      ],
+      "serving_mechanics": "The apple can be fresh produce, table garnish, ration, or spoiled scatter; state is source-owned.",
+      "geometry_terms": ["circle_profile", "radial_stack", "section_stack", "offset_profile", "array_radial", "radius", "height", "decorative_only"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cylinder_add", "mesh_from_pydata", "modifier_displace", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_noise_texture", "create_lod_variant"],
+      "drawing_ui_tags": ["fruit_body", "stem", "dimple", "skin_spot", "freshness_state"],
+      "source_fields_needed": ["radius_m", "height_scale", "stem_profile", "dimple_depth_m", "skin_variant_id", "freshness_state"],
+      "operator_checks": ["Does it read as fruit at small scale?", "Is the stem visible but not overbuilt?", "Can rot state reuse the same base geometry?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Orchard in a Bowl",
+          "player_reward": "Names fruit body, stem, dimple, skin spots, and freshness state.",
+          "detail_prompt": "A single apple on a desk can mean trade, travel, or someone who left in haste."
+        }
+      ],
+      "deferred_details": ["species-specific shapes", "bite marks", "basket population rules"]
+    },
+    {
+      "food_drink_id": "carrot_root_bundle_v0",
+      "plain_name": "Carrot or root bundle",
+      "family_id": "produce_fruit_roots_v0",
+      "status_tier_ids": ["market_trade_v0", "common_tavern_v0"],
+      "style_ids": ["fresh_market_produce_v0"],
+      "source_support": [
+        {
+          "label": "Britannica vegetables for kids",
+          "url": "https://kids.britannica.com/kids/article/vegetable/400167",
+          "support_summary": "Supports vegetables such as carrots as food plants and gives simple root/bulb vocabulary."
+        },
+        {
+          "label": "Colorado State University Food Source Information, carrots",
+          "url": "https://www.chhs.colostate.edu/fsi/food-articles/produce/carrots/",
+          "support_summary": "Supports carrots as produce and cooking/market vegetable context."
+        }
+      ],
+      "game_use_roles": ["market produce", "kitchen ingredient", "farm storage", "stew ingredient", "bundle clutter"],
+      "anatomy_parts": [
+        {"part_id": "root_tapers", "plain_name": "root tapers", "geometry_role": "repeated tapered orange/root bodies"},
+        {"part_id": "leaf_hints", "plain_name": "leaf hints", "geometry_role": "small green/top strips"},
+        {"part_id": "bundle_tie", "plain_name": "bundle tie", "geometry_role": "cord around grouped roots"},
+        {"part_id": "dirt_marks", "plain_name": "dirt marks", "geometry_role": "material role for soil or rough edges"}
+      ],
+      "materials": ["root vegetable material", "leaf material", "cord material", "dirt material"],
+      "real_tools": ["basket", "knife", "cord", "market crate"],
+      "craft_sequence": [
+        "Build one tapered root shape and array it into a small bundle.",
+        "Add top leaf hints and bundle tie.",
+        "Use color/material variants for root type.",
+        "Keep individual roots selectable for scatter variants."
+      ],
+      "serving_mechanics": "Root bundles are market/kitchen ingredients; bundle count and tie state are source fields.",
+      "geometry_terms": ["capsule_profile", "circle_profile", "section_stack", "array_linear", "array_radial", "socket", "length", "radius", "decorative_only"],
+      "blender_tool_ids": ["primitive_cone_add", "primitive_cylinder_add", "mesh_from_pydata", "modifier_array", "object_duplicate_radial", "curve_bezier_add", "curve_bevel_profile", "modifier_bevel", "material_assign_by_part"],
+      "drawing_ui_tags": ["root_taper", "leaf_hint", "bundle_tie", "dirt_mark", "produce_count"],
+      "source_fields_needed": ["root_count", "root_length_m", "root_radius_m", "bundle_spread_m", "leaf_enabled", "tie_cord_path", "dirt_mark_policy"],
+      "operator_checks": ["Does one root shape produce a readable bundle?", "Can bundle count scale for market stalls?", "Is the tie separate from roots?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Roots Sold by the Cord",
+          "player_reward": "Names root taper, leaf hint, bundle tie, dirt mark, and produce count.",
+          "detail_prompt": "A tied bundle tells you it was meant to be counted, carried, and cooked."
+        }
+      ],
+      "deferred_details": ["exact carrot botanical accuracy", "farm crop generation", "cookable ingredient mechanics"]
+    },
+    {
+      "food_drink_id": "roasted_meat_joint_v0",
+      "plain_name": "Roasted meat joint",
+      "family_id": "meat_fish_v0",
+      "status_tier_ids": ["noble_banquet_v0", "common_tavern_v0"],
+      "style_ids": ["cooked_platter_service_v0", "cured_smoked_salted_v0"],
+      "source_support": [
+        {
+          "label": "Britannica meat",
+          "url": "https://www.britannica.com/topic/meat",
+          "support_summary": "Supports meat as animal flesh used for food and gives general meat/cut context."
+        },
+        {
+          "label": "Britannica meat preservation",
+          "url": "https://www.britannica.com/technology/meat-processing/Preservation-and-storage",
+          "support_summary": "Supports preservation methods such as curing/salting as food-state context."
+        }
+      ],
+      "game_use_roles": ["banquet food", "tavern meal", "kitchen roast", "butcher display", "spoiled leftover variant"],
+      "anatomy_parts": [
+        {"part_id": "meat_mass", "plain_name": "meat mass", "geometry_role": "rounded cooked food body"},
+        {"part_id": "bone_hint", "plain_name": "bone hint", "geometry_role": "small exposed bone cue"},
+        {"part_id": "fat_band", "plain_name": "fat band", "geometry_role": "lighter edge or material strip"},
+        {"part_id": "roast_marks", "plain_name": "roast marks", "geometry_role": "dark line or material marks"},
+        {"part_id": "platter_socket", "plain_name": "platter socket", "geometry_role": "placement relation to serving platter"}
+      ],
+      "materials": ["roasted meat material", "bone material", "fat material", "dark char material"],
+      "real_tools": ["knife", "spit", "platter", "hook", "salt"],
+      "craft_sequence": [
+        "Build an irregular rounded capsule-like meat mass.",
+        "Add exposed bone and fat band as separate material/mesh details.",
+        "Add simple roast marks or char material.",
+        "Declare platter and garnish sockets separately.",
+        "Use preservation/spoilage state for cured or ruined variants."
+      ],
+      "serving_mechanics": "The meat can be served, hung, cut, cured, or spoiled; cooking state drives material and optional support geometry.",
+      "geometry_terms": ["capsule_profile", "custom_polygon_profile", "circle_profile", "relief_stack", "socket", "anchor", "length", "width", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_uv_sphere_add", "primitive_cylinder_add", "curve_bezier_add", "curve_bevel_profile", "modifier_displace", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["meat_mass", "bone_hint", "fat_band", "roast_mark", "platter_socket", "cooking_state"],
+      "source_fields_needed": ["mass_profile", "length_m", "bone_enabled", "fat_band_profile", "roast_mark_count", "platter_socket", "cooking_state"],
+      "operator_checks": ["Does it read as cooked meat without graphic detail?", "Is bone optional?", "Are serving/cured/spoiled states source-owned?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Roast on the Table",
+          "player_reward": "Names meat mass, bone hint, fat band, roast mark, and cooking state.",
+          "detail_prompt": "A roast is never just food at court; it is the room announcing it had meat to spare."
+        }
+      ],
+      "deferred_details": ["specific animal cuts", "cut slices", "animated carving", "graphic gore detail"]
+    },
+    {
+      "food_drink_id": "fish_on_platter_v0",
+      "plain_name": "Fish on platter",
+      "family_id": "meat_fish_v0",
+      "status_tier_ids": ["noble_banquet_v0", "market_trade_v0"],
+      "style_ids": ["cooked_platter_service_v0", "wood_metal_table_service_v0"],
+      "source_support": [
+        {
+          "label": "Britannica seafood",
+          "url": "https://www.britannica.com/topic/seafood",
+          "support_summary": "Supports fish and seafood as important food categories and prepared-food context."
+        },
+        {
+          "label": "Britannica fish",
+          "url": "https://www.britannica.com/animal/fish",
+          "support_summary": "Supports fish body vocabulary and general fish identity."
+        }
+      ],
+      "game_use_roles": ["banquet platter", "market fish", "kitchen ingredient", "dockside good", "table centerpiece"],
+      "anatomy_parts": [
+        {"part_id": "fish_body", "plain_name": "fish body", "geometry_role": "long tapered fish shape"},
+        {"part_id": "tail", "plain_name": "tail", "geometry_role": "rear fin cue"},
+        {"part_id": "spine_line", "plain_name": "spine line", "geometry_role": "center line or cooked body cue"},
+        {"part_id": "platter", "plain_name": "platter", "geometry_role": "serving surface under fish"},
+        {"part_id": "garnish_socket", "plain_name": "garnish socket", "geometry_role": "optional placement for herbs/lemon/etc"}
+      ],
+      "materials": ["fish skin or cooked fish material", "dark line material", "wood or metal platter material"],
+      "real_tools": ["knife", "platter", "basket", "salt"],
+      "craft_sequence": [
+        "Build a simple fish silhouette with tail and center cue.",
+        "Place fish on a platter with separate material role.",
+        "Add optional spine/scale lines as shallow material or relief.",
+        "Use garnish socket only if style/status calls for it.",
+        "Keep fish and platter separately selectable."
+      ],
+      "serving_mechanics": "Fish can be market good, cooked platter, or spoiled dock/kitchen clutter; platter and freshness state are separate.",
+      "geometry_terms": ["capsule_profile", "triangle_profile", "custom_polygon_profile", "rounded_rectangle_profile", "relief_stack", "socket", "length", "width", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_uv_sphere_add", "primitive_cylinder_add", "modifier_bevel", "modifier_displace", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map"],
+      "drawing_ui_tags": ["fish_body", "tail", "spine_line", "platter", "garnish_socket", "freshness_state"],
+      "source_fields_needed": ["fish_length_m", "fish_width_m", "tail_profile", "spine_line_enabled", "platter_profile", "garnish_socket", "freshness_state"],
+      "operator_checks": ["Does it read as fish from silhouette?", "Can platter be swapped wood/metal?", "Is garnish optional?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Fish for the High Table",
+          "player_reward": "Names fish body, tail, spine line, platter, and garnish socket.",
+          "detail_prompt": "Fish on a platter says the river, market, and kitchen all arrived on time."
+        }
+      ],
+      "deferred_details": ["species-specific fish", "scale shader", "bone/flesh cutaway", "dock spoilage variants"]
+    },
+    {
+      "food_drink_id": "stew_bowl_v0",
+      "plain_name": "Bowl of stew",
+      "family_id": "soups_stews_v0",
+      "status_tier_ids": ["common_tavern_v0", "monastic_refectory_v0"],
+      "style_ids": ["ceramic_earthenware_service_v0"],
+      "source_support": [
+        {
+          "label": "Britannica pottery",
+          "url": "https://www.britannica.com/art/pottery",
+          "support_summary": "Supports pottery vessels such as bowls and plates used for serving food."
+        },
+        {
+          "label": "V&A ceramics collection highlights",
+          "url": "https://www.vam.ac.uk/articles/highlights-from-the-ceramics-collection",
+          "support_summary": "Supports visible ceramic reference variety for bowls, vessels, and table objects."
+        }
+      ],
+      "game_use_roles": ["tavern meal", "kitchen bowl", "refectory setting", "camp bowl", "warm food clue"],
+      "anatomy_parts": [
+        {"part_id": "bowl_body", "plain_name": "bowl body", "geometry_role": "radial ceramic bowl shell"},
+        {"part_id": "rim_lip", "plain_name": "rim lip", "geometry_role": "raised or rounded bowl edge"},
+        {"part_id": "liquid_surface", "plain_name": "liquid surface", "geometry_role": "flat or shallow surface inside bowl"},
+        {"part_id": "ingredient_chunks", "plain_name": "ingredient chunks", "geometry_role": "optional small repeated food pieces"},
+        {"part_id": "spoon_socket", "plain_name": "spoon socket", "geometry_role": "optional placement for utensil prop"}
+      ],
+      "materials": ["ceramic bowl", "stew liquid", "ingredient material", "dark interior"],
+      "real_tools": ["bowl", "ladle", "pot", "spoon"],
+      "craft_sequence": [
+        "Build bowl from radial profile.",
+        "Add liquid surface as separate shallow disk.",
+        "Add optional ingredient chunks and spoon socket.",
+        "Use material roles to separate ceramic and stew.",
+        "Declare hot/cold/empty state as source field."
+      ],
+      "serving_mechanics": "The bowl can be full, empty, spilled, hot, or abandoned; liquid state and contents are source-owned.",
+      "geometry_terms": ["circle_profile", "radial_stack", "section_stack", "offset_profile", "array_radial", "socket", "diameter", "height"],
+      "blender_tool_ids": ["modifier_screw", "primitive_cylinder_add", "primitive_torus_add", "primitive_uv_sphere_add", "mesh_from_pydata", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["bowl_profile", "rim_lip", "liquid_surface", "ingredient_chunk", "spoon_socket", "serving_state"],
+      "source_fields_needed": ["bowl_profile_rings", "rim_radius_m", "liquid_fill_ratio", "ingredient_count", "ingredient_profiles", "spoon_socket", "serving_state"],
+      "operator_checks": ["Does the bowl work empty or full?", "Is the liquid a separate part?", "Can ingredient chunks be disabled for low compute?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "A Bowl Remembers Heat",
+          "player_reward": "Names rim lip, liquid surface, ingredient chunks, spoon socket, and serving state.",
+          "detail_prompt": "A cold bowl of stew is not just food left behind; it is time made visible."
+        }
+      ],
+      "deferred_details": ["steam effects", "spoon asset", "ingredient recipe generation", "spill physics"]
+    },
+    {
+      "food_drink_id": "beer_tankard_v0",
+      "plain_name": "Beer tankard",
+      "family_id": "drink_vessels_v0",
+      "status_tier_ids": ["common_tavern_v0"],
+      "style_ids": ["wood_metal_table_service_v0"],
+      "source_support": [
+        {
+          "label": "Britannica beer",
+          "url": "https://www.britannica.com/topic/beer",
+          "support_summary": "Supports beer as a fermented beverage and gives brewing/drink context."
+        },
+        {
+          "label": "Britannica pottery",
+          "url": "https://www.britannica.com/art/pottery",
+          "support_summary": "Supports vessels for holding liquids and serving food/drink."
+        }
+      ],
+      "game_use_roles": ["tavern drink", "table clutter", "drunk scene prop", "innkeeper counter object"],
+      "anatomy_parts": [
+        {"part_id": "tankard_body", "plain_name": "tankard body", "geometry_role": "cylindrical cup body"},
+        {"part_id": "rim_band", "plain_name": "rim band", "geometry_role": "top raised ring"},
+        {"part_id": "base_band", "plain_name": "base band", "geometry_role": "bottom raised ring"},
+        {"part_id": "handle", "plain_name": "handle", "geometry_role": "side loop"},
+        {"part_id": "liquid_line", "plain_name": "liquid line", "geometry_role": "optional fill surface"}
+      ],
+      "materials": ["wood or ceramic body", "metal bands optional", "beer liquid", "dark interior"],
+      "real_tools": ["cup", "barrel", "ladle", "cloth"],
+      "craft_sequence": [
+        "Build tankard body from radial profile.",
+        "Add rim/base bands and handle as separate parts.",
+        "Add liquid surface only when filled.",
+        "Use material roles for wood/ceramic, metal, and liquid.",
+        "Keep collision simple."
+      ],
+      "serving_mechanics": "The tankard can be empty, filled, spilled, or stacked; fill state is source-owned.",
+      "geometry_terms": ["circle_profile", "radial_stack", "section_stack", "offset_profile", "socket", "diameter", "height", "decorative_only"],
+      "blender_tool_ids": ["modifier_screw", "primitive_cylinder_add", "primitive_torus_add", "curve_bezier_add", "curve_bevel_profile", "mesh_from_pydata", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["tankard_body", "rim_band", "base_band", "handle", "liquid_line", "fill_state"],
+      "source_fields_needed": ["body_profile_rings", "height_m", "diameter_m", "handle_path", "band_width_m", "fill_ratio", "material_state"],
+      "operator_checks": ["Does the handle read from side view?", "Can fill be removed?", "Are rim/base bands separate?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Foam at the Rim",
+          "player_reward": "Names tankard body, rim band, handle, liquid line, and fill state.",
+          "detail_prompt": "A tankard on its side says more about the room than a full one ever could."
+        }
+      ],
+      "deferred_details": ["foam mesh", "spill decals", "drinking animation"]
+    },
+    {
+      "food_drink_id": "wine_goblet_v0",
+      "plain_name": "Wine goblet",
+      "family_id": "drink_vessels_v0",
+      "status_tier_ids": ["noble_banquet_v0", "ritual_festival_v0"],
+      "style_ids": ["glass_bottle_goblet_v0", "wood_metal_table_service_v0"],
+      "source_support": [
+        {
+          "label": "Britannica wine",
+          "url": "https://www.britannica.com/topic/wine",
+          "support_summary": "Supports wine as a fermented beverage with ceremonial and table-service context."
+        },
+        {
+          "label": "Britannica alcoholic beverage",
+          "url": "https://www.britannica.com/topic/alcoholic-beverage",
+          "support_summary": "Supports fermented beverages and drink category context."
+        }
+      ],
+      "game_use_roles": ["banquet drink", "ritual cup", "noble tableware", "poison clue", "small treasure"],
+      "anatomy_parts": [
+        {"part_id": "cup_bowl", "plain_name": "cup bowl", "geometry_role": "upper drinking bowl"},
+        {"part_id": "stem", "plain_name": "stem", "geometry_role": "thin vertical support"},
+        {"part_id": "foot", "plain_name": "foot", "geometry_role": "wide base disk"},
+        {"part_id": "rim_lip", "plain_name": "rim lip", "geometry_role": "thin raised drinking edge"},
+        {"part_id": "liquid_line", "plain_name": "liquid line", "geometry_role": "optional red/dark fill surface"}
+      ],
+      "materials": ["glass or metal cup", "wine liquid", "polished rim material"],
+      "real_tools": ["cup", "bottle", "cloth", "table service"],
+      "craft_sequence": [
+        "Build cup, stem, and foot from radial profile.",
+        "Add thin rim lip and optional liquid surface.",
+        "Use glass/metal material roles by style/status.",
+        "Declare poison/ritual state as source metadata, not mesh."
+      ],
+      "serving_mechanics": "The goblet can be empty, filled, poisoned, ceremonial, or broken; fill/ritual state is source data.",
+      "geometry_terms": ["circle_profile", "radial_stack", "section_stack", "loft_sections", "offset_profile", "diameter", "height", "decorative_only"],
+      "blender_tool_ids": ["modifier_screw", "primitive_cylinder_add", "primitive_torus_add", "mesh_from_pydata", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "material_principled_shader", "create_lod_variant"],
+      "drawing_ui_tags": ["cup_bowl", "stem", "foot", "rim_lip", "liquid_line", "ritual_state"],
+      "source_fields_needed": ["profile_rings", "height_m", "cup_diameter_m", "stem_diameter_m", "fill_ratio", "material_state", "ritual_state"],
+      "operator_checks": ["Does the goblet read through silhouette?", "Can liquid be disabled?", "Is poison/ritual state source-owned?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "What the Cup Refuses to Say",
+          "player_reward": "Names cup bowl, stem, foot, rim lip, liquid line, and ritual state.",
+          "detail_prompt": "At a banquet, the cup can be as dangerous as the blade."
+        }
+      ],
+      "deferred_details": ["transparent shader tuning", "poison visual logic", "broken glass variant"]
+    },
+    {
+      "food_drink_id": "ceramic_jug_v0",
+      "plain_name": "Ceramic jug",
+      "family_id": "drink_vessels_v0",
+      "status_tier_ids": ["monastic_refectory_v0", "ritual_festival_v0", "spoiled_ruin_v0"],
+      "style_ids": ["ceramic_earthenware_service_v0"],
+      "source_support": [
+        {
+          "label": "Britannica pottery",
+          "url": "https://www.britannica.com/art/pottery",
+          "support_summary": "Supports pottery as clay vessels, including useful vessels for holding liquids or serving food."
+        },
+        {
+          "label": "V&A ceramics collection highlights",
+          "url": "https://www.vam.ac.uk/articles/highlights-from-the-ceramics-collection",
+          "support_summary": "Supports ceramic vessel reference variety."
+        }
+      ],
+      "game_use_roles": ["water jug", "wine jug", "kitchen vessel", "refectory setting", "broken ruin vessel"],
+      "anatomy_parts": [
+        {"part_id": "jug_body", "plain_name": "jug body", "geometry_role": "rounded ceramic vessel body"},
+        {"part_id": "neck", "plain_name": "neck", "geometry_role": "narrow upper opening"},
+        {"part_id": "rim_lip", "plain_name": "rim lip", "geometry_role": "raised mouth edge"},
+        {"part_id": "handle", "plain_name": "handle", "geometry_role": "side loop"},
+        {"part_id": "spout", "plain_name": "optional spout", "geometry_role": "pouring protrusion"},
+        {"part_id": "glaze_band", "plain_name": "glaze band", "geometry_role": "decorative or material ring"}
+      ],
+      "materials": ["earthenware ceramic", "glaze band", "dark interior material"],
+      "real_tools": ["potter's wheel", "kiln", "clay tool", "handle slip", "glaze"],
+      "craft_sequence": [
+        "Build jug body and neck from radial profile.",
+        "Add rim lip, handle, optional spout, and glaze bands.",
+        "Use material roles for clay, glaze, and dark interior.",
+        "Use ruin state for cracked/broken variants."
+      ],
+      "serving_mechanics": "The jug can store, pour, sit empty, or appear broken; contents and break state are source fields.",
+      "geometry_terms": ["circle_profile", "radial_stack", "section_stack", "offset_profile", "socket", "diameter", "height", "decorative_only"],
+      "blender_tool_ids": ["modifier_screw", "primitive_cylinder_add", "primitive_torus_add", "curve_bezier_add", "curve_bevel_profile", "mesh_from_pydata", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["jug_body", "neck", "rim_lip", "handle", "spout", "glaze_band", "contents_state"],
+      "source_fields_needed": ["profile_rings", "height_m", "body_diameter_m", "neck_diameter_m", "handle_path", "spout_enabled", "glaze_band_positions", "contents_state"],
+      "operator_checks": ["Does the profile read as a jug, not a cup?", "Is handle separate?", "Can broken variants reuse the profile?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Clay That Learned to Pour",
+          "player_reward": "Names jug body, neck, rim lip, handle, spout, and contents state.",
+          "detail_prompt": "A jug in a cell says someone once expected water to arrive."
+        }
+      ],
+      "deferred_details": ["liquid pour animation", "exact ceramic tradition", "shard generation"]
+    },
+    {
+      "food_drink_id": "glass_bottle_v0",
+      "plain_name": "Glass bottle",
+      "family_id": "drink_vessels_v0",
+      "status_tier_ids": ["noble_banquet_v0", "market_trade_v0"],
+      "style_ids": ["glass_bottle_goblet_v0"],
+      "source_support": [
+        {
+          "label": "Britannica bottle",
+          "url": "https://www.britannica.com/technology/bottle",
+          "support_summary": "Supports bottles as containers for liquids with necks, stoppers, and vessel forms."
+        },
+        {
+          "label": "Britannica wine",
+          "url": "https://www.britannica.com/topic/wine",
+          "support_summary": "Supports wine/liquid drink context for bottles and table service."
+        }
+      ],
+      "game_use_roles": ["wine bottle", "market liquid good", "alchemy stand-in", "shelf object", "broken clue"],
+      "anatomy_parts": [
+        {"part_id": "bottle_body", "plain_name": "bottle body", "geometry_role": "round or squared liquid container"},
+        {"part_id": "neck", "plain_name": "neck", "geometry_role": "narrow upper tube"},
+        {"part_id": "shoulder", "plain_name": "shoulder", "geometry_role": "transition from body to neck"},
+        {"part_id": "cork", "plain_name": "cork", "geometry_role": "stopper plug"},
+        {"part_id": "liquid_line", "plain_name": "liquid line", "geometry_role": "optional fill surface"},
+        {"part_id": "label", "plain_name": "optional label", "geometry_role": "front identity or merchant tag"}
+      ],
+      "materials": ["glass material", "cork material", "liquid material", "paper label optional"],
+      "real_tools": ["glass vessel", "cork", "label", "shelf"],
+      "craft_sequence": [
+        "Build bottle profile from radial rings.",
+        "Add neck, shoulder, cork, and optional label.",
+        "Use material roles for glass and liquid state.",
+        "Keep break state and contents id in source data."
+      ],
+      "serving_mechanics": "Bottle contents, fill line, sealed/broken state, and label identity are explicit source fields.",
+      "geometry_terms": ["circle_profile", "radial_stack", "section_stack", "loft_sections", "rectangle_profile", "socket", "diameter", "height"],
+      "blender_tool_ids": ["modifier_screw", "primitive_cylinder_add", "primitive_torus_add", "mesh_from_pydata", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "material_principled_shader", "create_lod_variant"],
+      "drawing_ui_tags": ["bottle_body", "neck", "shoulder", "cork", "liquid_line", "label", "contents_id"],
+      "source_fields_needed": ["profile_rings", "height_m", "body_diameter_m", "neck_diameter_m", "cork_profile", "fill_ratio", "label_profile", "contents_id"],
+      "operator_checks": ["Does it read when glass transparency is disabled?", "Is label optional?", "Are contents and fill state separate from material guess?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Bottle and the Name",
+          "player_reward": "Names body, neck, shoulder, cork, liquid line, label, and contents id.",
+          "detail_prompt": "A bottle without a label is a question; a bottle with one is sometimes a lie."
+        }
+      ],
+      "deferred_details": ["transparent shader tuning", "bottle break shards", "label generation", "liquid slosh"]
+    },
+    {
+      "food_drink_id": "grain_sack_v0",
+      "plain_name": "Grain sack",
+      "family_id": "pantry_storage_v0",
+      "status_tier_ids": ["subsistence_ration_v0", "market_trade_v0", "spoiled_ruin_v0"],
+      "style_ids": ["sack_basket_jar_storage_v0", "rustic_bread_grain_v0"],
+      "source_support": [
+        {
+          "label": "Britannica bread",
+          "url": "https://www.britannica.com/topic/bread",
+          "support_summary": "Supports grain/flour as bread-making source context."
+        },
+        {
+          "label": "Britannica food preservation overview video",
+          "url": "https://www.britannica.com/video/overview-food-preservation/-206259",
+          "support_summary": "Supports stored foodstuffs and preservation/storage context."
+        }
+      ],
+      "game_use_roles": ["pantry store", "market good", "warehouse clutter", "ration store", "spilled grain source"],
+      "anatomy_parts": [
+        {"part_id": "sack_body", "plain_name": "sack body", "geometry_role": "soft rounded rectangular cloth bag"},
+        {"part_id": "tied_mouth", "plain_name": "tied mouth", "geometry_role": "pinched top closure"},
+        {"part_id": "tie_cord", "plain_name": "tie cord", "geometry_role": "cord around mouth"},
+        {"part_id": "label_or_mark", "plain_name": "label or mark", "geometry_role": "small source-owned identity field"},
+        {"part_id": "spilled_grain_socket", "plain_name": "spilled grain socket", "geometry_role": "optional scatter relation"}
+      ],
+      "materials": ["sack cloth", "cord", "grain material", "dark seam material"],
+      "real_tools": ["sack", "cord", "scoop", "mill or store room"],
+      "craft_sequence": [
+        "Build soft sack body with tied top.",
+        "Add cord and label/mark as separate parts.",
+        "Declare full/empty/spilled state.",
+        "Use optional grain scatter socket for ruin or market scenes."
+      ],
+      "serving_mechanics": "The sack is storage, not edible geometry by itself; contents and spill state are source fields.",
+      "geometry_terms": ["rounded_rectangle_profile", "capsule_profile", "custom_polygon_profile", "array_linear", "socket", "height", "width", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cube_add", "curve_bezier_add", "curve_bevel_profile", "modifier_bevel", "modifier_displace", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map"],
+      "drawing_ui_tags": ["sack_body", "tied_mouth", "tie_cord", "label", "spilled_grain_socket", "contents_state"],
+      "source_fields_needed": ["sack_bounds_m", "mouth_profile", "tie_cord_path", "label_profile", "contents_state", "spilled_grain_socket", "stack_count"],
+      "operator_checks": ["Does the tied top read as cloth?", "Can contents state change without new mesh?", "Is spill scatter optional?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Grain Under Cord",
+          "player_reward": "Names sack body, tied mouth, tie cord, label, contents state, and spill socket.",
+          "detail_prompt": "A full sack is food in waiting; a split one is a warning about the storehouse."
+        }
+      ],
+      "deferred_details": ["cloth simulation", "grain particle scatter", "warehouse stacking generator"]
+    },
+    {
+      "food_drink_id": "spice_jar_v0",
+      "plain_name": "Spice jar",
+      "family_id": "pantry_storage_v0",
+      "status_tier_ids": ["market_trade_v0", "ritual_festival_v0"],
+      "style_ids": ["sack_basket_jar_storage_v0", "ceramic_earthenware_service_v0"],
+      "source_support": [
+        {
+          "label": "Britannica spice trade",
+          "url": "https://www.britannica.com/topic/spice-trade",
+          "support_summary": "Supports spices and herbs as traded food goods with high cultural and economic significance."
+        },
+        {
+          "label": "Britannica pottery",
+          "url": "https://www.britannica.com/art/pottery",
+          "support_summary": "Supports ceramic vessels and useful containers."
+        }
+      ],
+      "game_use_roles": ["market good", "kitchen jar", "ritual ingredient", "alchemy overlap prop", "lootable trade item"],
+      "anatomy_parts": [
+        {"part_id": "jar_body", "plain_name": "jar body", "geometry_role": "small ceramic or glass container"},
+        {"part_id": "neck", "plain_name": "neck", "geometry_role": "small opening"},
+        {"part_id": "stopper", "plain_name": "stopper", "geometry_role": "plug or lid"},
+        {"part_id": "label", "plain_name": "label", "geometry_role": "front source-owned ingredient tag"},
+        {"part_id": "seal", "plain_name": "seal", "geometry_role": "wax/cord closure hint"}
+      ],
+      "materials": ["ceramic or glass jar", "spice material", "paper label", "wax or cord seal"],
+      "real_tools": ["jar", "spoon", "label", "seal cord"],
+      "craft_sequence": [
+        "Build small jar body from radial profile.",
+        "Add neck, stopper, label, and optional seal.",
+        "Keep spice identity in source data.",
+        "Use market/ritual status to switch label and seal emphasis."
+      ],
+      "serving_mechanics": "The jar is an ingredient container; ingredient id, sealed state, and ritual/trade role are source fields.",
+      "geometry_terms": ["circle_profile", "radial_stack", "section_stack", "rectangle_profile", "socket", "diameter", "height", "decorative_only"],
+      "blender_tool_ids": ["modifier_screw", "primitive_cylinder_add", "primitive_torus_add", "mesh_from_pydata", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map", "create_lod_variant"],
+      "drawing_ui_tags": ["jar_body", "neck", "stopper", "label", "seal", "ingredient_id"],
+      "source_fields_needed": ["profile_rings", "height_m", "diameter_m", "stopper_profile", "label_profile", "seal_enabled", "ingredient_id", "sealed_state"],
+      "operator_checks": ["Is the jar distinct from bottle/jug?", "Is ingredient id source-owned?", "Can seal/label carry trade or ritual state?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Small Jar That Crossed the Sea",
+          "player_reward": "Names jar body, stopper, label, seal, ingredient id, and sealed state.",
+          "detail_prompt": "Spice is small enough to hide in a sleeve and valuable enough to guard in a vault."
+        }
+      ],
+      "deferred_details": ["specific spice identities", "powder scatter", "label art generation", "alchemy recipe integration"]
+    },
+    {
+      "food_drink_id": "wooden_trencher_plate_v0",
+      "plain_name": "Wooden trencher or plate",
+      "family_id": "table_service_v0",
+      "status_tier_ids": ["common_tavern_v0", "monastic_refectory_v0", "spoiled_ruin_v0"],
+      "style_ids": ["wood_metal_table_service_v0"],
+      "source_support": [
+        {
+          "label": "Britannica pottery",
+          "url": "https://www.britannica.com/art/pottery",
+          "support_summary": "Supports plates and bowls as serving vessels; this item uses that table-service role for a wood variant."
+        },
+        {
+          "label": "Britannica table",
+          "url": "https://www.britannica.com/topic/table-furniture",
+          "support_summary": "Supports table context for meal service and dining surfaces."
+        }
+      ],
+      "game_use_roles": ["plain plate", "table setting", "serving surface", "poor meal prop", "ruined dish"],
+      "anatomy_parts": [
+        {"part_id": "plate_body", "plain_name": "plate body", "geometry_role": "flat round or square serving surface"},
+        {"part_id": "rim_lip", "plain_name": "rim lip", "geometry_role": "raised plate edge"},
+        {"part_id": "wear_zone", "plain_name": "wear zone", "geometry_role": "center material role for use marks"},
+        {"part_id": "food_socket", "plain_name": "food socket", "geometry_role": "placement relation for food portions"}
+      ],
+      "materials": ["wood plate material", "worn center material", "dark rim shadow material"],
+      "real_tools": ["knife", "wood dish", "table"],
+      "craft_sequence": [
+        "Build flat plate or trencher body.",
+        "Add rim lip and wear zone.",
+        "Declare food socket for meals.",
+        "Use broken rim/mold state for ruin variants."
+      ],
+      "serving_mechanics": "The trencher is a support object; food placement is socketed and can be changed per scene.",
+      "geometry_terms": ["circle_profile", "rectangle_profile", "radial_stack", "offset_profile", "socket", "diameter", "width", "height", "support"],
+      "blender_tool_ids": ["primitive_cylinder_add", "primitive_cube_add", "primitive_torus_add", "mesh_from_pydata", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "create_collision_proxy", "create_lod_variant"],
+      "drawing_ui_tags": ["plate", "trencher", "rim_lip", "wear_zone", "food_socket", "broken_rim"],
+      "source_fields_needed": ["plate_profile", "diameter_m", "rim_height_m", "wear_zone_profile", "food_socket", "broken_state"],
+      "operator_checks": ["Can this plate hold any food item through a socket?", "Does rim lip read at low detail?", "Can broken variants reuse the base?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Plate Beneath the Meal",
+          "player_reward": "Names rim lip, wear zone, food socket, and broken rim.",
+          "detail_prompt": "The plate is what remains when the feast is gone."
+        }
+      ],
+      "deferred_details": ["specific trencher history", "dish stacking", "food placement compiler"]
+    },
+    {
+      "food_drink_id": "waterskin_food_flask_v0",
+      "plain_name": "Waterskin or food flask",
+      "family_id": "drink_vessels_v0",
+      "status_tier_ids": ["subsistence_ration_v0", "traveler_pack_v0"],
+      "style_ids": ["sack_basket_jar_storage_v0"],
+      "source_support": [
+        {
+          "label": "Britannica bottle",
+          "url": "https://www.britannica.com/technology/bottle",
+          "support_summary": "Supports bottles and flasks as portable liquid containers."
+        }
+      ],
+      "game_use_roles": ["travel water", "camp ration", "survival object", "pack clutter", "empty container"],
+      "anatomy_parts": [
+        {"part_id": "soft_body", "plain_name": "soft body", "geometry_role": "flattened rounded liquid container"},
+        {"part_id": "neck", "plain_name": "neck", "geometry_role": "short drinking/pouring mouth"},
+        {"part_id": "stopper", "plain_name": "stopper", "geometry_role": "plug or cap"},
+        {"part_id": "cord_loop", "plain_name": "cord loop", "geometry_role": "carrying loop"},
+        {"part_id": "seam", "plain_name": "seam", "geometry_role": "edge join or stitch line"}
+      ],
+      "materials": ["leather or skin body", "wood stopper", "cord", "dark mouth material"],
+      "real_tools": ["knife", "awl", "cord", "stopper"],
+      "craft_sequence": [
+        "Build a flattened rounded body.",
+        "Add neck, stopper, cord loop, and seam.",
+        "Declare contents and fill state separately.",
+        "Keep collision simple and broad."
+      ],
+      "serving_mechanics": "The flask holds water, wine, oil, or nothing; liquid state is source data, not mesh guesswork.",
+      "geometry_terms": ["rounded_rectangle_profile", "capsule_profile", "circle_profile", "loft_sections", "socket", "width", "height", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cylinder_add", "curve_bezier_add", "curve_bevel_profile", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map", "create_collision_proxy"],
+      "drawing_ui_tags": ["soft_body", "neck", "stopper", "cord_loop", "seam", "liquid_state"],
+      "source_fields_needed": ["body_outline_points", "body_depth_m", "neck_radius_m", "stopper_profile", "cord_path", "seam_path", "liquid_state"],
+      "operator_checks": ["Does it read as a portable liquid container?", "Are neck and stopper separate?", "Is contents state source-owned?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Water Kept Close",
+          "player_reward": "Names soft body, neck, stopper, cord loop, seam, and liquid state.",
+          "detail_prompt": "A full flask shortens a road; an empty one lengthens it."
+        }
+      ],
+      "deferred_details": ["slosh animation", "strap rigging", "drink interaction"]
+    },
+    {
+      "food_drink_id": "spoiled_fruit_scatter_v0",
+      "plain_name": "Spoiled fruit scatter",
+      "family_id": "produce_fruit_roots_v0",
+      "status_tier_ids": ["spoiled_ruin_v0"],
+      "style_ids": ["spoiled_mold_decay_v0", "fresh_market_produce_v0"],
+      "source_support": [
+        {
+          "label": "Britannica fruit processing",
+          "url": "https://www.britannica.com/topic/fruit-processing",
+          "support_summary": "Supports fruit as juicy/pulpy edible plant product and gives food-processing context."
+        },
+        {
+          "label": "Britannica food preservation overview video",
+          "url": "https://www.britannica.com/video/overview-food-preservation/-206259",
+          "support_summary": "Supports decay/preservation context for stored foodstuffs."
+        }
+      ],
+      "game_use_roles": ["abandoned kitchen clutter", "ruined pantry", "time-passed clue", "low-value scatter", "disease/rot atmosphere"],
+      "anatomy_parts": [
+        {"part_id": "shrunk_fruit_bodies", "plain_name": "shrunk fruit bodies", "geometry_role": "small deformed fruit forms"},
+        {"part_id": "mold_spots", "plain_name": "mold spots", "geometry_role": "small material/geometry dots"},
+        {"part_id": "missing_chunks", "plain_name": "missing chunks", "geometry_role": "boolean or custom cuts"},
+        {"part_id": "scatter_positions", "plain_name": "scatter positions", "geometry_role": "deterministic placement points"}
+      ],
+      "materials": ["dark fruit skin", "mold material", "exposed pulp", "floor contact material"],
+      "real_tools": ["basket", "store room", "floor scatter"],
+      "craft_sequence": [
+        "Reuse simple fruit body forms with scale/deformation.",
+        "Add mold spots and missing chunks only as low-cost cues.",
+        "Place scatter by deterministic points.",
+        "Use material roles to avoid heavy decals."
+      ],
+      "serving_mechanics": "Spoiled scatter is a time-state prop; it should communicate abandonment without high-cost detail.",
+      "geometry_terms": ["circle_profile", "custom_polygon_profile", "boolean_cut", "array_radial", "scale_profile", "bounds", "decorative_only"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "mesh_from_pydata", "modifier_boolean", "modifier_displace", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_noise_texture"],
+      "drawing_ui_tags": ["shrunk_fruit", "mold_spot", "missing_chunk", "scatter_position", "spoilage_state"],
+      "source_fields_needed": ["scatter_count", "scatter_seed", "base_radius_m", "scale_variance", "mold_spot_count", "missing_chunk_enabled", "spoilage_state"],
+      "operator_checks": ["Does it read as spoiled without expensive decals?", "Are scatter positions deterministic?", "Can count be reduced for low compute?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Fruit After the Door Was Barred",
+          "player_reward": "Names mold spot, missing chunk, scatter position, and spoilage state.",
+          "detail_prompt": "Rot is a calendar with no numbers."
+        }
+      ],
+      "deferred_details": ["insect effects", "odor/gameplay status", "wet decay shader", "disease mechanics"]
+    }
+  ]
+}
