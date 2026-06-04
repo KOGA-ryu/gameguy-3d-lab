@@ -1,0 +1,38 @@
+{
+  "schema": "workflow_receipt_v0",
+  "workflow_id": "3D-LAB-0095-ascii-blender-dryrun-zip-audit-v0",
+  "status": "complete",
+  "summary": "Audited the local ascii_blender_dryrun_v0.zip archive as reference material and documented how its useful backend ideas fit behind gameguy_ascii_plan_v0.",
+  "source_archive": {
+    "path": "ascii_blender_dryrun_v0.zip",
+    "sha256": "cfc6466196a1b43cbb8c0009be742596d7b71438f6a3040a5b5d3b7192e1e589",
+    "imported_wholesale": false
+  },
+  "canonical_boundary": [
+    "gameguy_ascii_plan_v0",
+    "ascii_region_compile_v0",
+    "dryrun_operation_stream_v0",
+    "ASCII projection plus QC report",
+    "gameguy_tool_plan_v0",
+    "Blender adapter"
+  ],
+  "files_changed": [
+    "docs/research/ascii_geometry_planning_v0/README.md",
+    "docs/research/ascii_geometry_planning_v0/ascii_blender_dryrun_zip_audit_v0.md",
+    "workflow/reports/3D-LAB-0095-ascii-blender-dryrun-zip-audit-v0/report.md",
+    "workflow/reports/3D-LAB-0095-ascii-blender-dryrun-zip-audit-v0/receipt.json"
+  ],
+  "validation": [
+    "unzip -l ascii_blender_dryrun_v0.zip",
+    "shasum -a 256 ascii_blender_dryrun_v0.zip",
+    "python3 -m ascii_blender_dryrun.cli --demo --out /tmp/gameguy_ascii_blender_dryrun_v0/run_out --width 96 --height 72",
+    "python3 -m compileall -q /tmp/gameguy_ascii_blender_dryrun_v0/ascii_blender_dryrun_v0/ascii_blender_dryrun"
+  ],
+  "no_claims": {
+    "zip_committed": false,
+    "blender_executed": false,
+    "render_created": false,
+    "mesh_export_created": false,
+    "canonical_generator_replaced": false
+  }
+}

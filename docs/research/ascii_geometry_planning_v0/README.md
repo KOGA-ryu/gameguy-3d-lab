@@ -43,6 +43,25 @@ The first tiny fixture is:
 data/architecture/ascii_plans/single_post_ascii_plan_fixture_v0.json
 ```
 
+## Local Prototype Audit
+
+The local archive `ascii_blender_dryrun_v0.zip` was inspected as reference
+material. It has a useful backend shape:
+
+```text
+typed operations -> ASCII projection -> validation -> Blender script emitter
+```
+
+It should not be imported as another source engine. The measured ASCII plan
+contract remains canonical because it attaches source pixels, model-space bounds,
+regions, operation hints, and Blender tool hints to selected characters.
+
+Audit note:
+
+```text
+docs/research/ascii_geometry_planning_v0/ascii_blender_dryrun_zip_audit_v0.md
+```
+
 Validate with:
 
 ```bash
