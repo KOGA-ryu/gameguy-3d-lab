@@ -31,6 +31,7 @@ SECTION_STACK_BUNDLE_SCHEMA = "asset_mill_section_stack_bundle_v0"
 RADIAL_STACK_BUNDLE_SCHEMA = "asset_mill_radial_stack_bundle_v0"
 BLOCKY_COLUMN_BUNDLE_SCHEMA = "asset_mill_blocky_column_bundle_v0"
 BLOCKY_SHAPE_BUNDLE_SCHEMA = "asset_mill_blocky_shape_grammar_bundle_v0"
+DECORATED_BALUSTRADE_BUNDLE_SCHEMA = "asset_mill_decorated_balustrade_bundle_v0"
 FALSE_CLAIMS = {
     "production_approval": False,
     "structural_safety": False,
@@ -447,6 +448,119 @@ def validate_radial_stack_bundle_terms(bundle: dict[str, Any], terms: dict[str, 
         if operation not in operation_terms(terms):
             fail(f"{asset_id}.operation uses unknown geometry dictionary operation `{operation}`")
         validate_radial_stack_source(asset.get("radial_stack"), f"{asset_id}.radial_stack")
+        require_known_terms(asset.get("geometry_terms_used"), known_terms, f"{asset_id}.geometry_terms_used")
+        require_known_terms(asset.get("profile_terms"), terms["profile_primitive"], f"{asset_id}.profile_terms")
+        require_known_terms(asset.get("operations"), operation_terms(terms), f"{asset_id}.operations")
+        for connector_index, connector in enumerate(require_list(asset.get("connectors"), f"{asset_id}.connectors")):
+            connector_id = require_string(connector, f"{asset_id}.connectors[{connector_index}]")
+            if connector_id not in terms["connector"]:
+                fail(f"{asset_id}.connectors[{connector_index}] uses unknown geometry dictionary connector `{connector_id}`")
+        for tag_index, tag in enumerate(require_list(asset.get("semantic_tags"), f"{asset_id}.semantic_tags")):
+            semantic_tag = require_string(tag, f"{asset_id}.semantic_tags[{tag_index}]")
+            if semantic_tag not in terms["semantic_geometry"]:
+                fail(f"{asset_id}.semantic_tags[{tag_index}] uses unknown geometry dictionary semantic tag `{semantic_tag}`")
+        for slot_index, slot in enumerate(require_list(asset.get("child_slots"), f"{asset_id}.child_slots")):
+            require_string(slot, f"{asset_id}.child_slots[{slot_index}]")
+        validate_claims(asset)
+
+
+def validate_decorated_box(value: Any, field: str) -> None:
+    box = require_object(value, field)
+    require_string(box.get("part_id"), f"{field}.part_id")
+    finite_vector(box.get("center_m"), f"{field}.center_m")
+    positive_vector(box.get("dimensions_m"), f"{field}.dimensions_m")
+    require_string(box.get("material_role"), f"{field}.material_role")
+
+
+def validate_balustrade_collar(value: Any, field: str) -> None:
+    collar = require_object(value, field)
+    require_string(collar.get("part_id"), f"{field}.part_id")
+    finite_vector(collar.get("center_m"), f"{field}.center_m")
+    positive_float(collar.get("width_m"), f"{field}.width_m")
+    positive_float(collar.get("radius_m"), f"{field}.radius_m")
+    integer_at_least(collar.get("segments"), 8, f"{field}.segments")
+    require_string(collar.get("material_role"), f"{field}.material_role")
+
+
+def validate_balustrade_arch(value: Any, field: str) -> None:
+    arch = require_object(value, field)
+    require_string(arch.get("part_id"), f"{field}.part_id")
+    finite_float(arch.get("center_x_m"), f"{field}.center_x_m")
+    positive_float(arch.get("span_m"), f"{field}.span_m")
+    finite_float(arch.get("spring_z_m"), f"{field}.spring_z_m")
+    positive_float(arch.get("rise_m"), f"{field}.rise_m")
+    finite_float(arch.get("front_y_m"), f"{field}.front_y_m")
+    positive_float(arch.get("bevel_depth_m"), f"{field}.bevel_depth_m")
+    positive_float(arch.get("leg_width_m"), f"{field}.leg_width_m")
+    finite_float(arch.get("leg_bottom_z_m"), f"{field}.leg_bottom_z_m")
+    require_string(arch.get("material_role"), f"{field}.material_role")
+
+
+def validate_balustrade_quatrefoil(value: Any, field: str) -> None:
+    motif = require_object(value, field)
+    require_string(motif.get("part_prefix"), f"{field}.part_prefix")
+    finite_vector(motif.get("center_m"), f"{field}.center_m")
+    positive_float(motif.get("lobe_radius_m"), f"{field}.lobe_radius_m")
+    positive_float(motif.get("lobe_offset_m"), f"{field}.lobe_offset_m")
+    positive_float(motif.get("center_boss_radius_m"), f"{field}.center_boss_radius_m")
+    positive_float(motif.get("depth_m"), f"{field}.depth_m")
+    integer_at_least(motif.get("segments"), 8, f"{field}.segments")
+    require_string(motif.get("material_role"), f"{field}.material_role")
+
+
+def validate_decorated_balustrade_source(value: Any, field: str) -> None:
+    source = require_object(value, field)
+    rail = require_object(source.get("rail"), f"{field}.rail")
+    require_string(rail.get("part_id"), f"{field}.rail.part_id")
+    finite_vector(rail.get("center_m"), f"{field}.rail.center_m")
+    rail_stack = require_object(rail.get("radial_stack"), f"{field}.rail.radial_stack")
+    validate_radial_stack_source(rail_stack, f"{field}.rail.radial_stack")
+    if rail_stack.get("axis") != "x":
+        fail(f"{field}.rail.radial_stack.axis must be x")
+
+    posts = require_object(source.get("posts"), f"{field}.posts")
+    x_positions = require_list(posts.get("x_positions_m"), f"{field}.posts.x_positions_m")
+    if len(x_positions) < 2:
+        fail(f"{field}.posts.x_positions_m requires at least two posts")
+    for index, value in enumerate(x_positions):
+        finite_float(value, f"{field}.posts.x_positions_m[{index}]")
+    finite_float(posts.get("y_m"), f"{field}.posts.y_m")
+    post_stack = require_object(posts.get("radial_stack"), f"{field}.posts.radial_stack")
+    validate_radial_stack_source(post_stack, f"{field}.posts.radial_stack")
+    if post_stack.get("axis") != "z":
+        fail(f"{field}.posts.radial_stack.axis must be z")
+
+    for collar_index, collar in enumerate(require_list(source.get("collars"), f"{field}.collars")):
+        validate_balustrade_collar(collar, f"{field}.collars[{collar_index}]")
+    infill = require_object(source.get("infill"), f"{field}.infill")
+    for box_index, box in enumerate(require_list(infill.get("frame_boxes"), f"{field}.infill.frame_boxes")):
+        validate_decorated_box(box, f"{field}.infill.frame_boxes[{box_index}]")
+    for arch_index, arch in enumerate(require_list(infill.get("pointed_arches"), f"{field}.infill.pointed_arches")):
+        validate_balustrade_arch(arch, f"{field}.infill.pointed_arches[{arch_index}]")
+    for motif_index, motif in enumerate(require_list(infill.get("quatrefoils"), f"{field}.infill.quatrefoils")):
+        validate_balustrade_quatrefoil(motif, f"{field}.infill.quatrefoils[{motif_index}]")
+
+
+def validate_decorated_balustrade_bundle_terms(bundle: dict[str, Any], terms: dict[str, set[str]]) -> None:
+    assets = require_list(bundle.get("assets"), "assets")
+    if not assets:
+        fail("bundle assets must not be empty")
+    if bundle.get("asset_count") != len(assets):
+        fail("bundle asset_count must match assets length")
+    known_terms = all_terms(terms)
+    seen_asset_ids: set[str] = set()
+    for asset_index, item in enumerate(assets):
+        asset = require_object(item, f"assets[{asset_index}]")
+        asset_id = require_string(asset.get("asset_id"), f"assets[{asset_index}].asset_id")
+        if asset_id in seen_asset_ids:
+            fail(f"duplicate asset_id: {asset_id}")
+        seen_asset_ids.add(asset_id)
+        operation = require_string(asset.get("operation"), f"{asset_id}.operation")
+        if operation != "decorated_balustrade":
+            fail(f"{asset_id}.operation must be decorated_balustrade")
+        if operation not in operation_terms(terms):
+            fail(f"{asset_id}.operation uses unknown geometry dictionary operation `{operation}`")
+        validate_decorated_balustrade_source(asset.get("decorated_balustrade"), f"{asset_id}.decorated_balustrade")
         require_known_terms(asset.get("geometry_terms_used"), known_terms, f"{asset_id}.geometry_terms_used")
         require_known_terms(asset.get("profile_terms"), terms["profile_primitive"], f"{asset_id}.profile_terms")
         require_known_terms(asset.get("operations"), operation_terms(terms), f"{asset_id}.operations")
@@ -937,6 +1051,26 @@ def curve_strip_mesh(part: dict[str, Any]) -> Mesh:
     return merged_mesh(boxes)
 
 
+def xz_profile_extrude_mesh(points: list[list[float]], center: list[float], depth_y: float) -> Mesh:
+    if len(points) < 3:
+        fail("xz profile extrusion requires at least 3 profile points")
+    cx, cy, cz = center
+    half_depth = depth_y * 0.5
+    front = [[round(cx + x, 6), round(cy - half_depth, 6), round(cz + z, 6)] for x, z in points]
+    back = [[round(cx + x, 6), round(cy + half_depth, 6), round(cz + z, 6)] for x, z in points]
+    vertices = front + back
+    count = len(points)
+    faces: list[list[int]] = [list(reversed(range(count))), list(range(count, count * 2))]
+    for index in range(count):
+        nxt = (index + 1) % count
+        faces.append([index, nxt, nxt + count, index + count])
+    return Mesh(vertices=vertices, faces=faces)
+
+
+def circle_xz_profile_points(radius: float, segments: int) -> list[list[float]]:
+    return polygon_points(segments, radius)
+
+
 def loft_mesh(sections: list[dict[str, Any]]) -> Mesh:
     if len(sections) < 2:
         fail("loft_sections requires at least two sections")
@@ -1155,6 +1289,180 @@ def radial_stack_mesh(stack: dict[str, Any]) -> tuple[Mesh, dict[str, Any], list
         "radial_details": radial_details,
         "attachment_count": len(attachments),
         "attachments": attachments,
+        "part_count": len(mesh_parts),
+    }
+    return merged_mesh(parts_mesh), metadata, mesh_parts
+
+
+def append_decorated_radial_stack_part(parts_mesh: list[Mesh], mesh_parts: list[dict[str, Any]], part_id: str, stack: dict[str, Any], center: list[float], material_role: Any) -> None:
+    mesh, _, _ = radial_stack_mesh(stack)
+    append_mesh_part(parts_mesh, mesh_parts, part_id, "radial_stack", material_role, mesh.translated(center))
+
+
+def append_balustrade_collar(parts_mesh: list[Mesh], mesh_parts: list[dict[str, Any]], collar: dict[str, Any], field: str) -> None:
+    width = positive_float(collar.get("width_m"), f"{field}.width_m")
+    radius = positive_float(collar.get("radius_m"), f"{field}.radius_m")
+    stack = {
+        "axis": "x",
+        "segments": integer_at_least(collar.get("segments"), 8, f"{field}.segments"),
+        "rings": [
+            {"ring_id": "collar_start", "at": round(width * -0.5, 6), "radius_m": radius},
+            {"ring_id": "collar_end", "at": round(width * 0.5, 6), "radius_m": radius},
+        ],
+    }
+    append_decorated_radial_stack_part(
+        parts_mesh,
+        mesh_parts,
+        require_string(collar.get("part_id"), f"{field}.part_id"),
+        stack,
+        finite_vector(collar.get("center_m"), f"{field}.center_m"),
+        collar.get("material_role"),
+    )
+
+
+def append_balustrade_arch(parts_mesh: list[Mesh], mesh_parts: list[dict[str, Any]], arch: dict[str, Any], field: str) -> int:
+    part_id = require_string(arch.get("part_id"), f"{field}.part_id")
+    center_x = finite_float(arch.get("center_x_m"), f"{field}.center_x_m")
+    span = positive_float(arch.get("span_m"), f"{field}.span_m")
+    spring_z = finite_float(arch.get("spring_z_m"), f"{field}.spring_z_m")
+    leg_bottom = finite_float(arch.get("leg_bottom_z_m"), f"{field}.leg_bottom_z_m")
+    if spring_z <= leg_bottom:
+        fail(f"{field}.spring_z_m must be above leg_bottom_z_m")
+    y = finite_float(arch.get("front_y_m"), f"{field}.front_y_m")
+    bevel = positive_float(arch.get("bevel_depth_m"), f"{field}.bevel_depth_m")
+    material_role = arch.get("material_role")
+    arch_mesh = curve_strip_mesh(
+        {
+            "span_m": span,
+            "spring_z_m": spring_z,
+            "rise_m": positive_float(arch.get("rise_m"), f"{field}.rise_m"),
+            "y_m": y,
+            "bevel_depth_m": bevel,
+            "curve_kind": "pointed",
+        }
+    ).translated([center_x, 0.0, 0.0])
+    append_mesh_part(parts_mesh, mesh_parts, f"{part_id}_curve", "pointed_arch_profile", material_role, arch_mesh)
+
+    leg_width = positive_float(arch.get("leg_width_m"), f"{field}.leg_width_m")
+    leg_height = round(spring_z - leg_bottom, 6)
+    for side, sign in (("left", -1.0), ("right", 1.0)):
+        append_mesh_part(
+            parts_mesh,
+            mesh_parts,
+            f"{part_id}_{side}_jamb",
+            "box",
+            material_role,
+            box_mesh(
+                [round(center_x + sign * span * 0.5, 6), y, round((spring_z + leg_bottom) * 0.5, 6)],
+                [leg_width, round(bevel * 2.0, 6), leg_height],
+            ),
+        )
+    return 3
+
+
+def append_balustrade_quatrefoil(parts_mesh: list[Mesh], mesh_parts: list[dict[str, Any]], motif: dict[str, Any], field: str) -> int:
+    prefix = require_string(motif.get("part_prefix"), f"{field}.part_prefix")
+    center = finite_vector(motif.get("center_m"), f"{field}.center_m")
+    radius = positive_float(motif.get("lobe_radius_m"), f"{field}.lobe_radius_m")
+    offset = positive_float(motif.get("lobe_offset_m"), f"{field}.lobe_offset_m")
+    boss_radius = positive_float(motif.get("center_boss_radius_m"), f"{field}.center_boss_radius_m")
+    depth = positive_float(motif.get("depth_m"), f"{field}.depth_m")
+    segments = integer_at_least(motif.get("segments"), 8, f"{field}.segments")
+    material_role = motif.get("material_role")
+    lobe_points = circle_xz_profile_points(radius, segments)
+    lobe_offsets = [
+        ("north", [0.0, 0.0, offset]),
+        ("east", [offset, 0.0, 0.0]),
+        ("south", [0.0, 0.0, -offset]),
+        ("west", [-offset, 0.0, 0.0]),
+    ]
+    for label, local in lobe_offsets:
+        append_mesh_part(
+            parts_mesh,
+            mesh_parts,
+            f"{prefix}_{label}_lobe",
+            "quatrefoil_lobe",
+            material_role,
+            xz_profile_extrude_mesh(lobe_points, [round(center[0] + local[0], 6), center[1], round(center[2] + local[2], 6)], depth),
+        )
+    append_mesh_part(
+        parts_mesh,
+        mesh_parts,
+        f"{prefix}_center_boss",
+        "rosette_boss",
+        material_role,
+        xz_profile_extrude_mesh(circle_xz_profile_points(boss_radius, segments), center, depth),
+    )
+    return 5
+
+
+def decorated_balustrade_mesh(source: dict[str, Any]) -> tuple[Mesh, dict[str, Any], list[dict[str, Any]]]:
+    parts_mesh: list[Mesh] = []
+    mesh_parts: list[dict[str, Any]] = []
+
+    rail = require_object(source.get("rail"), "decorated_balustrade.rail")
+    rail_stack = require_object(rail.get("radial_stack"), "decorated_balustrade.rail.radial_stack")
+    append_decorated_radial_stack_part(
+        parts_mesh,
+        mesh_parts,
+        require_string(rail.get("part_id"), "decorated_balustrade.rail.part_id"),
+        rail_stack,
+        finite_vector(rail.get("center_m"), "decorated_balustrade.rail.center_m"),
+        rail_stack.get("material_role", rail.get("material_role", "rail")),
+    )
+
+    posts = require_object(source.get("posts"), "decorated_balustrade.posts")
+    post_stack = require_object(posts.get("radial_stack"), "decorated_balustrade.posts.radial_stack")
+    y_m = finite_float(posts.get("y_m"), "decorated_balustrade.posts.y_m")
+    post_positions = [finite_float(value, f"decorated_balustrade.posts.x_positions_m[{index}]") for index, value in enumerate(require_list(posts.get("x_positions_m"), "decorated_balustrade.posts.x_positions_m"))]
+    for post_index, x_m in enumerate(post_positions):
+        append_decorated_radial_stack_part(
+            parts_mesh,
+            mesh_parts,
+            f"post_{post_index:02d}_body",
+            post_stack,
+            [x_m, y_m, 0.0],
+            post_stack.get("material_role", posts.get("material_role", "post")),
+        )
+
+    for collar_index, collar in enumerate(require_list(source.get("collars"), "decorated_balustrade.collars")):
+        append_balustrade_collar(parts_mesh, mesh_parts, require_object(collar, f"decorated_balustrade.collars[{collar_index}]"), f"decorated_balustrade.collars[{collar_index}]")
+
+    infill = require_object(source.get("infill"), "decorated_balustrade.infill")
+    for box_index, box in enumerate(require_list(infill.get("frame_boxes"), "decorated_balustrade.infill.frame_boxes")):
+        item = require_object(box, f"decorated_balustrade.infill.frame_boxes[{box_index}]")
+        append_mesh_part(
+            parts_mesh,
+            mesh_parts,
+            require_string(item.get("part_id"), f"decorated_balustrade.infill.frame_boxes[{box_index}].part_id"),
+            "box",
+            item.get("material_role"),
+            box_mesh(
+                finite_vector(item.get("center_m"), f"decorated_balustrade.infill.frame_boxes[{box_index}].center_m"),
+                positive_vector(item.get("dimensions_m"), f"decorated_balustrade.infill.frame_boxes[{box_index}].dimensions_m"),
+            ),
+        )
+
+    arch_part_count = 0
+    for arch_index, arch in enumerate(require_list(infill.get("pointed_arches"), "decorated_balustrade.infill.pointed_arches")):
+        arch_part_count += append_balustrade_arch(parts_mesh, mesh_parts, require_object(arch, f"decorated_balustrade.infill.pointed_arches[{arch_index}]"), f"decorated_balustrade.infill.pointed_arches[{arch_index}]")
+
+    quatrefoil_part_count = 0
+    for motif_index, motif in enumerate(require_list(infill.get("quatrefoils"), "decorated_balustrade.infill.quatrefoils")):
+        quatrefoil_part_count += append_balustrade_quatrefoil(parts_mesh, mesh_parts, require_object(motif, f"decorated_balustrade.infill.quatrefoils[{motif_index}]"), f"decorated_balustrade.infill.quatrefoils[{motif_index}]")
+
+    metadata = {
+        "grammar": "decorated_balustrade_v0",
+        "assembly": "named_radial_stack_and_front_profile_parts",
+        "rail_axis": "x",
+        "rail_part_id": require_string(rail.get("part_id"), "decorated_balustrade.rail.part_id"),
+        "post_count": len(post_positions),
+        "collar_count": len(require_list(source.get("collars"), "decorated_balustrade.collars")),
+        "frame_box_count": len(require_list(infill.get("frame_boxes"), "decorated_balustrade.infill.frame_boxes")),
+        "pointed_arch_count": len(require_list(infill.get("pointed_arches"), "decorated_balustrade.infill.pointed_arches")),
+        "pointed_arch_part_count": arch_part_count,
+        "quatrefoil_count": len(require_list(infill.get("quatrefoils"), "decorated_balustrade.infill.quatrefoils")),
+        "quatrefoil_part_count": quatrefoil_part_count,
         "part_count": len(mesh_parts),
     }
     return merged_mesh(parts_mesh), metadata, mesh_parts
@@ -1499,6 +1807,8 @@ def source_profile_terms(asset: dict[str, Any]) -> list[str]:
         return terms
     if operation == "radial_stack":
         return ["circle", "rectangle"]
+    if operation == "decorated_balustrade":
+        return ["circle", "pointed_arch_profile", "rectangle", "custom_polygon"]
     if operation == "blocky_column":
         return ["square", "circle", "rectangle"]
     if operation == "blocky_shape":
@@ -1650,6 +1960,9 @@ def compile_asset(asset: dict[str, Any], compiled: dict[str, dict[str, Any]], so
     elif operation == "radial_stack":
         mesh, stack_metadata, mesh_parts = radial_stack_mesh(require_object(asset.get("radial_stack"), f"{asset_id}.radial_stack"))
         mesh_extra["radial_stack"] = stack_metadata
+    elif operation == "decorated_balustrade":
+        mesh, balustrade_metadata, mesh_parts = decorated_balustrade_mesh(require_object(asset.get("decorated_balustrade"), f"{asset_id}.decorated_balustrade"))
+        mesh_extra["decorated_balustrade"] = balustrade_metadata
     elif operation == "blocky_column":
         mesh, column_metadata, mesh_parts = blocky_column_mesh(require_object(asset.get("blocky_column"), f"{asset_id}.blocky_column"))
         mesh_extra["blocky_column"] = column_metadata
@@ -1789,6 +2102,7 @@ def load_bundle(path: Path) -> dict[str, Any]:
         MEASURED_BUNDLE_SCHEMA,
         SECTION_STACK_BUNDLE_SCHEMA,
         RADIAL_STACK_BUNDLE_SCHEMA,
+        DECORATED_BALUSTRADE_BUNDLE_SCHEMA,
         BLOCKY_COLUMN_BUNDLE_SCHEMA,
         BLOCKY_SHAPE_BUNDLE_SCHEMA,
     }
@@ -1875,6 +2189,8 @@ def main() -> None:
         validate_section_stack_bundle_terms(bundle, geometry_terms)
     elif source_schema == RADIAL_STACK_BUNDLE_SCHEMA:
         validate_radial_stack_bundle_terms(bundle, geometry_terms)
+    elif source_schema == DECORATED_BALUSTRADE_BUNDLE_SCHEMA:
+        validate_decorated_balustrade_bundle_terms(bundle, geometry_terms)
     elif source_schema == BLOCKY_COLUMN_BUNDLE_SCHEMA:
         validate_blocky_column_bundle_terms(bundle, geometry_terms)
     elif source_schema == BLOCKY_SHAPE_BUNDLE_SCHEMA:
@@ -1889,7 +2205,14 @@ def main() -> None:
         if asset_id in seen:
             fail(f"duplicate asset_id: {asset_id}")
         seen.add(asset_id)
-        if source_schema in {SIMPLE_BUNDLE_SCHEMA, SECTION_STACK_BUNDLE_SCHEMA, RADIAL_STACK_BUNDLE_SCHEMA, BLOCKY_COLUMN_BUNDLE_SCHEMA, BLOCKY_SHAPE_BUNDLE_SCHEMA}:
+        if source_schema in {
+            SIMPLE_BUNDLE_SCHEMA,
+            SECTION_STACK_BUNDLE_SCHEMA,
+            RADIAL_STACK_BUNDLE_SCHEMA,
+            DECORATED_BALUSTRADE_BUNDLE_SCHEMA,
+            BLOCKY_COLUMN_BUNDLE_SCHEMA,
+            BLOCKY_SHAPE_BUNDLE_SCHEMA,
+        }:
             compiled[asset_id] = compile_asset(asset, compiled, source_schema)
         else:
             compiled[asset_id] = compile_measured_asset(asset, source_schema)

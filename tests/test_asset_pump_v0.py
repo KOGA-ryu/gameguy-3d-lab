@@ -19,6 +19,7 @@ ASSET_CONTRACT = ROOT / "contracts" / "gameguy_asset_v0.json"
 MEASURED_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "measured_components_v0.json"
 SECTION_STACK_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "section_stack_assets_v0.json"
 RADIAL_STACK_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "radial_stack_assets_v0.json"
+DECORATED_BALUSTRADE_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "decorated_balustrade_assets_v0.json"
 BLOCKY_COLUMN_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "blocky_column_assets_v0.json"
 BLOCKY_SHAPE_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "blocky_shape_grammar_assets_v0.json"
 FALSE_CLAIMS = {
@@ -62,6 +63,16 @@ def run_section_stack_pump(out_root: Path) -> None:
 def run_radial_stack_pump(out_root: Path) -> None:
     subprocess.run(
         [sys.executable, str(PUMP), "--bundle", str(RADIAL_STACK_BUNDLE), "--out", str(out_root)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
+def run_decorated_balustrade_pump(out_root: Path) -> None:
+    subprocess.run(
+        [sys.executable, str(PUMP), "--bundle", str(DECORATED_BALUSTRADE_BUNDLE), "--out", str(out_root)],
         cwd=ROOT,
         check=True,
         capture_output=True,
@@ -411,6 +422,47 @@ class AssetPumpTests(unittest.TestCase):
         self.assertTrue(post["validation_expectations"]["mace_belly"])
         self.assertEqual(post["validation_expectations"]["rib_count"], 24)
         self.assert_mesh_is_well_formed(post)
+
+    def test_decorated_balustrade_bundle_generates_named_ornament_parts(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "pump"
+            run_decorated_balustrade_pump(out_root)
+            manifest = load_json(out_root / "manifest.json")
+            balustrade = load_json(out_root / "assets" / "baseball_bat_gothic_balustrade_v0.json")
+
+        self.assertEqual(manifest["source_bundle_schema"], "asset_mill_decorated_balustrade_bundle_v0")
+        self.assertEqual(manifest["asset_count"], 1)
+        self.assertEqual(balustrade["schema"], "gameguy_asset_v0")
+        self.assertEqual(balustrade["source_schema"], "asset_mill_decorated_balustrade_bundle_v0")
+        self.assertEqual(balustrade["source_operation"], "decorated_balustrade")
+        self.assertEqual(balustrade["asset_kind"], "decorated_balustrade_module")
+        self.assertEqual(balustrade["dimensions_m"], {"width": 3.19, "depth": 0.41922, "height": 1.385})
+        self.assertEqual(len(balustrade["mesh"]["vertices"]), 1554)
+        self.assertEqual(len(balustrade["mesh"]["faces"]), 1372)
+        self.assertEqual(len(balustrade["mesh"]["parts"]), 26)
+        metadata = balustrade["mesh"]["decorated_balustrade"]
+        self.assertEqual(metadata["grammar"], "decorated_balustrade_v0")
+        self.assertEqual(metadata["rail_part_id"], "baseball_bat_handrail_body")
+        self.assertEqual(metadata["post_count"], 2)
+        self.assertEqual(metadata["collar_count"], 4)
+        self.assertEqual(metadata["pointed_arch_count"], 3)
+        self.assertEqual(metadata["quatrefoil_count"], 1)
+        self.assertEqual(metadata["quatrefoil_part_count"], 5)
+        self.assertEqual(metadata["part_count"], 26)
+        part_ids = [part["part_id"] for part in balustrade["mesh"]["parts"]]
+        self.assertEqual(part_ids[0], "baseball_bat_handrail_body")
+        self.assertEqual(part_ids[1:3], ["post_00_body", "post_01_body"])
+        self.assertIn("left_rail_socket_collar", part_ids)
+        self.assertIn("center_lancet_arch_curve", part_ids)
+        self.assertIn("center_quatrefoil_north_lobe", part_ids)
+        self.assertIn("center_quatrefoil_center_boss", part_ids)
+        self.assertEqual([connector["connector_id"] for connector in balustrade["connectors"]], ["east", "west", "floor"])
+        self.assertEqual(
+            balustrade["source_terms"]["operators"],
+            ["decorated_balustrade", "radial_stack", "compound_asset", "extrude", "array_linear"],
+        )
+        self.assertEqual(balustrade["validation_expectations"]["expected_named_part_count"], 26)
+        self.assert_mesh_is_well_formed(balustrade)
 
     def test_blocky_column_bundle_generates_simple_part_ribbed_column(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:

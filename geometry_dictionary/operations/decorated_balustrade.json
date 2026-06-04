@@ -1,0 +1,33 @@
+{
+  "term_id": "decorated_balustrade",
+  "category": "composition_operation",
+  "plain_name": "Decorated Balustrade",
+  "description": "Composes posts, a handrail, collars, frame boxes, pointed-arch trim, and low-poly ornament profiles into a single deterministic balustrade module.",
+  "required_inputs": {
+    "rail": "radial_stack",
+    "posts": "radial_stack[]",
+    "collars": "radial_band[]",
+    "infill": "frame_boxes + pointed_arch_profiles + ornament_profiles"
+  },
+  "outputs": {
+    "type": "mesh"
+  },
+  "constraints": {
+    "rail_axis": "x",
+    "post_axis": "z",
+    "part_ids_unique": true,
+    "all_decoration_parts_named": true
+  },
+  "common_uses": [
+    "balustrade module",
+    "post rail post assembly",
+    "ornamental railing test asset",
+    "guard panel prototype"
+  ],
+  "blender_method": "adapter consumes generated mesh vertices and faces; Blender previews, bevels, shades, or exports but does not decide the ornament layout",
+  "validation": [
+    "manifold_mesh",
+    "nonzero_volume",
+    "scale_within_bounds"
+  ]
+}

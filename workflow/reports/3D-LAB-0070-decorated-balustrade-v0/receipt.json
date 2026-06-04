@@ -1,0 +1,72 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0070-decorated-balustrade-v0",
+  "title": "Decorated balustrade v0",
+  "status": "complete",
+  "source_recipe": "data/architecture/asset_mill/recipes/decorated_balustrade_assets_v0.json",
+  "operation_term": "geometry_dictionary/operations/decorated_balustrade.json",
+  "asset_id": "baseball_bat_gothic_balustrade_v0",
+  "source_schema": "asset_mill_decorated_balustrade_bundle_v0",
+  "source_operation": "decorated_balustrade",
+  "asset_kind": "decorated_balustrade_module",
+  "generated_asset": {
+    "asset_pump_out": "/tmp/gameguy_decorated_balustrade_asset_pump_v0",
+    "asset_json": "/tmp/gameguy_decorated_balustrade_asset_pump_v0/assets/baseball_bat_gothic_balustrade_v0.json",
+    "manifest": "/tmp/gameguy_decorated_balustrade_asset_pump_v0/manifest.json",
+    "dimensions_m": {
+      "width": 3.19,
+      "depth": 0.41922,
+      "height": 1.385
+    },
+    "vertices": 1554,
+    "faces": 1372,
+    "named_parts": 26
+  },
+  "part_groups": {
+    "rail_body": 1,
+    "posts": 2,
+    "collars_and_bead_bands": 4,
+    "infill_frame_boxes": 5,
+    "pointed_arch_pieces": 9,
+    "quatrefoil_rosette_pieces": 5
+  },
+  "preview_outputs": {
+    "isometric_png": "/tmp/gameguy_decorated_balustrade_preview_v0/asset_preview_v0_workbench.png",
+    "front_png": "/tmp/gameguy_decorated_balustrade_preview_v0/baseball_bat_gothic_balustrade_front_v0.png",
+    "blend": "/tmp/gameguy_decorated_balustrade_preview_v0/asset_preview_v0.blend"
+  },
+  "validation": {
+    "unit_tests": {
+      "command": "python3 -m unittest discover -s tests",
+      "result": "PASS 180 tests"
+    },
+    "pipeline_skip_unit_tests": {
+      "command": "python3 scripts/validate_generation_pipeline_v0.py --skip-unit-tests --json-report /tmp/gameguy_pipeline_decorated_balustrade_v0_final.json",
+      "result": "PASS commands=49 json=280 include_blender=false"
+    },
+    "decorated_balustrade_pump": {
+      "command": "python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/decorated_balustrade_assets_v0.json --clean --out /tmp/gameguy_decorated_balustrade_asset_pump_v0",
+      "result": "pumped assets=1 vertices=1554 faces=1372"
+    },
+    "decorated_balustrade_asset_validate": {
+      "command": "python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_decorated_balustrade_asset_pump_v0/manifest.json",
+      "result": "PASS gameguy_asset_v0 validation: 1 assets, 1554 vertices, 1372 faces"
+    },
+    "decorated_balustrade_adapter_validate": {
+      "command": "python3 scripts/export_blender_asset_preview_v0.py --manifest /tmp/gameguy_decorated_balustrade_asset_pump_v0/manifest.json --validate-only",
+      "result": "PASS Blender asset adapter validation: 1 assets, 1554 vertices, 1372 faces"
+    },
+    "decorated_balustrade_blender_preview": {
+      "command": "/Applications/Blender.app/Contents/MacOS/Blender --background --python scripts/export_blender_asset_preview_v0.py -- --manifest /tmp/gameguy_decorated_balustrade_asset_pump_v0/manifest.json --out /tmp/gameguy_decorated_balustrade_preview_v0 --render --hide-connectors",
+      "result": "PASS Blender asset preview export: assets=1 out=/tmp/gameguy_decorated_balustrade_preview_v0"
+    }
+  },
+  "rules": {
+    "source_recipe_drives_ornament": true,
+    "pump_outputs_gameguy_asset_v0": true,
+    "blender_is_preview_adapter": true,
+    "generated_media_in_repo": false,
+    "building_code_compliance_claim": false
+  },
+  "recommended_next_goal": "Tune the rail symmetry and arch/quatrefoil proportions before adding boolean-cut ornament or material differentiation."
+}

@@ -8,7 +8,7 @@ The rule is strict: Asset Mill recipes may only use profile, operation, connecto
 
 | Category | Count |
 | --- | ---: |
-| `composition_operation` | 13 |
+| `composition_operation` | 14 |
 | `connector` | 16 |
 | `measurement` | 10 |
 | `mesh_operation` | 8 |
@@ -17,7 +17,7 @@ The rule is strict: Asset Mill recipes may only use profile, operation, connecto
 | `transform` | 2 |
 | `validation_term` | 6 |
 
-Total terms: `79`
+Total terms: `80`
 
 ## Asset Mill Enforcement
 

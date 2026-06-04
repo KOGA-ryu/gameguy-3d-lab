@@ -152,6 +152,15 @@ python3 scripts/asset_pump_v0.py \
   --out /tmp/gameguy_radial_stack_asset_pump_v0
 ```
 
+Decorated balustrade assets compose those simple forms into one named architectural module. `baseball_bat_gothic_balustrade_v0` keeps the bat-shaped rail as a source-owned radial stack, then adds post bodies, rail collars, bead bands, pointed-arch infill, and a low-poly quatrefoil/rosette ornament as named parts:
+
+```bash
+python3 scripts/asset_pump_v0.py \
+  --bundle data/architecture/asset_mill/recipes/decorated_balustrade_assets_v0.json \
+  --clean \
+  --out /tmp/gameguy_decorated_balustrade_asset_pump_v0
+```
+
 Blocky compound columns keep the source simple while generating shape-rich assets from named simple parts:
 
 ```bash
@@ -395,6 +404,9 @@ python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_section_sta
 python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/radial_stack_assets_v0.json --clean --out /tmp/gameguy_radial_stack_asset_pump_v0
 python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_radial_stack_asset_pump_v0/manifest.json
 python3 scripts/export_blender_asset_preview_v0.py --manifest /tmp/gameguy_radial_stack_asset_pump_v0/manifest.json --validate-only
+python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/decorated_balustrade_assets_v0.json --clean --out /tmp/gameguy_decorated_balustrade_asset_pump_v0
+python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_decorated_balustrade_asset_pump_v0/manifest.json
+python3 scripts/export_blender_asset_preview_v0.py --manifest /tmp/gameguy_decorated_balustrade_asset_pump_v0/manifest.json --validate-only
 python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/blocky_column_assets_v0.json --clean --out /tmp/gameguy_blocky_column_asset_pump_v0
 python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_blocky_column_asset_pump_v0/manifest.json
 python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/blocky_shape_grammar_assets_v0.json --clean --out /tmp/gameguy_blocky_shape_grammar_asset_pump_v0

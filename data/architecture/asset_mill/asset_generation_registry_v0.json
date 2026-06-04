@@ -51,6 +51,16 @@
       "pipeline_labels": ["radial_stack_asset_pump", "radial_stack_asset_validate", "radial_stack_asset_adapter_validate"]
     },
     {
+      "bundle_id": "decorated_balustrade_assets_v0",
+      "path": "data/architecture/asset_mill/recipes/decorated_balustrade_assets_v0.json",
+      "schema": "asset_mill_decorated_balustrade_bundle_v0",
+      "expected_asset_count": 1,
+      "compiler": "scripts/asset_pump_v0.py",
+      "validator": "scripts/validate_gameguy_asset_v0.py",
+      "adapter_validate_only": "scripts/export_blender_asset_preview_v0.py",
+      "pipeline_labels": ["decorated_balustrade_asset_pump", "decorated_balustrade_asset_validate", "decorated_balustrade_asset_adapter_validate"]
+    },
+    {
       "bundle_id": "blocky_column_assets_v0",
       "path": "data/architecture/asset_mill/recipes/blocky_column_assets_v0.json",
       "schema": "asset_mill_blocky_column_bundle_v0",

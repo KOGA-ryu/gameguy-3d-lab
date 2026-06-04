@@ -1,0 +1,349 @@
+{
+  "schema": "asset_mill_decorated_balustrade_bundle_v0",
+  "bundle_id": "decorated_balustrade_assets_v0",
+  "purpose": "Source-owned decorated balustrade recipes that compose clean rail/post geometry with named collars, pointed-arch infill, and low-poly ornament profiles.",
+  "units": "abstract_meter",
+  "rules": {
+    "source_lane": true,
+    "deterministic_output": true,
+    "no_blender_logic": true,
+    "no_generated_outputs": true,
+    "no_wall_clock_fields": true,
+    "ornament_layout_lives_in_source": true
+  },
+  "asset_count": 1,
+  "assets": [
+    {
+      "asset_id": "baseball_bat_gothic_balustrade_v0",
+      "asset_kind": "decorated_balustrade_module",
+      "operation": "decorated_balustrade",
+      "architectural_role": "post_rail_post_balustrade_with_bat_shaped_handrail_pointed_arch_infill_and_quatrefoil_ornament",
+      "generation_use": [
+        "balustrade",
+        "railing_segment",
+        "guard_panel",
+        "ornament_tooling_prototype"
+      ],
+      "semantic_tags": [
+        "rail",
+        "barrier",
+        "support",
+        "collision_proxy",
+        "decorative_only"
+      ],
+      "connectors": [
+        "east",
+        "west",
+        "floor"
+      ],
+      "child_slots": [
+        "post_body",
+        "bat_handrail",
+        "rail_collar",
+        "bead_band",
+        "pointed_arch_infill",
+        "quatrefoil_ornament"
+      ],
+      "geometry_terms_used": [
+        "decorated_balustrade",
+        "radial_stack",
+        "compound_asset",
+        "extrude",
+        "array_linear",
+        "circle",
+        "rectangle",
+        "custom_polygon",
+        "pointed_arch_profile",
+        "east",
+        "west",
+        "floor",
+        "rail",
+        "barrier",
+        "support",
+        "collision_proxy",
+        "decorative_only"
+      ],
+      "profile_terms": [
+        "circle",
+        "rectangle",
+        "custom_polygon",
+        "pointed_arch_profile"
+      ],
+      "operations": [
+        "decorated_balustrade",
+        "radial_stack",
+        "compound_asset",
+        "extrude",
+        "array_linear"
+      ],
+      "decorated_balustrade": {
+        "rail": {
+          "part_id": "baseball_bat_handrail_body",
+          "center_m": [0.0, 0.0, 1.18],
+          "radial_stack": {
+            "axis": "x",
+            "segments": 16,
+            "material_role": "rail_body",
+            "rings": [
+              {
+                "ring_id": "knob_end",
+                "at": -1.2,
+                "radius_m": 0.1,
+                "material_role": "knob"
+              },
+              {
+                "ring_id": "knob_swell",
+                "at": -1.12,
+                "radius_m": 0.14,
+                "material_role": "knob"
+              },
+              {
+                "ring_id": "handle_start",
+                "at": -1.04,
+                "radius_m": 0.085,
+                "material_role": "handle"
+              },
+              {
+                "ring_id": "handle_mid",
+                "at": -0.62,
+                "radius_m": 0.075,
+                "material_role": "handle"
+              },
+              {
+                "ring_id": "taper_begin",
+                "at": -0.2,
+                "radius_m": 0.095,
+                "material_role": "taper"
+              },
+              {
+                "ring_id": "barrel_swell",
+                "at": 0.25,
+                "radius_m": 0.145,
+                "material_role": "barrel"
+              },
+              {
+                "ring_id": "barrel_full",
+                "at": 0.82,
+                "radius_m": 0.18,
+                "material_role": "barrel"
+              },
+              {
+                "ring_id": "barrel_end",
+                "at": 1.15,
+                "radius_m": 0.18,
+                "material_role": "barrel"
+              },
+              {
+                "ring_id": "barrel_cap",
+                "at": 1.2,
+                "radius_m": 0.15,
+                "material_role": "end_cap"
+              }
+            ]
+          }
+        },
+        "posts": {
+          "x_positions_m": [-1.38, 1.38],
+          "y_m": 0.0,
+          "material_role": "post_body",
+          "radial_stack": {
+            "axis": "z",
+            "segments": 14,
+            "material_role": "post_body",
+            "rings": [
+              {
+                "ring_id": "square_reading_foot_low",
+                "at": 0.0,
+                "radius_m": 0.18,
+                "material_role": "base"
+              },
+              {
+                "ring_id": "lower_torus",
+                "at": 0.08,
+                "radius_m": 0.215,
+                "material_role": "base_torus"
+              },
+              {
+                "ring_id": "lower_neck",
+                "at": 0.18,
+                "radius_m": 0.14,
+                "material_role": "necking"
+              },
+              {
+                "ring_id": "shaft_lower",
+                "at": 0.28,
+                "radius_m": 0.115,
+                "material_role": "shaft"
+              },
+              {
+                "ring_id": "shaft_entasis",
+                "at": 0.68,
+                "radius_m": 0.13,
+                "material_role": "shaft"
+              },
+              {
+                "ring_id": "shaft_upper_taper",
+                "at": 1.02,
+                "radius_m": 0.105,
+                "material_role": "shaft"
+              },
+              {
+                "ring_id": "upper_neck",
+                "at": 1.12,
+                "radius_m": 0.145,
+                "material_role": "necking"
+              },
+              {
+                "ring_id": "cap_torus",
+                "at": 1.24,
+                "radius_m": 0.205,
+                "material_role": "cap"
+              },
+              {
+                "ring_id": "cap_top",
+                "at": 1.34,
+                "radius_m": 0.16,
+                "material_role": "cap"
+              }
+            ]
+          }
+        },
+        "collars": [
+          {
+            "part_id": "left_rail_socket_collar",
+            "center_m": [-1.18, 0.0, 1.18],
+            "width_m": 0.085,
+            "radius_m": 0.19,
+            "segments": 16,
+            "material_role": "rail_collar"
+          },
+          {
+            "part_id": "right_rail_socket_collar",
+            "center_m": [1.18, 0.0, 1.18],
+            "width_m": 0.085,
+            "radius_m": 0.205,
+            "segments": 16,
+            "material_role": "rail_collar"
+          },
+          {
+            "part_id": "left_subtle_bead_band",
+            "center_m": [-0.94, 0.0, 1.18],
+            "width_m": 0.04,
+            "radius_m": 0.12,
+            "segments": 12,
+            "material_role": "bead_band"
+          },
+          {
+            "part_id": "right_subtle_bead_band",
+            "center_m": [0.98, 0.0, 1.18],
+            "width_m": 0.04,
+            "radius_m": 0.19,
+            "segments": 12,
+            "material_role": "bead_band"
+          }
+        ],
+        "infill": {
+          "frame_boxes": [
+            {
+              "part_id": "lower_infill_rail",
+              "center_m": [0.0, -0.025, 0.28],
+              "dimensions_m": [2.18, 0.075, 0.075],
+              "material_role": "infill_frame"
+            },
+            {
+              "part_id": "upper_infill_trim",
+              "center_m": [0.0, -0.025, 1.02],
+              "dimensions_m": [2.06, 0.055, 0.055],
+              "material_role": "infill_frame"
+            },
+            {
+              "part_id": "left_infill_stile",
+              "center_m": [-1.04, -0.025, 0.64],
+              "dimensions_m": [0.07, 0.055, 0.72],
+              "material_role": "infill_frame"
+            },
+            {
+              "part_id": "right_infill_stile",
+              "center_m": [1.04, -0.025, 0.64],
+              "dimensions_m": [0.07, 0.055, 0.72],
+              "material_role": "infill_frame"
+            },
+            {
+              "part_id": "center_mullion",
+              "center_m": [0.0, -0.025, 0.57],
+              "dimensions_m": [0.052, 0.052, 0.58],
+              "material_role": "mullion"
+            }
+          ],
+          "pointed_arches": [
+            {
+              "part_id": "left_lancet_arch",
+              "center_x_m": -0.68,
+              "span_m": 0.46,
+              "spring_z_m": 0.48,
+              "rise_m": 0.34,
+              "front_y_m": -0.07,
+              "bevel_depth_m": 0.024,
+              "leg_width_m": 0.04,
+              "leg_bottom_z_m": 0.31,
+              "material_role": "arch_trim"
+            },
+            {
+              "part_id": "center_lancet_arch",
+              "center_x_m": 0.0,
+              "span_m": 0.5,
+              "spring_z_m": 0.48,
+              "rise_m": 0.38,
+              "front_y_m": -0.075,
+              "bevel_depth_m": 0.026,
+              "leg_width_m": 0.042,
+              "leg_bottom_z_m": 0.31,
+              "material_role": "arch_trim"
+            },
+            {
+              "part_id": "right_lancet_arch",
+              "center_x_m": 0.68,
+              "span_m": 0.46,
+              "spring_z_m": 0.48,
+              "rise_m": 0.34,
+              "front_y_m": -0.07,
+              "bevel_depth_m": 0.024,
+              "leg_width_m": 0.04,
+              "leg_bottom_z_m": 0.31,
+              "material_role": "arch_trim"
+            }
+          ],
+          "quatrefoils": [
+            {
+              "part_prefix": "center_quatrefoil",
+              "center_m": [0.0, -0.14, 0.64],
+              "lobe_radius_m": 0.065,
+              "lobe_offset_m": 0.065,
+              "center_boss_radius_m": 0.04,
+              "depth_m": 0.035,
+              "segments": 8,
+              "material_role": "raised_quatrefoil"
+            }
+          ]
+        }
+      },
+      "validation_expectations": {
+        "post_count": 2,
+        "collar_count": 4,
+        "pointed_arch_count": 3,
+        "quatrefoil_count": 1,
+        "expected_named_part_count": 26,
+        "rail_axis": "x",
+        "post_axis": "z",
+        "nonzero_bounds": true,
+        "known_geometry_terms": true
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false
+      }
+    }
+  ]
+}

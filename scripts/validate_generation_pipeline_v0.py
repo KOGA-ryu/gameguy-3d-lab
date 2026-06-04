@@ -35,6 +35,7 @@ SIMPLE_ASSET_OUT = Path("/tmp/gameguy_asset_pump_v0")
 MEASURED_ASSET_OUT = Path("/tmp/gameguy_measured_asset_pump_v0")
 SECTION_STACK_ASSET_OUT = Path("/tmp/gameguy_section_stack_asset_pump_v0")
 RADIAL_STACK_ASSET_OUT = Path("/tmp/gameguy_radial_stack_asset_pump_v0")
+DECORATED_BALUSTRADE_ASSET_OUT = Path("/tmp/gameguy_decorated_balustrade_asset_pump_v0")
 BLOCKY_COLUMN_ASSET_OUT = Path("/tmp/gameguy_blocky_column_asset_pump_v0")
 BLOCKY_SHAPE_ASSET_OUT = Path("/tmp/gameguy_blocky_shape_grammar_asset_pump_v0")
 SACRED_GRAPH_OUT = Path("/tmp/gameguy_sacred_graph_v0")
@@ -436,6 +437,25 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
             CommandStep(
                 "radial_stack_asset_adapter_validate",
                 python_script("scripts/export_blender_asset_preview_v0.py", "--manifest", RADIAL_STACK_ASSET_OUT / "manifest.json", "--validate-only"),
+            ),
+            CommandStep(
+                "decorated_balustrade_asset_pump",
+                python_script(
+                    "scripts/asset_pump_v0.py",
+                    "--bundle",
+                    "data/architecture/asset_mill/recipes/decorated_balustrade_assets_v0.json",
+                    "--clean",
+                    "--out",
+                    DECORATED_BALUSTRADE_ASSET_OUT,
+                ),
+            ),
+            CommandStep(
+                "decorated_balustrade_asset_validate",
+                python_script("scripts/validate_gameguy_asset_v0.py", "--manifest", DECORATED_BALUSTRADE_ASSET_OUT / "manifest.json"),
+            ),
+            CommandStep(
+                "decorated_balustrade_asset_adapter_validate",
+                python_script("scripts/export_blender_asset_preview_v0.py", "--manifest", DECORATED_BALUSTRADE_ASSET_OUT / "manifest.json", "--validate-only"),
             ),
             CommandStep(
                 "blocky_column_asset_pump",
