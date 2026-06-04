@@ -1,0 +1,64 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0073-texture-system-todo-v0",
+  "title": "Texture system TODO v0",
+  "status": "complete",
+  "documentation_root": "docs/research/texture_system_v0",
+  "docs": [
+    "docs/research/texture_system_v0/README.md",
+    "docs/research/texture_system_v0/texture_todo_list_v0.md",
+    "docs/research/texture_system_v0/material_asset_taxonomy_v0.md",
+    "docs/research/texture_system_v0/dungeon_style_palette_matrix_v0.md",
+    "docs/research/texture_system_v0/surface_wear_rules_v0.md",
+    "docs/research/texture_system_v0/hardware_budget_and_decal_policy_v0.md"
+  ],
+  "updated_docs": ["README.md"],
+  "core_contract": "material + surface_role + dungeon_style + wear_state + hardware_tier",
+  "texture_asset_families": [
+    "tileable_base_materials",
+    "damage_age_layers",
+    "grime_environment_layers",
+    "decals",
+    "trim_sheets",
+    "ornament_atlases",
+    "utility_maps",
+    "dungeon_style_packs"
+  ],
+  "decal_policy": {
+    "priority_marker": "*** DECALS ***",
+    "cost_class": "high_cost_optional_detail",
+    "low_compute_hardware_gets_decals": false,
+    "fallbacks": [
+      "base_materials",
+      "material_slots",
+      "trim_sheets",
+      "procedural_noise",
+      "baked_masks",
+      "vertex_color_masks",
+      "roughness_variation",
+      "normal_bump_if_affordable"
+    ]
+  },
+  "validation": {
+    "receipt_json_parse": {
+      "command": "python3 -m json.tool workflow/reports/3D-LAB-0073-texture-system-todo-v0/receipt.json",
+      "result": "PASS"
+    },
+    "component_style_sheet_validate": {
+      "command": "python3 scripts/validate_component_style_sheets_v0.py",
+      "result": "PASS domains=7 components=70 style_sheets=5 ledger_entries=11 sources=7 tools=23"
+    },
+    "asset_generation_registry_validate": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS source_component_style_sheets=5"
+    }
+  },
+  "rules": {
+    "documentation_only": true,
+    "no_texture_images_created": true,
+    "no_generated_assets": true,
+    "no_blender_execution": true,
+    "lower_compute_hardware_disables_decals": true
+  },
+  "recommended_next_goal": "Define gothic_crypt_stone_material_stack_v0 as the first machine-readable material recipe with low/mid/high hardware tiers."
+}
