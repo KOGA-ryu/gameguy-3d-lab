@@ -25,10 +25,15 @@ python3 scripts/validate_craft_fabrication_methods_v0.py
   fabrication-informed modeling sequences.
 - `operator_fabrication_handoff_v0.md` defines what the future UI/workcard
   should hand to the operator.
+- `construction_method_source_index_v0.md` records broader source anchors for
+  buildings, furniture, instruments, metalwork, ceramics, textiles, and related
+  craft families.
+- `cross_family_construction_method_research_v0.md` maps those construction
+  methods into visible asset cues, source fields, Blender direction, and
+  operator checks.
 
 ## Boundary
 
 These notes are for prototype asset generation and Blender operator planning.
 They are not structural advice, code compliance advice, museum conservation
 instructions, shop drawings, or fabrication-ready dimensions.
-
