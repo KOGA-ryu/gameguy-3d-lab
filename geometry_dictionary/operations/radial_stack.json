@@ -4,7 +4,7 @@
   "plain_name": "Radial Stack",
   "description": "Builds a deterministic low-poly rotational mesh from ordered height/radius rings, then allows named radial detail parts to be attached.",
   "required_inputs": {
-    "axis": "z",
+    "axis": "x | y | z",
     "segments": "int",
     "rings": "radial_profile_ring[]"
   },
@@ -12,7 +12,7 @@
     "type": "mesh"
   },
   "constraints": {
-    "axis": "z_only_in_v0",
+    "axis": "x_y_z",
     "segments": ">= 8",
     "min_rings": 2,
     "ring_positions_must_increase": true,

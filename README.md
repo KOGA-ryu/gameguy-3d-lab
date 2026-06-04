@@ -143,7 +143,7 @@ python3 scripts/asset_pump_v0.py \
   --out /tmp/gameguy_section_stack_asset_pump_v0
 ```
 
-Radial-stack assets use a side-profile of ordered height/radius rings to generate low-poly cylindrical posts, with named radial ribs and sockets as detail parts. The bundle now includes both the first cylindrical proof post and a `mace_baluster_reference_post_v0` variant with entasis, a lower mace-like belly, tapered ribs, and a compact cap:
+Radial-stack assets use a side-profile of ordered height/radius rings to generate low-poly cylindrical posts and rails, with named radial ribs and sockets as optional detail parts. The bundle now includes the first cylindrical proof post, a `mace_baluster_reference_post_v0` variant with entasis, and a clean `baseball_bat_clean_rail_v0` rail body kept plain for Blender tool trials:
 
 ```bash
 python3 scripts/asset_pump_v0.py \

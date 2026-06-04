@@ -303,7 +303,7 @@ class AssetPumpTests(unittest.TestCase):
             post = load_json(out_root / "assets" / "cylindrical_reference_post_v0.json")
 
         self.assertEqual(manifest["source_bundle_schema"], "asset_mill_radial_stack_bundle_v0")
-        self.assertEqual(manifest["asset_count"], 2)
+        self.assertEqual(manifest["asset_count"], 3)
         self.assertEqual(post["schema"], "gameguy_asset_v0")
         self.assertEqual(post["source_schema"], "asset_mill_radial_stack_bundle_v0")
         self.assertEqual(post["source_operation"], "radial_stack")
@@ -335,6 +335,39 @@ class AssetPumpTests(unittest.TestCase):
         self.assertEqual(post["validation_expectations"]["ring_count"], 14)
         self.assertEqual(post["validation_expectations"]["rib_count"], 8)
         self.assert_mesh_is_well_formed(post)
+
+    def test_radial_stack_bundle_generates_clean_baseball_bat_rail(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "pump"
+            run_radial_stack_pump(out_root)
+            rail = load_json(out_root / "assets" / "baseball_bat_clean_rail_v0.json")
+
+        self.assertEqual(rail["schema"], "gameguy_asset_v0")
+        self.assertEqual(rail["source_schema"], "asset_mill_radial_stack_bundle_v0")
+        self.assertEqual(rail["source_operation"], "radial_stack")
+        self.assertEqual(rail["asset_kind"], "radial_stack_rail")
+        self.assertEqual(rail["dimensions_m"], {"width": 2.4, "depth": 0.36, "height": 0.36})
+        self.assertEqual(len(rail["mesh"]["vertices"]), 146)
+        self.assertEqual(len(rail["mesh"]["faces"]), 160)
+        self.assertEqual(len(rail["mesh"]["parts"]), 1)
+        self.assertEqual(rail["mesh"]["parts"][0]["part_id"], "radial_stack_body")
+        self.assertEqual(rail["mesh"]["parts"][0]["source_primitive"], "radial_stack")
+        self.assertEqual(rail["mesh"]["radial_stack"]["axis"], "x")
+        self.assertEqual(rail["mesh"]["radial_stack"]["segments"], 16)
+        self.assertEqual(rail["mesh"]["radial_stack"]["ring_count"], 9)
+        self.assertEqual(rail["mesh"]["radial_stack"]["radial_detail_count"], 0)
+        self.assertEqual(rail["mesh"]["radial_stack"]["attachment_count"], 0)
+        self.assertEqual(rail["mesh"]["radial_stack"]["rings"][0]["ring_id"], "knob_end")
+        self.assertEqual(rail["mesh"]["radial_stack"]["rings"][-1]["vertex_range"], [128, 143])
+        self.assertEqual(rail["mesh"]["radial_stack"]["bottom_center_vertex"], 144)
+        self.assertEqual(rail["mesh"]["radial_stack"]["top_center_vertex"], 145)
+        self.assertEqual(sum(1 for face in rail["mesh"]["faces"] if len(face) == 3), 32)
+        self.assertEqual(sum(1 for face in rail["mesh"]["faces"] if len(face) == 4), 128)
+        self.assertEqual([connector["connector_id"] for connector in rail["connectors"]], ["east", "west"])
+        self.assertEqual(rail["source_terms"]["profiles"], ["circle"])
+        self.assertEqual(rail["source_terms"]["operators"], ["radial_stack", "loft_sections"])
+        self.assertTrue(rail["validation_expectations"]["clean_base_copy"])
+        self.assert_mesh_is_well_formed(rail)
 
     def test_radial_stack_bundle_generates_mace_baluster_post(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:

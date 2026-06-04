@@ -378,8 +378,8 @@ def validate_radial_stack_ring(value: Any, field: str) -> str:
 def validate_radial_stack_source(value: Any, field: str) -> None:
     stack = require_object(value, field)
     axis = require_string(stack.get("axis"), f"{field}.axis")
-    if axis != "z":
-        fail(f"{field}.axis only supports z in v0")
+    if axis not in {"x", "y", "z"}:
+        fail(f"{field}.axis must be x, y, or z")
     integer_at_least(stack.get("segments"), 8, f"{field}.segments")
 
     rings = require_list(stack.get("rings"), f"{field}.rings")
@@ -1037,8 +1037,8 @@ def section_stack_mesh(stack: dict[str, Any]) -> tuple[Mesh, dict[str, Any], lis
 
 def radial_stack_body_mesh(stack: dict[str, Any]) -> tuple[Mesh, dict[str, Any]]:
     axis = require_string(stack.get("axis"), "radial_stack.axis")
-    if axis != "z":
-        fail("radial_stack.axis only supports z in v0")
+    if axis not in {"x", "y", "z"}:
+        fail("radial_stack.axis must be x, y, or z")
     segments = integer_at_least(stack.get("segments"), 8, "radial_stack.segments")
     rings_source = require_list(stack.get("rings"), "radial_stack.rings")
     if len(rings_source) < 2:
@@ -1058,13 +1058,7 @@ def radial_stack_body_mesh(stack: dict[str, Any]) -> tuple[Mesh, dict[str, Any]]
         start = len(vertices)
         for segment_index in range(segments):
             angle = math.tau * segment_index / segments
-            vertices.append(
-                [
-                    round(math.cos(angle) * radius, 6),
-                    round(math.sin(angle) * radius, 6),
-                    at,
-                ]
-            )
+            vertices.append(radial_stack_vertex(axis, at, radius, angle))
         ring_record: dict[str, Any] = {
             "ring_id": ring_id,
             "at": at,
@@ -1106,6 +1100,18 @@ def radial_stack_body_mesh(stack: dict[str, Any]) -> tuple[Mesh, dict[str, Any]]
         "top_center_vertex": top_center_index,
     }
     return Mesh(vertices=vertices, faces=faces), metadata
+
+
+def radial_stack_vertex(axis: str, at: float, radius: float, angle: float) -> list[float]:
+    first = round(math.cos(angle) * radius, 6)
+    second = round(math.sin(angle) * radius, 6)
+    if axis == "x":
+        return [at, first, second]
+    if axis == "y":
+        return [first, at, second]
+    if axis == "z":
+        return [first, second, at]
+    fail("radial_stack.axis must be x, y, or z")
 
 
 def append_radial_stack_attachment(parts_mesh: list[Mesh], mesh_parts: list[dict[str, Any]], attachment: dict[str, Any], field: str) -> dict[str, Any]:

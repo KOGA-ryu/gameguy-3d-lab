@@ -1,0 +1,123 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0069-baseball-bat-clean-rail-tool-trials-v0",
+  "created_utc": "2026-06-04T05:34:09Z",
+  "summary": "Added a clean horizontal baseball-bat rail source asset and generated Blender tool-trial variants while preserving an OG raw copy.",
+  "source_inputs": {
+    "source_recipe": "data/architecture/asset_mill/recipes/radial_stack_assets_v0.json",
+    "operation_term": "geometry_dictionary/operations/radial_stack.json",
+    "generator": "scripts/asset_pump_v0.py",
+    "validator": "scripts/validate_gameguy_asset_v0.py",
+    "preview_adapter": "scripts/export_blender_asset_preview_v0.py"
+  },
+  "generated_asset": {
+    "asset_id": "baseball_bat_clean_rail_v0",
+    "source_schema": "asset_mill_radial_stack_bundle_v0",
+    "source_operation": "radial_stack",
+    "asset_kind": "radial_stack_rail",
+    "axis": "x",
+    "segments": 16,
+    "ring_count": 9,
+    "radial_detail_count": 0,
+    "attachment_count": 0,
+    "vertex_count": 146,
+    "face_count": 160,
+    "part_count": 1,
+    "dimensions_m": {
+      "width": 2.4,
+      "depth": 0.36,
+      "height": 0.36
+    },
+    "connectors": ["east", "west"]
+  },
+  "tool_trials": {
+    "out_root": "/tmp/gameguy_baseball_bat_rail_tool_trials_v0",
+    "blend_path": "/tmp/gameguy_baseball_bat_rail_tool_trials_v0/baseball_bat_rail_tool_trials_v0.blend",
+    "render_path": "/tmp/gameguy_baseball_bat_rail_tool_trials_v0/baseball_bat_rail_tool_trials_overview_v0.png",
+    "report_path": "/tmp/gameguy_baseball_bat_rail_tool_trials_v0/baseball_bat_rail_tool_trials_report_v0.json",
+    "og_copy_name": "OG_raw_clean_copy",
+    "variant_count": 5,
+    "variants": [
+      {
+        "name": "OG_raw_clean_copy",
+        "tools": []
+      },
+      {
+        "name": "bevel_weighted_normal",
+        "tools": ["modifier_bevel", "modifier_weighted_normal"]
+      },
+      {
+        "name": "shade_smooth_weighted",
+        "tools": ["shade_smooth", "modifier_weighted_normal"]
+      },
+      {
+        "name": "subtle_noise_surface",
+        "tools": ["shade_smooth", "modifier_bevel", "modifier_weighted_normal", "modifier_displace"]
+      },
+      {
+        "name": "extra_taper_bevel",
+        "tools": ["modifier_bevel", "modifier_weighted_normal", "modifier_simple_deform_taper"]
+      }
+    ],
+    "writes_repo_outputs": false
+  },
+  "registry": {
+    "radial_stack_expected_asset_count": 3,
+    "canonical_geometry_bundle_count": 6,
+    "canonical_geometry_asset_count": 43
+  },
+  "validation": {
+    "radial_stack_asset_pump": {
+      "command": "python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/radial_stack_assets_v0.json --clean --out /tmp/gameguy_radial_stack_asset_pump_v0",
+      "result": "pumped assets=3 vertices=934 faces=904 out=/tmp/gameguy_radial_stack_asset_pump_v0"
+    },
+    "radial_stack_asset_validate": {
+      "command": "python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_radial_stack_asset_pump_v0/manifest.json",
+      "result": "PASS gameguy_asset_v0 validation: 3 assets, 934 vertices, 904 faces"
+    },
+    "radial_stack_adapter_validate": {
+      "command": "python3 scripts/export_blender_asset_preview_v0.py --manifest /tmp/gameguy_radial_stack_asset_pump_v0/manifest.json --validate-only",
+      "result": "PASS Blender asset adapter validation: 3 assets, 934 vertices, 904 faces"
+    },
+    "focused_tests": {
+      "command": "python3 -m unittest tests.test_asset_pump_v0 tests.test_validate_asset_generation_registry_v0 tests.test_validate_generation_pipeline_v0",
+      "result": "OK",
+      "test_count": 33
+    },
+    "unit_tests": {
+      "command": "python3 -m unittest discover -s tests",
+      "result": "OK",
+      "test_count": 179
+    },
+    "generation_pipeline_non_blender_skip_unit_tests": {
+      "command": "python3 scripts/validate_generation_pipeline_v0.py --skip-unit-tests --json-report /tmp/gameguy_pipeline_baseball_bat_rail_v0_final.json",
+      "result": "PASS generation pipeline validation: commands=46 json=277 include_blender=false",
+      "command_count": 46,
+      "json_file_count": 277
+    },
+    "blender_tool_trials": {
+      "command": "/Applications/Blender.app/Contents/MacOS/Blender --background --python-expr '<tool trial scene generation>'",
+      "result": "BASEBALL_BAT_TOOL_TRIAL_RENDER=/tmp/gameguy_baseball_bat_rail_tool_trials_v0/baseball_bat_rail_tool_trials_v0.png"
+    }
+  },
+  "rules": {
+    "source_recipe_first": true,
+    "pump_emits_deterministic_json": true,
+    "blender_is_adapter_layer": true,
+    "tool_trials_read_source_recipe": false,
+    "tool_trials_consume_asset_json": true,
+    "og_copy_preserved": true,
+    "generated_outputs_stay_under_tmp": true,
+    "no_repo_mesh_output": true,
+    "no_repo_media_output": true
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  },
+  "recommended_next_goal": "Promote the best Blender tool direction into a source-owned polish plan for baseball_bat_clean_rail_v0."
+}

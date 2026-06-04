@@ -10,7 +10,7 @@
     "no_generated_outputs": true,
     "no_wall_clock_fields": true
   },
-  "asset_count": 2,
+  "asset_count": 3,
   "assets": [
     {
       "asset_id": "cylindrical_reference_post_v0",
@@ -444,6 +444,130 @@
         "side_socket_count": 2,
         "entasis": true,
         "mace_belly": true,
+        "nonzero_bounds": true,
+        "known_geometry_terms": true
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false
+      }
+    },
+    {
+      "asset_id": "baseball_bat_clean_rail_v0",
+      "asset_kind": "radial_stack_rail",
+      "operation": "radial_stack",
+      "architectural_role": "clean_horizontal_baseball_bat_shaped_rail_for_blender_tool_trials",
+      "generation_use": [
+        "rail_segment",
+        "handrail",
+        "banister_rail",
+        "tool_trial_base"
+      ],
+      "semantic_tags": [
+        "rail",
+        "barrier",
+        "collision_proxy",
+        "decorative_only"
+      ],
+      "connectors": [
+        "east",
+        "west"
+      ],
+      "child_slots": [
+        "knob_end",
+        "handle",
+        "taper",
+        "barrel",
+        "end_cap"
+      ],
+      "geometry_terms_used": [
+        "radial_stack",
+        "loft_sections",
+        "circle",
+        "east",
+        "west",
+        "rail",
+        "barrier",
+        "collision_proxy",
+        "decorative_only"
+      ],
+      "profile_terms": [
+        "circle"
+      ],
+      "operations": [
+        "radial_stack",
+        "loft_sections"
+      ],
+      "radial_stack": {
+        "axis": "x",
+        "segments": 16,
+        "material_role": "clean_rail_body",
+        "rings": [
+          {
+            "ring_id": "knob_end",
+            "at": -1.2,
+            "radius_m": 0.1,
+            "material_role": "knob"
+          },
+          {
+            "ring_id": "knob_swell",
+            "at": -1.12,
+            "radius_m": 0.14,
+            "material_role": "knob"
+          },
+          {
+            "ring_id": "handle_start",
+            "at": -1.04,
+            "radius_m": 0.085,
+            "material_role": "handle"
+          },
+          {
+            "ring_id": "handle_mid",
+            "at": -0.62,
+            "radius_m": 0.075,
+            "material_role": "handle"
+          },
+          {
+            "ring_id": "taper_begin",
+            "at": -0.2,
+            "radius_m": 0.095,
+            "material_role": "taper"
+          },
+          {
+            "ring_id": "barrel_swell",
+            "at": 0.25,
+            "radius_m": 0.145,
+            "material_role": "barrel"
+          },
+          {
+            "ring_id": "barrel_full",
+            "at": 0.82,
+            "radius_m": 0.18,
+            "material_role": "barrel"
+          },
+          {
+            "ring_id": "barrel_end",
+            "at": 1.15,
+            "radius_m": 0.18,
+            "material_role": "barrel"
+          },
+          {
+            "ring_id": "barrel_cap",
+            "at": 1.2,
+            "radius_m": 0.15,
+            "material_role": "end_cap"
+          }
+        ]
+      },
+      "validation_expectations": {
+        "ring_count": 9,
+        "segments": 16,
+        "axis": "x",
+        "clean_base_copy": true,
+        "radial_detail_count": 0,
+        "attachment_count": 0,
         "nonzero_bounds": true,
         "known_geometry_terms": true
       },
