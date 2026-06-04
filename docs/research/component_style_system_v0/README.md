@@ -18,12 +18,14 @@ The first machine-readable files are:
 data/architecture/taxonomy/component_domains/component_domain_taxonomy_v0.json
 data/architecture/component_style_sheets/component_style_sheet_registry_v0.json
 data/architecture/component_style_sheets/railings/gothic_railing_post_style_sheets_v0.json
+data/architecture/component_style_sheets/railings/single_post_style_matrix_v0.json
 ```
 
 Validate them with:
 
 ```bash
 python3 scripts/validate_component_style_sheets_v0.py
+python3 scripts/validate_single_post_style_matrix_v0.py
 ```
 
 ## Documents

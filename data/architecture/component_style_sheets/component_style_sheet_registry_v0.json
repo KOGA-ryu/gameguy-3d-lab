@@ -27,6 +27,18 @@
       "pipeline_labels": ["component_style_sheet_validate"]
     }
   ],
+  "post_style_matrix_count": 1,
+  "post_style_matrices": [
+    {
+      "matrix_id": "single_post_style_matrix_v0",
+      "path": "data/architecture/component_style_sheets/railings/single_post_style_matrix_v0.json",
+      "schema": "single_post_style_matrix_v0",
+      "domain": "railings",
+      "expected_variant_count": 5,
+      "validator": "scripts/validate_single_post_style_matrix_v0.py",
+      "pipeline_labels": ["single_post_style_matrix_validate"]
+    }
+  ],
   "no_claims": {
     "production_approval": false,
     "structural_safety": false,

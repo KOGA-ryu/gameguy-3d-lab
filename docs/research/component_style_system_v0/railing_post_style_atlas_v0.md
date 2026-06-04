@@ -504,15 +504,32 @@ Every post variant should answer:
 
 ## Recommended Next Build Slice
 
+Status: completed as `3D-LAB-0093 single_post_style_matrix_v0`.
+
+The source-side matrix now lives at:
+
 ```text
-3D-LAB-0093 single_post_style_matrix_v0
+data/architecture/component_style_sheets/railings/single_post_style_matrix_v0.json
+```
+
+Validate it with:
+
+```bash
+python3 scripts/validate_single_post_style_matrix_v0.py
+```
+
+## Next Promotion Slice
+
+```text
+3D-LAB-0094 single_post_matrix_to_asset_recipe_v0
 ```
 
 Goal:
 
 ```text
-Add a source-side post style matrix with one plain reference post and a small
-Tier A variant set. No full railings. No Blender render required.
+Select one matrix variant, emit a tiny source asset recipe, compile
+deterministic gameguy_asset_v0 JSON, and validate. No full railings. Blender
+preview can wait until the recipe path is stable.
 ```
 
 Best first generated variants:

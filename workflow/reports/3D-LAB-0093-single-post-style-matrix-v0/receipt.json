@@ -1,0 +1,35 @@
+{
+  "id": "3D-LAB-0093",
+  "name": "single-post-style-matrix-v0",
+  "status": "complete",
+  "kind": "source_data_and_validation",
+  "created_date": "2026-06-04",
+  "scope": {
+    "implemented_code": true,
+    "ran_blender": false,
+    "generated_assets": false,
+    "generated_media": false
+  },
+  "added_files": [
+    "data/architecture/component_style_sheets/railings/single_post_style_matrix_v0.json",
+    "scripts/validate_single_post_style_matrix_v0.py",
+    "workflow/reports/3D-LAB-0093-single-post-style-matrix-v0/report.md",
+    "workflow/reports/3D-LAB-0093-single-post-style-matrix-v0/receipt.json"
+  ],
+  "updated_files": [
+    "data/architecture/component_style_sheets/component_style_sheet_registry_v0.json",
+    "scripts/validate_generation_pipeline_v0.py",
+    "README.md",
+    "docs/research/component_style_system_v0/README.md",
+    "docs/research/component_style_system_v0/asset_families/railings_v0.md",
+    "docs/research/component_style_system_v0/railing_post_style_atlas_v0.md"
+  ],
+  "validation": {
+    "single_post_style_matrix": "pass",
+    "variant_count": 5,
+    "source_shape_term_count": 8,
+    "operation_term_count": 11,
+    "blender_tool_count": 13
+  },
+  "next_recommended_slice": "3D-LAB-0094 single_post_matrix_to_asset_recipe_v0"
+}

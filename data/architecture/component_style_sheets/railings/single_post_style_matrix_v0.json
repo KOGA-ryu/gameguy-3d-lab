@@ -1,0 +1,240 @@
+{
+  "schema": "single_post_style_matrix_v0",
+  "matrix_id": "single_post_style_matrix_v0",
+  "purpose": "Declare one reusable railing post study object with multiple style variants, without generating rails, infill panels, full railing runs, or Blender output.",
+  "status": "source_style_matrix_only",
+  "domain": "railings",
+  "domain_taxonomy_ref": "data/architecture/taxonomy/component_domains/component_domain_taxonomy_v0.json",
+  "geometry_dictionary": "geometry_dictionary",
+  "tool_dictionary": "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json",
+  "rules": {
+    "source_matrix_only": true,
+    "single_post_only": true,
+    "no_full_railing": true,
+    "rail_socket_hint_only": true,
+    "variants_share_anatomy": true,
+    "source_shapes_must_be_geometry_terms": true,
+    "operations_must_be_geometry_terms": true,
+    "blender_tools_must_be_known": true,
+    "blender_stage_order_must_hold": true,
+    "no_blender_execution": true,
+    "no_generated_outputs": true
+  },
+  "shared_post_envelope": {
+    "required_anatomy": [
+      "plinth",
+      "base",
+      "shaft",
+      "collar",
+      "cap",
+      "finial",
+      "rail_socket_hint",
+      "face_panel",
+      "side_detail",
+      "material_regions"
+    ],
+    "height_class": "waist_high_architectural_post",
+    "rail_socket_policy": "hint_only_no_rail_generated",
+    "detail_budget": "low_poly_default",
+    "decal_policy": "off_by_default",
+    "finish_policy": "named_material_regions_bevels_weighted_normals_uv_hints"
+  },
+  "style_variant_count": 5,
+  "style_variants": [
+    {
+      "style_id": "post_style.plain_square_reference_v0",
+      "plain_name": "Plain Square Reference Post",
+      "visual_read": "Simple square post with plinth, straight shaft, flat cap, and rail socket hints.",
+      "domain": "railings",
+      "component": "newel_post",
+      "style_family": "modern",
+      "post_role": "control_variant",
+      "source_shapes": [
+        { "term_id": "square", "shape_role": "main post footprint", "control_policy": "sets plinth, shaft, and cap footprint" },
+        { "term_id": "rectangle", "shape_role": "face panel field", "control_policy": "sets simple recessed panel dimensions" },
+        { "term_id": "rounded_rectangle", "shape_role": "soft socket hint", "control_policy": "sets shallow rail-socket hint shape without generating a rail" }
+      ],
+      "operations": ["extrude", "relief_stack", "bevel_edges", "compound_asset"],
+      "blender_tool_sequence": [
+        { "stage": "base_form", "tool_id": "primitive_cube_add", "use": "Create plinth, shaft, cap, and flat face-field blocks." },
+        { "stage": "shape_refinement", "tool_id": "modifier_bevel", "use": "Chamfer exposed post edges." },
+        { "stage": "shape_refinement", "tool_id": "modifier_weighted_normal", "use": "Keep blocky faces clean after beveling." },
+        { "stage": "uv_mapping", "tool_id": "uv_smart_project", "use": "Create simple UVs for the reference post." },
+        { "stage": "material_texture", "tool_id": "material_principled_shader", "use": "Assign a plain neutral material for comparison." }
+      ],
+      "edit_knobs": ["footprint_m", "height_m", "plinth_height_m", "cap_height_m", "bevel_width_m", "socket_hint_depth_m"],
+      "do_not_do_rules": ["do not add ornament", "do not generate rails", "do not use decals"],
+      "manual_inspection_notes": ["Use this as the baseline silhouette and scale control for all styled variants."],
+      "promotion_status": "matrix_candidate_only",
+      "compile_targets": ["gameguy_asset_v0", "gameguy_tool_plan_v0"],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "style_id": "post_style.gothic_buttress_newel_v0",
+      "plain_name": "Gothic Buttress Newel Post",
+      "visual_read": "Square post that reads like a small buttress or pier, with vertical face strips and blind pointed-arch panels.",
+      "domain": "railings",
+      "component": "newel_post",
+      "style_family": "gothic",
+      "post_role": "styled_variant",
+      "source_shapes": [
+        { "term_id": "square", "shape_role": "primary post footprint", "control_policy": "keeps the post square-reading" },
+        { "term_id": "trapezoid", "shape_role": "buttress strip profile", "control_policy": "sets raised tapered face-strip shape" },
+        { "term_id": "pointed_arch_profile", "shape_role": "blind face panel", "control_policy": "sets decorative arch field on selected faces" },
+        { "term_id": "rectangle", "shape_role": "backer panel", "control_policy": "sets shadow field behind the arch profile" }
+      ],
+      "operations": ["extrude", "array_radial", "boolean_cut", "offset_profile", "bevel_edges", "compound_asset"],
+      "blender_tool_sequence": [
+        { "stage": "base_form", "tool_id": "primitive_cube_add", "use": "Create square post core, plinth, cap, and raised strip blocks." },
+        { "stage": "base_form", "tool_id": "mesh_from_pydata", "use": "Create pointed-arch cutter or raised arch rim mesh." },
+        { "stage": "assembly", "tool_id": "object_duplicate_radial", "use": "Repeat buttress strips and panel fields on four sides." },
+        { "stage": "assembly", "tool_id": "modifier_boolean", "use": "Cut shallow blind-arch recesses into selected faces." },
+        { "stage": "shape_refinement", "tool_id": "modifier_bevel", "use": "Chamfer strip, plinth, cap, and arch-rim edges." },
+        { "stage": "shape_refinement", "tool_id": "modifier_weighted_normal", "use": "Preserve low-poly stone face readability." },
+        { "stage": "uv_mapping", "tool_id": "uv_smart_project", "use": "Project UVs for the blocky stone surfaces." },
+        { "stage": "material_texture", "tool_id": "material_principled_shader", "use": "Assign stone material regions." }
+      ],
+      "edit_knobs": ["footprint_m", "height_m", "strip_projection_m", "strip_taper_ratio", "arch_span_m", "arch_recess_depth_m", "bevel_width_m"],
+      "do_not_do_rules": ["do not cut through the post core", "do not generate rail geometry", "do not place ornament before socket hints exist"],
+      "manual_inspection_notes": ["Check that all four sides are intentional and that raised strips do not collide with socket hints."],
+      "promotion_status": "matrix_candidate_only",
+      "compile_targets": ["gameguy_asset_v0", "gameguy_tool_plan_v0"],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "style_id": "post_style.gothic_clustered_shaft_v0",
+      "plain_name": "Gothic Clustered Shaft Post",
+      "visual_read": "Compound-pier post with central shaft, attached ribs, collar rings, and square-to-round transitions.",
+      "domain": "railings",
+      "component": "newel_post",
+      "style_family": "gothic",
+      "post_role": "styled_variant",
+      "source_shapes": [
+        { "term_id": "circle", "shape_role": "central shaft section", "control_policy": "sets low-segment cylindrical core" },
+        { "term_id": "capsule", "shape_role": "attached rib section", "control_policy": "sets half-round or capsule rib shape around shaft" },
+        { "term_id": "octagon", "shape_role": "transition footprint", "control_policy": "sets square-to-round transition collar silhouette" },
+        { "term_id": "rectangle", "shape_role": "flat collar band", "control_policy": "sets crisp ring-band heights" }
+      ],
+      "operations": ["radial_stack", "array_radial", "section_stack", "bevel_edges", "compound_asset"],
+      "blender_tool_sequence": [
+        { "stage": "base_form", "tool_id": "primitive_cylinder_add", "use": "Create low-segment central shaft volumes." },
+        { "stage": "base_form", "tool_id": "mesh_from_pydata", "use": "Create attached rib cross-section geometry." },
+        { "stage": "base_form", "tool_id": "primitive_torus_add", "use": "Create ring collars and bead bands." },
+        { "stage": "assembly", "tool_id": "object_duplicate_radial", "use": "Repeat attached ribs around the center shaft." },
+        { "stage": "shape_refinement", "tool_id": "modifier_bevel", "use": "Add readable edge highlights on collars and transitions." },
+        { "stage": "shape_refinement", "tool_id": "modifier_weighted_normal", "use": "Clean shading across low-segment round forms." },
+        { "stage": "uv_mapping", "tool_id": "uv_smart_project", "use": "Create practical UVs for shaft and collar parts." },
+        { "stage": "material_texture", "tool_id": "material_principled_shader", "use": "Assign stone material regions." }
+      ],
+      "edit_knobs": ["core_radius_m", "rib_count", "rib_radius_m", "shaft_height_m", "entasis_strength", "collar_height_m", "collar_projection_m"],
+      "do_not_do_rules": ["do not over-smooth the silhouette", "do not merge ribs until part naming is captured", "do not generate rails"],
+      "manual_inspection_notes": ["Check whether the rib count reads as clustered Gothic instead of a plain cylinder."],
+      "promotion_status": "matrix_candidate_only",
+      "compile_targets": ["gameguy_asset_v0", "gameguy_tool_plan_v0"],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "style_id": "post_style.castle_crenel_cap_v0",
+      "plain_name": "Castle Crenel Cap Post",
+      "visual_read": "Square defensive post with a blocky merlon-like cap, chamfered body, and socket hints.",
+      "domain": "railings",
+      "component": "newel_post",
+      "style_family": "romanesque",
+      "post_role": "styled_variant",
+      "source_shapes": [
+        { "term_id": "square", "shape_role": "post footprint", "control_policy": "sets defensive square mass" },
+        { "term_id": "rectangle", "shape_role": "cap tooth block", "control_policy": "sets merlon-like cap teeth and socket plates" },
+        { "term_id": "octagon", "shape_role": "corner chamfer target", "control_policy": "sets low-poly softened corners" }
+      ],
+      "operations": ["extrude", "array_linear", "bevel_edges", "compound_asset"],
+      "blender_tool_sequence": [
+        { "stage": "base_form", "tool_id": "primitive_cube_add", "use": "Create plinth, shaft, cap blocks, and tooth modules." },
+        { "stage": "assembly", "tool_id": "modifier_array", "use": "Repeat crenel-cap tooth blocks around the top zone." },
+        { "stage": "shape_refinement", "tool_id": "mark_sharp", "use": "Preserve blocky defensive arrises." },
+        { "stage": "shape_refinement", "tool_id": "modifier_bevel", "use": "Chamfer exposed corners and cap teeth." },
+        { "stage": "shape_refinement", "tool_id": "modifier_weighted_normal", "use": "Keep the crenel blocks readable after bevels." },
+        { "stage": "uv_mapping", "tool_id": "uv_smart_project", "use": "Create UVs for blocky stone surfaces." },
+        { "stage": "material_texture", "tool_id": "material_principled_shader", "use": "Assign rough fortress-stone material regions." }
+      ],
+      "edit_knobs": ["footprint_m", "height_m", "cap_tooth_count", "cap_tooth_height_m", "corner_chamfer_m", "socket_plate_depth_m"],
+      "do_not_do_rules": ["do not make the cap too decorative", "do not generate a wall or parapet", "do not require decals for stone read"],
+      "manual_inspection_notes": ["Check that the cap reads as blocky defense language, not a delicate Gothic pinnacle."],
+      "promotion_status": "matrix_candidate_only",
+      "compile_targets": ["gameguy_asset_v0", "gameguy_tool_plan_v0"],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    },
+    {
+      "style_id": "post_style.rustic_timber_chamfered_v0",
+      "plain_name": "Rustic Chamfered Timber Post",
+      "visual_read": "Wooden post with chamfered corners, simple cap, shallow grooves, and hand-cut unevenness.",
+      "domain": "railings",
+      "component": "newel_post",
+      "style_family": "rustic",
+      "post_role": "styled_variant",
+      "source_shapes": [
+        { "term_id": "square", "shape_role": "timber blank footprint", "control_policy": "sets the original squared timber mass" },
+        { "term_id": "octagon", "shape_role": "chamfer target", "control_policy": "sets hand-planed corner reduction" },
+        { "term_id": "rectangle", "shape_role": "groove and socket plate", "control_policy": "sets shallow split marks and rail socket hints" }
+      ],
+      "operations": ["extrude", "bevel_edges", "relief_stack", "scale_profile", "compound_asset"],
+      "blender_tool_sequence": [
+        { "stage": "base_form", "tool_id": "primitive_cube_add", "use": "Create squared timber plinth, shaft, cap, and groove strips." },
+        { "stage": "shape_refinement", "tool_id": "modifier_bevel", "use": "Chamfer timber corners and cap edges." },
+        { "stage": "shape_refinement", "tool_id": "modifier_weighted_normal", "use": "Keep broad cut faces readable." },
+        { "stage": "uv_mapping", "tool_id": "uv_smart_project", "use": "Create simple UVs for wood material direction." },
+        { "stage": "material_texture", "tool_id": "material_principled_shader", "use": "Assign rustic wood material regions." },
+        { "stage": "material_texture", "tool_id": "procedural_noise_texture", "use": "Add procedural wood/noise material variation without decals." }
+      ],
+      "edit_knobs": ["footprint_m", "height_m", "corner_chamfer_m", "groove_depth_m", "cap_overhang_m", "wood_noise_scale"],
+      "do_not_do_rules": ["do not make it perfectly smooth", "do not add ornate Gothic tracery", "do not generate rails"],
+      "manual_inspection_notes": ["Check that the post reads like timber from silhouette and material, even without decals."],
+      "promotion_status": "matrix_candidate_only",
+      "compile_targets": ["gameguy_asset_v0", "gameguy_tool_plan_v0"],
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "historical_accuracy": false,
+        "game_engine_integration": false,
+        "building_code_compliance": false
+      }
+    }
+  ],
+  "next_promotion_target": "single_post_style_matrix_to_asset_recipe_v0",
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false,
+    "building_code_compliance": false
+  }
+}

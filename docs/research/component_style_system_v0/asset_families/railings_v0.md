@@ -17,6 +17,7 @@ The current machine-readable starter is:
 
 ```text
 data/architecture/component_style_sheets/railings/gothic_railing_post_style_sheets_v0.json
+data/architecture/component_style_sheets/railings/single_post_style_matrix_v0.json
 ```
 
 ## Component Breakdown
@@ -140,6 +141,18 @@ visible result: panel, grille, or tracery field between posts
 3. `post_style.gothic_clustered_shaft_v0`
 4. `post_style.castle_crenel_cap_v0`
 5. `post_style.rustic_timber_chamfered_v0`
+
+The first five targets are now declared in:
+
+```text
+data/architecture/component_style_sheets/railings/single_post_style_matrix_v0.json
+```
+
+Validate with:
+
+```bash
+python3 scripts/validate_single_post_style_matrix_v0.py
+```
 
 ## Boundary
 
