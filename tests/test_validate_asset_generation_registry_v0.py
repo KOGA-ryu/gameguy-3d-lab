@@ -46,6 +46,14 @@ class AssetGenerationRegistryValidatorTests(unittest.TestCase):
         self.assertEqual(report["canonical_tool_plan_bundle"]["geometry_dictionary"], "geometry_dictionary")
         self.assertEqual(report["source_asset_polish_plan_bundle_count"], 1)
         self.assertEqual(report["source_asset_polish_plan_count"], 1)
+        self.assertEqual(
+            report["source_asset_polish_plan_bundles"][0]["join_export_adapter"],
+            "scripts/export_asset_polish_joined_v0.py",
+        )
+        self.assertEqual(
+            report["source_asset_polish_plan_bundles"][0]["join_export_report_validator"],
+            "scripts/validate_asset_polish_join_export_report_v0.py",
+        )
         self.assertEqual(report["source_profile_bundle_count"], 2)
         self.assertEqual(report["source_profile_count"], 19)
         self.assertEqual(report["source_graph_bundle_count"], 1)

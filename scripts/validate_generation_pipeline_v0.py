@@ -23,6 +23,7 @@ TOOL_PLAN_OUT = Path("/tmp/gameguy_blender_tool_plan_v0")
 ASSET_POLISH_TOOL_PLAN_OUT = Path("/tmp/gameguy_asset_polish_tool_plan_v0")
 ASSET_POLISH_ADAPTER_OUT = Path("/tmp/gameguy_asset_polish_blender_adapter_v0")
 ASSET_POLISH_EXECUTION_OUT = Path("/tmp/gameguy_asset_polish_blender_execution_v0")
+ASSET_POLISH_JOIN_EXPORT_OUT = Path("/tmp/gameguy_asset_polish_join_export_v0")
 TOOL_PLAN_EXECUTION_OUT = Path("/tmp/gameguy_blender_tool_plan_execution_v0")
 FENCE_POST_TOOL_PLAN_EXECUTION_OUT = Path("/tmp/gameguy_blender_fence_post_tool_plan_execution_v0")
 RAIL_SEGMENT_TOOL_PLAN_EXECUTION_OUT = Path("/tmp/gameguy_blender_rail_segment_tool_plan_execution_v0")
@@ -484,6 +485,29 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
                         "scripts/validate_asset_polish_blender_execution_report_v0.py",
                         "--report",
                         ASSET_POLISH_EXECUTION_OUT / "asset_polish_execution_report_v0.json",
+                    ),
+                ),
+                CommandStep(
+                    "asset_polish_blender_join_export",
+                    [
+                        str(blender_path),
+                        "--background",
+                        "--python",
+                        "scripts/export_asset_polish_joined_v0.py",
+                        "--",
+                        "--execution-report",
+                        str(ASSET_POLISH_EXECUTION_OUT / "asset_polish_execution_report_v0.json"),
+                        "--out",
+                        str(ASSET_POLISH_JOIN_EXPORT_OUT),
+                        "--export-glb",
+                    ],
+                ),
+                CommandStep(
+                    "asset_polish_join_export_report_validate",
+                    python_script(
+                        "scripts/validate_asset_polish_join_export_report_v0.py",
+                        "--report",
+                        ASSET_POLISH_JOIN_EXPORT_OUT / "asset_polish_join_export_report_v0.json",
                     ),
                 ),
             ]

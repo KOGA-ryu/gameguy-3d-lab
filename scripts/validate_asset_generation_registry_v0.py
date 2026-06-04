@@ -292,12 +292,23 @@ def validate_source_asset_polish_bundle(item: Any, index: int, known_labels: set
         bundle_ref.get("execution_report_validator"),
         f"source_asset_polish_plan_bundles[{index}].execution_report_validator",
     )
+    join_export_adapter = None
+    join_export_report_validator = None
+    if "join_export_adapter" in bundle_ref:
+        join_export_adapter = script_path(bundle_ref.get("join_export_adapter"), f"source_asset_polish_plan_bundles[{index}].join_export_adapter")
+    if "join_export_report_validator" in bundle_ref:
+        join_export_report_validator = script_path(
+            bundle_ref.get("join_export_report_validator"),
+            f"source_asset_polish_plan_bundles[{index}].join_export_report_validator",
+        )
     assert_no_blender_import(compiler, f"source_asset_polish_plan_bundles[{index}].compiler")
     assert_no_blender_import(validator, f"source_asset_polish_plan_bundles[{index}].validator")
     assert_no_blender_import(adapter, f"source_asset_polish_plan_bundles[{index}].adapter_validate_only")
     assert_no_blender_import(execution_report_validator, f"source_asset_polish_plan_bundles[{index}].execution_report_validator")
+    if join_export_report_validator is not None:
+        assert_no_blender_import(join_export_report_validator, f"source_asset_polish_plan_bundles[{index}].join_export_report_validator")
     labels = validate_pipeline_labels(bundle_ref.get("pipeline_labels"), known_labels, f"source_asset_polish_plan_bundles[{index}].pipeline_labels")
-    return {
+    result = {
         "bundle_id": bundle_id,
         "path": display_path(path),
         "schema": expected_schema,
@@ -308,6 +319,11 @@ def validate_source_asset_polish_bundle(item: Any, index: int, known_labels: set
         "execution_report_validator": display_path(execution_report_validator),
         "pipeline_label_count": len(labels),
     }
+    if join_export_adapter is not None:
+        result["join_export_adapter"] = display_path(join_export_adapter)
+    if join_export_report_validator is not None:
+        result["join_export_report_validator"] = display_path(join_export_report_validator)
+    return result
 
 
 def validate_source_profile_bundle(item: Any, index: int, known_labels: set[str]) -> dict[str, Any]:
@@ -620,6 +636,7 @@ def validate_registry(path: Path) -> dict[str, Any]:
         "canonical_geometry_bundle_count": len(geometry_results),
         "canonical_geometry_asset_count": sum(result["asset_count"] for result in geometry_results),
         "canonical_tool_plan_bundle": tool_plan_result,
+        "source_asset_polish_plan_bundles": source_asset_polish_results,
         "source_asset_polish_plan_bundle_count": len(source_asset_polish_results),
         "source_asset_polish_plan_count": sum(result["plan_count"] for result in source_asset_polish_results),
         "source_profile_bundle_count": len(source_profile_results),
