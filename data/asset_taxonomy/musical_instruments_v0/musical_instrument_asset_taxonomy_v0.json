@@ -1,0 +1,469 @@
+{
+  "schema": "musical_instrument_asset_taxonomy_v0",
+  "bundle_id": "musical_instrument_asset_taxonomy_v0",
+  "purpose": "Document musical instruments as game props and lore assets by mapping instrument anatomy, craft methods, geometry terms, Blender tool IDs, drawing UI tags, and book-hook rewards.",
+  "rules": {
+    "game_asset_planning_only": true,
+    "not_acoustic_engineering": true,
+    "not_fabrication_ready": true,
+    "not_historical_authenticity_claim": true,
+    "no_playable_audio_claim": true,
+    "requires_reference_packet_before_asset_use": true
+  },
+  "instrument_families": [
+    {
+      "family_id": "plucked_strings_v0",
+      "plain_name": "Plucked strings",
+      "core_mechanics": "Strings are stretched over a resonant body and excited by finger or plectrum.",
+      "starter_instruments": ["lute_v0"],
+      "drawing_ui_tags": ["body_outline", "soundboard", "string_course", "bridge", "pegbox", "rose_cutout"]
+    },
+    {
+      "family_id": "harps_v0",
+      "plain_name": "Harps",
+      "core_mechanics": "Open strings run from neck to resonant soundbox, usually held by a frame and tuning pins.",
+      "starter_instruments": ["gothic_harp_v0"],
+      "drawing_ui_tags": ["frame", "pillar", "neck_curve", "soundbox", "string_fan", "tuning_pin"]
+    },
+    {
+      "family_id": "fipple_flutes_v0",
+      "plain_name": "Fipple flutes",
+      "core_mechanics": "A shaped windway drives air against a labium edge while holes change the effective air column.",
+      "starter_instruments": ["recorder_v0"],
+      "drawing_ui_tags": ["bore_axis", "windway", "labium", "tone_hole", "joint_band", "mouthpiece"]
+    },
+    {
+      "family_id": "double_reeds_v0",
+      "plain_name": "Double reeds",
+      "core_mechanics": "A double reed vibrates into a bore; conical bores and flared bells give many medieval reed instruments their visual form.",
+      "starter_instruments": ["shawm_v0"],
+      "drawing_ui_tags": ["reed", "staple", "conical_bore", "tone_hole", "flared_bell", "finger_rest"]
+    },
+    {
+      "family_id": "percussion_membranes_v0",
+      "plain_name": "Membrane percussion",
+      "core_mechanics": "A stretched skin or membrane vibrates across a frame or shell when struck.",
+      "starter_instruments": ["frame_drum_v0"],
+      "drawing_ui_tags": ["hoop", "skin_head", "lacing", "tack", "jingle", "beater"]
+    },
+    {
+      "family_id": "bells_idiophones_v0",
+      "plain_name": "Bells and idiophones",
+      "core_mechanics": "The body itself vibrates when struck, usually through a lip, soundbow, clapper, or external striker.",
+      "starter_instruments": ["cast_bell_v0"],
+      "drawing_ui_tags": ["bell_profile", "crown", "shoulder", "waist", "soundbow", "lip", "clapper"]
+    },
+    {
+      "family_id": "mechanical_wind_v0",
+      "plain_name": "Mechanical wind instruments",
+      "core_mechanics": "Bellows, wind chests, keys, and pipes route air mechanically through tuned resonators.",
+      "starter_instruments": ["portative_organ_v0"],
+      "drawing_ui_tags": ["bellows", "wind_chest", "pipe_array", "key", "frame", "pipe_mouth"]
+    },
+    {
+      "family_id": "wheel_bowed_strings_v0",
+      "plain_name": "Wheel-bowed strings",
+      "core_mechanics": "A rosined wheel acts like a continuous bow while keys or tangents stop melody strings.",
+      "starter_instruments": ["hurdy_gurdy_v0"],
+      "drawing_ui_tags": ["wheel", "crank", "keybox", "tangent", "drone_string", "melody_string", "bridge"]
+    }
+  ],
+  "instruments": [
+    {
+      "instrument_id": "lute_v0",
+      "plain_name": "Lute",
+      "family_id": "plucked_strings_v0",
+      "source_support": [
+        {
+          "label": "Lute Society of America, What is a lute",
+          "url": "https://lutesocietyofamerica.org/about/what-is-a-lute/",
+          "support_summary": "Supports the lute as a plucked instrument with bowl back, soundboard, neck, pegbox, frets, and strings."
+        },
+        {
+          "label": "Encyclopaedia Britannica, lute",
+          "url": "https://www.britannica.com/art/lute",
+          "support_summary": "Supports the lute family, pear-shaped body, neck, and historical instrument role."
+        }
+      ],
+      "game_use_roles": ["bard prop", "merchant stall item", "noble chamber decoration", "quest clue object", "lore book illustration"],
+      "anatomy_parts": [
+        {"part_id": "bowl_back", "plain_name": "bowl back", "geometry_role": "rounded resonant shell built from narrow ribs"},
+        {"part_id": "ribs", "plain_name": "back ribs", "geometry_role": "repeated long curved strips over the bowl back"},
+        {"part_id": "soundboard", "plain_name": "soundboard", "geometry_role": "thin flat top plate with a visible outline"},
+        {"part_id": "rose", "plain_name": "soundhole rose", "geometry_role": "decorative cutout or relief pattern on the soundboard"},
+        {"part_id": "bridge", "plain_name": "bridge", "geometry_role": "small raised strip anchoring strings on the soundboard"},
+        {"part_id": "neck", "plain_name": "neck", "geometry_role": "long narrow string support"},
+        {"part_id": "pegbox", "plain_name": "angled pegbox", "geometry_role": "tilted head block with tuning peg sockets"},
+        {"part_id": "strings", "plain_name": "string courses", "geometry_role": "parallel curves from bridge to pegbox"}
+      ],
+      "materials": ["thin wood soundboard", "bent hardwood ribs", "hardwood neck", "wooden pegs", "gut or gut-like strings"],
+      "real_tools": ["body mold", "bending iron", "scraper", "small plane", "knife", "chisel", "drill", "reamer", "clamps"],
+      "craft_sequence": [
+        "Set the body outline and bowl depth from a side and top reference.",
+        "Build the bowl as a mirrored rib array so each rib can stay named.",
+        "Add the soundboard as a thin top plate with a separate rose cutout or relief.",
+        "Attach bridge, neck, pegbox, pegs, and parallel string courses.",
+        "Use bevels and material slots to keep soundboard, ribs, neck, and strings visually separate."
+      ],
+      "sound_mechanics": "The player-facing model only needs to imply plucked strings driving a thin soundboard and hollow body; it does not simulate acoustic response.",
+      "geometry_terms": ["custom_polygon_profile", "rounded_rectangle_profile", "circle_profile", "loft_sections", "offset_profile", "array_radial", "boolean_cut", "contour_points", "length", "width", "height", "radius", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "curve_bezier_add", "curve_bevel_profile", "curve_to_mesh", "modifier_mirror", "modifier_array", "modifier_boolean", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map"],
+      "drawing_ui_tags": ["body_outline", "bowl_depth", "rib_count", "soundboard", "rose_cutout", "bridge", "string_course", "pegbox_angle"],
+      "source_fields_needed": ["body_outline_points", "bowl_depth_m", "rib_count", "soundboard_thickness_m", "rose_pattern_id", "neck_length_m", "pegbox_angle_deg", "string_count"],
+      "operator_checks": ["Does the bowl read as a hollow ribbed back?", "Is the rose separate from the bridge and strings?", "Can the string courses be counted from gameplay distance?", "Are broad faces low-poly enough to edit by hand?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Luthier's Bowl",
+          "player_reward": "Names lute ribs, rose, bridge, and pegbox so the player can inspect or repair instrument props.",
+          "detail_prompt": "A good lute shows its maker in the curve of the bowl and the patience of the carved rose."
+        }
+      ],
+      "deferred_details": ["accurate fret spacing", "playable tuning", "period-specific stringing", "high-detail carved rose variants"]
+    },
+    {
+      "instrument_id": "gothic_harp_v0",
+      "plain_name": "Gothic harp",
+      "family_id": "harps_v0",
+      "source_support": [
+        {
+          "label": "Encyclopaedia Britannica, harp",
+          "url": "https://www.britannica.com/art/harp",
+          "support_summary": "Supports harp anatomy as a stringed instrument with neck, soundbox, and strings."
+        },
+        {
+          "label": "The Metropolitan Museum of Art, harp collection context",
+          "url": "https://www.metmuseum.org/art/collection/search?q=harp",
+          "support_summary": "Supports visible historical harp reference variety for frame, soundbox, strings, and decoration."
+        }
+      ],
+      "game_use_roles": ["chapel prop", "noble hall decoration", "bard equipment", "treasure-room fragile object", "book illustration"],
+      "anatomy_parts": [
+        {"part_id": "soundbox", "plain_name": "soundbox", "geometry_role": "tapered resonant box on one side of the frame"},
+        {"part_id": "soundboard", "plain_name": "soundboard", "geometry_role": "visible string-bearing face on the soundbox"},
+        {"part_id": "neck", "plain_name": "curved neck", "geometry_role": "upper curved beam carrying tuning pins"},
+        {"part_id": "pillar", "plain_name": "front pillar", "geometry_role": "vertical or curved frame support"},
+        {"part_id": "strings", "plain_name": "string fan", "geometry_role": "linear array of differently angled string curves"},
+        {"part_id": "tuning_pins", "plain_name": "tuning pins", "geometry_role": "small repeated pegs along the neck"}
+      ],
+      "materials": ["carved wood frame", "thin wood soundboard", "metal tuning pins", "gut or gut-like strings"],
+      "real_tools": ["saw", "spokeshave", "plane", "chisel", "drill", "reamer", "clamps", "scraper"],
+      "craft_sequence": [
+        "Draw the triangular frame envelope, soundbox taper, neck curve, and pillar line.",
+        "Build soundbox and pillar as separate named parts before strings.",
+        "Add the neck as a curved beam with tuning pin sockets.",
+        "Array strings between soundbox and neck with clear index and length changes.",
+        "Use bevels on frame edges so the silhouette reads without dense ornament."
+      ],
+      "sound_mechanics": "Different string lengths imply different pitches; the model only needs clear string anchoring and a resonant soundbox.",
+      "geometry_terms": ["triangle_profile", "trapezoid_profile", "rectangle_profile", "circle_profile", "extrude", "loft_sections", "array_linear", "socket", "anchor", "height", "length", "width", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cube_add", "curve_bezier_add", "curve_bevel_profile", "curve_to_mesh", "modifier_array", "modifier_boolean", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["frame", "pillar", "neck_curve", "soundbox_taper", "string_fan", "tuning_pin", "soundhole"],
+      "source_fields_needed": ["frame_height_m", "frame_width_m", "soundbox_taper_points", "neck_curve_points", "pillar_profile", "string_count", "pin_spacing_m"],
+      "operator_checks": ["Does the string fan show changing string lengths?", "Is the pillar visibly separate from the soundbox?", "Can the neck curve be manually edited without breaking strings?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Harp Maker's Triangle",
+          "player_reward": "Teaches the player to read neck, pillar, soundbox, and string fan as separate inspectable parts.",
+          "detail_prompt": "A harp is not a triangle drawn once; it is a frame, a box, and a fan of held tension."
+        }
+      ],
+      "deferred_details": ["lever or pedal systems", "accurate pin hardware", "period-specific carving", "playable note layout"]
+    },
+    {
+      "instrument_id": "recorder_v0",
+      "plain_name": "Recorder",
+      "family_id": "fipple_flutes_v0",
+      "source_support": [
+        {
+          "label": "Yamaha, How the recorder works",
+          "url": "https://www.yamaha.com/en/musical_instrument_guide/recorder/mechanism/",
+          "support_summary": "Supports recorder windway, labium, window, air stream, and tone-hole mechanics."
+        },
+        {
+          "label": "Encyclopaedia Britannica, recorder",
+          "url": "https://www.britannica.com/art/recorder-musical-instrument",
+          "support_summary": "Supports recorder identity as an end-blown fipple flute with finger holes."
+        }
+      ],
+      "game_use_roles": ["common musician prop", "schoolroom item", "traveler tool", "small inventory object", "tutorial object for holes and bores"],
+      "anatomy_parts": [
+        {"part_id": "head_joint", "plain_name": "head joint", "geometry_role": "upper cylinder containing the mouthpiece and window"},
+        {"part_id": "windway", "plain_name": "windway", "geometry_role": "narrow air channel represented as a recess or dark slot"},
+        {"part_id": "labium", "plain_name": "labium", "geometry_role": "sharp angled edge at the window"},
+        {"part_id": "bore", "plain_name": "bore", "geometry_role": "central air column represented by cylinder proportions and openings"},
+        {"part_id": "tone_holes", "plain_name": "tone holes", "geometry_role": "ordered boolean cuts along the front"},
+        {"part_id": "joint_bands", "plain_name": "joint bands", "geometry_role": "subtle ring lips at section changes"}
+      ],
+      "materials": ["turned wood", "oil finish", "dark recess material for holes"],
+      "real_tools": ["lathe", "drill", "reamer", "knife", "small chisels", "scraper", "sandpaper"],
+      "craft_sequence": [
+        "Build a tapered cylinder or radial stack body on one bore axis.",
+        "Cut tone holes as named boolean cylinders with stable order.",
+        "Model the window, windway slot, and labium as separate source-selected cuts.",
+        "Add shallow joint bands and mouthpiece bevels.",
+        "Assign dark material to holes so the shape reads even without high-detail interiors."
+      ],
+      "sound_mechanics": "The air stream splits at the labium, while tone holes change the effective bore length; the model uses visible holes and windway anatomy only.",
+      "geometry_terms": ["circle_profile", "capsule_profile", "radial_stack", "boolean_cut", "array_linear", "length", "diameter", "radius", "angle", "contour_points", "socket", "decorative_only"],
+      "blender_tool_ids": ["primitive_cylinder_add", "mesh_from_pydata", "modifier_boolean", "modifier_bevel", "modifier_weighted_normal", "uv_cube_project", "material_assign_by_part", "procedural_noise_texture", "procedural_bump_map"],
+      "drawing_ui_tags": ["bore_axis", "tone_hole", "hole_order", "windway", "labium", "window", "joint_band"],
+      "source_fields_needed": ["body_length_m", "head_diameter_m", "foot_diameter_m", "tone_hole_positions_m", "tone_hole_radii_m", "windway_slot", "labium_angle_deg", "joint_band_positions_m"],
+      "operator_checks": ["Are hole cuts ordered and named?", "Does the window/labium read as a real mouthpiece feature?", "Do joint bands stay shallow enough for a simple object?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Split Breath",
+          "player_reward": "Gives vocabulary for windway, labium, bore, and tone holes on small wind instruments.",
+          "detail_prompt": "The note begins where breath meets an edge, not where the fingers rest."
+        }
+      ],
+      "deferred_details": ["accurate acoustic bore", "finger placement ergonomics", "playable fingering chart", "real mouthpiece internals"]
+    },
+    {
+      "instrument_id": "shawm_v0",
+      "plain_name": "Shawm",
+      "family_id": "double_reeds_v0",
+      "source_support": [
+        {
+          "label": "Encyclopaedia Britannica, shawm",
+          "url": "https://www.britannica.com/art/shawm",
+          "support_summary": "Supports shawm as a loud double-reed instrument with a conical bore and flared bell."
+        },
+        {
+          "label": "The Metropolitan Museum of Art, shawm collection context",
+          "url": "https://www.metmuseum.org/art/collection/search?q=shawm",
+          "support_summary": "Supports visible historical variants for bell shape, body holes, and reed placement."
+        }
+      ],
+      "game_use_roles": ["procession prop", "market musician item", "guard signal instrument", "festival clutter", "lore object for loud reeds"],
+      "anatomy_parts": [
+        {"part_id": "double_reed", "plain_name": "double reed", "geometry_role": "small paired blade form at the mouth end"},
+        {"part_id": "staple", "plain_name": "staple", "geometry_role": "small tube between reed and body"},
+        {"part_id": "conical_body", "plain_name": "conical body", "geometry_role": "tapered bore body widening toward bell"},
+        {"part_id": "tone_holes", "plain_name": "tone holes", "geometry_role": "ordered holes along the body"},
+        {"part_id": "finger_rest", "plain_name": "finger rest or pirouette hint", "geometry_role": "small lip or disk near the reed"},
+        {"part_id": "flared_bell", "plain_name": "flared bell", "geometry_role": "wide terminal cone or radial-stack flare"}
+      ],
+      "materials": ["turned wood", "reed cane", "dark hole recess material", "simple waxed thread binding"],
+      "real_tools": ["lathe", "reamer", "drill", "reed knife", "mandrel", "scraper", "calipers"],
+      "craft_sequence": [
+        "Set a conical bore axis and flare diameter before placing holes.",
+        "Build body and bell as a radial or section stack with separate ring lips.",
+        "Cut tone holes from the outside along the front face.",
+        "Add reed, staple, and finger-rest detail as small named parts.",
+        "Use bevels and material slots to keep holes, bell flare, and reed readable."
+      ],
+      "sound_mechanics": "The double reed vibrates into a conical bore; the model should show reed, bore taper, holes, and bell flare.",
+      "geometry_terms": ["circle_profile", "radial_stack", "section_stack", "boolean_cut", "array_linear", "length", "diameter", "radius", "angle", "socket", "decorative_only"],
+      "blender_tool_ids": ["primitive_cone_add", "primitive_cylinder_add", "mesh_from_pydata", "modifier_boolean", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_noise_texture"],
+      "drawing_ui_tags": ["reed", "staple", "conical_bore", "tone_hole", "hole_order", "finger_rest", "flared_bell"],
+      "source_fields_needed": ["body_length_m", "mouth_diameter_m", "bell_diameter_m", "flare_profile", "tone_hole_positions_m", "tone_hole_radii_m", "reed_length_m", "staple_length_m"],
+      "operator_checks": ["Does the body clearly taper toward a flared bell?", "Is the reed separate from the wooden body?", "Are tone holes visible after bevels?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "A Reed That Carries",
+          "player_reward": "Names reed, staple, conical bore, tone holes, and bell flare for inspection prompts.",
+          "detail_prompt": "A shawm is built to announce itself; its bell is a mouth turned outward."
+        }
+      ],
+      "deferred_details": ["pirouette variants", "accurate reed construction", "real hole tuning", "period-specific bore profiles"]
+    },
+    {
+      "instrument_id": "frame_drum_v0",
+      "plain_name": "Frame drum",
+      "family_id": "percussion_membranes_v0",
+      "source_support": [
+        {
+          "label": "Encyclopaedia Britannica, drum",
+          "url": "https://www.britannica.com/art/drum-musical-instrument",
+          "support_summary": "Supports drum mechanics as a membrane stretched over a frame or shell."
+        },
+        {
+          "label": "The Metropolitan Museum of Art, frame drum collection context",
+          "url": "https://www.metmuseum.org/art/collection/search?q=frame%20drum",
+          "support_summary": "Supports visible variants with hoops, heads, tacks, jingles, and handheld proportions."
+        }
+      ],
+      "game_use_roles": ["festival prop", "tavern instrument", "ritual object", "camp clutter", "low-cost round asset exercise"],
+      "anatomy_parts": [
+        {"part_id": "hoop", "plain_name": "wooden hoop", "geometry_role": "short circular shell or ring"},
+        {"part_id": "skin_head", "plain_name": "skin head", "geometry_role": "thin membrane disk across the front"},
+        {"part_id": "rim_lip", "plain_name": "rim lip", "geometry_role": "raised ring securing the skin edge"},
+        {"part_id": "lacing_or_tacks", "plain_name": "lacing or tacks", "geometry_role": "repeated small anchors around the rim"},
+        {"part_id": "jingles", "plain_name": "optional jingles", "geometry_role": "small metal disks in radial sockets"},
+        {"part_id": "beater", "plain_name": "optional beater", "geometry_role": "small stick prop paired with drum"}
+      ],
+      "materials": ["bent wood hoop", "animal hide or hide-like membrane", "cord", "metal tack or jingle material"],
+      "real_tools": ["bending form", "knife", "awl", "punch", "clamps", "tacks", "lacing cord"],
+      "craft_sequence": [
+        "Build the hoop as a short radial stack with named front and back rims.",
+        "Add the membrane as a separate disk with slight inset from the rim.",
+        "Array tacks, lacing holes, or jingle sockets around the circumference.",
+        "Use shallow bevels so the hoop does not read as a plain cylinder.",
+        "Assign skin, wood, cord, and metal material roles separately."
+      ],
+      "sound_mechanics": "A stretched membrane vibrates when struck; tension hardware and rim treatment sell the object more than acoustic simulation.",
+      "geometry_terms": ["circle_profile", "radial_stack", "array_radial", "section_stack", "offset_profile", "socket", "diameter", "radius", "height", "decorative_only"],
+      "blender_tool_ids": ["primitive_cylinder_add", "primitive_torus_add", "curve_bezier_add", "curve_bevel_profile", "object_duplicate_radial", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map"],
+      "drawing_ui_tags": ["hoop", "skin_head", "rim_lip", "lacing", "tack", "jingle", "radial_socket"],
+      "source_fields_needed": ["diameter_m", "hoop_depth_m", "rim_lip_radius_m", "membrane_inset_m", "anchor_count", "anchor_radius_m", "jingle_count", "beater_length_m"],
+      "operator_checks": ["Does the membrane read as separate from the hoop?", "Are repeated tacks or lacing evenly radial?", "Can the drum be simplified by hiding optional jingles?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Skin Over Hoop",
+          "player_reward": "Explains hoop, membrane, tension points, and rim lips for percussion props.",
+          "detail_prompt": "The drum is a circle under stress; every tack tells the skin where to hold."
+        }
+      ],
+      "deferred_details": ["real hide stretching", "regional drum variants", "accurate jingle hardware", "animated strike response"]
+    },
+    {
+      "instrument_id": "cast_bell_v0",
+      "plain_name": "Cast bell",
+      "family_id": "bells_idiophones_v0",
+      "source_support": [
+        {
+          "label": "Encyclopaedia Britannica, bell",
+          "url": "https://www.britannica.com/art/bell",
+          "support_summary": "Supports bell as a resonant idiophone sounded by clapper or striker."
+        },
+        {
+          "label": "Whitechapel Bell Foundry, history and bellfounding context",
+          "url": "https://whitechapelbellfoundry.co.uk/",
+          "support_summary": "Supports bellfounding context for cast bells as crafted metal objects."
+        }
+      ],
+      "game_use_roles": ["tower bell", "temple object", "warning prop", "treasure metal object", "lore clue for sound and casting"],
+      "anatomy_parts": [
+        {"part_id": "crown", "plain_name": "crown or hanging top", "geometry_role": "upper mount or loop connection"},
+        {"part_id": "shoulder", "plain_name": "shoulder", "geometry_role": "upper curved transition below the crown"},
+        {"part_id": "waist", "plain_name": "waist", "geometry_role": "main tapering body wall"},
+        {"part_id": "soundbow", "plain_name": "soundbow", "geometry_role": "thicker strike region near the lower body"},
+        {"part_id": "lip", "plain_name": "lip", "geometry_role": "flared lower rim"},
+        {"part_id": "clapper", "plain_name": "clapper", "geometry_role": "hanging internal striker with ball or pear end"}
+      ],
+      "materials": ["cast bronze or bell metal", "iron or bronze clapper", "dark cavity material"],
+      "real_tools": ["profile template", "loam or sand mold", "furnace", "crucible", "lathe or tuning tool", "files", "hoist"],
+      "craft_sequence": [
+        "Draw a side bell profile with crown, shoulder, waist, soundbow, and lip.",
+        "Revolve or screw the side profile into a hollow radial form.",
+        "Add crown hardware and internal clapper as separate named parts.",
+        "Use thicker rings at soundbow and lip to catch shadows.",
+        "Assign metal, cavity, and clapper material roles separately."
+      ],
+      "sound_mechanics": "The bell body vibrates when the clapper or striker hits the soundbow; the model should make the lip and strike region readable.",
+      "geometry_terms": ["circle_profile", "radial_stack", "section_stack", "loft_sections", "bevel_edges", "radius", "diameter", "height", "anchor", "decorative_only"],
+      "blender_tool_ids": ["modifier_screw", "primitive_torus_add", "primitive_uv_sphere_add", "mesh_from_pydata", "curve_bezier_add", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_noise_texture", "procedural_bump_map"],
+      "drawing_ui_tags": ["bell_profile", "crown", "shoulder", "waist", "soundbow", "lip", "clapper", "hollow_cavity"],
+      "source_fields_needed": ["profile_rings", "height_m", "mouth_diameter_m", "wall_thickness_hint_m", "soundbow_radius_m", "lip_radius_m", "crown_profile", "clapper_length_m"],
+      "operator_checks": ["Does the side profile show shoulder, waist, soundbow, and lip?", "Is the clapper visible but not fused to the bell shell?", "Does the interior read as hollow?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Bell Founder's Waist",
+          "player_reward": "Names crown, shoulder, waist, soundbow, lip, and clapper for tower and temple inspection.",
+          "detail_prompt": "A bell keeps its power in the shape of its wall, and speaks where the clapper finds the soundbow."
+        }
+      ],
+      "deferred_details": ["accurate tuning profile", "inscriptions", "complex canons", "casting defect variants"]
+    },
+    {
+      "instrument_id": "portative_organ_v0",
+      "plain_name": "Portative organ",
+      "family_id": "mechanical_wind_v0",
+      "source_support": [
+        {
+          "label": "Encyclopaedia Britannica, organ",
+          "url": "https://www.britannica.com/art/organ-musical-instrument",
+          "support_summary": "Supports organ mechanics as pipes sounded by air supplied through a wind system and controlled by keys."
+        },
+        {
+          "label": "The Metropolitan Museum of Art, portative organ collection context",
+          "url": "https://www.metmuseum.org/art/collection/search?q=portative%20organ",
+          "support_summary": "Supports visual reference for compact historical organ forms with pipes, keys, and cases."
+        }
+      ],
+      "game_use_roles": ["chapel prop", "monk or scholar object", "quest repair target", "rare instrument treasure", "mechanical lore object"],
+      "anatomy_parts": [
+        {"part_id": "pipe_array", "plain_name": "pipe array", "geometry_role": "ordered vertical pipes with changing heights"},
+        {"part_id": "wind_chest", "plain_name": "wind chest", "geometry_role": "box below pipes routing air"},
+        {"part_id": "bellows", "plain_name": "bellows", "geometry_role": "folded air reservoir or wedge behind/under the case"},
+        {"part_id": "keys", "plain_name": "keys", "geometry_role": "small linear controls in front"},
+        {"part_id": "case_frame", "plain_name": "case frame", "geometry_role": "rectangular or arched support frame"},
+        {"part_id": "pipe_mouths", "plain_name": "pipe mouths", "geometry_role": "small visible cutouts on pipe fronts"}
+      ],
+      "materials": ["wood case", "metal or wood pipes", "leather bellows", "ivory-like or wood keys"],
+      "real_tools": ["saw", "plane", "chisel", "drill", "soldering or pipe tool", "leather awl", "glue", "clamps"],
+      "craft_sequence": [
+        "Build a simple case and wind chest before pipe details.",
+        "Array pipes by height and diameter so the silhouette reads as tuned.",
+        "Add key row and pipe mouths as named repeated features.",
+        "Model bellows as a folded wedge or stacked planes with dark seams.",
+        "Keep mechanical parts separated for later animation or repair prompts."
+      ],
+      "sound_mechanics": "Bellows supply air to the wind chest; keys route air to pipes whose lengths imply different pitches.",
+      "geometry_terms": ["rectangle_profile", "circle_profile", "array_linear", "extrude", "boolean_cut", "section_stack", "socket", "height", "length", "width", "support", "decorative_only"],
+      "blender_tool_ids": ["primitive_cube_add", "primitive_cylinder_add", "primitive_cone_add", "mesh_from_pydata", "modifier_array", "modifier_boolean", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map"],
+      "drawing_ui_tags": ["pipe_array", "pipe_height_series", "wind_chest", "bellows", "key", "pipe_mouth", "case_frame"],
+      "source_fields_needed": ["case_bounds_m", "pipe_count", "pipe_height_series_m", "pipe_diameter_series_m", "key_count", "bellows_fold_count", "wind_chest_bounds_m", "pipe_mouth_shape"],
+      "operator_checks": ["Do pipe heights change clearly?", "Can keys and pipes be selected separately?", "Does the bellows read as folded material rather than a plain box?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "On Bellows and Pipes",
+          "player_reward": "Explains bellows, wind chest, pipe array, pipe mouths, and keys for mechanical instrument props.",
+          "detail_prompt": "The small organ breathes by hand, then spends that breath through rows of pipes."
+        }
+      ],
+      "deferred_details": ["real pipe scaling", "working valve mechanism", "specific medieval variants", "animated bellows"]
+    },
+    {
+      "instrument_id": "hurdy_gurdy_v0",
+      "plain_name": "Hurdy-gurdy",
+      "family_id": "wheel_bowed_strings_v0",
+      "source_support": [
+        {
+          "label": "Encyclopaedia Britannica, hurdy-gurdy",
+          "url": "https://www.britannica.com/art/hurdy-gurdy",
+          "support_summary": "Supports the hurdy-gurdy as a wheel-bowed string instrument with crank and keys."
+        },
+        {
+          "label": "GurdyWorld, hurdy-gurdy parts",
+          "url": "https://gurdyworld.com/hurdy-gurdy-resources/hurdy-gurdy-parts/",
+          "support_summary": "Supports user-facing part vocabulary such as wheel, crank, keybox, strings, bridges, and tangents."
+        }
+      ],
+      "game_use_roles": ["traveling musician prop", "mechanical curiosity", "tavern object", "quest repair machine", "lore bridge between lutes and mechanisms"],
+      "anatomy_parts": [
+        {"part_id": "body", "plain_name": "resonant body", "geometry_role": "box or lute-like soundbox"},
+        {"part_id": "wheel", "plain_name": "rosined wheel", "geometry_role": "visible circular disk contacting strings"},
+        {"part_id": "crank", "plain_name": "hand crank", "geometry_role": "handle attached to wheel axle"},
+        {"part_id": "keybox", "plain_name": "keybox", "geometry_role": "long box containing keys and tangents"},
+        {"part_id": "keys", "plain_name": "keys", "geometry_role": "small repeated controls along the keybox"},
+        {"part_id": "melody_strings", "plain_name": "melody strings", "geometry_role": "strings affected by keys"},
+        {"part_id": "drone_strings", "plain_name": "drone strings", "geometry_role": "parallel strings that continue sounding"},
+        {"part_id": "bridges", "plain_name": "bridges", "geometry_role": "small supports under strings"}
+      ],
+      "materials": ["wood body", "wood wheel", "metal or wood crank", "wood keys", "gut or gut-like strings", "dark keybox recess material"],
+      "real_tools": ["saw", "plane", "drill", "lathe or wheel jig", "chisel", "file", "scraper", "clamps"],
+      "craft_sequence": [
+        "Build body and keybox as low-editable solid parts.",
+        "Add wheel as a named cylinder with exposed rim and axle.",
+        "Place crank handle outside the body so its function is obvious.",
+        "Array keys and tangents along the keybox.",
+        "Route melody and drone strings across bridges and wheel contact zone."
+      ],
+      "sound_mechanics": "The crank turns a rosined wheel that bows strings continuously; keys move tangents against melody strings while drones continue.",
+      "geometry_terms": ["custom_polygon_profile", "rounded_rectangle_profile", "circle_profile", "radial_stack", "boolean_cut", "array_linear", "socket", "anchor", "length", "width", "height", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cylinder_add", "primitive_circle_add", "curve_bezier_add", "curve_bevel_profile", "curve_to_mesh", "modifier_array", "modifier_boolean", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map"],
+      "drawing_ui_tags": ["body_outline", "wheel", "crank", "keybox", "key_array", "tangent", "melody_string", "drone_string", "bridge"],
+      "source_fields_needed": ["body_outline_points", "body_depth_m", "wheel_radius_m", "wheel_exposure_ratio", "crank_length_m", "key_count", "key_spacing_m", "melody_string_count", "drone_string_count"],
+      "operator_checks": ["Is the wheel visibly connected to the crank?", "Can the keybox be selected apart from the body?", "Do drone and melody strings read as different courses?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Wheel That Bows",
+          "player_reward": "Names wheel, crank, keybox, tangents, drones, melody strings, and bridges for repair and inspection prompts.",
+          "detail_prompt": "It is not played by plucking, but by turning patience into a moving bow."
+        }
+      ],
+      "deferred_details": ["working tangent action", "accurate buzzing bridge", "regional body variants", "animated crank and wheel"]
+    }
+  ]
+}

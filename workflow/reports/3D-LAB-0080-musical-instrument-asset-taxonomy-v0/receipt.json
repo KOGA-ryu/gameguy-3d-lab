@@ -1,0 +1,54 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0080-musical-instrument-asset-taxonomy-v0",
+  "title": "Musical instrument asset taxonomy v0",
+  "status": "complete",
+  "new_files": [
+    "data/asset_taxonomy/musical_instruments_v0/musical_instrument_asset_taxonomy_v0.json",
+    "docs/research/musical_instrument_assets_v0/README.md",
+    "docs/research/musical_instrument_assets_v0/instrument_source_index_v0.md",
+    "docs/research/musical_instrument_assets_v0/instrument_family_build_plans_v0.md",
+    "docs/research/musical_instrument_assets_v0/instrument_lore_book_hooks_v0.md",
+    "docs/research/musical_instrument_assets_v0/operator_instrument_handoff_v0.md",
+    "scripts/validate_musical_instrument_taxonomy_v0.py",
+    "tests/test_validate_musical_instrument_taxonomy_v0.py"
+  ],
+  "updated_files": [
+    "README.md",
+    "data/asset_taxonomy/README.md"
+  ],
+  "family_count": 8,
+  "instrument_count": 8,
+  "rules": {
+    "game_asset_planning_only": true,
+    "not_acoustic_engineering": true,
+    "not_fabrication_ready": true,
+    "not_historical_authenticity_claim": true,
+    "no_playable_audio_claim": true,
+    "no_blender_execution": true,
+    "no_generated_assets": true
+  },
+  "validation": {
+    "musical_instruments_json_parse": {
+      "command": "python3 -m json.tool data/asset_taxonomy/musical_instruments_v0/musical_instrument_asset_taxonomy_v0.json",
+      "result": "PASS"
+    },
+    "validator_compile": {
+      "command": "python3 -m py_compile scripts/validate_musical_instrument_taxonomy_v0.py",
+      "result": "PASS"
+    },
+    "musical_instruments_validate": {
+      "command": "python3 scripts/validate_musical_instrument_taxonomy_v0.py",
+      "result": "PASS families=8 instruments=8 geometry_terms=75 tools=97"
+    },
+    "unit_test": {
+      "command": "python3 -m unittest tests/test_validate_musical_instrument_taxonomy_v0.py",
+      "result": "PASS"
+    },
+    "asset_generation_registry_validate": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS"
+    }
+  },
+  "recommended_next_goal": "Add a per-instrument workcard template and promote either frame_drum_v0 or cast_bell_v0 into a first simple instrument tool-plan recipe."
+}
