@@ -15,6 +15,13 @@ Good fit:
 - trim/moulding
 - ceilings/vaults
 - walls
+- floors/ground
+- columns/piers/supports
+- arches/arcades
+- roofs/towers/spires
+- lighting fixtures
+- gates/grates/barriers
+- ruin/debris kits
 
 Core shapes:
 
@@ -33,6 +40,9 @@ First targets:
 - `gothic_pointed_portal_surround_v0`
 - `single_bay_rib_vault_blockout_v0`
 - `stepped_buttress_wall_module_v0`
+- `gothic_clustered_shaft_pier_v0`
+- `gothic_pointed_arch_band_v0`
+- `gothic_wall_sconce_v0`
 
 ## Romanesque
 
@@ -43,6 +53,8 @@ Good fit:
 - walls
 - stairs
 - trim/moulding
+- columns/piers/supports
+- arches/arcades
 
 Core shapes:
 
@@ -58,6 +70,7 @@ First targets:
 - `romanesque_round_portal_surround_v0`
 - `heavy_pier_wall_bay_v0`
 - `round_arcade_wall_panel_v0`
+- `clean_round_arch_band_v0`
 
 ## Renaissance
 
@@ -68,6 +81,8 @@ Good fit:
 - trim/moulding
 - walls
 - ceilings
+- floors/ground
+- columns/piers/supports
 
 Core shapes:
 
@@ -84,6 +99,7 @@ First targets:
 - `raised_panel_door_ordered_frame_v0`
 - `dentil_cornice_course_v0`
 - `coffered_ceiling_panel_v0`
+- `clean_round_column_v0`
 
 ## Victorian
 
@@ -93,6 +109,7 @@ Good fit:
 - stairs
 - doors
 - trim/moulding
+- props/set dressing
 
 Core shapes:
 
@@ -108,6 +125,7 @@ First targets:
 - `victorian_newel_with_bead_bands_v0`
 - `victorian_scroll_bracket_v0`
 - `layered_ogee_trim_stack_v0`
+- `wood_crate_with_straps_v0`
 
 ## Art Nouveau
 
@@ -117,6 +135,7 @@ Good fit:
 - stairs
 - doors
 - windows
+- lighting fixtures
 
 Core shapes:
 
@@ -132,6 +151,7 @@ First targets:
 - `art_nouveau_stair_handrail_path_v0`
 - `art_nouveau_door_panel_relief_v0`
 - `art_nouveau_window_lattice_v0`
+- `art_nouveau_curved_railing_infill_v0`
 
 ## Islamic Geometric
 
@@ -142,6 +162,8 @@ Good fit:
 - walls
 - trim/moulding
 - railings
+- floors/ground
+- props/set dressing
 
 Core shapes:
 
@@ -158,6 +180,8 @@ First targets:
 - `selected_cell_vault_web_v0`
 - `muqarnas_cell_tier_proof_v0`
 - `rosette_wall_panel_relief_v0`
+- `selected_cell_mosaic_floor_v0`
+- `arcane_key_socket_v0`
 
 ## Modern
 
@@ -168,6 +192,9 @@ Good fit:
 - windows
 - doors
 - walls
+- floors/ground
+- gates/grates/barriers
+- mechanisms/interactables
 
 Core shapes:
 
@@ -184,6 +211,7 @@ First targets:
 - `modern_large_pane_window_v0`
 - `modern_flush_door_v0`
 - `modern_wall_panel_grid_v0`
+- `modern_clean_floor_panel_v0`
 
 ## Rustic
 
@@ -194,6 +222,9 @@ Good fit:
 - doors
 - trim/moulding
 - walls
+- terrain/cliffs/water
+- props/set dressing
+- ruin/debris kits
 
 Core shapes:
 
@@ -209,18 +240,27 @@ First targets:
 - `rustic_timber_stair_v0`
 - `rustic_plank_door_v0`
 - `rough_block_wall_course_v0`
+- `rubble_stone_piece_set_v0`
+- `rustic_log_railing_v0`
 
 ## Build Priority
 
 The repo should build in this order:
 
-1. clean component blockouts
-2. profile and relief details
-3. repeated modules
-4. style-sheet to recipe compiler
-5. Blender adapter previews
-6. material and UV passes
-7. map assembly
+1. floors/ground modules
+2. columns/piers/supports
+3. arches/arcades
+4. walls/bays and terrain sockets
+5. ceilings/vaults
+6. doors/windows/railings/gates
+7. roofs/towers/spires
+8. lighting fixtures and VFX anchors
+9. ruin/debris/damage variants
+10. props, mechanisms, and interactables
+11. style-sheet to recipe compiler
+12. Blender adapter previews
+13. material and UV passes
+14. map assembly
 
 That keeps every style grounded in source-owned parts instead of loose Blender
 experiments.

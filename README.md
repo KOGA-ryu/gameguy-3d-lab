@@ -235,7 +235,7 @@ The domain taxonomy is `data/architecture/taxonomy/component_domains/component_d
 
 That first bundle declares five Gothic railing post style sheets: buttress newel, clustered shaft newel, blind tracery box newel, pinnacle newel, and crocketed finial newel. Each style sheet owns a geometric shaping ledger that maps component anatomy to source shape terms, construction rules, edit knobs, operation terms, and legal Blender tool sequences. Research and build-plan notes live in `docs/research/component_style_system_v0/`.
 
-The human-facing asset family handbook lives in `docs/research/component_style_system_v0/asset_families/`. It organizes railings, stairs, windows, doors, trim/moulding, ceilings/vaults, and walls into component breakdowns, style directions, geometric shaping ledgers, Blender tool groups, and first build targets.
+The human-facing asset family handbook lives in `docs/research/component_style_system_v0/asset_families/`. It organizes railings, stairs, windows, doors, trim/moulding, ceilings/vaults, walls, floors/ground, columns/piers, arches/arcades, roofs/towers/spires, terrain/cliffs/water, lighting, gates/grates/barriers, ruin/debris kits, props, and mechanisms into component breakdowns, style directions, geometric shaping ledgers, Blender tool groups, and first build targets.
 
 Texture planning now lives in `docs/research/texture_system_v0/`. It tracks material asset families, dungeon style palettes, surface wear rules, UV/trim-sheet TODOs, and a hardware policy where `*** DECALS ***` are high-cost optional detail: lower-compute hardware does not get decals, so base materials, trims, masks, and material slots must carry the asset.
 
