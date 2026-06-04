@@ -7,9 +7,9 @@ They need their own normalized source lanes first.
 
 ```text
 data/asset_taxonomy/imported_seeds_v0/        raw imported files
-data/asset_taxonomy/normalized_domains_v0/    future normalized ledgers
+data/asset_taxonomy/normalized_domains_v0/    normalized ledgers and crosswalks
 docs/research/imported_asset_taxonomies_v0/   human triage and crosswalks
-scripts/validate_asset_taxonomy_imports_v0.py future validator
+scripts/validate_imported_taxonomy_crosswalk_v0.py crosswalk validator
 ```
 
 ## Promotion Order
@@ -66,8 +66,9 @@ shape types to improve the future drafting/drawing UI.
 
 ## First Useful Follow-Up
 
-Build a normalized `shape_type_crosswalk_v0.json` that maps every imported
-`shape_type`, `shape_vocab`, and `blender_proxy` phrase to:
+Expand `shape_type_crosswalk_v0.json` from representative shape families toward
+full imported-term coverage. Each entry maps imported `shape_type`,
+`shape_vocab`, and `blender_proxy` phrases to:
 
 ```text
 geometry_dictionary term
@@ -80,4 +81,3 @@ promotion status
 That crosswalk would make these imported taxonomies useful to the drafting UI
 and Blender tool-plan compiler without making them active generation inputs too
 early.
-

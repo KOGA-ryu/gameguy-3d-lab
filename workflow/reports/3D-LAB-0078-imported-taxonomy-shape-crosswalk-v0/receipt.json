@@ -1,0 +1,53 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0078-imported-taxonomy-shape-crosswalk-v0",
+  "title": "Imported taxonomy shape crosswalk v0",
+  "status": "complete",
+  "crosswalk": "data/asset_taxonomy/normalized_domains_v0/shape_type_crosswalk_v0.json",
+  "new_files": [
+    "data/asset_taxonomy/normalized_domains_v0/shape_type_crosswalk_v0.json",
+    "docs/research/imported_asset_taxonomies_v0/shape_type_crosswalk_v0.md",
+    "scripts/validate_imported_taxonomy_crosswalk_v0.py",
+    "tests/test_validate_imported_taxonomy_crosswalk_v0.py"
+  ],
+  "updated_files": [
+    "README.md",
+    "data/asset_taxonomy/README.md",
+    "data/asset_taxonomy/imported_taxonomy_manifest_v0.json",
+    "docs/research/imported_asset_taxonomies_v0/README.md",
+    "docs/research/imported_asset_taxonomies_v0/organization_plan_v0.md"
+  ],
+  "coverage": {
+    "crosswalk_entries": 26,
+    "imported_sources": 5,
+    "geometry_terms_available": 75,
+    "blender_tools_available": 97
+  },
+  "rules": {
+    "source_triage_only": true,
+    "canonical_pipeline_input": false,
+    "no_blender_execution": true,
+    "no_generated_assets": true,
+    "promotion_required_before_recipe_use": true
+  },
+  "validation": {
+    "crosswalk_json_parse": {
+      "command": "python3 -m json.tool data/asset_taxonomy/normalized_domains_v0/shape_type_crosswalk_v0.json",
+      "result": "PASS"
+    },
+    "crosswalk_validator": {
+      "command": "python3 scripts/validate_imported_taxonomy_crosswalk_v0.py",
+      "result": "PASS entries=26 sources=5 geometry_terms=75 tools=97"
+    },
+    "unit_test": {
+      "command": "python3 -m unittest tests/test_validate_imported_taxonomy_crosswalk_v0.py",
+      "result": "PASS"
+    },
+    "asset_generation_registry_validate": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS source_component_style_sheets=5"
+    }
+  },
+  "recommended_next_goal": "Define construction_graph_v0 as the drafting source schema using crosswalk drafting tags."
+}
+

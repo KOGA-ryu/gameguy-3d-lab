@@ -1,0 +1,482 @@
+{
+  "schema": "imported_shape_type_crosswalk_v0",
+  "crosswalk_id": "imported_taxonomy_shape_type_crosswalk_v0",
+  "purpose": "Map imported taxonomy shape and Blender-proxy phrases to repo geometry terms, Blender tool IDs, source fields, drafting tags, and promotion status.",
+  "source_manifest": "data/asset_taxonomy/imported_taxonomy_manifest_v0.json",
+  "tool_dictionary": "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json",
+  "rules": {
+    "raw_imported_terms_are_not_canonical": true,
+    "geometry_terms_must_exist": true,
+    "blender_tool_ids_must_exist": true,
+    "tool_card_refs_must_exist": true,
+    "promotion_required_before_recipe_use": true
+  },
+  "promotion_status_values": [
+    "candidate",
+    "needs_source_schema",
+    "needs_tool_card",
+    "defer"
+  ],
+  "entries": [
+    {
+      "crosswalk_id": "dome_shell_v0",
+      "imported_terms": ["dome_shell", "cut_dome_shell", "dome cap + pad rim + straps", "hemisphere shell + rim torus", "helmet shell + eye/nose cutouts"],
+      "source_domains": ["armor_history_taxonomy_seed", "armor_making_taxonomy_seed"],
+      "normalized_intent": "A rounded shell or cap with a rim, useful for helmets, dome caps, rounded finials, and small architectural roof caps.",
+      "geometry_terms": ["circle_profile", "radial_stack", "cap_ends", "bevel_edges", "scale_profile", "radius", "height"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "modifier_solidify", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["radius_m", "height_m", "shell_thickness_m", "rim_width_m", "rim_bevel_m", "material_role"],
+      "asset_families": ["helmet", "roof_cap", "finial", "rounded_column_cap", "prop_bowl"],
+      "drafting_tags": ["shell", "cap", "rim", "radial"],
+      "promotion_status": "candidate",
+      "notes": "Needs a practical `modifier_solidify` tool card before becoming a common recipe operation."
+    },
+    {
+      "crosswalk_id": "conical_frustum_shell_v0",
+      "imported_terms": ["conical_shell", "cone shell + vertical nasal plate", "cone/frustum with rim band", "flared cone shell with cuff ring"],
+      "source_domains": ["armor_history_taxonomy_seed", "human_textile_taxonomy_seed"],
+      "normalized_intent": "A cone or truncated cone shell with optional rim bands.",
+      "geometry_terms": ["circle_profile", "radial_stack", "loft_sections", "cap_ends", "bevel_edges", "radius", "height", "angle"],
+      "blender_tool_ids": ["primitive_cone_add", "modifier_solidify", "modifier_bevel", "modifier_weighted_normal"],
+      "tool_card_refs": ["docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md"],
+      "source_fields_needed": ["base_radius_m", "top_radius_m", "height_m", "shell_thickness_m", "rim_band_height_m", "bevel_m"],
+      "asset_families": ["helmet", "spire", "finial", "flared_sleeve", "roof_turret"],
+      "drafting_tags": ["cone", "frustum", "rim_band", "radial"],
+      "promotion_status": "candidate",
+      "notes": "Architectural crossover is strong: the same term can feed pinnacles, spires, caps, and costume silhouettes."
+    },
+    {
+      "crosswalk_id": "face_mask_shell_v0",
+      "imported_terms": ["face_mask_shell", "curved mask plane with eye/mouth cutouts", "curved mask shell + cord anchors", "fitted_face_plate"],
+      "source_domains": ["armor_history_taxonomy_seed", "human_textile_taxonomy_seed"],
+      "normalized_intent": "A curved face plate or mask with named cutouts and attachment anchors.",
+      "geometry_terms": ["custom_polygon_profile", "extrude", "boolean_cut", "bevel_edges", "mirror_axis", "contour_points", "anchor"],
+      "blender_tool_ids": ["mesh_from_pydata", "modifier_boolean", "modifier_mirror", "modifier_bevel", "modifier_weighted_normal"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["outline_points", "cutout_profiles", "thickness_m", "mirror_axis", "anchor_points", "rim_bevel_m"],
+      "asset_families": ["helmet", "mask", "door_plate", "ornamental_panel", "character_equipment"],
+      "drafting_tags": ["outline", "cutter", "anchor", "mirror"],
+      "promotion_status": "candidate",
+      "notes": "Useful for non-architecture gear and for flat ornamental plates or cut panels."
+    },
+    {
+      "crosswalk_id": "curved_shield_board_v0",
+      "imported_terms": ["curved_rectangular_shield", "heater_shield_board", "extruded heater outline + rim", "extruded kite shape + straps", "flattened extruded shape with boss and rim"],
+      "source_domains": ["armor_history_taxonomy_seed"],
+      "normalized_intent": "A flat or slightly curved shield-like board with rim, boss, and strap regions.",
+      "geometry_terms": ["custom_polygon_profile", "extrude", "bevel_edges", "relief_stack", "offset_profile", "contour_points", "width", "height"],
+      "blender_tool_ids": ["mesh_from_pydata", "extrude_faces", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["outline_points", "thickness_m", "rim_offset_m", "boss_radius_m", "strap_anchor_points", "material_roles"],
+      "asset_families": ["shield", "sign_panel", "door_panel", "wall_plaque", "decorative_insert"],
+      "drafting_tags": ["closed_cell", "rim", "boss", "strap_anchor"],
+      "promotion_status": "candidate",
+      "notes": "This can become a general flat-panel source pattern for doors, wall inserts, and props."
+    },
+    {
+      "crosswalk_id": "armor_plate_or_splint_v0",
+      "imported_terms": ["armor plates and splints", "hand_plate_array", "front thigh panels + plates", "cloth_panel_plus_plate_array", "Generate panels with beveled thickness, grain bump, edge darkening, and stitch holes."],
+      "source_domains": ["armor_history_taxonomy_seed", "armor_making_taxonomy_seed"],
+      "normalized_intent": "A named thin plate, often repeated or attached to cloth/leather backing.",
+      "geometry_terms": ["rectangle_profile", "custom_polygon_profile", "extrude", "array_linear", "bevel_edges", "offset_profile", "socket"],
+      "blender_tool_ids": ["mesh_from_pydata", "extrude_faces", "modifier_array", "modifier_bevel", "modifier_weighted_normal"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["plate_profile", "thickness_m", "plate_count", "spacing_m", "backing_anchor", "edge_bevel_m", "hole_points"],
+      "asset_families": ["armor", "gate_strap", "door_hinge_plate", "wall_cladding", "mechanical_panel"],
+      "drafting_tags": ["plate", "array", "socket", "hole"],
+      "promotion_status": "candidate",
+      "notes": "Good crossover with architectural straps, hinge plates, gates, and metal reinforcement."
+    },
+    {
+      "crosswalk_id": "lamellar_panel_array_v0",
+      "imported_terms": ["lamellar_panel_array", "Array small plates over cloth/leather backing with staggered rows.", "Generate rectangular lamella plates with hole pairs and cord curves."],
+      "source_domains": ["armor_history_taxonomy_seed", "armor_making_taxonomy_seed"],
+      "normalized_intent": "Rows of small plates with staggered repetition and connector holes.",
+      "geometry_terms": ["rectangle_profile", "array_linear", "mirror_axis", "boolean_cut", "bevel_edges", "shared_endpoint"],
+      "blender_tool_ids": ["mesh_from_pydata", "modifier_array", "modifier_mirror", "modifier_boolean", "modifier_bevel"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["plate_width_m", "plate_height_m", "row_count", "column_count", "row_offset_m", "hole_radius_m", "cord_anchor_points"],
+      "asset_families": ["armor", "screen_panel", "gate_grate", "ornamental_band", "roof_tile_band"],
+      "drafting_tags": ["array", "row_offset", "hole", "cord"],
+      "promotion_status": "candidate",
+      "notes": "This is a reusable repeat grammar for many small architectural details."
+    },
+    {
+      "crosswalk_id": "rivet_dome_grid_v0",
+      "imported_terms": ["brigandine_rivet_grid", "hidden_plate_grid", "Generate dome cap plus short cylinder stem; array along seams and plates.", "Generate rivet domes, edging strips, buckle frames, and ornamental plates."],
+      "source_domains": ["armor_history_taxonomy_seed", "armor_making_taxonomy_seed"],
+      "normalized_intent": "Small raised domes repeated on a grid, seam, plate edge, or radial pattern.",
+      "geometry_terms": ["circle_profile", "array_linear", "array_radial", "relief_stack", "radius", "shared_endpoint"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cylinder_add", "modifier_array", "object_duplicate_radial", "modifier_bevel", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["rivet_radius_m", "rivet_height_m", "count", "spacing_m", "pattern_path", "material_role"],
+      "asset_families": ["armor", "door_hardware", "gate", "railing", "mechanism", "trim"],
+      "drafting_tags": ["bead", "rivet", "array", "path"],
+      "promotion_status": "needs_tool_card",
+      "notes": "Needs direct cards for `primitive_uv_sphere_add` and `object_duplicate_radial`."
+    },
+    {
+      "crosswalk_id": "quilt_channel_grid_v0",
+      "imported_terms": ["quilting", "cloth torso shell + quilt pattern", "Inflated panels separated by stitch grooves; add stitch curve arrays.", "diamond seam channels hold stuffing in place"],
+      "source_domains": ["armor_history_taxonomy_seed", "armor_making_taxonomy_seed"],
+      "normalized_intent": "A repeated channel pattern that divides a surface into padded cells.",
+      "geometry_terms": ["rectangle_profile", "array_linear", "relief_stack", "offset_profile", "pattern_field", "width"],
+      "blender_tool_ids": ["mesh_from_pydata", "curve_bezier_add", "curve_bevel_profile", "modifier_array", "modifier_displace", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["channel_pattern", "cell_width_m", "cell_height_m", "groove_depth_m", "stitch_spacing_m", "surface_target"],
+      "asset_families": ["textile", "armor_padding", "wall_panel", "ceiling_panel", "bedroll_prop"],
+      "drafting_tags": ["channel", "cell", "stitch", "surface_pattern"],
+      "promotion_status": "candidate",
+      "notes": "Strong match for the future drafting UI because visible lines can become grooves, ribs, or stitch curves."
+    },
+    {
+      "crosswalk_id": "woven_sheet_grid_v0",
+      "imported_terms": ["woven_sheet_grid", "plain_weave", "Generate as thin cloth shell with visible weave normal map and seam-edge stitch curves.", "cloth_plane with light grid or dotted texture; supports fold and roll states"],
+      "source_domains": ["armor_making_taxonomy_seed", "human_textile_taxonomy_seed", "sewing_equipment_taxonomy_seed"],
+      "normalized_intent": "A thin sheet with woven material behavior and optional visible grid/normal detail.",
+      "geometry_terms": ["rectangle_profile", "extrude", "array_linear", "pattern_field", "width", "length"],
+      "blender_tool_ids": ["primitive_plane_add", "mesh_from_pydata", "modifier_solidify", "uv_cube_project", "material_assign_by_part", "procedural_noise_texture", "procedural_bump_map"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["sheet_width_m", "sheet_length_m", "thickness_m", "weave_scale_m", "material_family", "uv_policy"],
+      "asset_families": ["textile", "curtain", "banner", "tarp", "cloth_prop", "drafting_paper"],
+      "drafting_tags": ["sheet", "weave", "uv", "material_region"],
+      "promotion_status": "candidate",
+      "notes": "Material and UV roles matter more than mesh complexity for most low-compute uses."
+    },
+    {
+      "crosswalk_id": "cloth_shell_mesh_v0",
+      "imported_terms": ["cloth_shell_mesh", "cloth_tunic_shell", "cloth hood mesh + mail material", "cloth layer over armor", "smooth shell; pin neck, allow hood rim to hover"],
+      "source_domains": ["armor_history_taxonomy_seed", "human_textile_taxonomy_seed"],
+      "normalized_intent": "A wearable shell around body landmarks or another asset volume.",
+      "geometry_terms": ["custom_polygon_profile", "extrude", "scale_profile", "loft_sections", "landmark", "anchor"],
+      "blender_tool_ids": ["mesh_from_pydata", "modifier_solidify", "modifier_shrinkwrap", "modifier_bevel", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["pattern_panels", "landmark_anchors", "shell_offset_m", "thickness_m", "rim_bevel_m", "material_family"],
+      "asset_families": ["clothing", "armor_backing", "curtain", "drape", "banner"],
+      "drafting_tags": ["shell", "landmark_anchor", "panel", "rim"],
+      "promotion_status": "needs_tool_card",
+      "notes": "Needs practical cards for shrinkwrap/cloth-shell use before generator promotion."
+    },
+    {
+      "crosswalk_id": "flat_pattern_panel_v0",
+      "imported_terms": ["rectangle_panel", "long_rectangle_panel", "long_trapezoid_panel", "curved_gore", "flat thin mesh with dashed fold/edge lines and labels"],
+      "source_domains": ["human_textile_taxonomy_seed", "armor_making_taxonomy_seed"],
+      "normalized_intent": "A 2D pattern piece or flat panel that can become cloth, armor backing, labels, or architectural panels.",
+      "geometry_terms": ["rectangle_profile", "trapezoid_profile", "custom_polygon_profile", "contour_points", "extrude", "width", "length"],
+      "blender_tool_ids": ["mesh_from_pydata", "extrude_faces", "modifier_bevel", "uv_cube_project", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["outline_points", "panel_width_m", "panel_length_m", "thickness_m", "fold_lines", "label_points", "material_role"],
+      "asset_families": ["textile", "drafting_ui", "wall_panel", "door_panel", "floor_insert"],
+      "drafting_tags": ["pattern_piece", "fold_line", "label", "closed_cell"],
+      "promotion_status": "candidate",
+      "notes": "This is one of the most direct bridges from a drawing UI into Blender geometry."
+    },
+    {
+      "crosswalk_id": "seam_curve_v0",
+      "imported_terms": ["plain_seam", "center_back_seam + neck_ring seam", "seam curve + inward seam allowance line", "curved seam following torso contours", "line from hip to ankle outer leg"],
+      "source_domains": ["human_textile_taxonomy_seed"],
+      "normalized_intent": "A named curve path that marks a seam, edge join, allowance, or construction boundary.",
+      "geometry_terms": ["pattern_segment_split", "offset_profile", "length", "edge_join", "shared_endpoint"],
+      "blender_tool_ids": ["curve_bezier_add", "curve_bevel_profile", "modifier_array", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["path_points", "seam_type", "allowance_width_m", "bevel_depth_m", "stitch_spacing_m", "material_role"],
+      "asset_families": ["textile", "armor_padding", "trim", "window_lead_came", "drafting_ui"],
+      "drafting_tags": ["seam", "path", "allowance", "selected_line"],
+      "promotion_status": "candidate",
+      "notes": "A seam curve can become visible stitches, hidden construction metadata, or architectural leading/trim."
+    },
+    {
+      "crosswalk_id": "stitch_dash_array_v0",
+      "imported_terms": ["running_stitch", "bevelled_curve dashes", "short repeated line segments", "instanced X curves", "X-shaped stitch cells"],
+      "source_domains": ["human_textile_taxonomy_seed"],
+      "normalized_intent": "Small repeated dash or X motifs along a path.",
+      "geometry_terms": ["rectangle_profile", "array_linear", "pattern_segment_split", "length", "scale_profile"],
+      "blender_tool_ids": ["curve_bezier_add", "curve_bevel_profile", "modifier_array", "gn_instance_on_points", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["path_points", "dash_length_m", "dash_width_m", "spacing_m", "motif_shape", "material_role"],
+      "asset_families": ["textile", "armor_padding", "ornamental_trim", "railing_bead_line", "drafting_ui"],
+      "drafting_tags": ["dash", "stitch", "path_array", "motif"],
+      "promotion_status": "needs_tool_card",
+      "notes": "Needs a practical `gn_instance_on_points` card for dense repeated detail."
+    },
+    {
+      "crosswalk_id": "ribbon_binding_strip_v0",
+      "imported_terms": ["bias binding ribbon around edge", "U-shaped edge strip / bevelled ribbon", "curve_strip", "curve_surface_ribbon", "long folded strip mesh with center crease"],
+      "source_domains": ["human_textile_taxonomy_seed", "sewing_equipment_taxonomy_seed"],
+      "normalized_intent": "A strip following an edge or curve, used as binding, trim, rail detail, or raised border.",
+      "geometry_terms": ["rectangle_profile", "custom_polygon_profile", "extrude", "offset_profile", "pattern_segment_split", "edge_join"],
+      "blender_tool_ids": ["curve_bezier_add", "curve_bevel_profile", "curve_to_mesh", "modifier_bevel", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["path_points", "strip_width_m", "strip_thickness_m", "edge_target", "fold_line", "material_role"],
+      "asset_families": ["textile", "trim", "railing_lip", "door_surround", "window_lead"],
+      "drafting_tags": ["strip", "binding", "edge_follow", "trim"],
+      "promotion_status": "candidate",
+      "notes": "This should become a common drawing-to-geometry operation."
+    },
+    {
+      "crosswalk_id": "capsule_proxy_v0",
+      "imported_terms": ["capsule", "broad_flat_capsule", "deep_capsule", "deep_tapered_capsule", "capsule handle plus thin shaft and flat tip"],
+      "source_domains": ["human_meat_taxonomy_seed", "sewing_equipment_taxonomy_seed"],
+      "normalized_intent": "A rounded cylinder-like proxy for limbs, muscles, handles, pads, and soft forms.",
+      "geometry_terms": ["capsule_profile", "scale_profile", "loft_sections", "height", "radius", "aspect_ratio"],
+      "blender_tool_ids": ["primitive_cylinder_add", "primitive_uv_sphere_add", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["length_m", "radius_m", "end_cap_policy", "taper_policy", "axis", "material_role"],
+      "asset_families": ["body_proxy", "tool_handle", "rail_grip", "baluster", "soft_prop"],
+      "drafting_tags": ["capsule", "axis", "handle", "soft_proxy"],
+      "promotion_status": "candidate",
+      "notes": "Architectural crossover includes handrails and rounded posts."
+    },
+    {
+      "crosswalk_id": "ellipsoid_pad_cluster_v0",
+      "imported_terms": ["ellipsoid", "ellipsoid_pad", "ellipsoid_pad_cluster", "flattened_ellipsoid", "bean_ellipsoid", "glove shell + pad ellipsoids"],
+      "source_domains": ["human_meat_taxonomy_seed", "armor_history_taxonomy_seed"],
+      "normalized_intent": "One or more scaled round pads, lobes, or soft masses.",
+      "geometry_terms": ["circle_profile", "scale_profile", "radial_stack", "radius", "aspect_ratio", "array_radial"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "modifier_simple_deform", "modifier_array", "object_duplicate_radial", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["center_points", "radius_x_m", "radius_y_m", "radius_z_m", "cluster_count", "material_role"],
+      "asset_families": ["body_proxy", "soft_armor", "boss_cluster", "organic_prop", "ornament"],
+      "drafting_tags": ["ellipsoid", "pad", "cluster", "center_point"],
+      "promotion_status": "needs_tool_card",
+      "notes": "Needs primitive sphere/simple-deform cards for practical operator use."
+    },
+    {
+      "crosswalk_id": "joint_constraint_proxy_v0",
+      "imported_terms": ["ball_socket_proxy", "hinge_constraint_proxy", "compound_hinge_proxy", "wrist_joint_l_r", "knee_hinge_l_r"],
+      "source_domains": ["human_meat_taxonomy_seed"],
+      "normalized_intent": "A non-render or helper proxy that marks a movement joint, pivot, or attachment socket.",
+      "geometry_terms": ["circle_profile", "socket", "anchor", "radial", "angle", "landmark"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cylinder_add", "create_collision_proxy", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/game_proxy_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["joint_center", "axis", "angle_limits", "socket_name", "helper_visibility", "collision_role"],
+      "asset_families": ["body_proxy", "mechanism", "door_hinge", "gate_hinge", "trap"],
+      "drafting_tags": ["joint", "pivot", "socket", "axis"],
+      "promotion_status": "candidate",
+      "notes": "Useful beyond characters: hinges, gates, levers, traps, and animated props all need this vocabulary."
+    },
+    {
+      "crosswalk_id": "cord_curve_tree_v0",
+      "imported_terms": ["cord_curve", "cord_curve_cluster", "cord_curve_set", "branch_curve_tree", "crossing_cord_curves", "flexible cable curve"],
+      "source_domains": ["human_meat_taxonomy_seed", "armor_making_taxonomy_seed", "sewing_equipment_taxonomy_seed"],
+      "normalized_intent": "One or more curve paths used as cords, tendons, wires, straps, cables, vines, or decorative linework.",
+      "geometry_terms": ["pattern_segment_split", "array_radial", "length", "shared_endpoint", "anchor", "radius"],
+      "blender_tool_ids": ["curve_bezier_add", "curve_bevel_profile", "curve_to_mesh", "modifier_array", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["path_points", "bevel_depth_m", "endpoint_anchors", "branch_policy", "material_role"],
+      "asset_families": ["textile", "armor_lacing", "mechanism", "vine_ornament", "railing_scroll"],
+      "drafting_tags": ["curve", "cord", "endpoint", "branch"],
+      "promotion_status": "candidate",
+      "notes": "This is central to the future drafting UI because selected lines can become cords, ribs, vines, or trim."
+    },
+    {
+      "crosswalk_id": "ring_hoop_loop_v0",
+      "imported_terms": ["ring, hoop, loop handle", "torus", "Instance torus rings in 4-in-1 pattern or bake to normal map.", "bezier wire loop with clasp block"],
+      "source_domains": ["armor_making_taxonomy_seed", "sewing_equipment_taxonomy_seed"],
+      "normalized_intent": "A ring, hoop, loop, or torus-like connector/detail.",
+      "geometry_terms": ["circle_profile", "radial_stack", "cap_ends", "radius", "diameter", "socket"],
+      "blender_tool_ids": ["primitive_torus_add", "curve_bezier_add", "curve_bevel_profile", "modifier_array", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["major_radius_m", "minor_radius_m", "loop_path", "open_or_closed", "attachment_socket", "material_role"],
+      "asset_families": ["armor_mail", "hardware", "door_pull", "textile_tool", "ornament"],
+      "drafting_tags": ["ring", "loop", "socket", "closed_curve"],
+      "promotion_status": "needs_tool_card",
+      "notes": "Needs a primitive torus/operator card for clear use."
+    },
+    {
+      "crosswalk_id": "blade_mesh_v0",
+      "imported_terms": ["blade_mesh", "Curved blade, cylinder handle, bevelled cutting edge.", "forked hook blade", "handle cylinder plus tiny U blade", "Compact hinged blade tool"],
+      "source_domains": ["sewing_equipment_taxonomy_seed", "armor_making_taxonomy_seed"],
+      "normalized_intent": "A thin sharp or cutting plate with a handle, edge bevel, and optional hinge.",
+      "geometry_terms": ["triangle_profile", "custom_polygon_profile", "extrude", "bevel_edges", "width", "length", "anchor"],
+      "blender_tool_ids": ["mesh_from_pydata", "extrude_faces", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["blade_outline_points", "thickness_m", "edge_bevel_m", "handle_anchor", "material_role"],
+      "asset_families": ["tool_prop", "weapon_prop", "mechanism", "workshop_set_dressing"],
+      "drafting_tags": ["blade", "edge", "handle_anchor", "thin_plate"],
+      "promotion_status": "candidate",
+      "notes": "This is mostly props, but edge-bevel language also helps metal trim and gate hardware."
+    },
+    {
+      "crosswalk_id": "flat_spline_plate_v0",
+      "imported_terms": ["flat_spline_plate", "curved flat spline plate", "long curved spline plate", "2D bezier outline extruded as thin plate; multiple control points"],
+      "source_domains": ["sewing_equipment_taxonomy_seed"],
+      "normalized_intent": "A flat drafting curve, ruler, template, or ornamental plate defined by a Bezier-like outline.",
+      "geometry_terms": ["custom_polygon_profile", "contour_points", "extrude", "bevel_edges", "length", "width"],
+      "blender_tool_ids": ["mesh_from_pydata", "curve_bezier_add", "extrude_faces", "modifier_bevel", "uv_cube_project", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["outline_points", "curve_handles", "thickness_m", "edge_bevel_m", "marking_policy", "material_role"],
+      "asset_families": ["drafting_tool", "ornamental_plate", "window_tracery_template", "ui_drawing_shape"],
+      "drafting_tags": ["bezier_outline", "thin_plate", "template", "markings"],
+      "promotion_status": "candidate",
+      "notes": "Strong candidate for a future drawing/drafting UI source object."
+    },
+    {
+      "crosswalk_id": "measuring_tape_ribbon_v0",
+      "imported_terms": ["bezier_curve_strip with tick marks; can wrap around torso or limb proxies", "flat ribbon curve or strip with ribbed texture", "Curve strip with markings; useful as scene prop and measurement overlay."],
+      "source_domains": ["sewing_equipment_taxonomy_seed", "armor_making_taxonomy_seed"],
+      "normalized_intent": "A flexible ribbon or measuring strip with marks along a path.",
+      "geometry_terms": ["rectangle_profile", "array_linear", "length", "width", "scale_reference", "anchor"],
+      "blender_tool_ids": ["curve_bezier_add", "curve_bevel_profile", "modifier_array", "material_assign_by_part", "uv_cube_project"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["path_points", "strip_width_m", "tick_spacing_m", "label_interval_m", "scale_reference", "material_role"],
+      "asset_families": ["drafting_tool", "measurement_overlay", "workshop_prop", "debug_scale_helper"],
+      "drafting_tags": ["measurement", "ribbon", "tick_marks", "scale"],
+      "promotion_status": "candidate",
+      "notes": "Directly useful for the planned drafting tool and for asset measurement overlays."
+    },
+    {
+      "crosswalk_id": "spool_cylinder_v0",
+      "imported_terms": ["cylinder spool", "central cylinder with top/bottom flanges and helical thread texture", "flanged cylinder", "flat card spool"],
+      "source_domains": ["sewing_equipment_taxonomy_seed"],
+      "normalized_intent": "A cylindrical spool or flanged cylinder with optional wound thread/ridges.",
+      "geometry_terms": ["circle_profile", "radial_stack", "cap_ends", "array_radial", "radius", "height"],
+      "blender_tool_ids": ["primitive_cylinder_add", "modifier_screw", "curve_bezier_add", "curve_bevel_profile", "modifier_bevel", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["core_radius_m", "flange_radius_m", "height_m", "thread_path", "thread_bevel_depth_m", "material_role"],
+      "asset_families": ["workshop_prop", "mechanism", "rope_spool", "pulley", "column_collar_reference"],
+      "drafting_tags": ["cylinder", "flange", "thread", "radial"],
+      "promotion_status": "candidate",
+      "notes": "The thread path can be a screw/curve detail; basic spool form can stay low-poly."
+    },
+    {
+      "crosswalk_id": "peg_bar_frame_array_v0",
+      "imported_terms": ["board with pegs", "flat board with repeated peg cylinders", "dense vertical bar array in frame", "four bars, warp threads as parallel curves"],
+      "source_domains": ["sewing_equipment_taxonomy_seed"],
+      "normalized_intent": "A rectangular frame or board with repeated pegs, bars, rods, or parallel thread curves.",
+      "geometry_terms": ["rectangle_profile", "circle_profile", "array_linear", "edge_join", "shared_endpoint", "socket"],
+      "blender_tool_ids": ["primitive_cube_add", "primitive_cylinder_add", "modifier_array", "curve_bezier_add", "curve_bevel_profile", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["frame_width_m", "frame_height_m", "peg_count", "peg_spacing_m", "peg_radius_m", "bar_axis", "material_roles"],
+      "asset_families": ["workshop_prop", "gate_grate", "railing_infill", "window_mullion_grid", "loom"],
+      "drafting_tags": ["frame", "peg", "bar_array", "parallel_lines"],
+      "promotion_status": "candidate",
+      "notes": "Good crossover with grates, windows, railings, and crafting props."
+    },
+    {
+      "crosswalk_id": "buckle_frame_v0",
+      "imported_terms": ["buckle_frame", "Curved leather straps, rectangular buckle frames, prong, holes, wear marks.", "flat coin tab plus fine wire diamond loop"],
+      "source_domains": ["armor_history_taxonomy_seed", "armor_making_taxonomy_seed", "sewing_equipment_taxonomy_seed"],
+      "normalized_intent": "A small frame or loop with a central void, optional prong, and strap anchors.",
+      "geometry_terms": ["rounded_rectangle_profile", "boolean_cut", "bevel_edges", "offset_profile", "socket", "anchor"],
+      "blender_tool_ids": ["mesh_from_pydata", "modifier_boolean", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["outer_profile", "inner_cutout_profile", "thickness_m", "prong_anchor", "strap_socket_points", "material_role"],
+      "asset_families": ["armor", "clothing", "door_hardware", "gate_hardware", "mechanism"],
+      "drafting_tags": ["frame", "void", "strap_socket", "hardware"],
+      "promotion_status": "candidate",
+      "notes": "Same grammar as small architectural hardware and decorative frames."
+    },
+    {
+      "crosswalk_id": "wire_spiral_curve_v0",
+      "imported_terms": ["Cylinder rod with spiral wire curve wrapped around it.", "Curve spiral around cylinder, then split into ring instances.", "Represent with decreasing-diameter wire curves and drawplate prop."],
+      "source_domains": ["armor_making_taxonomy_seed"],
+      "normalized_intent": "A helical or spiral curve around a cylinder or path.",
+      "geometry_terms": ["circle_profile", "radial_stack", "pattern_segment_split", "radius", "angle", "height"],
+      "blender_tool_ids": ["curve_bezier_add", "curve_bevel_profile", "modifier_screw", "curve_to_mesh", "material_assign_by_part"],
+      "tool_card_refs": [
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+        "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+      ],
+      "source_fields_needed": ["center_axis", "turn_count", "pitch_m", "wire_radius_m", "start_angle", "end_angle", "material_role"],
+      "asset_families": ["wire_prop", "spring", "ornamental_twist", "spiral_stair_reference", "mechanism"],
+      "drafting_tags": ["spiral", "helix", "axis", "turns"],
+      "promotion_status": "candidate",
+      "notes": "Potentially useful for rope, twist, spring, spiral stair guides, and ornamental metalwork."
+    }
+  ]
+}
+

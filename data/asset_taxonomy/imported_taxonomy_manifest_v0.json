@@ -97,6 +97,14 @@
     "/Users/kogaryu/Documents/human_textile_clothing_stitching_spec_sheet.docx",
     "/Users/kogaryu/Documents/human_textile_sewing_equipment_spec_sheet.docx"
   ],
-  "recommended_next_use": "Create normalized domain ledgers that map imported shape_type and blender_proxy fields into the repo's geometry dictionary, Blender tool cards, and per-asset workcards."
+  "normalized_crosswalks": [
+    {
+      "crosswalk_id": "imported_taxonomy_shape_type_crosswalk_v0",
+      "repo_path": "data/asset_taxonomy/normalized_domains_v0/shape_type_crosswalk_v0.json",
+      "status": "representative_v0",
+      "entry_count": 26,
+      "validator": "scripts/validate_imported_taxonomy_crosswalk_v0.py"
+    }
+  ],
+  "recommended_next_use": "Expand normalized domain ledgers that map imported shape_type and blender_proxy fields into the repo's geometry dictionary, Blender tool cards, and per-asset workcards."
 }
-
