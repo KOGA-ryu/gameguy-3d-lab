@@ -81,6 +81,25 @@ blocked or waiting, so the repo can return to 3D assets with sharper language.
    - operator animation handoff
    - low-compute animation policy
 
+6. Chess-engine generation logic lane
+
+   Status: first pass added in `../chess_engine_generation_logic_v0/`.
+
+   Purpose: borrow the useful engine architecture from chess engines:
+   generation state, legal operations, search, evaluation, pruning, caching,
+   quiescence/stability checks, branch-count validation, and a clean
+   generator-to-adapter protocol.
+
+   Needed docs:
+
+   - generation state schema
+   - legal operation generator rules
+   - perft-style branch counter
+   - deterministic evaluator
+   - beam-search candidate runner
+   - candidate review and correction capture
+   - generator protocol boundary
+
 ## Priority 2: Missing Asset Family Lanes
 
 1. Clothing and costume

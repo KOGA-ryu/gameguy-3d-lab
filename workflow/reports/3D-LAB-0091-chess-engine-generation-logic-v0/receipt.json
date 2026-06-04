@@ -1,0 +1,29 @@
+{
+  "id": "3D-LAB-0091",
+  "name": "chess-engine-generation-logic-v0",
+  "status": "complete",
+  "kind": "research_documentation",
+  "created_date": "2026-06-04",
+  "scope": {
+    "implemented_code": false,
+    "ran_blender": false,
+    "generated_assets": false,
+    "generated_media": false
+  },
+  "added_files": [
+    "docs/research/chess_engine_generation_logic_v0/README.md",
+    "docs/research/chess_engine_generation_logic_v0/chess_engine_source_index_v0.md",
+    "docs/research/chess_engine_generation_logic_v0/chess_engine_concepts_v0.md",
+    "docs/research/chess_engine_generation_logic_v0/chess_to_3d_generation_mapping_v0.md",
+    "docs/research/chess_engine_generation_logic_v0/generation_engine_todo_v0.md",
+    "docs/research/chess_engine_generation_logic_v0/operator_generation_engine_handoff_v0.md",
+    "workflow/reports/3D-LAB-0091-chess-engine-generation-logic-v0/report.md",
+    "workflow/reports/3D-LAB-0091-chess-engine-generation-logic-v0/receipt.json"
+  ],
+  "updated_files": [
+    "README.md",
+    "docs/research/documentation_map_v0/README.md",
+    "docs/research/documentation_map_v0/documentation_backlog_v0.md"
+  ],
+  "next_recommended_slice": "3D-LAB-0092 generation_state_schema_v0"
+}

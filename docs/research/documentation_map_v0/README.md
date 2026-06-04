@@ -20,6 +20,10 @@ It is not a build queue. It is a subject and documentation-coverage map.
 - `shape_language_dictionary_v0.md` gives practical words for mass, edge,
   molding, panel, arch, tracery, sacred geometry, organic ornament, wear, and
   assembly changes.
+- `../chess_engine_generation_logic_v0/` maps chess-engine architecture onto a
+  future deterministic 3D generation engine: state, legal operations, search,
+  evaluation, pruning, caching, branch-count validation, and a generator-to-
+  adapter boundary.
 
 ## Boundary
 
