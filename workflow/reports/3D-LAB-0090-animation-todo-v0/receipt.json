@@ -1,0 +1,38 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0090-animation-todo-v0",
+  "title": "Animation todo v0",
+  "status": "complete",
+  "new_files": [
+    "docs/research/animation_system_v0/README.md",
+    "docs/research/animation_system_v0/animation_todo_list_v0.md",
+    "docs/research/animation_system_v0/animation_taxonomy_v0.md",
+    "docs/research/animation_system_v0/asset_family_animation_backlog_v0.md",
+    "docs/research/animation_system_v0/per_asset_animation_workcard_template_v0.md",
+    "docs/research/animation_system_v0/operator_animation_handoff_v0.md"
+  ],
+  "updated_files": [
+    "README.md",
+    "docs/research/documentation_map_v0/documentation_backlog_v0.md"
+  ],
+  "rules": {
+    "documentation_planning_only": true,
+    "no_blender_execution": true,
+    "no_generated_assets": true,
+    "no_rig_creation": true,
+    "no_keyframes": true,
+    "no_game_engine_controller": true,
+    "no_playable_audio_implementation": true
+  },
+  "validation": {
+    "receipt_json_parse": {
+      "command": "python3 -m json.tool workflow/reports/3D-LAB-0090-animation-todo-v0/receipt.json",
+      "result": "PASS"
+    },
+    "diff_check": {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  },
+  "recommended_next_goal": "Promote one very small animation intent when implementation starts: door_open_close_v0, bell_toll_loop_v0, or lever_pull_v0."
+}

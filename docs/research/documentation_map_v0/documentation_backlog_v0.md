@@ -64,6 +64,23 @@ blocked or waiting, so the repo can return to 3D assets with sharper language.
    - Blender tool used
    - should this become a recipe rule?
 
+5. Animation planning lane
+
+   Status: first pass added in `../animation_system_v0/`.
+
+   Purpose: define animation intent, rig complexity, timing, loop types,
+   moving-part source requirements, Blender animation tool groups, and
+   per-asset workcards before any rigging or keyframe implementation.
+
+   Needed docs:
+
+   - animation TODO list
+   - animation taxonomy
+   - per-family animation backlog
+   - per-asset animation workcard
+   - operator animation handoff
+   - low-compute animation policy
+
 ## Priority 2: Missing Asset Family Lanes
 
 1. Clothing and costume
