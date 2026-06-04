@@ -1,0 +1,28 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0085-documentation-map-v0",
+  "title": "Documentation map v0",
+  "status": "complete",
+  "new_files": [
+    "docs/research/documentation_map_v0/README.md",
+    "docs/research/documentation_map_v0/repo_documentation_needs_v0.md",
+    "docs/research/documentation_map_v0/asset_subject_potential_map_v0.md",
+    "docs/research/documentation_map_v0/documentation_backlog_v0.md"
+  ],
+  "updated_files": [
+    "README.md"
+  ],
+  "rules": {
+    "documentation_planning_only": true,
+    "no_blender_execution": true,
+    "no_generated_assets": true,
+    "no_asset_recipe_promotion": true
+  },
+  "validation": {
+    "diff_check": {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  },
+  "recommended_next_goal": "Create the global style atlas or the shape-language dictionary."
+}
