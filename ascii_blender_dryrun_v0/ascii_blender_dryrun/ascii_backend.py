@@ -141,26 +141,44 @@ class AsciiBackend:
         c.text(1, 1, title)
         return c.render()
 
+    def _draw_cylinder_elevation(
+        self,
+        c: AsciiCanvas,
+        mapper,
+        center_axis: float,
+        center_z: float,
+        radius: float,
+        top_radius: float,
+        height: float,
+        entasis: bool,
+    ) -> None:
+        segments = 20 if entasis or abs(top_radius - radius) > 1e-9 else 1
+        left_points: list[tuple[int, int]] = []
+        right_points: list[tuple[int, int]] = []
+        for segment in range(segments + 1):
+            t = segment / segments
+            z = center_z - height / 2 + height * t
+            linear_radius = radius + (top_radius - radius) * t
+            bulge = math.sin(math.pi * t) * radius * 0.045 if entasis else 0.0
+            rr = max(0.001, linear_radius + bulge)
+            left = mapper(center_axis - rr, z)
+            right = mapper(center_axis + rr, z)
+            left_points.append(left)
+            right_points.append(right)
+            c.line_h(left[1], left[0], right[0], "▒")
+        c.line_h(left_points[0][1], left_points[0][0], right_points[0][0], "▄")
+        c.line_h(left_points[-1][1], left_points[-1][0], right_points[-1][0], "▀")
+        for index in range(segments):
+            self._line(c, left_points[index][0], left_points[index][1], left_points[index + 1][0], left_points[index + 1][1], "█")
+            self._line(c, right_points[index][0], right_points[index][1], right_points[index + 1][0], right_points[index + 1][1], "█")
+
     def _draw_front(self, c: AsciiCanvas, mapper, op: BuildOp) -> None:
         if isinstance(op, AddBox):
             x1, y1 = mapper(op.x - op.width / 2, op.z - op.height / 2)
             x2, y2 = mapper(op.x + op.width / 2, op.z + op.height / 2)
             c.rect(x1, y1, x2, y2, fill="░", border="█")
         elif isinstance(op, AddCylinder):
-            r = op.radius
-            tr = op.taper_top_radius or r
-            x1b, yb = mapper(op.x - r, op.z - op.height / 2)
-            x2b, _ = mapper(op.x + r, op.z - op.height / 2)
-            x1t, yt = mapper(op.x - tr, op.z + op.height / 2)
-            x2t, _ = mapper(op.x + tr, op.z + op.height / 2)
-            c.line_h(yb, x1b, x2b, "▄")
-            c.line_h(yt, x1t, x2t, "▀")
-            c.line_v(x1b, yt, yb, "█")
-            c.line_v(x2b, yt, yb, "█")
-            for x in range(min(x1b, x2b), max(x1b, x2b) + 1):
-                for y in range(min(yt, yb) + 1, max(yt, yb)):
-                    if c.pixels[y][x] == " ":
-                        c.pixels[y][x] = "▒"
+            self._draw_cylinder_elevation(c, mapper, op.x, op.z, op.radius, op.taper_top_radius or op.radius, op.height, op.entasis)
         elif isinstance(op, AddRing):
             r = op.radius + op.overhang
             h = op.tube_height
@@ -182,13 +200,7 @@ class AsciiBackend:
             x2, y2 = mapper(op.y + op.depth / 2, op.z + op.height / 2)
             c.rect(x1, y1, x2, y2, fill="░", border="█")
         elif isinstance(op, AddCylinder):
-            r = op.radius
-            tr = op.taper_top_radius or r
-            x1b, yb = mapper(op.y - r, op.z - op.height / 2)
-            x2b, _ = mapper(op.y + r, op.z - op.height / 2)
-            x1t, yt = mapper(op.y - tr, op.z + op.height / 2)
-            x2t, _ = mapper(op.y + tr, op.z + op.height / 2)
-            c.rect(x1t, yt, x2b, yb, fill="▒", border="█")
+            self._draw_cylinder_elevation(c, mapper, op.y, op.z, op.radius, op.taper_top_radius or op.radius, op.height, op.entasis)
         elif isinstance(op, AddRing):
             r = op.radius + op.overhang
             h = op.tube_height

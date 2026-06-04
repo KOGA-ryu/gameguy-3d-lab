@@ -45,20 +45,82 @@ def add_cylinder(name, radius, height, loc, vertices, material):
     bevel(obj, 0.035, 1)
     return obj
 
+def add_tapered_cylinder(name, radius, top_radius, height, loc, vertices, material, entasis=False, rings=24):
+    verts = []
+    faces = []
+    rings = max(2, int(rings))
+    vertices = max(4, int(vertices))
+    for ring in range(rings + 1):
+        t = ring / rings
+        z = -height * 0.5 + height * t
+        linear_radius = radius + (top_radius - radius) * t
+        bulge = math.sin(math.pi * t) * radius * 0.045 if entasis else 0.0
+        rr = max(0.001, linear_radius + bulge)
+        for index in range(vertices):
+            angle = math.tau * index / vertices
+            verts.append((math.cos(angle) * rr, math.sin(angle) * rr, z))
+    for ring in range(rings):
+        current = ring * vertices
+        next_ring = (ring + 1) * vertices
+        for index in range(vertices):
+            nxt = (index + 1) % vertices
+            faces.append([current + index, current + nxt, next_ring + nxt, next_ring + index])
+    faces.append(list(range(vertices - 1, -1, -1)))
+    top_start = rings * vertices
+    faces.append(list(range(top_start, top_start + vertices)))
+    mesh = bpy.data.meshes.new(name + '_mesh')
+    mesh.from_pydata(verts, [], faces)
+    mesh.update(calc_edges=True)
+    obj = bpy.data.objects.new(name, mesh)
+    bpy.context.collection.objects.link(obj)
+    obj.location = loc
+    assign_mat(obj, material)
+    bevel(obj, 0.035, 1)
+    return obj
+
 def add_ring(name, radius, tube_height, loc, vertices, material):
     obj = add_cylinder(name, radius, tube_height, loc, vertices, material)
     return obj
 
+def cut_flutes(target_name, count, depth, width_ratio, start_z, end_z):
+    target = bpy.data.objects.get(target_name)
+    if target is None:
+        print(f'Flute target not found: {target_name}')
+        return
+    count = max(1, int(count))
+    radius = max(target.dimensions.x, target.dimensions.y) * 0.5
+    cutter_radius = max(0.02, radius * width_ratio * 0.5)
+    cutter_offset = max(0.001, radius + cutter_radius - depth)
+    z0 = target.location.z - target.dimensions.z * 0.5 if start_z is None else float(start_z)
+    z1 = target.location.z + target.dimensions.z * 0.5 if end_z is None else float(end_z)
+    cutter_depth = max(0.001, z1 - z0)
+    z_mid = (z0 + z1) * 0.5
+    for index in range(count):
+        angle = math.tau * index / count
+        loc = (math.cos(angle) * cutter_offset, math.sin(angle) * cutter_offset, z_mid)
+        bpy.ops.mesh.primitive_cylinder_add(vertices=18, radius=cutter_radius, depth=cutter_depth, location=loc)
+        cutter = bpy.context.object
+        cutter.name = f'{target_name}.flute_cutter_{index:02d}'
+        mod = target.modifiers.new(name=f'flute_cut_{index:02d}', type='BOOLEAN')
+        mod.operation = 'DIFFERENCE'
+        if hasattr(mod, 'solver'):
+            mod.solver = 'EXACT'
+        mod.object = cutter
+        bpy.ops.object.select_all(action='DESELECT')
+        target.select_set(True)
+        bpy.context.view_layer.objects.active = target
+        try:
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+        except Exception as exc:
+            print(f'Failed to apply {mod.name}: {exc}')
+            target.modifiers.remove(mod)
+        bpy.data.objects.remove(cutter, do_unlink=True)
+
 add_box('plinth.lower_step', 18, 18, 2.0, (0.0, 0.0, 1.0), 'stone')
 add_box('plinth.upper_step', 15.5, 15.5, 2.0, (0.0, 0.0, 3.0), 'stone')
 add_ring('base.lower_round', 6.6000000000000005, 1.0, (0.0, 0.0, 4.5), 96, 'stone')
-obj = add_cylinder('shaft.tapered_fluted_core', 5.0, 50.4, (0.0, 0.0, 30.2), 128, 'stone')
-# TODO: taper shaft.tapered_fluted_core top radius to 4.3.
-# Current v0 emits a straight cylinder so ASCII/backend contract can stabilize first.
-# TODO: apply entasis curve to shaft.tapered_fluted_core.
-# TODO: cut 20 radial flutes into shaft.tapered_fluted_core.
-# flute depth=0.45, width_ratio=0.34, z_range=(6.5, 53.9)
-# Planned implementation: create one vertical rounded cutter, radial-array it, then boolean difference.
+obj = add_tapered_cylinder('shaft.tapered_fluted_core', 5.0, 4.3, 50.4, (0.0, 0.0, 30.2), 128, 'stone', entasis=True)
+cut_flutes('shaft.tapered_fluted_core', 20, 0.45, 0.34, 6.5, 53.9)
 add_ring('capital.necking_ring', 5.25, 1.2, (0.0, 0.0, 56.0), 96, 'stone')
 add_ring('capital.echinus_cushion', 7.55, 4.0, (0.0, 0.0, 58.6), 96, 'stone')
 add_box('capital.abacus_square_slab', 16.5, 16.5, 3.0, (0.0, 0.0, 62.1), 'stone')

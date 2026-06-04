@@ -29,7 +29,8 @@ def test_blender_backend_emits_named_parts():
     assert "plinth.lower_step" in script
     assert "shaft.tapered_fluted_core" in script
     assert "capital.abacus_square_slab" in script
-    assert "TODO: cut 20 radial flutes" in script
+    assert "add_tapered_cylinder" in script
+    assert "cut_flutes('shaft.tapered_fluted_core', 20" in script
 
 
 def test_recipe_roundtrip(tmp_path):

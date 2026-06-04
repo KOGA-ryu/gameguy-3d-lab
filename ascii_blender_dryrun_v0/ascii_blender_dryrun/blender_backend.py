@@ -66,9 +66,76 @@ class BlenderBackend:
             "    bevel(obj, 0.035, 1)",
             "    return obj",
             "",
+            "def add_tapered_cylinder(name, radius, top_radius, height, loc, vertices, material, entasis=False, rings=24):",
+            "    verts = []",
+            "    faces = []",
+            "    rings = max(2, int(rings))",
+            "    vertices = max(4, int(vertices))",
+            "    for ring in range(rings + 1):",
+            "        t = ring / rings",
+            "        z = -height * 0.5 + height * t",
+            "        linear_radius = radius + (top_radius - radius) * t",
+            "        bulge = math.sin(math.pi * t) * radius * 0.045 if entasis else 0.0",
+            "        rr = max(0.001, linear_radius + bulge)",
+            "        for index in range(vertices):",
+            "            angle = math.tau * index / vertices",
+            "            verts.append((math.cos(angle) * rr, math.sin(angle) * rr, z))",
+            "    for ring in range(rings):",
+            "        current = ring * vertices",
+            "        next_ring = (ring + 1) * vertices",
+            "        for index in range(vertices):",
+            "            nxt = (index + 1) % vertices",
+            "            faces.append([current + index, current + nxt, next_ring + nxt, next_ring + index])",
+            "    faces.append(list(range(vertices - 1, -1, -1)))",
+            "    top_start = rings * vertices",
+            "    faces.append(list(range(top_start, top_start + vertices)))",
+            "    mesh = bpy.data.meshes.new(name + '_mesh')",
+            "    mesh.from_pydata(verts, [], faces)",
+            "    mesh.update(calc_edges=True)",
+            "    obj = bpy.data.objects.new(name, mesh)",
+            "    bpy.context.collection.objects.link(obj)",
+            "    obj.location = loc",
+            "    assign_mat(obj, material)",
+            "    bevel(obj, 0.035, 1)",
+            "    return obj",
+            "",
             "def add_ring(name, radius, tube_height, loc, vertices, material):",
             "    obj = add_cylinder(name, radius, tube_height, loc, vertices, material)",
             "    return obj",
+            "",
+            "def cut_flutes(target_name, count, depth, width_ratio, start_z, end_z):",
+            "    target = bpy.data.objects.get(target_name)",
+            "    if target is None:",
+            "        print(f'Flute target not found: {target_name}')",
+            "        return",
+            "    count = max(1, int(count))",
+            "    radius = max(target.dimensions.x, target.dimensions.y) * 0.5",
+            "    cutter_radius = max(0.02, radius * width_ratio * 0.5)",
+            "    cutter_offset = max(0.001, radius + cutter_radius - depth)",
+            "    z0 = target.location.z - target.dimensions.z * 0.5 if start_z is None else float(start_z)",
+            "    z1 = target.location.z + target.dimensions.z * 0.5 if end_z is None else float(end_z)",
+            "    cutter_depth = max(0.001, z1 - z0)",
+            "    z_mid = (z0 + z1) * 0.5",
+            "    for index in range(count):",
+            "        angle = math.tau * index / count",
+            "        loc = (math.cos(angle) * cutter_offset, math.sin(angle) * cutter_offset, z_mid)",
+            "        bpy.ops.mesh.primitive_cylinder_add(vertices=18, radius=cutter_radius, depth=cutter_depth, location=loc)",
+            "        cutter = bpy.context.object",
+            "        cutter.name = f'{target_name}.flute_cutter_{index:02d}'",
+            "        mod = target.modifiers.new(name=f'flute_cut_{index:02d}', type='BOOLEAN')",
+            "        mod.operation = 'DIFFERENCE'",
+            "        if hasattr(mod, 'solver'):",
+            "            mod.solver = 'EXACT'",
+            "        mod.object = cutter",
+            "        bpy.ops.object.select_all(action='DESELECT')",
+            "        target.select_set(True)",
+            "        bpy.context.view_layer.objects.active = target",
+            "        try:",
+            "            bpy.ops.object.modifier_apply(modifier=mod.name)",
+            "        except Exception as exc:",
+            "            print(f'Failed to apply {mod.name}: {exc}')",
+            "            target.modifiers.remove(mod)",
+            "        bpy.data.objects.remove(cutter, do_unlink=True)",
             "",
         ]
 
@@ -78,29 +145,24 @@ class BlenderBackend:
                     f"add_box({op.name!r}, {op.width}, {op.depth}, {op.height}, ({op.x}, {op.y}, {op.z}), {op.material!r})"
                 )
             elif isinstance(op, AddCylinder):
-                lines.append(
-                    f"obj = add_cylinder({op.name!r}, {op.radius}, {op.height}, ({op.x}, {op.y}, {op.z}), {op.vertices}, {op.material!r})"
-                )
-                if op.taper_top_radius is not None:
-                    lines += [
-                        f"# TODO: taper {op.name} top radius to {op.taper_top_radius}.",
-                        "# Current v0 emits a straight cylinder so ASCII/backend contract can stabilize first.",
-                    ]
-                if op.entasis:
-                    lines += [
-                        f"# TODO: apply entasis curve to {op.name}.",
-                    ]
+                top_radius = op.taper_top_radius or op.radius
+                if op.taper_top_radius is not None or op.entasis:
+                    lines.append(
+                        f"obj = add_tapered_cylinder({op.name!r}, {op.radius}, {top_radius}, {op.height}, ({op.x}, {op.y}, {op.z}), {op.vertices}, {op.material!r}, entasis={op.entasis})"
+                    )
+                else:
+                    lines.append(
+                        f"obj = add_cylinder({op.name!r}, {op.radius}, {op.height}, ({op.x}, {op.y}, {op.z}), {op.vertices}, {op.material!r})"
+                    )
             elif isinstance(op, AddRing):
                 radius = op.radius + op.overhang
                 lines.append(
                     f"add_ring({op.name!r}, {radius}, {op.tube_height}, ({op.x}, {op.y}, {op.z}), {op.vertices}, {op.material!r})"
                 )
             elif isinstance(op, CutFlutes):
-                lines += [
-                    f"# TODO: cut {op.count} radial flutes into {op.target}.",
-                    f"# flute depth={op.depth}, width_ratio={op.width_ratio}, z_range=({op.start_z}, {op.end_z})",
-                    "# Planned implementation: create one vertical rounded cutter, radial-array it, then boolean difference.",
-                ]
+                lines.append(
+                    f"cut_flutes({op.target!r}, {op.count}, {op.depth}, {op.width_ratio}, {op.start_z!r}, {op.end_z!r})"
+                )
             elif isinstance(op, AddLabel):
                 lines += [
                     f"# LABEL {op.name}: {op.text}",
