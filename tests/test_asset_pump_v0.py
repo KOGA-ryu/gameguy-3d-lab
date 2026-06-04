@@ -303,7 +303,7 @@ class AssetPumpTests(unittest.TestCase):
             post = load_json(out_root / "assets" / "cylindrical_reference_post_v0.json")
 
         self.assertEqual(manifest["source_bundle_schema"], "asset_mill_radial_stack_bundle_v0")
-        self.assertEqual(manifest["asset_count"], 1)
+        self.assertEqual(manifest["asset_count"], 2)
         self.assertEqual(post["schema"], "gameguy_asset_v0")
         self.assertEqual(post["source_schema"], "asset_mill_radial_stack_bundle_v0")
         self.assertEqual(post["source_operation"], "radial_stack")
@@ -334,6 +334,49 @@ class AssetPumpTests(unittest.TestCase):
         self.assertEqual(post["source_terms"]["operators"], ["radial_stack", "loft_sections", "array_radial", "extrude"])
         self.assertEqual(post["validation_expectations"]["ring_count"], 14)
         self.assertEqual(post["validation_expectations"]["rib_count"], 8)
+        self.assert_mesh_is_well_formed(post)
+
+    def test_radial_stack_bundle_generates_mace_baluster_post(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "pump"
+            run_radial_stack_pump(out_root)
+            post = load_json(out_root / "assets" / "mace_baluster_reference_post_v0.json")
+
+        self.assertEqual(post["schema"], "gameguy_asset_v0")
+        self.assertEqual(post["source_schema"], "asset_mill_radial_stack_bundle_v0")
+        self.assertEqual(post["source_operation"], "radial_stack")
+        self.assertEqual(post["asset_kind"], "radial_stack_post")
+        self.assertEqual(post["dimensions_m"], {"width": 0.88, "depth": 0.88, "height": 1.48})
+        self.assertEqual(len(post["mesh"]["vertices"]), 482)
+        self.assertEqual(len(post["mesh"]["faces"]), 444)
+        self.assertEqual(len(post["mesh"]["parts"]), 27)
+        self.assertEqual(post["mesh"]["parts"][0]["part_id"], "radial_stack_body")
+        self.assertEqual(post["mesh"]["parts"][1]["part_id"], "lower_tapered_rib_00")
+        self.assertEqual(post["mesh"]["parts"][9]["part_id"], "middle_tapered_rib_00")
+        self.assertEqual(post["mesh"]["parts"][17]["part_id"], "upper_tapered_rib_00")
+        self.assertEqual(post["mesh"]["parts"][-2]["part_id"], "rail_socket_east")
+        self.assertEqual(post["mesh"]["parts"][-1]["part_id"], "rail_socket_west")
+        self.assertEqual(post["mesh"]["radial_stack"]["grammar"], "radial_stack_v0")
+        self.assertEqual(post["mesh"]["radial_stack"]["segments"], 16)
+        self.assertEqual(post["mesh"]["radial_stack"]["ring_count"], 17)
+        self.assertEqual(post["mesh"]["radial_stack"]["rings"][8]["ring_id"], "mace_belly_max")
+        self.assertEqual(post["mesh"]["radial_stack"]["rings"][11]["ring_id"], "upper_neck")
+        self.assertEqual(post["mesh"]["radial_stack"]["rings"][-1]["vertex_range"], [256, 271])
+        self.assertEqual(post["mesh"]["radial_stack"]["bottom_center_vertex"], 272)
+        self.assertEqual(post["mesh"]["radial_stack"]["top_center_vertex"], 273)
+        self.assertEqual([detail["count"] for detail in post["mesh"]["radial_stack"]["radial_details"]], [8, 8, 8])
+        self.assertEqual(
+            [detail["rib_depth_m"] for detail in post["mesh"]["radial_stack"]["radial_details"]],
+            [0.055, 0.04, 0.025],
+        )
+        self.assertEqual(post["mesh"]["radial_stack"]["attachment_count"], 2)
+        self.assertEqual(sum(1 for face in post["mesh"]["faces"] if len(face) == 3), 32)
+        self.assertEqual(sum(1 for face in post["mesh"]["faces"] if len(face) == 4), 412)
+        self.assertEqual(post["source_terms"]["profiles"], ["circle", "rectangle"])
+        self.assertEqual(post["source_terms"]["operators"], ["radial_stack", "loft_sections", "array_radial", "extrude"])
+        self.assertTrue(post["validation_expectations"]["entasis"])
+        self.assertTrue(post["validation_expectations"]["mace_belly"])
+        self.assertEqual(post["validation_expectations"]["rib_count"], 24)
         self.assert_mesh_is_well_formed(post)
 
     def test_blocky_column_bundle_generates_simple_part_ribbed_column(self) -> None:

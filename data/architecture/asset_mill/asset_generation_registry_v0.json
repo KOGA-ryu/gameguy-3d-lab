@@ -44,7 +44,7 @@
       "bundle_id": "radial_stack_assets_v0",
       "path": "data/architecture/asset_mill/recipes/radial_stack_assets_v0.json",
       "schema": "asset_mill_radial_stack_bundle_v0",
-      "expected_asset_count": 1,
+      "expected_asset_count": 2,
       "compiler": "scripts/asset_pump_v0.py",
       "validator": "scripts/validate_gameguy_asset_v0.py",
       "adapter_validate_only": "scripts/export_blender_asset_preview_v0.py",
