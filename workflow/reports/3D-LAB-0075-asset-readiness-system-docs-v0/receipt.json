@@ -1,0 +1,54 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0075-asset-readiness-system-docs-v0",
+  "title": "Asset readiness system docs v0",
+  "status": "complete",
+  "documentation_root": "docs/research/asset_readiness_system_v0",
+  "new_docs": [
+    "docs/research/asset_readiness_system_v0/README.md",
+    "docs/research/asset_readiness_system_v0/asset_readiness_todo_list_v0.md",
+    "docs/research/asset_readiness_system_v0/operator_learning_workflow_v0.md",
+    "docs/research/asset_readiness_system_v0/blender_tool_fillout_queue_v0.md",
+    "docs/research/asset_readiness_system_v0/reference_and_drawing_guide_queue_v0.md",
+    "docs/research/asset_readiness_system_v0/modular_game_asset_requirements_v0.md",
+    "docs/research/asset_readiness_system_v0/asset_qa_checklist_v0.md",
+    "docs/research/asset_readiness_system_v0/per_asset_workcard_template_v0.md"
+  ],
+  "updated_docs": [
+    "README.md"
+  ],
+  "prep_contract": [
+    "asset family",
+    "exact component",
+    "reference packet",
+    "drawing guide",
+    "component/style terminology",
+    "Blender tool workcard",
+    "source recipe or style sheet",
+    "operator Blender pass",
+    "correction log",
+    "better recipe or tool plan"
+  ],
+  "rules": {
+    "documentation_only": true,
+    "no_generated_assets": true,
+    "no_blender_execution": true,
+    "no_reference_image_fetch": true,
+    "machine_readable_source_unchanged": true
+  },
+  "validation": {
+    "receipt_json_parse": {
+      "command": "python3 -m json.tool workflow/reports/3D-LAB-0075-asset-readiness-system-docs-v0/receipt.json",
+      "result": "PASS"
+    },
+    "component_style_sheet_validate": {
+      "command": "python3 scripts/validate_component_style_sheets_v0.py",
+      "result": "PASS domains=7 components=70 style_sheets=5 ledger_entries=11 sources=7 tools=23"
+    },
+    "asset_generation_registry_validate": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS source_component_style_sheets=5"
+    }
+  },
+  "recommended_next_goal": "Fill the first practical Blender tool cards for mesh_from_pydata, bevel, weighted normals, booleans, insets, extrudes, arrays, mirrors, screw/lathe forms, and UV cube projection."
+}
