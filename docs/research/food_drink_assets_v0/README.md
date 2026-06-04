@@ -53,9 +53,16 @@ python3 scripts/validate_food_drink_asset_taxonomy_v0.py
 - `food_drink_family_build_plans_v0.md` maps starter assets to build sequences.
 - `food_drink_lore_book_hooks_v0.md` captures player-facing book/detail hooks.
 - `operator_food_drink_handoff_v0.md` defines future UI/manual workcard fields.
+- `cooking_recipe_source_index_v0.md` records cooking, recipe manuscript,
+  kitchen, and preservation source anchors.
+- `cooking_recipe_method_research_v0.md` maps cooking and preservation methods
+  into visible asset cues, source fields, Blender direction, operator checks,
+  and lore hooks.
+- `operator_cooking_recipe_handoff_v0.md` defines future fields for cooking
+  stations, pantry states, readable recipes, and preservation props.
 
 ## Boundary
 
 This is game-asset planning only. It is not recipe instruction, food safety
-guidance, nutrition guidance, historical authenticity proof, conservation
-guidance, or active generated-asset input.
+guidance, kitchen safety guidance, nutrition guidance, historical authenticity
+proof, conservation guidance, or active generated-asset input.

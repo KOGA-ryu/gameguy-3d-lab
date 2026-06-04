@@ -1,0 +1,40 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0089-cooking-recipe-method-research-v0",
+  "title": "Cooking recipe method research v0",
+  "status": "complete",
+  "new_files": [
+    "docs/research/food_drink_assets_v0/cooking_recipe_source_index_v0.md",
+    "docs/research/food_drink_assets_v0/cooking_recipe_method_research_v0.md",
+    "docs/research/food_drink_assets_v0/operator_cooking_recipe_handoff_v0.md"
+  ],
+  "updated_files": [
+    "docs/research/food_drink_assets_v0/README.md",
+    "README.md"
+  ],
+  "rules": {
+    "research_documentation_only": true,
+    "not_recipe_instruction": true,
+    "not_food_safety_guidance": true,
+    "not_kitchen_safety_guidance": true,
+    "not_nutrition_advice": true,
+    "not_historical_authenticity_claim": true,
+    "no_blender_execution": true,
+    "no_generated_assets": true
+  },
+  "validation": {
+    "receipt_json_parse": {
+      "command": "python3 -m json.tool workflow/reports/3D-LAB-0089-cooking-recipe-method-research-v0/receipt.json",
+      "result": "PASS"
+    },
+    "food_drink_taxonomy_validate": {
+      "command": "python3 scripts/validate_food_drink_asset_taxonomy_v0.py",
+      "result": "PASS"
+    },
+    "diff_check": {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  },
+  "recommended_next_goal": "Promote one small readable/process record only when a concrete kitchen, pantry, food prop, or readable-book feature needs it."
+}
