@@ -103,6 +103,17 @@ class AddPathSweep:
 
 
 @dataclass(frozen=True)
+class AddPetalBloom:
+    name: str
+    petal: Dict[str, Any]
+    layers: List[Dict[str, Any]]
+    x: float = 0.0
+    y: float = 0.0
+    z: float = 0.0
+    material: str = "stone"
+
+
+@dataclass(frozen=True)
 class CutFlutes:
     target: str
     count: int
@@ -129,6 +140,7 @@ BuildOp = Union[
     AddProfileMoulding,
     AddSectionStack,
     AddPathSweep,
+    AddPetalBloom,
     CutFlutes,
     AddLabel,
 ]
@@ -142,6 +154,7 @@ OP_CLASSES = {
     "AddProfileMoulding": AddProfileMoulding,
     "AddSectionStack": AddSectionStack,
     "AddPathSweep": AddPathSweep,
+    "AddPetalBloom": AddPetalBloom,
     "CutFlutes": CutFlutes,
     "AddLabel": AddLabel,
 }

@@ -35,6 +35,9 @@
             "$ref": "#/$defs/addPathSweep"
           },
           {
+            "$ref": "#/$defs/addPetalBloom"
+          },
+          {
             "$ref": "#/$defs/cutFlutes"
           },
           {
@@ -608,6 +611,150 @@
         },
         "repeat": {
           "$ref": "#/$defs/radialRepeat"
+        },
+        "material": {
+          "$ref": "#/$defs/material"
+        }
+      }
+    },
+    "petalSpec": {
+      "type": "object",
+      "required": [
+        "length",
+        "max_width",
+        "max_thickness"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "length": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "base_width": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "max_width": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "tip_width": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "min_width": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "min_thickness": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "base_thickness": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "max_thickness": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "tip_thickness": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "width_peak_t": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "thickness_peak_t": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "bend_start_t": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "samples_length": {
+          "type": "integer",
+          "minimum": 3,
+          "maximum": 128
+        },
+        "samples_width": {
+          "type": "integer",
+          "minimum": 3,
+          "maximum": 64
+        }
+      }
+    },
+    "petalLayer": {
+      "type": "object",
+      "required": [
+        "count"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128
+        },
+        "radius": {
+          "$ref": "#/$defs/nonNegativeNumber"
+        },
+        "length_scale": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "width_scale": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "thickness_scale": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "bend_angle_deg": {
+          "$ref": "#/$defs/number"
+        },
+        "curl_angle_deg": {
+          "$ref": "#/$defs/number"
+        },
+        "petal_twist_deg": {
+          "$ref": "#/$defs/number"
+        },
+        "spiral_offset_deg": {
+          "$ref": "#/$defs/number"
+        },
+        "z_offset": {
+          "$ref": "#/$defs/number"
+        }
+      }
+    },
+    "addPetalBloom": {
+      "type": "object",
+      "required": [
+        "op",
+        "name",
+        "petal",
+        "layers"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "AddPetalBloom"
+        },
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "petal": {
+          "$ref": "#/$defs/petalSpec"
+        },
+        "layers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/petalLayer"
+          }
+        },
+        "x": {
+          "$ref": "#/$defs/number"
+        },
+        "y": {
+          "$ref": "#/$defs/number"
+        },
+        "z": {
+          "$ref": "#/$defs/number"
         },
         "material": {
           "$ref": "#/$defs/material"

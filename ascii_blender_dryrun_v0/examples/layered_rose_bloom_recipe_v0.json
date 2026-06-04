@@ -1,0 +1,73 @@
+{
+  "ops": [
+    {
+      "op": "AddPetalBloom",
+      "name": "proof.layered_rose_bloom_v0",
+      "petal": {
+        "length": 1.45,
+        "base_width": 0.10,
+        "max_width": 0.58,
+        "tip_width": 0.10,
+        "width_peak_t": 0.56,
+        "min_thickness": 0.018,
+        "max_thickness": 0.075,
+        "tip_thickness": 0.014,
+        "thickness_peak_t": 0.52,
+        "bend_start_t": 0.42,
+        "samples_length": 17,
+        "samples_width": 11
+      },
+      "layers": [
+        {
+          "count": 8,
+          "radius": 0.46,
+          "length_scale": 1.02,
+          "width_scale": 1.0,
+          "thickness_scale": 1.0,
+          "bend_angle_deg": 42,
+          "curl_angle_deg": 10,
+          "petal_twist_deg": 7,
+          "spiral_offset_deg": 0,
+          "z_offset": 0.0
+        },
+        {
+          "count": 6,
+          "radius": 0.27,
+          "length_scale": 0.74,
+          "width_scale": 0.82,
+          "thickness_scale": 0.84,
+          "bend_angle_deg": 58,
+          "curl_angle_deg": 17,
+          "petal_twist_deg": 12,
+          "spiral_offset_deg": 22,
+          "z_offset": 0.12
+        },
+        {
+          "count": 5,
+          "radius": 0.13,
+          "length_scale": 0.52,
+          "width_scale": 0.66,
+          "thickness_scale": 0.72,
+          "bend_angle_deg": 74,
+          "curl_angle_deg": 25,
+          "petal_twist_deg": 16,
+          "spiral_offset_deg": 49,
+          "z_offset": 0.27
+        },
+        {
+          "count": 3,
+          "radius": 0.02,
+          "length_scale": 0.34,
+          "width_scale": 0.48,
+          "thickness_scale": 0.62,
+          "bend_angle_deg": 88,
+          "curl_angle_deg": 36,
+          "petal_twist_deg": 22,
+          "spiral_offset_deg": 86,
+          "z_offset": 0.45
+        }
+      ],
+      "material": "limestone"
+    }
+  ]
+}

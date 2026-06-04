@@ -40,6 +40,9 @@ Do not make Blender infer meaning from pixels. Write or compile a recipe, run it
 - `examples/rose_scroll_sweep_recipe_v0.json`
   Curved path-sweep proof for filigree, rose, scroll, vine, and bent-glass behavior.
 
+- `examples/layered_rose_bloom_recipe_v0.json`
+  Layered petal-surface proof for rose bosses, leaves, floral caps, curled plates, and bloom-like ornament.
+
 - `tests/test_dryrun.py`  
   Minimal tests for the recipe, ASCII backend, validation, and Blender emitter.
 
@@ -75,11 +78,13 @@ pytest
 
 This is v0. It intentionally stabilizes the recipe/backend contract before fancy geometry.
 
-The Blender script currently emits primitive boxes, cylinders, revolved moulding profiles, flute cutters, taper, entasis, straight section stacks, and swept spiral paths. Mouldings are source-term driven: recipes can use `AddProfileMoulding` sequences, and the compiler expands them into low-level `AddMoulding` radius/z points.
+The Blender script currently emits primitive boxes, cylinders, revolved moulding profiles, flute cutters, taper, entasis, straight section stacks, swept spiral paths, and layered petal blooms. Mouldings are source-term driven: recipes can use `AddProfileMoulding` sequences, and the compiler expands them into low-level `AddMoulding` radius/z points.
 
 `AddSectionStack` is for solid twisted/tapered cross-section meshes such as balusters, hot-twisted bars, square-to-round transitions, mace shafts, and ribbed posts.
 
 `AddPathSweep` is for bent ornamental strands such as filigree, rose scrolls, vines, ironwork curls, and glass-like bends.
+
+`AddPetalBloom` is for sheet-like ornamental surfaces such as rose petals, leaves, floral bosses, curled plates, and layered reliefs. Its recipe owns the skinny-wide-skinny petal width curve, thickness curve, bend start, layer counts, layer scale, spiral offsets, curl, and petal twist.
 
 ## Next slices
 

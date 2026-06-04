@@ -1,8 +1,9 @@
 """
-Deterministic geometry helpers for section stacks and path sweeps.
+Deterministic geometry helpers for section stacks, path sweeps, and petal blooms.
 
 These helpers are intentionally small. They let the dry-run package reason
-about twisted bars and filigree/rose scrolls without involving Blender.
+about twisted bars, filigree/rose scrolls, and layered petals without involving
+Blender.
 """
 
 from __future__ import annotations
@@ -167,9 +168,101 @@ def path_sweep_bounds(path: dict[str, Any], profile: dict[str, Any], taper: list
     return min_x, max_x, min_y, max_y, min_z, max_z
 
 
+def petal_value_at(t: float, start_value: float, peak_value: float, end_value: float, peak_t: float) -> float:
+    peak_t = min(0.99, max(0.01, peak_t))
+    t = _clamp01(t)
+    if t <= peak_t:
+        local = t / peak_t
+        return start_value + (peak_value - start_value) * local
+    local = (t - peak_t) / (1.0 - peak_t)
+    return peak_value + (end_value - peak_value) * local
+
+
+def petal_width_at(petal: dict[str, Any], t: float) -> float:
+    return petal_value_at(
+        t,
+        float(petal.get("base_width", petal.get("min_width", 0.12))),
+        float(petal["max_width"]),
+        float(petal.get("tip_width", petal.get("min_width", 0.08))),
+        float(petal.get("width_peak_t", 0.55)),
+    )
+
+
+def petal_thickness_at(petal: dict[str, Any], t: float) -> float:
+    return petal_value_at(
+        t,
+        float(petal.get("min_thickness", petal.get("base_thickness", 0.01))),
+        float(petal["max_thickness"]),
+        float(petal.get("tip_thickness", petal.get("min_thickness", 0.01))),
+        float(petal.get("thickness_peak_t", petal.get("width_peak_t", 0.55))),
+    )
+
+
+def petal_layer_instances(layers: list[dict[str, Any]]) -> list[dict[str, float]]:
+    instances: list[dict[str, float]] = []
+    for layer_index, layer in enumerate(layers):
+        count = max(1, int(layer["count"]))
+        offset = math.radians(float(layer.get("spiral_offset_deg", 0.0)))
+        petal_twist = math.radians(float(layer.get("petal_twist_deg", 0.0)))
+        for petal_index in range(count):
+            angle = offset + math.tau * petal_index / count
+            instances.append({
+                "layer_index": float(layer_index),
+                "petal_index": float(petal_index),
+                "angle": angle,
+                "tip_angle": angle + petal_twist,
+                "radius": float(layer.get("radius", 0.0)),
+                "length_scale": float(layer.get("length_scale", 1.0)),
+                "width_scale": float(layer.get("width_scale", 1.0)),
+                "thickness_scale": float(layer.get("thickness_scale", 1.0)),
+                "bend_angle_deg": float(layer.get("bend_angle_deg", 0.0)),
+                "curl_angle_deg": float(layer.get("curl_angle_deg", 0.0)),
+                "z_offset": float(layer.get("z_offset", 0.0)),
+            })
+    return instances
+
+
+def petal_bloom_bounds(
+    petal: dict[str, Any],
+    layers: list[dict[str, Any]],
+    origin_x: float,
+    origin_y: float,
+    origin_z: float,
+) -> tuple[float, float, float, float, float, float]:
+    length = float(petal["length"])
+    max_width = float(petal["max_width"])
+    max_thickness = float(petal["max_thickness"])
+
+    min_x = min_y = min_z = float("inf")
+    max_x = max_y = max_z = float("-inf")
+    for instance in petal_layer_instances(layers):
+        radial_span = instance["radius"] + length * instance["length_scale"]
+        side_span = max_width * instance["width_scale"] * 0.55
+        xy_radius = radial_span + side_span
+        bend_height = math.sin(math.radians(instance["bend_angle_deg"])) * length * 0.42
+        curl_height = math.sin(math.radians(abs(instance["curl_angle_deg"]))) * max_width * 0.28
+        z_base = origin_z + instance["z_offset"]
+        z_top = z_base + max(0.0, bend_height) + curl_height
+        z_pad = max_thickness * instance["thickness_scale"] * 0.5
+        min_x = min(min_x, origin_x - xy_radius)
+        max_x = max(max_x, origin_x + xy_radius)
+        min_y = min(min_y, origin_y - xy_radius)
+        max_y = max(max_y, origin_y + xy_radius)
+        min_z = min(min_z, z_base - z_pad)
+        max_z = max(max_z, z_top + z_pad)
+
+    if min_x == float("inf"):
+        return origin_x - 1.0, origin_x + 1.0, origin_y - 1.0, origin_y + 1.0, origin_z, origin_z + 1.0
+    return min_x, max_x, min_y, max_y, min_z, max_z
+
+
 def _regular_polygon(vertices: int, radius: float, rotation: float) -> list[tuple[float, float]]:
     return [
         (math.cos(math.tau * index / vertices + rotation) * radius,
          math.sin(math.tau * index / vertices + rotation) * radius)
         for index in range(vertices)
     ]
+
+
+def _clamp01(value: float) -> float:
+    return min(1.0, max(0.0, value))

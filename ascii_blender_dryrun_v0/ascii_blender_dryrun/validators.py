@@ -14,6 +14,7 @@ from .ops import (
     AddCylinder,
     AddMoulding,
     AddPathSweep,
+    AddPetalBloom,
     AddProfileMoulding,
     AddRing,
     AddSectionStack,
@@ -21,7 +22,14 @@ from .ops import (
     BuildOp,
 )
 from .profile_mouldings import SUPPORTED_TERMS
-from .sweep_geometry import path_sweep_bounds, profile_points, transformed_profile_points
+from .sweep_geometry import (
+    path_sweep_bounds,
+    petal_bloom_bounds,
+    petal_thickness_at,
+    petal_width_at,
+    profile_points,
+    transformed_profile_points,
+)
 
 
 @dataclass
@@ -139,6 +147,36 @@ def validate_ops(ops: list[BuildOp]) -> list[Finding]:
                         findings.append(Finding("error", "bad_sweep_taper_t", f"{op.name} taper point {index} t must be 0..1."))
                     if float(point.get("scale", 0.0)) <= 0:
                         findings.append(Finding("error", "bad_sweep_taper_scale", f"{op.name} taper point {index} scale must be positive."))
+        elif isinstance(op, AddPetalBloom):
+            petal = op.petal
+            for key in ("length", "max_width", "max_thickness"):
+                if float(petal.get(key, 0.0)) <= 0:
+                    findings.append(Finding("error", "bad_petal_dimension", f"{op.name} petal {key} must be positive."))
+            for key in ("base_width", "tip_width", "min_width", "min_thickness", "tip_thickness"):
+                if key in petal and float(petal[key]) <= 0:
+                    findings.append(Finding("error", "bad_petal_dimension", f"{op.name} petal {key} must be positive."))
+            for key in ("width_peak_t", "thickness_peak_t", "bend_start_t"):
+                if key in petal and not (0.0 <= float(petal[key]) <= 1.0):
+                    findings.append(Finding("error", "bad_petal_t", f"{op.name} petal {key} must be 0..1."))
+            for key in ("samples_length", "samples_width"):
+                if key in petal and int(petal[key]) < 2:
+                    findings.append(Finding("error", "bad_petal_samples", f"{op.name} petal {key} must be at least 2."))
+            if not op.layers:
+                findings.append(Finding("error", "empty_petal_layers", f"{op.name} needs at least one layer."))
+            for index, layer in enumerate(op.layers):
+                if int(layer.get("count", 0)) <= 0:
+                    findings.append(Finding("error", "bad_petal_layer_count", f"{op.name} layer {index} count must be positive."))
+                if float(layer.get("radius", 0.0)) < 0:
+                    findings.append(Finding("error", "bad_petal_layer_radius", f"{op.name} layer {index} radius must be non-negative."))
+                for key in ("length_scale", "width_scale", "thickness_scale"):
+                    if float(layer.get(key, 1.0)) <= 0:
+                        findings.append(Finding("error", "bad_petal_layer_scale", f"{op.name} layer {index} {key} must be positive."))
+            try:
+                petal_width_at(petal, 0.5)
+                petal_thickness_at(petal, 0.5)
+                petal_bloom_bounds(petal, op.layers, op.x, op.y, op.z)
+            except (TypeError, ValueError) as exc:
+                findings.append(Finding("error", "bad_petal_bloom", f"{op.name}: {exc}"))
         elif isinstance(op, CutFlutes):
             if op.target not in names:
                 findings.append(Finding("error", "flute_missing_target", f"CutFlutes target does not exist before cut: {op.target}"))

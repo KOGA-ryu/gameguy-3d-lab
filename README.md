@@ -249,6 +249,8 @@ Measurement-backed ASCII planning now lives in `docs/research/ascii_geometry_pla
 python3 scripts/validate_gameguy_ascii_plan_v0.py
 ```
 
+The ASCII Blender dry-run package now includes `AddPetalBloom`, a first sheet-surface operator for rose petals, leaves, floral bosses, curled plates, and layered reliefs. The source recipe owns each petal's skinny-wide-skinny width curve, thickness curve, bend start, layer counts, layer scaling, spiral offsets, curl, and petal twist before the Blender adapter emits a mesh.
+
 The human-facing asset family handbook lives in `docs/research/component_style_system_v0/asset_families/`. It organizes railings, stairs, windows, doors, trim/moulding, ceilings/vaults, walls, floors/ground, columns/piers, arches/arcades, roofs/towers/spires, terrain/cliffs/water, lighting, gates/grates/barriers, ruin/debris kits, props, and mechanisms into component breakdowns, style directions, geometric shaping ledgers, Blender tool groups, and first build targets.
 
 Texture planning now lives in `docs/research/texture_system_v0/`. It tracks material asset families, dungeon style palettes, surface wear rules, UV/trim-sheet TODOs, and a hardware policy where `*** DECALS ***` are high-cost optional detail: lower-compute hardware does not get decals, so base materials, trims, masks, and material slots must carry the asset.
