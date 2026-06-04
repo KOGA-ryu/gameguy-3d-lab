@@ -76,6 +76,17 @@ The first domain taxonomy names seven domains and seventy components:
 The point is not to finish all of them now. The point is to make room for them
 without polluting Blender scripts or asset recipes.
 
+The human-facing handbook for these domains lives in:
+
+```text
+docs/research/component_style_system_v0/asset_families/
+```
+
+Those pages are intentionally organized by asset family. They are where a
+person can read the component breakdown, style directions, geometric shaping
+ledger, Blender tool groups, and first build targets before anything is
+promoted into machine-readable style sheets.
+
 ## Component Style Sheet Shape
 
 A component style sheet must answer these questions:

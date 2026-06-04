@@ -1,0 +1,65 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0072-asset-family-documentation-v0",
+  "title": "Asset family documentation v0",
+  "status": "complete",
+  "documentation_root": "docs/research/component_style_system_v0/asset_families",
+  "updated_docs": [
+    "README.md",
+    "docs/research/component_style_system_v0/README.md",
+    "docs/research/component_style_system_v0/component_style_system_v0.md"
+  ],
+  "asset_family_pages": [
+    "docs/research/component_style_system_v0/asset_families/README.md",
+    "docs/research/component_style_system_v0/asset_families/asset_family_doc_template_v0.md",
+    "docs/research/component_style_system_v0/asset_families/family_style_matrix_v0.md",
+    "docs/research/component_style_system_v0/asset_families/railings_v0.md",
+    "docs/research/component_style_system_v0/asset_families/stairs_v0.md",
+    "docs/research/component_style_system_v0/asset_families/windows_v0.md",
+    "docs/research/component_style_system_v0/asset_families/doors_v0.md",
+    "docs/research/component_style_system_v0/asset_families/trim_moulding_v0.md",
+    "docs/research/component_style_system_v0/asset_families/ceilings_vaults_v0.md",
+    "docs/research/component_style_system_v0/asset_families/walls_vertical_bays_v0.md"
+  ],
+  "asset_families_documented": [
+    "railings",
+    "stairs",
+    "windows",
+    "doors",
+    "trim_moulding",
+    "ceilings",
+    "walls"
+  ],
+  "style_directions_documented": [
+    "gothic",
+    "romanesque",
+    "renaissance",
+    "victorian",
+    "art_nouveau",
+    "islamic_geometric",
+    "modern",
+    "rustic"
+  ],
+  "validation": {
+    "component_style_sheet_validate": {
+      "command": "python3 scripts/validate_component_style_sheets_v0.py",
+      "result": "PASS domains=7 components=70 style_sheets=5 ledger_entries=11 sources=7 tools=23"
+    },
+    "asset_generation_registry_validate": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS source_component_style_sheets=5"
+    },
+    "receipt_json_parse": {
+      "command": "python3 -m json.tool workflow/reports/3D-LAB-0072-asset-family-documentation-v0/receipt.json",
+      "result": "PASS"
+    }
+  },
+  "rules": {
+    "documentation_only": true,
+    "no_generated_assets": true,
+    "no_blender_execution": true,
+    "source_style_sheet_boundary_unchanged": true,
+    "building_code_compliance_claim": false
+  },
+  "recommended_next_goal": "Promote one documented family page into a new machine-readable component style-sheet bundle, or compile the existing Gothic railing post style sheet into a deterministic recipe."
+}

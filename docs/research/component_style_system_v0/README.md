@@ -29,6 +29,8 @@ python3 scripts/validate_component_style_sheets_v0.py
 ## Documents
 
 - `component_style_system_v0.md` explains the organization model.
+- `asset_families/README.md` is the human-facing handbook for railings,
+  stairs, windows, doors, trim/moulding, ceilings/vaults, and walls.
 - `gothic_railing_post_research_findings_v0.md` records the first Gothic
   railing research findings and vocabulary.
 - `gothic_railing_post_build_plans_v0.md` turns the research into first build
