@@ -41,6 +41,7 @@ SUPPORTED_TOOL_FAMILIES = {
     "extrude_faces",
     "inset_faces",
     "modifier_bevel",
+    "modifier_boolean",
     "material_assign_by_part",
     "modifier_weighted_normal",
 }
@@ -271,6 +272,7 @@ def make_execution_report(
         "validation_warnings": validation_report["warnings"],
         "executed_steps": [],
         "skipped_steps": skipped,
+        "boolean_applications": [],
         "inset_applications": [],
         "extrusion_applications": [],
         "modifier_applications": [],
@@ -339,6 +341,22 @@ def create_part_objects(bpy: Any, asset: dict[str, Any], parts: list[dict[str, A
         bpy.context.collection.objects.link(obj)
         objects[part["part_id"]] = obj
     return objects
+
+
+def object_bounds(obj: Any) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
+    coords = [obj.matrix_world @ vertex.co for vertex in obj.data.vertices]
+    return (
+        (
+            min(float(coord.x) for coord in coords),
+            min(float(coord.y) for coord in coords),
+            min(float(coord.z) for coord in coords),
+        ),
+        (
+            max(float(coord.x) for coord in coords),
+            max(float(coord.y) for coord in coords),
+            max(float(coord.z) for coord in coords),
+        ),
+    )
 
 
 def target_objects(step: dict[str, Any], targets: dict[str, dict[str, Any]], objects: dict[str, Any]) -> list[Any]:
@@ -468,7 +486,6 @@ def add_raised_lip_rect(
         (start + 2, start + 3, start + 7, start + 6),
         (start + 3, start, start + 4, start + 7),
     ):
-        trim_face_indices.append(len(faces))
         faces.append(face)
         face_materials.append(material_index)
     return 8, 5, 1
@@ -676,6 +693,102 @@ def apply_extrude_along_normals(step: dict[str, Any], target: dict[str, Any], ta
     }
 
 
+def make_box_object(bpy: Any, name: str, min_corner: tuple[float, float, float], max_corner: tuple[float, float, float]) -> Any:
+    center = tuple((min_corner[index] + max_corner[index]) * 0.5 for index in range(3))
+    dimensions = tuple(max(max_corner[index] - min_corner[index], 0.001) for index in range(3))
+    bpy.ops.mesh.primitive_cube_add(size=1.0, location=center)
+    obj = bpy.context.object
+    obj.name = name
+    obj.dimensions = dimensions
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    obj.hide_render = True
+    obj.display_type = "WIRE"
+    return obj
+
+
+def apply_boolean_cut(bpy: Any, step: dict[str, Any], target: dict[str, Any], cutter_sources: list[Any], objects: dict[str, Any]) -> dict[str, Any]:
+    selector = require_object(target.get("selector"), f"{target['target_id']}.selector")
+    if selector.get("kind") != "part_ids":
+        fail(f"{step['step_id']} requires a part_ids selector")
+    requested_part_ids = require_list(selector.get("part_ids"), f"{target['target_id']}.selector.part_ids")
+    source_names = [obj.name for obj in cutter_sources]
+    if sorted(source_names) != sorted(requested_part_ids):
+        fail(f"{step['step_id']} cutter sources must match selector part_ids")
+    params = step["params"]
+    solver = require_string(params.get("solver"), f"{step['step_id']}.params.solver")
+    cut_depth = float(params["cut_depth_m"])
+    cleanup_cutters = bool(params.get("cleanup_cutters", True))
+    leave_shadow_panel = bool(params.get("leave_shadow_panel", True))
+    target_obj = objects.get("post_core")
+    if target_obj is None:
+        fail(f"{step['step_id']} requires post_core as the first socket boolean target")
+    target_min, target_max = object_bounds(target_obj)
+    cutter_names: list[str] = []
+    removed_cutter_names: list[str] = []
+    applied_modifier_count = 0
+    failed_modifier_count = 0
+    solver_fallbacks: list[str] = []
+    for source_obj in cutter_sources:
+        source_min, source_max = object_bounds(source_obj)
+        source_center_x = (source_min[0] + source_max[0]) * 0.5
+        sign = 1.0 if source_center_x >= 0.0 else -1.0
+        if sign > 0.0:
+            min_x = target_max[0] - cut_depth
+            max_x = source_max[0]
+            side = "east"
+        else:
+            min_x = source_min[0]
+            max_x = target_min[0] + cut_depth
+            side = "west"
+        cutter = make_box_object(
+            bpy,
+            f"{step['step_id']}_{side}_cutter",
+            (min_x, source_min[1], source_min[2]),
+            (max_x, source_max[1], source_max[2]),
+        )
+        cutter_names.append(cutter.name)
+        modifier = target_obj.modifiers.new(name=f"{step['step_id']}_{side}", type="BOOLEAN")
+        modifier.operation = "DIFFERENCE"
+        if hasattr(modifier, "solver"):
+            try:
+                modifier.solver = solver
+            except TypeError:
+                solver_fallbacks.append(modifier.name)
+        modifier.object = cutter
+        bpy.ops.object.select_all(action="DESELECT")
+        target_obj.select_set(True)
+        bpy.context.view_layer.objects.active = target_obj
+        try:
+            bpy.ops.object.modifier_apply(modifier=modifier.name)
+            applied_modifier_count += 1
+        except RuntimeError:
+            target_obj.modifiers.remove(modifier)
+            failed_modifier_count += 1
+        target_obj.select_set(False)
+        if cleanup_cutters:
+            removed_cutter_names.append(cutter.name)
+            bpy.data.objects.remove(cutter, do_unlink=True)
+    shadow_names = source_names if leave_shadow_panel else []
+    return {
+        "step_id": step["step_id"],
+        "tool_id": step["tool_id"],
+        "operation": step["operation"],
+        "target_objects": [target_obj.name],
+        "source_socket_objects": source_names,
+        "cutter_names": cutter_names,
+        "applied_modifier_count": applied_modifier_count,
+        "failed_modifier_count": failed_modifier_count,
+        "solver_requested": solver,
+        "solver_fallbacks": solver_fallbacks,
+        "cut_depth_m": cut_depth,
+        "socket_shadow_panel_count": len(shadow_names),
+        "socket_shadow_objects": shadow_names,
+        "cleanup_cutters": cleanup_cutters,
+        "cutter_objects_removed": cleanup_cutters and len(removed_cutter_names) == len(cutter_names),
+        "removed_cutter_names": removed_cutter_names,
+    }
+
+
 def apply_bevel(bpy: Any, step: dict[str, Any], objects: list[Any]) -> dict[str, Any]:
     params = step["params"]
     target_names = []
@@ -845,6 +958,7 @@ def run_blender_execution(
     trim_slot_id = material_slot_id_for_role(plan, "trim")
     report = make_execution_report(plan_path, asset_path, plan, asset, validation_report, parts, generated=True)
     report["executed_steps"] = []
+    report["boolean_applications"] = []
     report["inset_applications"] = []
     report["extrusion_applications"] = []
     report["modifier_applications"] = []
@@ -865,6 +979,11 @@ def run_blender_execution(
             if target is None:
                 fail(f"{step['step_id']} references unknown target `{step['target']}`")
             report["extrusion_applications"].append(apply_extrude_along_normals(step, target, targets, target_objects(step, targets, objects), trim_slot_index))
+        elif step["tool_id"] == "modifier_boolean":
+            target = targets.get(require_string(step.get("target"), f"{step['step_id']}.target"))
+            if target is None:
+                fail(f"{step['step_id']} references unknown target `{step['target']}`")
+            report["boolean_applications"].append(apply_boolean_cut(bpy, step, target, target_objects(step, targets, objects), objects))
         elif step["tool_id"] == "modifier_bevel":
             application = apply_bevel(bpy, step, target_objects(step, targets, objects))
             report["modifier_applications"].append(application)
@@ -902,6 +1021,8 @@ def run_blender_execution(
     report["executed_step_count"] = len(report["executed_steps"])
     report["inset_panel_face_count"] = sum(item["panel_face_count"] for item in report["inset_applications"])
     report["extruded_lip_surface_count"] = sum(item["lip_surface_count"] for item in report["extrusion_applications"])
+    report["boolean_cut_count"] = sum(item["applied_modifier_count"] for item in report["boolean_applications"])
+    report["socket_shadow_panel_count"] = sum(item["socket_shadow_panel_count"] for item in report["boolean_applications"])
     report["material_assignment"] = material_assignment
     report["trim_lip_face_count"] = material_assignment.get("assigned_faces_by_slot", {}).get(trim_slot_id, 0) if trim_slot_id else 0
     report["weighted_normals"] = weighted_normals
@@ -910,6 +1031,7 @@ def run_blender_execution(
         "future_steps_skipped": report["skipped_future_step_count"] == report["future_step_count"],
         "source_asset_preserved": True,
         "source_recipe_not_read": True,
+        "booleans_applied": report["boolean_cut_count"] >= 2 and report["socket_shadow_panel_count"] >= 2,
         "insets_applied": report["inset_panel_face_count"] >= 8,
         "extrusions_applied": report["extruded_lip_surface_count"] >= 16 and report["trim_lip_face_count"] >= 16,
         "material_assignment_applied": bool(material_assignment),

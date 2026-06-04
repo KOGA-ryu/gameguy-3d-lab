@@ -34,6 +34,7 @@ REQUIRED_QUALITY_FLAGS = {
     "future_steps_skipped",
     "source_asset_preserved",
     "source_recipe_not_read",
+    "booleans_applied",
     "insets_applied",
     "extrusions_applied",
     "material_assignment_applied",
@@ -45,6 +46,7 @@ REQUIRED_UNIQUE_TOOLS = {
     "inset_faces",
     "material_assign_by_part",
     "modifier_bevel",
+    "modifier_boolean",
     "modifier_weighted_normal",
 }
 
@@ -175,6 +177,20 @@ def validate_quality(report: dict[str, Any]) -> None:
     material_assignment = require_object(report.get("material_assignment"), "material_assignment")
     require_object(material_assignment.get("assigned_parts_by_role"), "material_assignment.assigned_parts_by_role")
     require_object(material_assignment.get("assigned_faces_by_slot"), "material_assignment.assigned_faces_by_slot")
+    booleans = require_list(report.get("boolean_applications"), "boolean_applications")
+    if len(booleans) < 1:
+        fail("boolean_applications must include the socket reveal boolean step")
+    first_boolean = require_object(booleans[0], "boolean_applications[0]")
+    if require_int(first_boolean.get("applied_modifier_count"), "boolean_applications[0].applied_modifier_count", minimum=1) < 2:
+        fail("boolean_applications[0].applied_modifier_count must include east and west socket cuts")
+    if require_int(first_boolean.get("failed_modifier_count"), "boolean_applications[0].failed_modifier_count", minimum=0) != 0:
+        fail("boolean_applications[0].failed_modifier_count must be 0")
+    if require_bool(first_boolean.get("cutter_objects_removed"), "boolean_applications[0].cutter_objects_removed") is not True:
+        fail("boolean_applications[0].cutter_objects_removed must be true")
+    if require_int(report.get("boolean_cut_count"), "boolean_cut_count", minimum=1) < 2:
+        fail("boolean_cut_count must include east and west socket cuts")
+    if require_int(report.get("socket_shadow_panel_count"), "socket_shadow_panel_count", minimum=1) < 2:
+        fail("socket_shadow_panel_count must include east and west socket shadow panels")
     insets = require_list(report.get("inset_applications"), "inset_applications")
     if len(insets) < 2:
         fail("inset_applications must include both fielded panel inset steps")
