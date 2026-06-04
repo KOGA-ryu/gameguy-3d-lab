@@ -1,0 +1,52 @@
+{
+  "ops": [
+    {
+      "op": "AddPathSweep",
+      "name": "proof.rose_scroll_sweep_v0",
+      "path": {
+        "type": "spiral",
+        "turns": 1.15,
+        "radius_start": 0.08,
+        "radius_end": 0.62,
+        "height": 0.06,
+        "x": 1.35,
+        "y": 0.0,
+        "z": 0.0,
+        "samples": 40,
+        "start_angle_deg": 0,
+        "direction": "ccw"
+      },
+      "profile": {
+        "type": "oval",
+        "radius_x": 0.08,
+        "radius_y": 0.035,
+        "vertices": 8
+      },
+      "taper": [
+        {
+          "t": 0.0,
+          "scale": 0.35
+        },
+        {
+          "t": 0.28,
+          "scale": 1.0
+        },
+        {
+          "t": 0.82,
+          "scale": 0.74
+        },
+        {
+          "t": 1.0,
+          "scale": 0.15
+        }
+      ],
+      "repeat": {
+        "type": "radial",
+        "count": 8,
+        "x": 0.0,
+        "y": 0.0
+      },
+      "material": "stone"
+    }
+  ]
+}

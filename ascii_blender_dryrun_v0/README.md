@@ -19,6 +19,9 @@ Do not make Blender infer meaning from pixels. Write or compile a recipe, run it
 - `ascii_blender_dryrun/profile_mouldings.py`
   Profile helpers that compile terms such as `fillet`, `torus`, `scotia`, `cavetto`, `bead`, `cyma`, `annulet`, and `echinus` into deterministic radius/z moulding points.
 
+- `ascii_blender_dryrun/sweep_geometry.py`
+  Deterministic helpers for twisted/tapered section stacks and swept spiral paths.
+
 - `ascii_blender_dryrun/ascii_backend.py`  
   A dry-run backend that renders front, side, and top ASCII projections.
 
@@ -30,6 +33,12 @@ Do not make Blender infer meaning from pixels. Write or compile a recipe, run it
 
 - `examples/doric_column_recipe_v0.json`  
   Example recipe JSON.
+
+- `examples/twisted_square_bar_recipe_v0.json`
+  Straight section-stack proof for hot-metal twist, taper, and bulge behavior.
+
+- `examples/rose_scroll_sweep_recipe_v0.json`
+  Curved path-sweep proof for filigree, rose, scroll, vine, and bent-glass behavior.
 
 - `tests/test_dryrun.py`  
   Minimal tests for the recipe, ASCII backend, validation, and Blender emitter.
@@ -66,12 +75,16 @@ pytest
 
 This is v0. It intentionally stabilizes the recipe/backend contract before fancy geometry.
 
-The Blender script currently emits primitive boxes, cylinders, revolved moulding profiles, flute cutters, taper, and entasis. Mouldings are source-term driven: recipes can use `AddProfileMoulding` sequences, and the compiler expands them into low-level `AddMoulding` radius/z points.
+The Blender script currently emits primitive boxes, cylinders, revolved moulding profiles, flute cutters, taper, entasis, straight section stacks, and swept spiral paths. Mouldings are source-term driven: recipes can use `AddProfileMoulding` sequences, and the compiler expands them into low-level `AddMoulding` radius/z points.
+
+`AddSectionStack` is for solid twisted/tapered cross-section meshes such as balusters, hot-twisted bars, square-to-round transitions, mace shafts, and ribbed posts.
+
+`AddPathSweep` is for bent ornamental strands such as filigree, rose scrolls, vines, ironwork curls, and glass-like bends.
 
 ## Next slices
 
-1. Add OBJ dry-run mesh output outside Blender.
+1. Add OBJ/GLB dry-run mesh output outside Blender.
 2. Add ASCII/image reference parser that compiles into this same recipe format.
-3. Add material passes for marble, limestone, sandstone, and aged stone.
+3. Add material passes for marble, limestone, sandstone, aged stone, iron, and glass.
 4. Add recipe-owned export and preview directives for Blender runs.
-5. Add more architectural profile presets for regional styles and period-specific orders.
+5. Add path families beyond spiral: Bezier strokes, arches, S-scrolls, leaves, and tracery ribs.

@@ -29,6 +29,12 @@
             "$ref": "#/$defs/addProfileMoulding"
           },
           {
+            "$ref": "#/$defs/addSectionStack"
+          },
+          {
+            "$ref": "#/$defs/addPathSweep"
+          },
+          {
             "$ref": "#/$defs/cutFlutes"
           },
           {
@@ -358,6 +364,250 @@
         },
         "vertices": {
           "$ref": "#/$defs/vertices"
+        },
+        "material": {
+          "$ref": "#/$defs/material"
+        }
+      }
+    },
+    "shapeProfile": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "circle",
+            "octagon",
+            "oval",
+            "ribbon",
+            "square"
+          ]
+        },
+        "radius": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "size": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "radius_x": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "radius_y": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "width": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "height": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "vertices": {
+          "$ref": "#/$defs/vertices"
+        }
+      }
+    },
+    "sectionStackSection": {
+      "type": "object",
+      "required": [
+        "z",
+        "profile"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "z": {
+          "$ref": "#/$defs/number"
+        },
+        "profile": {
+          "$ref": "#/$defs/shapeProfile"
+        },
+        "radius": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "rotation_deg": {
+          "$ref": "#/$defs/number"
+        },
+        "scale": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "x": {
+          "$ref": "#/$defs/number"
+        },
+        "y": {
+          "$ref": "#/$defs/number"
+        },
+        "x_offset": {
+          "$ref": "#/$defs/number"
+        },
+        "y_offset": {
+          "$ref": "#/$defs/number"
+        },
+        "vertices": {
+          "$ref": "#/$defs/vertices"
+        }
+      }
+    },
+    "addSectionStack": {
+      "type": "object",
+      "required": [
+        "op",
+        "name",
+        "sections"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "AddSectionStack"
+        },
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "sections": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/sectionStackSection"
+          }
+        },
+        "x": {
+          "$ref": "#/$defs/number"
+        },
+        "y": {
+          "$ref": "#/$defs/number"
+        },
+        "vertices": {
+          "$ref": "#/$defs/vertices"
+        },
+        "material": {
+          "$ref": "#/$defs/material"
+        }
+      }
+    },
+    "spiralPath": {
+      "type": "object",
+      "required": [
+        "type",
+        "turns",
+        "radius_start",
+        "radius_end"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "spiral"
+        },
+        "turns": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "radius_start": {
+          "$ref": "#/$defs/nonNegativeNumber"
+        },
+        "radius_end": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "height": {
+          "$ref": "#/$defs/number"
+        },
+        "x": {
+          "$ref": "#/$defs/number"
+        },
+        "y": {
+          "$ref": "#/$defs/number"
+        },
+        "z": {
+          "$ref": "#/$defs/number"
+        },
+        "samples": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 512
+        },
+        "start_angle_deg": {
+          "$ref": "#/$defs/number"
+        },
+        "direction": {
+          "enum": [
+            "ccw",
+            "cw"
+          ]
+        }
+      }
+    },
+    "sweepTaperPoint": {
+      "type": "object",
+      "required": [
+        "t",
+        "scale"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "t": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "scale": {
+          "$ref": "#/$defs/positiveNumber"
+        }
+      }
+    },
+    "radialRepeat": {
+      "type": "object",
+      "required": [
+        "type",
+        "count"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "radial"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128
+        },
+        "x": {
+          "$ref": "#/$defs/number"
+        },
+        "y": {
+          "$ref": "#/$defs/number"
+        }
+      }
+    },
+    "addPathSweep": {
+      "type": "object",
+      "required": [
+        "op",
+        "name",
+        "path",
+        "profile"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "AddPathSweep"
+        },
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "path": {
+          "$ref": "#/$defs/spiralPath"
+        },
+        "profile": {
+          "$ref": "#/$defs/shapeProfile"
+        },
+        "taper": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sweepTaperPoint"
+          }
+        },
+        "repeat": {
+          "$ref": "#/$defs/radialRepeat"
         },
         "material": {
           "$ref": "#/$defs/material"

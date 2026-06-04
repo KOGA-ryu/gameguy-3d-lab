@@ -6,8 +6,7 @@ from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "schemas" / "recipe_v0.schema.json"
-RECIPE_PATHS = [
-    ROOT / "examples" / "doric_column_recipe_v0.json",
+RECIPE_PATHS = sorted((ROOT / "examples").glob("*.json")) + [
     ROOT / "out" / "compiled_recipe.json",
 ]
 

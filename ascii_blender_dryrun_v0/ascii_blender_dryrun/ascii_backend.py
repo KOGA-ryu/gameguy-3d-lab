@@ -16,7 +16,13 @@ import math
 from dataclasses import dataclass
 from typing import Iterable, Literal
 
-from .ops import AddBox, AddCylinder, AddMoulding, AddRing, CutFlutes, BuildOp
+from .ops import AddBox, AddCylinder, AddMoulding, AddPathSweep, AddRing, AddSectionStack, CutFlutes, BuildOp
+from .sweep_geometry import (
+    path_sweep_bounds,
+    path_sweep_instances,
+    section_stack_bounds,
+    transformed_profile_points,
+)
 
 
 Projection = Literal["front", "side", "top"]
@@ -65,6 +71,24 @@ def estimate_bounds(ops: Iterable[BuildOp]) -> Bounds:
             max_y = max(max_y, op.y + radius)
             min_z = min(min_z, op.base_z + min(local_zs))
             max_z = max(max_z, op.base_z + max(local_zs))
+        elif isinstance(op, AddSectionStack):
+            sx0, sx1, sy0, sy1, sz0, sz1 = section_stack_bounds(op.sections, op.x, op.y)
+            min_x = min(min_x, sx0)
+            max_x = max(max_x, sx1)
+            min_y = min(min_y, sy0)
+            max_y = max(max_y, sy1)
+            min_z = min(min_z, sz0)
+            max_z = max(max_z, sz1)
+        elif isinstance(op, AddPathSweep):
+            sx0, sx1, sy0, sy1, sz0, sz1 = path_sweep_bounds(
+                op.path, op.profile, op.taper, op.repeat
+            )
+            min_x = min(min_x, sx0)
+            max_x = max(max_x, sx1)
+            min_y = min(min_y, sy0)
+            max_y = max(max_y, sy1)
+            min_z = min(min_z, sz0)
+            max_z = max(max_z, sz1)
 
     if min_x == float("inf"):
         return Bounds(-1, 1, -1, 1, 0, 1)
@@ -206,6 +230,37 @@ class AsciiBackend:
             self._line(c, left_points[index][0], left_points[index][1], left_points[index + 1][0], left_points[index + 1][1], "█")
             self._line(c, right_points[index][0], right_points[index][1], right_points[index + 1][0], right_points[index + 1][1], "█")
 
+    def _draw_section_stack_elevation(self, c: AsciiCanvas, mapper, op: AddSectionStack, axis: str) -> None:
+        left_points: list[tuple[int, int]] = []
+        right_points: list[tuple[int, int]] = []
+        for section in op.sections:
+            points = transformed_profile_points(section, {"type": "circle", "radius": 1.0}, op.vertices)
+            center = op.x if axis == "x" else op.y
+            center += float(section.get(axis, section.get(f"{axis}_offset", 0.0)))
+            local_values = [point[0] if axis == "x" else point[1] for point in points]
+            z = float(section["z"])
+            left = mapper(center + min(local_values), z)
+            right = mapper(center + max(local_values), z)
+            left_points.append(left)
+            right_points.append(right)
+            c.line_h(left[1], left[0], right[0], "▒")
+        for index in range(len(left_points) - 1):
+            self._line(c, left_points[index][0], left_points[index][1], left_points[index + 1][0], left_points[index + 1][1], "█")
+            self._line(c, right_points[index][0], right_points[index][1], right_points[index + 1][0], right_points[index + 1][1], "█")
+
+    def _draw_path_sweep(self, c: AsciiCanvas, mapper, op: AddPathSweep, projection: Projection) -> None:
+        for instance in path_sweep_instances(op.path, op.repeat):
+            mapped: list[tuple[int, int]] = []
+            for point in instance:
+                if projection == "front":
+                    mapped.append(mapper(point["x"], point["z"]))
+                elif projection == "side":
+                    mapped.append(mapper(point["y"], point["z"]))
+                else:
+                    mapped.append(mapper(point["x"], point["y"]))
+            for start, end in zip(mapped, mapped[1:]):
+                self._line(c, start[0], start[1], end[0], end[1], "▓")
+
     def _draw_front(self, c: AsciiCanvas, mapper, op: BuildOp) -> None:
         if isinstance(op, AddBox):
             x1, y1 = mapper(op.x - op.width / 2, op.z - op.height / 2)
@@ -221,6 +276,10 @@ class AsciiBackend:
             c.rect(x1, y1, x2, y2, fill="▓", border="█")
         elif isinstance(op, AddMoulding):
             self._draw_moulding_elevation(c, mapper, op.x, op.base_z, op.profile)
+        elif isinstance(op, AddSectionStack):
+            self._draw_section_stack_elevation(c, mapper, op, "x")
+        elif isinstance(op, AddPathSweep):
+            self._draw_path_sweep(c, mapper, op, "front")
         elif isinstance(op, CutFlutes):
             # Front preview: rhythm markers only, because actual radial boolean
             # cuts belong to the Blender backend.
@@ -245,6 +304,10 @@ class AsciiBackend:
             c.rect(x1, y1, x2, y2, fill="▓", border="█")
         elif isinstance(op, AddMoulding):
             self._draw_moulding_elevation(c, mapper, op.y, op.base_z, op.profile)
+        elif isinstance(op, AddSectionStack):
+            self._draw_section_stack_elevation(c, mapper, op, "y")
+        elif isinstance(op, AddPathSweep):
+            self._draw_path_sweep(c, mapper, op, "side")
 
     def _draw_top(self, c: AsciiCanvas, mapper, op: BuildOp) -> None:
         if isinstance(op, AddBox):
@@ -267,6 +330,18 @@ class AsciiBackend:
             rx, _ = mapper(op.x + radius, op.y)
             r = abs(rx - cx)
             c.circle(cx, cy, r, fill="▓", border="█")
+        elif isinstance(op, AddSectionStack):
+            for section in op.sections:
+                points = transformed_profile_points(
+                    section, {"type": "circle", "radius": 1.0}, op.vertices
+                )
+                center_x = op.x + float(section.get("x", section.get("x_offset", 0.0)))
+                center_y = op.y + float(section.get("y", section.get("y_offset", 0.0)))
+                mapped = [mapper(center_x + px, center_y + py) for px, py in points]
+                for start, end in zip(mapped, mapped[1:] + mapped[:1]):
+                    self._line(c, start[0], start[1], end[0], end[1], "▒")
+        elif isinstance(op, AddPathSweep):
+            self._draw_path_sweep(c, mapper, op, "top")
         elif isinstance(op, CutFlutes):
             cx, cy = c.width // 2, c.height // 2
             r1 = round(min(c.width, c.height) * 0.12)

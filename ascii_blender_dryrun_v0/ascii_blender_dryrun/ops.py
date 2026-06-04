@@ -83,6 +83,26 @@ class AddProfileMoulding:
 
 
 @dataclass(frozen=True)
+class AddSectionStack:
+    name: str
+    sections: List[Dict[str, Any]]
+    x: float = 0.0
+    y: float = 0.0
+    vertices: int = 32
+    material: str = "stone"
+
+
+@dataclass(frozen=True)
+class AddPathSweep:
+    name: str
+    path: Dict[str, Any]
+    profile: Dict[str, Any]
+    taper: List[Dict[str, Any]] | None = None
+    repeat: Dict[str, Any] | None = None
+    material: str = "stone"
+
+
+@dataclass(frozen=True)
 class CutFlutes:
     target: str
     count: int
@@ -107,6 +127,8 @@ BuildOp = Union[
     AddRing,
     AddMoulding,
     AddProfileMoulding,
+    AddSectionStack,
+    AddPathSweep,
     CutFlutes,
     AddLabel,
 ]
@@ -118,6 +140,8 @@ OP_CLASSES = {
     "AddRing": AddRing,
     "AddMoulding": AddMoulding,
     "AddProfileMoulding": AddProfileMoulding,
+    "AddSectionStack": AddSectionStack,
+    "AddPathSweep": AddPathSweep,
     "CutFlutes": CutFlutes,
     "AddLabel": AddLabel,
 }

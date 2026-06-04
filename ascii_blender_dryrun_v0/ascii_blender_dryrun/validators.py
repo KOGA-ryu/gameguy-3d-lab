@@ -9,8 +9,19 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
-from .ops import AddBox, AddCylinder, AddMoulding, AddProfileMoulding, AddRing, CutFlutes, BuildOp
+from .ops import (
+    AddBox,
+    AddCylinder,
+    AddMoulding,
+    AddPathSweep,
+    AddProfileMoulding,
+    AddRing,
+    AddSectionStack,
+    CutFlutes,
+    BuildOp,
+)
 from .profile_mouldings import SUPPORTED_TERMS
+from .sweep_geometry import path_sweep_bounds, profile_points, transformed_profile_points
 
 
 @dataclass
@@ -87,6 +98,47 @@ def validate_ops(ops: list[BuildOp]) -> list[Finding]:
                         findings.append(Finding("error", "bad_profile_segment_radius", f"{op.name} segment {index} {key} must be positive."))
                 if "steps" in segment and int(segment["steps"]) < 1:
                     findings.append(Finding("error", "bad_profile_segment_steps", f"{op.name} segment {index} steps must be at least 1."))
+        elif isinstance(op, AddSectionStack):
+            if len(op.sections) < 2:
+                findings.append(Finding("error", "short_section_stack", f"{op.name} needs at least two sections."))
+            if op.vertices < 3:
+                findings.append(Finding("error", "bad_section_stack_vertices", f"{op.name} needs at least three vertices."))
+            previous_z: float | None = None
+            point_count: int | None = None
+            for index, section in enumerate(op.sections):
+                if "z" not in section:
+                    findings.append(Finding("error", "missing_section_z", f"{op.name} section {index} needs z."))
+                    continue
+                z = float(section["z"])
+                if previous_z is not None and z <= previous_z:
+                    findings.append(Finding("error", "section_stack_z_order", f"{op.name} sections must rise in z order."))
+                previous_z = z
+                if float(section.get("scale", 1.0)) <= 0:
+                    findings.append(Finding("error", "bad_section_scale", f"{op.name} section {index} scale must be positive."))
+                try:
+                    points = transformed_profile_points(section, {"type": "circle", "radius": 1.0}, op.vertices)
+                except (TypeError, ValueError) as exc:
+                    findings.append(Finding("error", "bad_section_profile", f"{op.name} section {index}: {exc}"))
+                    continue
+                if point_count is None:
+                    point_count = len(points)
+                elif len(points) != point_count:
+                    findings.append(Finding("error", "mixed_section_point_counts", f"{op.name} section profiles must have matching point counts."))
+        elif isinstance(op, AddPathSweep):
+            try:
+                profile_points(op.profile)
+            except (TypeError, ValueError) as exc:
+                findings.append(Finding("error", "bad_sweep_profile", f"{op.name}: {exc}"))
+            try:
+                path_sweep_bounds(op.path, op.profile, op.taper, op.repeat)
+            except (TypeError, ValueError) as exc:
+                findings.append(Finding("error", "bad_sweep_path", f"{op.name}: {exc}"))
+            if op.taper:
+                for index, point in enumerate(op.taper):
+                    if not (0.0 <= float(point.get("t", -1.0)) <= 1.0):
+                        findings.append(Finding("error", "bad_sweep_taper_t", f"{op.name} taper point {index} t must be 0..1."))
+                    if float(point.get("scale", 0.0)) <= 0:
+                        findings.append(Finding("error", "bad_sweep_taper_scale", f"{op.name} taper point {index} scale must be positive."))
         elif isinstance(op, CutFlutes):
             if op.target not in names:
                 findings.append(Finding("error", "flute_missing_target", f"CutFlutes target does not exist before cut: {op.target}"))
@@ -98,18 +150,23 @@ def validate_ops(ops: list[BuildOp]) -> list[Finding]:
                 findings.append(Finding("warning", "odd_flute_width_ratio", f"Flute width ratio looks odd: {op.width_ratio}"))
 
     # Column-specific sanity checks by convention.
-    shaft = cylinders.get("shaft.tapered_fluted_core")
-    if shaft is None:
-        findings.append(Finding("error", "missing_shaft", "Expected shaft.tapered_fluted_core."))
-    else:
-        base_boxes = [op for op in ops if isinstance(op, AddBox) and op.name.startswith("plinth.")]
-        if base_boxes:
-            widest_base = max(max(op.width, op.depth) for op in base_boxes)
-            if widest_base <= shaft.radius * 2:
-                findings.append(Finding("warning", "base_not_wider_than_shaft", "Base should be wider than shaft."))
-        caps = [op for op in ops if getattr(op, "name", "").startswith("capital.")]
-        if not caps:
-            findings.append(Finding("warning", "missing_capital", "No capital parts found."))
+    looks_like_column = any(
+        getattr(op, "name", "").startswith(("plinth.", "shaft.", "capital."))
+        for op in ops
+    )
+    if looks_like_column:
+        shaft = cylinders.get("shaft.tapered_fluted_core")
+        if shaft is None:
+            findings.append(Finding("error", "missing_shaft", "Expected shaft.tapered_fluted_core."))
+        else:
+            base_boxes = [op for op in ops if isinstance(op, AddBox) and op.name.startswith("plinth.")]
+            if base_boxes:
+                widest_base = max(max(op.width, op.depth) for op in base_boxes)
+                if widest_base <= shaft.radius * 2:
+                    findings.append(Finding("warning", "base_not_wider_than_shaft", "Base should be wider than shaft."))
+            caps = [op for op in ops if getattr(op, "name", "").startswith("capital.")]
+            if not caps:
+                findings.append(Finding("warning", "missing_capital", "No capital parts found."))
 
     return findings
 
