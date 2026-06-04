@@ -35,6 +35,7 @@ REQUIRED_QUALITY_FLAGS = {
     "source_asset_preserved",
     "source_recipe_not_read",
     "booleans_applied",
+    "sweeps_applied",
     "insets_applied",
     "extrusions_applied",
     "material_assignment_applied",
@@ -42,6 +43,7 @@ REQUIRED_QUALITY_FLAGS = {
     "weighted_normals_added",
 }
 REQUIRED_UNIQUE_TOOLS = {
+    "curve_bevel_profile",
     "extrude_faces",
     "inset_faces",
     "material_assign_by_part",
@@ -191,6 +193,15 @@ def validate_quality(report: dict[str, Any]) -> None:
         fail("boolean_cut_count must include east and west socket cuts")
     if require_int(report.get("socket_shadow_panel_count"), "socket_shadow_panel_count", minimum=1) < 2:
         fail("socket_shadow_panel_count must include east and west socket shadow panels")
+    sweeps = require_list(report.get("sweep_applications"), "sweep_applications")
+    if len(sweeps) < 1:
+        fail("sweep_applications must include the cap lower outer ogee lip")
+    if require_int(report.get("sweep_profile_object_count"), "sweep_profile_object_count", minimum=1) < 1:
+        fail("sweep_profile_object_count must include the generated cap profile object")
+    if require_int(report.get("sweep_profile_face_count"), "sweep_profile_face_count", minimum=1) < 40:
+        fail("sweep_profile_face_count must include the generated cap profile faces")
+    if require_int(report.get("sweep_cap_material_face_count"), "sweep_cap_material_face_count", minimum=1) < 40:
+        fail("sweep_cap_material_face_count must include cap material faces")
     insets = require_list(report.get("inset_applications"), "inset_applications")
     if len(insets) < 2:
         fail("inset_applications must include both fielded panel inset steps")

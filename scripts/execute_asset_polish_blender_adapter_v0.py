@@ -38,6 +38,7 @@ DEFAULT_OUT = Path("/tmp/gameguy_asset_polish_blender_execution_v0")
 DEFAULT_REPORT = Path("/tmp/gameguy_asset_polish_blender_executor_validate_only_v0.json")
 REPORT_SCHEMA = "asset_polish_blender_execution_report_v0"
 SUPPORTED_TOOL_FAMILIES = {
+    "curve_bevel_profile",
     "extrude_faces",
     "inset_faces",
     "modifier_bevel",
@@ -273,6 +274,7 @@ def make_execution_report(
         "executed_steps": [],
         "skipped_steps": skipped,
         "boolean_applications": [],
+        "sweep_applications": [],
         "inset_applications": [],
         "extrusion_applications": [],
         "modifier_applications": [],
@@ -355,6 +357,22 @@ def object_bounds(obj: Any) -> tuple[tuple[float, float, float], tuple[float, fl
             max(float(coord.x) for coord in coords),
             max(float(coord.y) for coord in coords),
             max(float(coord.z) for coord in coords),
+        ),
+    )
+
+
+def combined_bounds(objects: list[Any]) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
+    bounds = [object_bounds(obj) for obj in objects]
+    return (
+        (
+            min(item[0][0] for item in bounds),
+            min(item[0][1] for item in bounds),
+            min(item[0][2] for item in bounds),
+        ),
+        (
+            max(item[1][0] for item in bounds),
+            max(item[1][1] for item in bounds),
+            max(item[1][2] for item in bounds),
         ),
     )
 
@@ -789,6 +807,91 @@ def apply_boolean_cut(bpy: Any, step: dict[str, Any], target: dict[str, Any], cu
     }
 
 
+def rectangle_perimeter_points(half_x: float, half_y: float, z: float) -> list[tuple[float, float, float]]:
+    return [
+        (round(-half_x, 6), round(-half_y, 6), round(z, 6)),
+        (0.0, round(-half_y, 6), round(z, 6)),
+        (round(half_x, 6), round(-half_y, 6), round(z, 6)),
+        (round(half_x, 6), 0.0, round(z, 6)),
+        (round(half_x, 6), round(half_y, 6), round(z, 6)),
+        (0.0, round(half_y, 6), round(z, 6)),
+        (round(-half_x, 6), round(half_y, 6), round(z, 6)),
+        (round(-half_x, 6), 0.0, round(z, 6)),
+    ]
+
+
+def ogee_profile_levels(projection: float, height: float) -> list[tuple[float, float]]:
+    return [
+        (0.0, 0.0),
+        (projection * 0.36, height * 0.18),
+        (projection * 0.92, height * 0.40),
+        (projection * 0.68, height * 0.62),
+        (projection * 0.28, height * 0.82),
+        (projection * 0.10, height),
+    ]
+
+
+def apply_sweep_profile(bpy: Any, step: dict[str, Any], target: dict[str, Any], source_objects: list[Any], materials: list[Any], cap_slot_index: int | None) -> dict[str, Any]:
+    selector = require_object(target.get("selector"), f"{target['target_id']}.selector")
+    if selector.get("kind") != "edge_band":
+        fail(f"{step['step_id']} requires an edge_band selector")
+    band = require_string(selector.get("band"), f"{target['target_id']}.selector.band")
+    params = step["params"]
+    projection = float(params["projection_m"])
+    height = float(params["height_m"])
+    profile = require_string(params.get("profile"), f"{step['step_id']}.params.profile")
+    if profile != "small_ogee_over_bead":
+        fail(f"{step['step_id']} profile `{profile}` is not supported by this execution slice")
+    min_corner, max_corner = combined_bounds(source_objects)
+    square_cap_bounds = [object_bounds(obj) for obj in source_objects if obj.name == "square_cap"]
+    base_z = square_cap_bounds[0][0][2] if square_cap_bounds else min_corner[2]
+    half_x = max(abs(min_corner[0]), abs(max_corner[0]))
+    half_y = max(abs(min_corner[1]), abs(max_corner[1]))
+    vertices: list[tuple[float, float, float]] = []
+    levels = ogee_profile_levels(projection, height)
+    for offset, z_offset in levels:
+        vertices.extend(rectangle_perimeter_points(half_x + offset, half_y + offset, base_z + z_offset))
+    faces: list[tuple[int, ...]] = []
+    ring_count = len(levels)
+    segment_count = 8
+    for ring_index in range(ring_count - 1):
+        current = ring_index * segment_count
+        next_ring = (ring_index + 1) * segment_count
+        for segment_index in range(segment_count):
+            next_segment = (segment_index + 1) % segment_count
+            faces.append((current + segment_index, current + next_segment, next_ring + next_segment, next_ring + segment_index))
+    mesh = bpy.data.meshes.new(f"{step['step_id']}_mesh")
+    mesh.from_pydata(vertices, [], faces)
+    mesh.update(calc_edges=True)
+    obj = bpy.data.objects.new(step["step_id"], mesh)
+    for material in materials:
+        obj.data.materials.append(material)
+    if cap_slot_index is not None:
+        for polygon in obj.data.polygons:
+            polygon.material_index = cap_slot_index
+    obj["asset_polish_generated"] = True
+    obj["polish_material_role"] = "cap"
+    obj["polish_profile"] = profile
+    obj["polish_edge_band"] = band
+    bpy.context.collection.objects.link(obj)
+    return {
+        "step_id": step["step_id"],
+        "tool_id": step["tool_id"],
+        "operation": step["operation"],
+        "profile": profile,
+        "target_objects": [obj.name for obj in source_objects],
+        "generated_object": obj.name,
+        "band": band,
+        "projection_m": projection,
+        "height_m": height,
+        "profile_level_count": ring_count,
+        "perimeter_segment_count": segment_count,
+        "vertex_count": len(vertices),
+        "face_count": len(faces),
+        "cap_material_face_count": len(faces) if cap_slot_index is not None else 0,
+    }
+
+
 def apply_bevel(bpy: Any, step: dict[str, Any], objects: list[Any]) -> dict[str, Any]:
     params = step["params"]
     target_names = []
@@ -956,9 +1059,11 @@ def run_blender_execution(
     panel_slot_index = material_slot_index_for_role(plan, "panel")
     trim_slot_index = material_slot_index_for_role(plan, "trim")
     trim_slot_id = material_slot_id_for_role(plan, "trim")
+    cap_slot_index = material_slot_index_for_role(plan, "cap")
     report = make_execution_report(plan_path, asset_path, plan, asset, validation_report, parts, generated=True)
     report["executed_steps"] = []
     report["boolean_applications"] = []
+    report["sweep_applications"] = []
     report["inset_applications"] = []
     report["extrusion_applications"] = []
     report["modifier_applications"] = []
@@ -984,6 +1089,11 @@ def run_blender_execution(
             if target is None:
                 fail(f"{step['step_id']} references unknown target `{step['target']}`")
             report["boolean_applications"].append(apply_boolean_cut(bpy, step, target, target_objects(step, targets, objects), objects))
+        elif step["tool_id"] == "curve_bevel_profile":
+            target = targets.get(require_string(step.get("target"), f"{step['step_id']}.target"))
+            if target is None:
+                fail(f"{step['step_id']} references unknown target `{step['target']}`")
+            report["sweep_applications"].append(apply_sweep_profile(bpy, step, target, target_objects(step, targets, objects), materials, cap_slot_index))
         elif step["tool_id"] == "modifier_bevel":
             application = apply_bevel(bpy, step, target_objects(step, targets, objects))
             report["modifier_applications"].append(application)
@@ -1023,6 +1133,9 @@ def run_blender_execution(
     report["extruded_lip_surface_count"] = sum(item["lip_surface_count"] for item in report["extrusion_applications"])
     report["boolean_cut_count"] = sum(item["applied_modifier_count"] for item in report["boolean_applications"])
     report["socket_shadow_panel_count"] = sum(item["socket_shadow_panel_count"] for item in report["boolean_applications"])
+    report["sweep_profile_object_count"] = len(report["sweep_applications"])
+    report["sweep_profile_face_count"] = sum(item["face_count"] for item in report["sweep_applications"])
+    report["sweep_cap_material_face_count"] = sum(item["cap_material_face_count"] for item in report["sweep_applications"])
     report["material_assignment"] = material_assignment
     report["trim_lip_face_count"] = material_assignment.get("assigned_faces_by_slot", {}).get(trim_slot_id, 0) if trim_slot_id else 0
     report["weighted_normals"] = weighted_normals
@@ -1032,6 +1145,7 @@ def run_blender_execution(
         "source_asset_preserved": True,
         "source_recipe_not_read": True,
         "booleans_applied": report["boolean_cut_count"] >= 2 and report["socket_shadow_panel_count"] >= 2,
+        "sweeps_applied": report["sweep_profile_object_count"] >= 1 and report["sweep_cap_material_face_count"] >= 40,
         "insets_applied": report["inset_panel_face_count"] >= 8,
         "extrusions_applied": report["extruded_lip_surface_count"] >= 16 and report["trim_lip_face_count"] >= 16,
         "material_assignment_applied": bool(material_assignment),

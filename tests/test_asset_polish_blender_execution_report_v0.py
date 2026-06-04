@@ -36,12 +36,12 @@ def valid_report() -> dict[str, Any]:
         "source_asset_id": "blocky_fence_post_v0",
         "asset_id": "blocky_fence_post_v0",
         "step_count": 10,
-        "supported_step_count": 8,
-        "future_step_count": 2,
-        "executed_step_count": 8,
-        "skipped_future_step_count": 2,
-        "unique_tool_count": 6,
-        "unique_tools": ["extrude_faces", "inset_faces", "material_assign_by_part", "modifier_bevel", "modifier_boolean", "modifier_weighted_normal"],
+        "supported_step_count": 9,
+        "future_step_count": 1,
+        "executed_step_count": 9,
+        "skipped_future_step_count": 1,
+        "unique_tool_count": 7,
+        "unique_tools": ["curve_bevel_profile", "extrude_faces", "inset_faces", "material_assign_by_part", "modifier_bevel", "modifier_boolean", "modifier_weighted_normal"],
         "mesh_part_count": 7,
         "generated_outputs_created": True,
         "blend_path": "/tmp/gameguy_asset_polish_blender_execution_v0/asset_polish_execution_v0.blend",
@@ -54,6 +54,7 @@ def valid_report() -> dict[str, Any]:
             {"step_id": "inset_shaft_side_panels", "operation": "inset_faces", "tool_id": "inset_faces", "target": "newel.shaft.side_panels"},
             {"step_id": "raise_shaft_panel_beads", "operation": "extrude_along_normals", "tool_id": "extrude_faces", "target": "newel.shaft.panel_lips"},
             {"step_id": "define_east_west_socket_reveals", "operation": "boolean_cut", "tool_id": "modifier_boolean", "target": "newel.rail_sockets.east_west"},
+            {"step_id": "sweep_cap_lower_outer_ogee_lip", "operation": "sweep_profile", "tool_id": "curve_bevel_profile", "target": "newel.cap.lower_outer_ogee_lip"},
             {"step_id": "chamfer_plinth_outer_arrises", "operation": "chamfer_edges", "tool_id": "modifier_bevel", "target": "newel.plinth.outer_arrises"},
             {"step_id": "bevel_all_visible_hard_edges", "operation": "bevel_edges", "tool_id": "modifier_bevel", "target": "newel.all.hard_edges"},
             {"step_id": "assign_gothic_stone_material_slots", "operation": "material_assign", "tool_id": "material_assign_by_part", "target": "newel.all.visible_parts"},
@@ -61,7 +62,7 @@ def valid_report() -> dict[str, Any]:
         ],
         "skipped_steps": [
             {"step_id": f"future_{index}", "operation": "future", "tool_id": "future_tool", "reason": "recognized_future_operation_not_in_first_execution_slice"}
-            for index in range(2)
+            for index in range(1)
         ],
         "boolean_applications": [
             {
@@ -81,6 +82,24 @@ def valid_report() -> dict[str, Any]:
                 "cleanup_cutters": True,
                 "cutter_objects_removed": True,
                 "removed_cutter_names": ["define_east_west_socket_reveals_east_cutter", "define_east_west_socket_reveals_west_cutter"]
+            }
+        ],
+        "sweep_applications": [
+            {
+                "step_id": "sweep_cap_lower_outer_ogee_lip",
+                "tool_id": "curve_bevel_profile",
+                "operation": "sweep_profile",
+                "profile": "small_ogee_over_bead",
+                "target_objects": ["upper_step_band", "square_cap"],
+                "generated_object": "sweep_cap_lower_outer_ogee_lip",
+                "band": "cap_lower_outer_band",
+                "projection_m": 0.018,
+                "height_m": 0.032,
+                "profile_level_count": 6,
+                "perimeter_segment_count": 8,
+                "vertex_count": 48,
+                "face_count": 40,
+                "cap_material_face_count": 40
             }
         ],
         "inset_applications": [
@@ -133,6 +152,9 @@ def valid_report() -> dict[str, Any]:
         "trim_lip_face_count": 80,
         "boolean_cut_count": 2,
         "socket_shadow_panel_count": 2,
+        "sweep_profile_object_count": 1,
+        "sweep_profile_face_count": 40,
+        "sweep_cap_material_face_count": 40,
         "modifier_applications": [
             {"step_id": "chamfer_plinth_outer_arrises", "modifier_type": "BEVEL", "target_objects": ["square_foot"], "applied": True},
             {"step_id": "bevel_all_visible_hard_edges", "modifier_type": "BEVEL", "target_objects": ["square_foot"], "applied": True},
@@ -158,6 +180,7 @@ def valid_report() -> dict[str, Any]:
             "source_asset_preserved": True,
             "source_recipe_not_read": True,
             "booleans_applied": True,
+            "sweeps_applied": True,
             "insets_applied": True,
             "extrusions_applied": True,
             "material_assignment_applied": True,
@@ -195,7 +218,7 @@ class AssetPolishBlenderExecutionReportTests(unittest.TestCase):
     def test_rejects_unexecuted_supported_steps(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             report = valid_report()
-            report["executed_step_count"] = 7
+            report["executed_step_count"] = 8
             report_path = Path(tmp) / "execution_report.json"
             report_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
             result = subprocess.run(
