@@ -20,6 +20,10 @@ characters, clothing, armor, props, tools, materials, and drafting workflows.
   furniture caste/status tiers, styles, visible anatomy, source support,
   geometry terms, Blender tool IDs, drawing UI tags, operator checks, and lore
   book hooks.
+- `accessories_v0/accessory_asset_taxonomy_v0.json` records wearable/carried
+  accessory families, status tiers, styles, visible anatomy, attachment
+  mechanics, source support, geometry terms, Blender tool IDs, drawing UI tags,
+  operator checks, and lore book hooks.
 
 ## Boundary
 
@@ -33,4 +37,8 @@ implementation, or active generated-asset inputs.
 
 Furniture records are source planning data only. They are not fabrication
 guidance, ergonomic/safety guidance, historical-authenticity proof, conservation
+guidance, or active generated-asset inputs.
+
+Accessory records are source planning data only. They are not fabrication
+guidance, costume safety guidance, historical-authenticity proof, conservation
 guidance, or active generated-asset inputs.

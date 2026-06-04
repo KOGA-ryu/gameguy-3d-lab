@@ -1,0 +1,821 @@
+{
+  "schema": "accessory_asset_taxonomy_v0",
+  "bundle_id": "accessory_asset_taxonomy_v0",
+  "purpose": "Document wearable and carried accessory props by family, status tier, style, visible anatomy, attachment logic, geometry terms, Blender tool IDs, drawing UI tags, source fields, operator checks, and lore hooks.",
+  "rules": {
+    "game_asset_planning_only": true,
+    "not_fabrication_ready": true,
+    "not_historical_authenticity_claim": true,
+    "not_costume_safety_or_ergonomic_guidance": true,
+    "no_generated_assets": true,
+    "requires_reference_packet_before_asset_use": true
+  },
+  "accessory_status_tiers": [
+    {
+      "status_tier_id": "rough_utility_v0",
+      "plain_name": "Rough utility",
+      "social_read": "Camp, dungeon, servant, workshop, and improvised accessories.",
+      "material_rules": ["plain leather", "rough cord", "iron hardware", "patches", "low polish"],
+      "silhouette_rules": ["chunky functional shapes", "low ornament", "visible repair", "asymmetry allowed"],
+      "starter_accessories": ["leather_belt_buckle_v0", "belt_pouch_coin_purse_v0", "waterskin_flask_v0"]
+    },
+    {
+      "status_tier_id": "common_wear_v0",
+      "plain_name": "Common wear",
+      "social_read": "Everyday townsfolk, tavern, market, kitchen, and travel wear.",
+      "material_rules": ["stitched leather", "simple cloth", "plain buckle", "small pouch", "repair seams"],
+      "silhouette_rules": ["small readable loops", "simple closures", "repeatable base sizes"],
+      "starter_accessories": ["leather_belt_buckle_v0", "belt_pouch_coin_purse_v0", "satchel_messenger_bag_v0"]
+    },
+    {
+      "status_tier_id": "guild_trade_v0",
+      "plain_name": "Guild or trade",
+      "social_read": "Craft identity, merchant counters, workshop ownership, and professional tools.",
+      "material_rules": ["tool sockets", "guild marks", "measuring tags", "reinforced straps", "worn work surfaces"],
+      "silhouette_rules": ["hanging utility", "clear attachment points", "small repeated hardware"],
+      "starter_accessories": ["chatelaine_belt_hook_v0", "seal_matrix_stamp_v0", "satchel_messenger_bag_v0"]
+    },
+    {
+      "status_tier_id": "merchant_display_v0",
+      "plain_name": "Merchant display",
+      "social_read": "Visible wealth, trade identity, locked pouches, tidy travel bags, and polished hardware.",
+      "material_rules": ["polished buckle", "colored textile", "lock plate", "trim cord", "clean stitching"],
+      "silhouette_rules": ["front-facing closures", "symmetrical hardware", "display-facing ornament"],
+      "starter_accessories": ["belt_pouch_coin_purse_v0", "satchel_messenger_bag_v0", "signet_ring_v0"]
+    },
+    {
+      "status_tier_id": "noble_court_v0",
+      "plain_name": "Noble court",
+      "social_read": "Rank, courtly fashion, heraldry, jewelry, expensive closures, and refined personal objects.",
+      "material_rules": ["precious metal hint", "gem or enamel color", "fine chain", "polished leather", "cloth lining"],
+      "silhouette_rules": ["small elegant parts", "central motifs", "balanced ornament", "high polish"],
+      "starter_accessories": ["signet_ring_v0", "pendant_amulet_v0", "penannular_brooch_cloak_pin_v0"]
+    },
+    {
+      "status_tier_id": "ritual_arcane_v0",
+      "plain_name": "Ritual or arcane",
+      "social_read": "Sacred, magical, scholarly, oath, seal, relic, and puzzle-object accessories.",
+      "material_rules": ["inscribed metal", "symbol panels", "dark recesses", "gem sockets", "aged cord"],
+      "silhouette_rules": ["central symbol", "clear facing direction", "small sockets", "portable landmark"],
+      "starter_accessories": ["pendant_amulet_v0", "seal_matrix_stamp_v0", "spectacles_case_v0"]
+    },
+    {
+      "status_tier_id": "military_guard_v0",
+      "plain_name": "Military or guard",
+      "social_read": "Weapon suspension, guard keys, belt hardware, scabbards, and rank markers.",
+      "material_rules": ["iron or brass mounts", "thick leather", "repeated rivets", "guard tags", "strap wear"],
+      "silhouette_rules": ["strong attachment points", "angled hangers", "weapon-safe spacing", "readable metal edges"],
+      "starter_accessories": ["scabbard_belt_hanger_v0", "key_ring_warded_keys_v0", "leather_belt_buckle_v0"]
+    },
+    {
+      "status_tier_id": "rogue_traveler_v0",
+      "plain_name": "Rogue or traveler",
+      "social_read": "Portable, patched, concealed, stolen, travel-worn, or multi-use accessories.",
+      "material_rules": ["mixed patches", "hidden pockets", "dark leather", "knotted cord", "scraped hardware"],
+      "silhouette_rules": ["compact carry", "multiple loops", "off-axis pockets", "damage optional"],
+      "starter_accessories": ["belt_pouch_coin_purse_v0", "key_ring_warded_keys_v0", "satchel_messenger_bag_v0", "waterskin_flask_v0"]
+    },
+    {
+      "status_tier_id": "ruin_salvage_v0",
+      "plain_name": "Ruin salvage",
+      "social_read": "Broken, corroded, waterlogged, stripped, abandoned, or reused accessories.",
+      "material_rules": ["missing straps", "bent rings", "torn seams", "corrosion", "dark interior material"],
+      "silhouette_rules": ["original function still readable", "localized damage", "small low-cost variants"],
+      "starter_accessories": ["penannular_brooch_cloak_pin_v0", "key_ring_warded_keys_v0", "waterskin_flask_v0"]
+    }
+  ],
+  "accessory_styles": [
+    {
+      "style_id": "plain_leather_stitch_v0",
+      "plain_name": "Plain leather stitch",
+      "visual_rules": ["flat straps", "stitched edges", "folded flaps", "simple loops", "dark seam lines"],
+      "geometry_terms": ["rectangle_profile", "rounded_rectangle_profile", "capsule_profile", "extrude", "array_linear", "bevel_edges", "width", "length"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "curve_bezier_add", "curve_bevel_profile", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["strap", "stitch_line", "flap", "loop", "seam", "patch"]
+    },
+    {
+      "style_id": "forged_iron_hardware_v0",
+      "plain_name": "Forged iron hardware",
+      "visual_rules": ["dark metal rings", "simple hooks", "rivets", "worn edges", "bent straps"],
+      "geometry_terms": ["circle_profile", "rectangle_profile", "radial_stack", "array_radial", "socket", "bevel_edges", "radius", "diameter"],
+      "blender_tool_ids": ["primitive_torus_add", "primitive_cylinder_add", "mesh_from_pydata", "object_duplicate_radial", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["ring", "hook", "rivet", "strap_plate", "bent_edge", "dark_metal"]
+    },
+    {
+      "style_id": "cast_bronze_fitment_v0",
+      "plain_name": "Cast bronze fitment",
+      "visual_rules": ["rounded cast plates", "raised rims", "bosses", "green-dark patina", "front-facing mounts"],
+      "geometry_terms": ["circle_profile", "rounded_rectangle_profile", "relief_stack", "radial_stack", "offset_profile", "bevel_edges", "decorative_only"],
+      "blender_tool_ids": ["primitive_cylinder_add", "primitive_uv_sphere_add", "mesh_from_pydata", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_noise_texture", "procedural_bump_map"],
+      "drawing_ui_tags": ["boss", "raised_rim", "cast_plate", "patina", "front_mount"]
+    },
+    {
+      "style_id": "precious_jewel_enamel_v0",
+      "plain_name": "Precious jewel and enamel",
+      "visual_rules": ["small gem sockets", "colored inlay", "thin ring bands", "polished metal", "balanced motif"],
+      "geometry_terms": ["circle_profile", "radial_stack", "array_radial", "relief_stack", "socket", "diameter", "radius", "decorative_only"],
+      "blender_tool_ids": ["primitive_torus_add", "primitive_uv_sphere_add", "primitive_cylinder_add", "object_duplicate_radial", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "material_principled_shader"],
+      "drawing_ui_tags": ["gem_socket", "ring_band", "inlay", "polished_metal", "small_motif"]
+    },
+    {
+      "style_id": "gothic_devotional_v0",
+      "plain_name": "Gothic devotional",
+      "visual_rules": ["pointed mini-arches", "cross or quatrefoil hints", "small dark voids", "cord loops", "front symbol"],
+      "geometry_terms": ["pointed_arch_profile", "circle_profile", "star_polygon_profile", "boolean_cut", "mirror_axis", "relief_stack", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cylinder_add", "modifier_boolean", "modifier_mirror", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["mini_arch", "cross", "foil", "symbol_panel", "cord_loop", "dark_void"]
+    },
+    {
+      "style_id": "guild_marked_v0",
+      "plain_name": "Guild marked",
+      "visual_rules": ["small stamped mark", "tag plate", "tool socket", "orderly straps", "work-polished contact zones"],
+      "geometry_terms": ["rectangle_profile", "circle_profile", "boolean_cut", "relief_stack", "socket", "array_linear", "width", "height"],
+      "blender_tool_ids": ["primitive_cube_add", "primitive_cylinder_add", "mesh_from_pydata", "modifier_boolean", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["guild_mark", "tag_plate", "tool_socket", "orderly_strap", "wear_contact"]
+    },
+    {
+      "style_id": "traveler_patched_v0",
+      "plain_name": "Traveler patched",
+      "visual_rules": ["mismatched patches", "extra loops", "cord ties", "scuffed corners", "asymmetric pockets"],
+      "geometry_terms": ["rectangle_profile", "custom_polygon_profile", "rounded_rectangle_profile", "extrude", "array_linear", "offset_profile", "bevel_edges"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "curve_bezier_add", "curve_bevel_profile", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map"],
+      "drawing_ui_tags": ["patch", "cord_tie", "extra_loop", "scuffed_corner", "side_pocket"]
+    },
+    {
+      "style_id": "ruin_corroded_v0",
+      "plain_name": "Ruin corroded",
+      "visual_rules": ["bent rings", "broken strap ends", "missing fasteners", "dark cuts", "corroded metal material"],
+      "geometry_terms": ["custom_polygon_profile", "boolean_cut", "bevel_edges", "offset_profile", "decorative_only", "bounds"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cube_add", "primitive_cylinder_add", "modifier_boolean", "bisect_mesh", "split_separate", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map"],
+      "drawing_ui_tags": ["bent_ring", "broken_strap", "missing_fastener", "corrosion", "dark_cut"]
+    }
+  ],
+  "accessory_families": [
+    {
+      "family_id": "belts_fasteners_v0",
+      "plain_name": "Belts and fasteners",
+      "core_function": "Hold clothing, armor, pouches, tools, and weapons while advertising status through buckle and strap detail.",
+      "starter_accessories": ["leather_belt_buckle_v0"],
+      "drawing_ui_tags": ["strap", "buckle_frame", "tongue", "keeper_loop", "rivet", "belt_hole"]
+    },
+    {
+      "family_id": "pouches_bags_v0",
+      "plain_name": "Pouches and bags",
+      "core_function": "Carry coins, herbs, documents, tools, travel goods, or hidden items.",
+      "starter_accessories": ["belt_pouch_coin_purse_v0", "satchel_messenger_bag_v0"],
+      "drawing_ui_tags": ["bag_body", "flap", "drawstring", "strap", "gusset", "closure"]
+    },
+    {
+      "family_id": "jewelry_clasps_v0",
+      "plain_name": "Jewelry and clasps",
+      "core_function": "Show rank, belief, faction, wealth, and garment closure through small metal or gem objects.",
+      "starter_accessories": ["penannular_brooch_cloak_pin_v0", "signet_ring_v0", "pendant_amulet_v0"],
+      "drawing_ui_tags": ["pin", "ring_band", "gem_socket", "symbol_face", "chain_loop", "clasp"]
+    },
+    {
+      "family_id": "keys_lockwork_v0",
+      "plain_name": "Keys and lockwork",
+      "core_function": "Mark access, ownership, guard duty, and puzzle logic through key shape, ring, wards, and tags.",
+      "starter_accessories": ["key_ring_warded_keys_v0", "seal_matrix_stamp_v0"],
+      "drawing_ui_tags": ["key_shank", "bow", "bit", "ward_cut", "key_ring", "tag"]
+    },
+    {
+      "family_id": "hanging_utility_v0",
+      "plain_name": "Hanging utility",
+      "core_function": "Suspend tools, keys, seals, purses, and household implements from a belt or chain.",
+      "starter_accessories": ["chatelaine_belt_hook_v0"],
+      "drawing_ui_tags": ["belt_hook", "chain", "split_ring", "tool_socket", "hanging_plate", "rivet"]
+    },
+    {
+      "family_id": "weapon_suspension_v0",
+      "plain_name": "Weapon suspension",
+      "core_function": "Attach weapon sheaths and scabbards to belt or harness without modeling the whole weapon system.",
+      "starter_accessories": ["scabbard_belt_hanger_v0"],
+      "drawing_ui_tags": ["scabbard_body", "throat", "chape", "hanger_strap", "belt_loop", "rivet"]
+    },
+    {
+      "family_id": "scholarly_smallware_v0",
+      "plain_name": "Scholarly smallware",
+      "core_function": "Carry, protect, or identify small learned, ritual, or administrative tools.",
+      "starter_accessories": ["spectacles_case_v0", "seal_matrix_stamp_v0"],
+      "drawing_ui_tags": ["case_body", "lens", "bridge", "hinge", "seal_face", "handle"]
+    },
+    {
+      "family_id": "travel_containers_v0",
+      "plain_name": "Travel containers",
+      "core_function": "Hold liquid or travel supplies as body-worn props and room clutter.",
+      "starter_accessories": ["waterskin_flask_v0", "satchel_messenger_bag_v0"],
+      "drawing_ui_tags": ["soft_body", "neck", "stopper", "cord_loop", "strap", "seam"]
+    }
+  ],
+  "accessory_items": [
+    {
+      "accessory_id": "leather_belt_buckle_v0",
+      "plain_name": "Leather belt with buckle",
+      "family_id": "belts_fasteners_v0",
+      "status_tier_ids": ["rough_utility_v0", "common_wear_v0", "military_guard_v0"],
+      "style_ids": ["plain_leather_stitch_v0", "forged_iron_hardware_v0", "ruin_corroded_v0"],
+      "source_support": [
+        {
+          "label": "V&A fashion accessories",
+          "url": "https://www.vam.ac.uk/collections/fashion-accessories",
+          "support_summary": "Supports accessories as wearable objects including belts, bags, gloves, fans, and related fashion objects."
+        },
+        {
+          "label": "The Met collection, belt buckle references",
+          "url": "https://www.metmuseum.org/art/collection/search?q=belt%20buckle",
+          "support_summary": "Supports visible buckle, plate, and metal fitting reference variety."
+        }
+      ],
+      "game_use_roles": ["worn clothing detail", "guard equipment", "loot object", "armor underlayer", "attachment source for pouches"],
+      "anatomy_parts": [
+        {"part_id": "strap", "plain_name": "strap", "geometry_role": "long flexible belt band"},
+        {"part_id": "buckle_frame", "plain_name": "buckle frame", "geometry_role": "metal loop frame at closure"},
+        {"part_id": "tongue", "plain_name": "tongue", "geometry_role": "small pin crossing the buckle frame"},
+        {"part_id": "keeper_loop", "plain_name": "keeper loop", "geometry_role": "small strap loop holding excess belt"},
+        {"part_id": "belt_holes", "plain_name": "belt holes", "geometry_role": "ordered small holes along strap"},
+        {"part_id": "rivets", "plain_name": "rivets", "geometry_role": "small metal fastener heads"}
+      ],
+      "materials": ["leather strap", "iron or brass buckle", "dark hole recess material"],
+      "real_tools": ["knife", "awl", "punch", "needle", "hammer", "small file", "buckle hardware"],
+      "craft_sequence": [
+        "Draw strap width, length, and closure end.",
+        "Place buckle frame, tongue, keeper loop, and rivets as separate named parts.",
+        "Cut or darken belt holes in a stable ordered row.",
+        "Use status/style to switch plain iron, polished brass, or corroded hardware.",
+        "Declare attachment sockets for pouches, scabbards, or key hooks."
+      ],
+      "attachment_mechanics": "The belt is the parent accessory socket: other small props hang from loops, hooks, straps, or riveted plates.",
+      "geometry_terms": ["rectangle_profile", "rounded_rectangle_profile", "circle_profile", "boolean_cut", "array_linear", "socket", "bevel_edges", "length", "width", "height"],
+      "blender_tool_ids": ["primitive_cube_add", "primitive_torus_add", "primitive_cylinder_add", "mesh_from_pydata", "modifier_boolean", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "create_lod_variant"],
+      "drawing_ui_tags": ["strap", "buckle_frame", "tongue", "keeper_loop", "belt_hole", "rivet", "attachment_socket"],
+      "source_fields_needed": ["strap_length_m", "strap_width_m", "buckle_profile", "hole_count", "hole_spacing_m", "rivet_positions", "attachment_socket_ids", "hardware_material"],
+      "operator_checks": ["Can the buckle be selected apart from the strap?", "Are belt holes ordered?", "Are attachment sockets explicit for later pouches or scabbards?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Belt Carries More Than Cloth",
+          "player_reward": "Names strap, buckle frame, tongue, keeper loop, holes, and attachment sockets.",
+          "detail_prompt": "A belt is a map of what its wearer expects to need."
+        }
+      ],
+      "deferred_details": ["cloth/skin fitting", "animated buckle", "true flexible strap deformation", "character rig attachment"]
+    },
+    {
+      "accessory_id": "belt_pouch_coin_purse_v0",
+      "plain_name": "Belt pouch or coin purse",
+      "family_id": "pouches_bags_v0",
+      "status_tier_ids": ["rough_utility_v0", "common_wear_v0", "merchant_display_v0", "rogue_traveler_v0"],
+      "style_ids": ["plain_leather_stitch_v0", "traveler_patched_v0", "guild_marked_v0"],
+      "source_support": [
+        {
+          "label": "The Met collection, purse references",
+          "url": "https://www.metmuseum.org/art/collection/search?q=purse",
+          "support_summary": "Supports visible purse and pouch reference variety including frames, closures, and decorated small bags."
+        },
+        {
+          "label": "Britannica handbag",
+          "url": "https://www.britannica.com/topic/handbag",
+          "support_summary": "Supports small carried bags as accessories for money and personal items."
+        }
+      ],
+      "game_use_roles": ["coin loot", "pickpocket target", "herb pouch", "traveler kit", "belt clutter"],
+      "anatomy_parts": [
+        {"part_id": "bag_body", "plain_name": "bag body", "geometry_role": "soft rounded container form"},
+        {"part_id": "flap", "plain_name": "flap", "geometry_role": "folded cover over opening"},
+        {"part_id": "drawstring", "plain_name": "drawstring", "geometry_role": "cord loop around neck or mouth"},
+        {"part_id": "belt_loop", "plain_name": "belt loop", "geometry_role": "attachment loop on back or top"},
+        {"part_id": "stitch_line", "plain_name": "stitch line", "geometry_role": "edge seam marks"},
+        {"part_id": "closure_button", "plain_name": "closure button", "geometry_role": "small toggle or button"}
+      ],
+      "materials": ["leather or cloth body", "cord drawstring", "small metal or bone closure", "dark mouth material"],
+      "real_tools": ["knife", "awl", "needle", "thread", "punch", "small hammer", "cord"],
+      "craft_sequence": [
+        "Build a soft rounded or folded body outline.",
+        "Add flap, mouth/drawstring, belt loop, and closure as named details.",
+        "Place stitch lines along visible seams with simple repeated marks.",
+        "Use status tiers to switch clean merchant, common, or patched rogue variants.",
+        "Declare contents and pickpocket sockets separately from bag geometry."
+      ],
+      "attachment_mechanics": "The pouch attaches by belt loop or tied cord; gameplay sockets decide whether it is wearable, lootable, or static clutter.",
+      "geometry_terms": ["rounded_rectangle_profile", "capsule_profile", "custom_polygon_profile", "extrude", "offset_profile", "array_linear", "socket", "width", "height", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cube_add", "curve_bezier_add", "curve_bevel_profile", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map", "create_collision_proxy"],
+      "drawing_ui_tags": ["bag_body", "flap", "drawstring", "belt_loop", "stitch_line", "closure_button", "loot_socket"],
+      "source_fields_needed": ["body_outline_points", "body_depth_m", "flap_profile", "mouth_position", "drawstring_path", "stitch_count", "belt_loop_profile", "loot_socket"],
+      "operator_checks": ["Does it read as a soft container, not a box?", "Are attachment and loot sockets separate?", "Can patched and merchant variants share the same base body?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Small Purses, Large Stories",
+          "player_reward": "Names flap, drawstring, belt loop, stitch line, and loot socket.",
+          "detail_prompt": "A pouch worn smooth at the mouth has been opened more than its owner admits."
+        }
+      ],
+      "deferred_details": ["cloth simulation", "animated drawstring", "contents generation", "character-body fitting"]
+    },
+    {
+      "accessory_id": "penannular_brooch_cloak_pin_v0",
+      "plain_name": "Penannular brooch or cloak pin",
+      "family_id": "jewelry_clasps_v0",
+      "status_tier_ids": ["common_wear_v0", "noble_court_v0", "ruin_salvage_v0"],
+      "style_ids": ["forged_iron_hardware_v0", "cast_bronze_fitment_v0", "gothic_devotional_v0", "ruin_corroded_v0"],
+      "source_support": [
+        {
+          "label": "Britannica brooch",
+          "url": "https://www.britannica.com/art/brooch",
+          "support_summary": "Supports brooches as ornamental pins or clasps for garments."
+        },
+        {
+          "label": "Britannica jewelry",
+          "url": "https://www.britannica.com/art/jewelry",
+          "support_summary": "Supports jewelry as personal adornment with status, material, and symbolic roles."
+        }
+      ],
+      "game_use_roles": ["cloak clasp", "rank marker", "small loot", "faction token", "ruin find"],
+      "anatomy_parts": [
+        {"part_id": "ring_frame", "plain_name": "ring frame", "geometry_role": "open or closed brooch loop"},
+        {"part_id": "terminals", "plain_name": "terminals", "geometry_role": "decorated ends on open brooch frame"},
+        {"part_id": "pin", "plain_name": "pin", "geometry_role": "long fastening needle crossing the frame"},
+        {"part_id": "bosses", "plain_name": "bosses", "geometry_role": "raised ornamental bumps"},
+        {"part_id": "cloth_socket", "plain_name": "cloth socket", "geometry_role": "attachment relation to cloak or garment"}
+      ],
+      "materials": ["iron, bronze, silver-like, or gold-like metal", "gem or enamel optional", "dark recess material"],
+      "real_tools": ["small hammer", "file", "punch", "engraving tool", "polishing tool", "wire or cast frame"],
+      "craft_sequence": [
+        "Build the ring frame first, open or closed.",
+        "Add terminals and pin as separate named metal parts.",
+        "Use bosses, tiny symbol panels, or gem sockets by style tier.",
+        "Use corrosion/damage toggles for ruin variants.",
+        "Declare cloth socket separately from the brooch mesh."
+      ],
+      "attachment_mechanics": "The brooch pins through cloth; the visible asset needs a cloth socket and pin orientation even if cloth is not generated.",
+      "geometry_terms": ["circle_profile", "radial_stack", "array_radial", "relief_stack", "socket", "anchor", "diameter", "radius", "decorative_only"],
+      "blender_tool_ids": ["primitive_torus_add", "primitive_cylinder_add", "primitive_uv_sphere_add", "mesh_from_pydata", "object_duplicate_radial", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_noise_texture"],
+      "drawing_ui_tags": ["ring_frame", "terminal", "pin", "boss", "cloth_socket", "gem_socket"],
+      "source_fields_needed": ["frame_radius_m", "frame_gap_angle_deg", "terminal_profiles", "pin_length_m", "boss_count", "cloth_socket", "material_status"],
+      "operator_checks": ["Does the pin read as a functional clasp?", "Can the brooch be worn on cloth or dropped as loot?", "Are terminals separate for style variants?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Pins of Rank and Weather",
+          "player_reward": "Names frame, terminal, pin, boss, and cloth socket.",
+          "detail_prompt": "A cloak pin closes cloth, but it opens a history of who wore it."
+        }
+      ],
+      "deferred_details": ["exact regional brooch typology", "cloth pin deformation", "tiny inscription variants"]
+    },
+    {
+      "accessory_id": "signet_ring_v0",
+      "plain_name": "Signet ring",
+      "family_id": "jewelry_clasps_v0",
+      "status_tier_ids": ["merchant_display_v0", "noble_court_v0", "ritual_arcane_v0"],
+      "style_ids": ["precious_jewel_enamel_v0", "cast_bronze_fitment_v0", "guild_marked_v0"],
+      "source_support": [
+        {
+          "label": "Britannica ring",
+          "url": "https://www.britannica.com/art/ring-jewelry",
+          "support_summary": "Supports rings as personal jewelry and signet/seal-bearing objects."
+        },
+        {
+          "label": "The Met collection, signet ring references",
+          "url": "https://www.metmuseum.org/art/collection/search?q=signet%20ring",
+          "support_summary": "Supports visible signet ring reference variety with seal faces and metal bands."
+        }
+      ],
+      "game_use_roles": ["identity proof", "small treasure", "letter-seal clue", "noble marker", "quest token"],
+      "anatomy_parts": [
+        {"part_id": "ring_band", "plain_name": "ring band", "geometry_role": "circular finger band"},
+        {"part_id": "seal_face", "plain_name": "seal face", "geometry_role": "flat or raised face carrying symbol"},
+        {"part_id": "shoulders", "plain_name": "shoulders", "geometry_role": "transition from band to seal face"},
+        {"part_id": "engraving", "plain_name": "engraving", "geometry_role": "shallow symbol or relief mark"},
+        {"part_id": "gem_socket", "plain_name": "optional gem socket", "geometry_role": "small inlay or stone seat"}
+      ],
+      "materials": ["gold-like, silver-like, bronze, or iron metal", "optional gem/enamel", "dark engraved recess material"],
+      "real_tools": ["ring mandrel", "file", "engraving tool", "small hammer", "polishing tool", "stone setting tool"],
+      "craft_sequence": [
+        "Build ring band and seal face as separate named forms.",
+        "Add shoulders and engraving as shallow relief or dark cut detail.",
+        "Use material tier to switch guild bronze, merchant silver, or noble gold.",
+        "Keep seal symbol source-owned so Blender does not invent heraldry.",
+        "Declare seal/use socket for documents or wax separately."
+      ],
+      "attachment_mechanics": "The ring can be worn, looted, or used as a seal; the seal face is the gameplay-facing detail.",
+      "geometry_terms": ["circle_profile", "radial_stack", "relief_stack", "socket", "array_radial", "diameter", "radius", "decorative_only"],
+      "blender_tool_ids": ["primitive_torus_add", "primitive_cylinder_add", "primitive_uv_sphere_add", "mesh_from_pydata", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "material_principled_shader", "create_lod_variant"],
+      "drawing_ui_tags": ["ring_band", "seal_face", "shoulder", "engraving", "gem_socket", "identity_socket"],
+      "source_fields_needed": ["band_radius_m", "band_width_m", "seal_face_profile", "symbol_panel_id", "shoulder_profile", "gem_enabled", "identity_tag"],
+      "operator_checks": ["Does the seal face read at prop scale?", "Is the symbol sourced outside Blender?", "Can the ring become a quest token without changing mesh basics?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "A Ring That Signs",
+          "player_reward": "Names band, seal face, shoulder, engraving, and identity socket.",
+          "detail_prompt": "The smallest ring in a room can carry the heaviest authority."
+        }
+      ],
+      "deferred_details": ["finger sizing", "wax impression generation", "specific heraldry generation", "animated use"]
+    },
+    {
+      "accessory_id": "pendant_amulet_v0",
+      "plain_name": "Pendant or amulet",
+      "family_id": "jewelry_clasps_v0",
+      "status_tier_ids": ["noble_court_v0", "ritual_arcane_v0", "rogue_traveler_v0"],
+      "style_ids": ["gothic_devotional_v0", "precious_jewel_enamel_v0", "traveler_patched_v0"],
+      "source_support": [
+        {
+          "label": "Britannica jewelry",
+          "url": "https://www.britannica.com/art/jewelry",
+          "support_summary": "Supports jewelry as personal adornment, status object, and symbolic object."
+        },
+        {
+          "label": "The Met collection, pendant references",
+          "url": "https://www.metmuseum.org/art/collection/search?q=pendant",
+          "support_summary": "Supports visible pendant reference variety for loops, central faces, gems, and small hanging forms."
+        }
+      ],
+      "game_use_roles": ["amulet pickup", "ritual clue", "noble jewelry", "protective charm", "faction symbol"],
+      "anatomy_parts": [
+        {"part_id": "pendant_body", "plain_name": "pendant body", "geometry_role": "central hanging shape"},
+        {"part_id": "chain_loop", "plain_name": "chain loop", "geometry_role": "small top loop or bail"},
+        {"part_id": "symbol_face", "plain_name": "symbol face", "geometry_role": "front motif, gem, or relief field"},
+        {"part_id": "cord_or_chain", "plain_name": "cord or chain", "geometry_role": "wearable suspension line"},
+        {"part_id": "back_plate", "plain_name": "back plate", "geometry_role": "plain rear surface or support"}
+      ],
+      "materials": ["bronze, silver-like, gold-like, stone, cord, chain, gem/enamel optional"],
+      "real_tools": ["saw", "file", "drill", "engraving tool", "polishing tool", "cord", "small pliers"],
+      "craft_sequence": [
+        "Choose pendant body profile and chain-loop placement.",
+        "Add symbol face or gem socket as a source-owned front detail.",
+        "Represent cord/chain as simple curve path unless chain links are explicitly requested.",
+        "Use style tiers to switch devotional, arcane, noble, or traveler variants.",
+        "Declare wearable and inventory sockets separately."
+      ],
+      "attachment_mechanics": "The pendant hangs from cord or chain; front-facing orientation matters for inspection and character wear.",
+      "geometry_terms": ["circle_profile", "star_polygon_profile", "pointed_arch_profile", "custom_polygon_profile", "relief_stack", "socket", "anchor", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cylinder_add", "primitive_uv_sphere_add", "curve_bezier_add", "curve_bevel_profile", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "material_principled_shader"],
+      "drawing_ui_tags": ["pendant_body", "chain_loop", "symbol_face", "cord", "gem_socket", "wear_socket"],
+      "source_fields_needed": ["body_profile", "body_depth_m", "loop_profile", "symbol_panel_id", "cord_path", "gem_socket_enabled", "wear_socket"],
+      "operator_checks": ["Does the front face have a clear orientation?", "Is the symbol source-owned?", "Can cord/chain be disabled for dropped loot?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "What Hangs Close to the Heart",
+          "player_reward": "Names pendant body, chain loop, symbol face, cord, and wear socket.",
+          "detail_prompt": "An amulet is a private argument with fear."
+        }
+      ],
+      "deferred_details": ["animated chain links", "specific religious iconography", "gem shader pass", "character cloth collision"]
+    },
+    {
+      "accessory_id": "key_ring_warded_keys_v0",
+      "plain_name": "Key ring with warded keys",
+      "family_id": "keys_lockwork_v0",
+      "status_tier_ids": ["military_guard_v0", "rogue_traveler_v0", "ruin_salvage_v0"],
+      "style_ids": ["forged_iron_hardware_v0", "guild_marked_v0", "ruin_corroded_v0"],
+      "source_support": [
+        {
+          "label": "Britannica lock",
+          "url": "https://www.britannica.com/technology/lock-security",
+          "support_summary": "Supports lock-and-key concepts for access, security, and mechanism vocabulary."
+        },
+        {
+          "label": "The Met collection, key references",
+          "url": "https://www.metmuseum.org/art/collection/search?q=key",
+          "support_summary": "Supports visible key reference variety including bows, shanks, bits, and rings."
+        }
+      ],
+      "game_use_roles": ["guard keyring", "puzzle key prop", "loot clue", "door access marker", "jailer equipment"],
+      "anatomy_parts": [
+        {"part_id": "key_ring", "plain_name": "key ring", "geometry_role": "round ring holding multiple keys"},
+        {"part_id": "bows", "plain_name": "bows", "geometry_role": "key heads with holes or loops"},
+        {"part_id": "shanks", "plain_name": "shanks", "geometry_role": "long key shafts"},
+        {"part_id": "bits", "plain_name": "bits", "geometry_role": "toothed or stepped key ends"},
+        {"part_id": "ward_cuts", "plain_name": "ward cuts", "geometry_role": "distinctive access pattern cuts"},
+        {"part_id": "tag", "plain_name": "tag", "geometry_role": "optional label or room marker"}
+      ],
+      "materials": ["iron keys", "brass tag optional", "dark cut material", "worn edge material"],
+      "real_tools": ["file", "saw", "drill", "punch", "small hammer", "ring hardware"],
+      "craft_sequence": [
+        "Create key ring and key count first.",
+        "Build each key from bow, shank, and bit profiles.",
+        "Use different bit silhouettes for gameplay identity.",
+        "Add optional tag, guild mark, or room label as separate part.",
+        "Use corroded variants for abandoned locks and ruins."
+      ],
+      "attachment_mechanics": "Keys hang from a ring; each key should have a stable identity id so gameplay can map shape to door or chest access.",
+      "geometry_terms": ["circle_profile", "rectangle_profile", "custom_polygon_profile", "boolean_cut", "array_radial", "socket", "length", "width", "decorative_only"],
+      "blender_tool_ids": ["primitive_torus_add", "primitive_cube_add", "primitive_cylinder_add", "mesh_from_pydata", "modifier_boolean", "object_duplicate_radial", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "create_lod_variant"],
+      "drawing_ui_tags": ["key_ring", "bow", "shank", "bit", "ward_cut", "tag", "access_id"],
+      "source_fields_needed": ["key_count", "ring_radius_m", "bow_profiles", "shank_lengths_m", "bit_profiles", "ward_cut_ids", "tag_enabled", "access_ids"],
+      "operator_checks": ["Can each key be identified separately?", "Do bits differ enough to matter?", "Is access mapping source-owned?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Teeth of a Key",
+          "player_reward": "Names bow, shank, bit, ward cut, key ring, and access id.",
+          "detail_prompt": "A key is a promise that one shape is allowed where another is not."
+        }
+      ],
+      "deferred_details": ["real lock mechanics", "animated key use", "door-system integration", "exact warded-key historical forms"]
+    },
+    {
+      "accessory_id": "chatelaine_belt_hook_v0",
+      "plain_name": "Chatelaine belt hook",
+      "family_id": "hanging_utility_v0",
+      "status_tier_ids": ["guild_trade_v0", "merchant_display_v0", "noble_court_v0"],
+      "style_ids": ["forged_iron_hardware_v0", "cast_bronze_fitment_v0", "guild_marked_v0"],
+      "source_support": [
+        {
+          "label": "The Met collection, chatelaine references",
+          "url": "https://www.metmuseum.org/art/collection/search?q=chatelaine",
+          "support_summary": "Supports visible chatelaine and hanging accessory reference variety with hooks, chains, and suspended tools."
+        },
+        {
+          "label": "V&A fashion accessories",
+          "url": "https://www.vam.ac.uk/collections/fashion-accessories",
+          "support_summary": "Supports wearable accessories as a broad category for hooks, bags, and personal carrying objects."
+        }
+      ],
+      "game_use_roles": ["household authority marker", "tool hanger", "key holder", "guild accessory", "loot object"],
+      "anatomy_parts": [
+        {"part_id": "belt_hook", "plain_name": "belt hook", "geometry_role": "top hook or plate that hangs from belt"},
+        {"part_id": "hanging_plate", "plain_name": "hanging plate", "geometry_role": "decorative or structural central plate"},
+        {"part_id": "chains", "plain_name": "chains", "geometry_role": "simple hanging links or curve paths"},
+        {"part_id": "split_rings", "plain_name": "split rings", "geometry_role": "small rings for tools or keys"},
+        {"part_id": "tool_sockets", "plain_name": "tool sockets", "geometry_role": "attachment points for keys, seals, scissors, or tools"},
+        {"part_id": "rivets", "plain_name": "rivets", "geometry_role": "small fastener heads"}
+      ],
+      "materials": ["iron, bronze, or brass-like metal", "dark chain interior material", "optional enamel/guild mark"],
+      "real_tools": ["small hammer", "file", "drill", "punch", "pliers", "ring hardware", "engraving tool"],
+      "craft_sequence": [
+        "Build top belt hook and central plate first.",
+        "Add chains/rings as separate sockets and simple curves.",
+        "Declare each hanging object as a socket, not baked content.",
+        "Use guild or noble style to add mark plates or polished bosses.",
+        "Keep low-compute variant to hook, plate, and socket markers."
+      ],
+      "attachment_mechanics": "The chatelaine is an accessory socket tree: belt hook -> plate -> chains/rings -> attached small tools.",
+      "geometry_terms": ["rectangle_profile", "circle_profile", "custom_polygon_profile", "array_linear", "socket", "anchor", "bevel_edges", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_torus_add", "primitive_cylinder_add", "curve_bezier_add", "curve_bevel_profile", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["belt_hook", "hanging_plate", "chain", "split_ring", "tool_socket", "rivet", "socket_tree"],
+      "source_fields_needed": ["hook_profile", "plate_profile", "chain_count", "chain_paths", "ring_count", "tool_socket_ids", "guild_mark_id"],
+      "operator_checks": ["Are attached tools sockets rather than guessed geometry?", "Does the hook clearly attach to a belt?", "Can chain count be reduced for low compute?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Keys at the Belt",
+          "player_reward": "Names belt hook, hanging plate, chain, split ring, and tool socket.",
+          "detail_prompt": "The tools at a belt can name a household faster than a sign over the door."
+        }
+      ],
+      "deferred_details": ["chain-link simulation", "tool population rules", "animated dangling", "cloth collision"]
+    },
+    {
+      "accessory_id": "satchel_messenger_bag_v0",
+      "plain_name": "Satchel or messenger bag",
+      "family_id": "pouches_bags_v0",
+      "status_tier_ids": ["common_wear_v0", "guild_trade_v0", "merchant_display_v0", "rogue_traveler_v0"],
+      "style_ids": ["plain_leather_stitch_v0", "traveler_patched_v0", "guild_marked_v0"],
+      "source_support": [
+        {
+          "label": "Britannica handbag",
+          "url": "https://www.britannica.com/topic/handbag",
+          "support_summary": "Supports carried bags as accessories for personal items and money."
+        },
+        {
+          "label": "V&A fashion accessories",
+          "url": "https://www.vam.ac.uk/collections/fashion-accessories",
+          "support_summary": "Supports bags and related objects as fashion/accessory references."
+        }
+      ],
+      "game_use_roles": ["traveler bag", "messenger prop", "merchant kit", "book satchel", "quest delivery object"],
+      "anatomy_parts": [
+        {"part_id": "bag_body", "plain_name": "bag body", "geometry_role": "larger soft rectangular container"},
+        {"part_id": "flap", "plain_name": "flap", "geometry_role": "front cover panel"},
+        {"part_id": "shoulder_strap", "plain_name": "shoulder strap", "geometry_role": "long carrying strap"},
+        {"part_id": "side_gussets", "plain_name": "side gussets", "geometry_role": "side depth panels"},
+        {"part_id": "buckle_or_toggle", "plain_name": "buckle or toggle", "geometry_role": "front closure hardware"},
+        {"part_id": "patches", "plain_name": "optional patches", "geometry_role": "repair or traveler identity marks"}
+      ],
+      "materials": ["leather or cloth body", "cord or leather strap", "metal buckle", "stitched seam material"],
+      "real_tools": ["knife", "awl", "needle", "thread", "punch", "small hammer", "strap cutter"],
+      "craft_sequence": [
+        "Block the soft rectangular bag body and gussets.",
+        "Add flap and strap as separate named parts.",
+        "Place buckle/toggle and stitch lines on the front-facing side.",
+        "Use patches, guild tag, or merchant polish by status/style.",
+        "Declare content/socket fields for books, letters, tools, or stolen goods."
+      ],
+      "attachment_mechanics": "The satchel can be body-worn by strap or placed as room clutter; contents should be sockets.",
+      "geometry_terms": ["rounded_rectangle_profile", "rectangle_profile", "capsule_profile", "custom_polygon_profile", "extrude", "offset_profile", "array_linear", "socket", "width", "height"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "curve_bezier_add", "curve_bevel_profile", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map", "create_collision_proxy"],
+      "drawing_ui_tags": ["bag_body", "flap", "shoulder_strap", "gusset", "buckle", "patch", "content_socket"],
+      "source_fields_needed": ["body_bounds_m", "body_roundness", "flap_profile", "strap_path", "gusset_depth_m", "closure_profile", "patch_profiles", "content_socket_ids"],
+      "operator_checks": ["Does the strap attach believably?", "Are contents sockets, not baked guesses?", "Can patches/closures change caste without rebuilding the body?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Messenger's Flap",
+          "player_reward": "Names flap, gusset, shoulder strap, closure, and content socket.",
+          "detail_prompt": "A bag carried across roads wears its truth at the corners."
+        }
+      ],
+      "deferred_details": ["cloth dynamics", "strap rigging", "contents generation", "weight deformation"]
+    },
+    {
+      "accessory_id": "scabbard_belt_hanger_v0",
+      "plain_name": "Scabbard belt hanger",
+      "family_id": "weapon_suspension_v0",
+      "status_tier_ids": ["military_guard_v0", "noble_court_v0", "rogue_traveler_v0"],
+      "style_ids": ["plain_leather_stitch_v0", "forged_iron_hardware_v0", "cast_bronze_fitment_v0"],
+      "source_support": [
+        {
+          "label": "The Met collection, scabbard references",
+          "url": "https://www.metmuseum.org/art/collection/search?q=scabbard",
+          "support_summary": "Supports visible scabbard and weapon suspension reference variety."
+        },
+        {
+          "label": "Britannica sword",
+          "url": "https://www.britannica.com/technology/sword",
+          "support_summary": "Supports sword equipment context for blades, hilts, and scabbard-related weapon carrying."
+        }
+      ],
+      "game_use_roles": ["guard equipment", "weapon sheath prop", "belt attachment", "rank detail", "empty scabbard clue"],
+      "anatomy_parts": [
+        {"part_id": "scabbard_body", "plain_name": "scabbard body", "geometry_role": "long tapered sheath form"},
+        {"part_id": "throat", "plain_name": "throat", "geometry_role": "upper metal or leather mouth fitting"},
+        {"part_id": "chape", "plain_name": "chape", "geometry_role": "lower protective tip fitting"},
+        {"part_id": "hanger_straps", "plain_name": "hanger straps", "geometry_role": "angled straps connecting scabbard to belt"},
+        {"part_id": "belt_loops", "plain_name": "belt loops", "geometry_role": "attachment loops or rings"},
+        {"part_id": "rivets", "plain_name": "rivets", "geometry_role": "hardware fasteners"}
+      ],
+      "materials": ["leather-covered sheath", "wood core hint", "iron or brass fittings", "dark mouth material"],
+      "real_tools": ["knife", "awl", "needle", "file", "small hammer", "rivet punch", "strap cutter"],
+      "craft_sequence": [
+        "Build long tapered scabbard body first.",
+        "Add throat and chape as separate named fittings.",
+        "Place hanger straps and belt loops at a declared angle.",
+        "Use rivets and material slots to identify guard, noble, or rogue variants.",
+        "Declare weapon socket separately from sheath geometry."
+      ],
+      "attachment_mechanics": "The scabbard hangs from belt or baldric; hanger angle and weapon socket are the functional facts.",
+      "geometry_terms": ["trapezoid_profile", "rectangle_profile", "rounded_rectangle_profile", "extrude", "array_linear", "socket", "angle", "length", "width", "height"],
+      "blender_tool_ids": ["primitive_cube_add", "mesh_from_pydata", "curve_bezier_add", "curve_bevel_profile", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "create_collision_proxy"],
+      "drawing_ui_tags": ["scabbard_body", "throat", "chape", "hanger_strap", "belt_loop", "rivet", "weapon_socket"],
+      "source_fields_needed": ["body_length_m", "body_taper_profile", "throat_profile", "chape_profile", "hanger_angle_deg", "belt_loop_count", "weapon_socket", "rivet_positions"],
+      "operator_checks": ["Does the empty scabbard still read as weapon suspension?", "Are hanger angle and weapon socket explicit?", "Are throat and chape separate material parts?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "An Empty Sheath Still Accuses",
+          "player_reward": "Names throat, chape, hanger strap, belt loop, and weapon socket.",
+          "detail_prompt": "A missing blade leaves its shape behind in leather."
+        }
+      ],
+      "deferred_details": ["full weapon generation", "draw/sheath animation", "character rig fitting", "exact suspension systems"]
+    },
+    {
+      "accessory_id": "spectacles_case_v0",
+      "plain_name": "Spectacles and case",
+      "family_id": "scholarly_smallware_v0",
+      "status_tier_ids": ["ritual_arcane_v0", "guild_trade_v0", "merchant_display_v0"],
+      "style_ids": ["forged_iron_hardware_v0", "plain_leather_stitch_v0", "guild_marked_v0"],
+      "source_support": [
+        {
+          "label": "Britannica eyeglasses",
+          "url": "https://www.britannica.com/technology/eyeglasses",
+          "support_summary": "Supports eyeglasses/spectacles as optical devices with lenses and frames."
+        },
+        {
+          "label": "The Met collection, spectacles references",
+          "url": "https://www.metmuseum.org/art/collection/search?q=spectacles",
+          "support_summary": "Supports visible reference variety for spectacle frames and cases."
+        }
+      ],
+      "game_use_roles": ["scholar prop", "library clue", "merchant smallware", "lens puzzle object", "desk accessory"],
+      "anatomy_parts": [
+        {"part_id": "lens_rims", "plain_name": "lens rims", "geometry_role": "paired circular or oval frames"},
+        {"part_id": "lenses", "plain_name": "lenses", "geometry_role": "thin translucent disks or placeholders"},
+        {"part_id": "bridge", "plain_name": "bridge", "geometry_role": "connector between rims"},
+        {"part_id": "case_body", "plain_name": "case body", "geometry_role": "protective capsule or rectangular case"},
+        {"part_id": "hinge", "plain_name": "case hinge", "geometry_role": "small opening hardware on case"},
+        {"part_id": "cloth_or_lining", "plain_name": "lining", "geometry_role": "soft interior hint"}
+      ],
+      "materials": ["iron or brass-like frame", "glass-like lens material", "leather or wood case", "cloth lining"],
+      "real_tools": ["small file", "wire tool", "lens grinder reference", "needle", "knife", "hinge hardware"],
+      "craft_sequence": [
+        "Build the case as the low-risk base object.",
+        "Add spectacles as paired rims and bridge, with lenses optional.",
+        "Use small material slots for glass, metal, case, and lining.",
+        "Declare lens/puzzle socket separately from decorative case geometry.",
+        "Keep high-detail frames optional for low-compute scenes."
+      ],
+      "attachment_mechanics": "Spectacles are tiny readable props; the case protects them and can carry the interaction socket.",
+      "geometry_terms": ["circle_profile", "capsule_profile", "rounded_rectangle_profile", "array_linear", "mirror_axis", "socket", "diameter", "width", "height", "decorative_only"],
+      "blender_tool_ids": ["primitive_torus_add", "primitive_cylinder_add", "mesh_from_pydata", "modifier_mirror", "modifier_array", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "material_principled_shader", "create_lod_variant"],
+      "drawing_ui_tags": ["lens_rim", "lens", "bridge", "case_body", "hinge", "lining", "lens_socket"],
+      "source_fields_needed": ["lens_radius_m", "bridge_width_m", "case_profile", "case_length_m", "hinge_position", "lens_material_role", "puzzle_socket"],
+      "operator_checks": ["Does the case read even if spectacles are hidden?", "Are lenses optional for low compute?", "Is the lens/puzzle socket source-owned?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "Glass for Tired Eyes",
+          "player_reward": "Names lens rim, lens, bridge, case body, hinge, and lens socket.",
+          "detail_prompt": "The lens does not make knowledge; it only refuses to let age hide it."
+        }
+      ],
+      "deferred_details": ["optical shader", "wearable face fit", "folding hinge animation", "magnification gameplay"]
+    },
+    {
+      "accessory_id": "seal_matrix_stamp_v0",
+      "plain_name": "Seal matrix or stamp",
+      "family_id": "keys_lockwork_v0",
+      "status_tier_ids": ["guild_trade_v0", "ritual_arcane_v0", "noble_court_v0"],
+      "style_ids": ["guild_marked_v0", "cast_bronze_fitment_v0", "precious_jewel_enamel_v0"],
+      "source_support": [
+        {
+          "label": "The British Museum collection, seal matrix references",
+          "url": "https://www.britishmuseum.org/collection/search?keyword=seal%20matrix",
+          "support_summary": "Supports visible seal matrix reference variety with handles, faces, and engraved identities."
+        },
+        {
+          "label": "Britannica ring",
+          "url": "https://www.britannica.com/art/ring-jewelry",
+          "support_summary": "Supports signet/seal-bearing personal objects and authority/identity use."
+        }
+      ],
+      "game_use_roles": ["letter sealing tool", "guild authority prop", "forgery clue", "quest identity item", "desk accessory"],
+      "anatomy_parts": [
+        {"part_id": "handle", "plain_name": "handle", "geometry_role": "small grip or loop"},
+        {"part_id": "stamp_face", "plain_name": "stamp face", "geometry_role": "flat engraved sealing surface"},
+        {"part_id": "shoulder", "plain_name": "shoulder", "geometry_role": "transition from handle to face"},
+        {"part_id": "engraving", "plain_name": "engraving", "geometry_role": "reversed identity symbol or relief"},
+        {"part_id": "wax_socket", "plain_name": "wax socket", "geometry_role": "interaction target for wax seal gameplay"}
+      ],
+      "materials": ["bronze, iron, silver-like, or brass-like metal", "dark engraved recess material"],
+      "real_tools": ["file", "engraving tool", "small hammer", "polishing tool", "drill", "casting or carving reference"],
+      "craft_sequence": [
+        "Build handle and stamp face as separate named parts.",
+        "Add shoulder transition and top loop if needed.",
+        "Keep engraving source-owned and reversible for wax-impression logic.",
+        "Use guild, noble, or arcane style to decide face symbol.",
+        "Declare wax/document socket separately from stamp geometry."
+      ],
+      "attachment_mechanics": "The seal matrix is a small authority object; its stamp face connects prop, document, and faction identity.",
+      "geometry_terms": ["circle_profile", "rectangle_profile", "radial_stack", "relief_stack", "socket", "diameter", "height", "decorative_only"],
+      "blender_tool_ids": ["primitive_cylinder_add", "primitive_torus_add", "primitive_uv_sphere_add", "mesh_from_pydata", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "material_principled_shader", "create_lod_variant"],
+      "drawing_ui_tags": ["handle", "stamp_face", "shoulder", "engraving", "wax_socket", "identity_mark"],
+      "source_fields_needed": ["handle_profile", "face_diameter_m", "face_depth_m", "symbol_panel_id", "wax_socket", "identity_tag", "material_status"],
+      "operator_checks": ["Is the stamp face clearly front/down-facing?", "Is the identity mark source-owned?", "Can wax/document interaction use the same source id?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Face That Writes in Wax",
+          "player_reward": "Names stamp face, handle, shoulder, engraving, wax socket, and identity mark.",
+          "detail_prompt": "A seal is a signature made heavy enough to carry."
+        }
+      ],
+      "deferred_details": ["wax mesh generation", "reversed engraving rules", "faction symbol library", "document integration"]
+    },
+    {
+      "accessory_id": "waterskin_flask_v0",
+      "plain_name": "Waterskin or travel flask",
+      "family_id": "travel_containers_v0",
+      "status_tier_ids": ["rough_utility_v0", "rogue_traveler_v0", "ruin_salvage_v0"],
+      "style_ids": ["plain_leather_stitch_v0", "traveler_patched_v0", "ruin_corroded_v0"],
+      "source_support": [
+        {
+          "label": "Britannica bottle",
+          "url": "https://www.britannica.com/technology/bottle",
+          "support_summary": "Supports bottles and flasks as small portable liquid containers."
+        },
+        {
+          "label": "V&A fashion accessories",
+          "url": "https://www.vam.ac.uk/collections/fashion-accessories",
+          "support_summary": "Supports carried accessory context for wearable or portable personal objects."
+        }
+      ],
+      "game_use_roles": ["travel prop", "camp clutter", "survival object", "water source clue", "empty container"],
+      "anatomy_parts": [
+        {"part_id": "soft_body", "plain_name": "soft body", "geometry_role": "rounded flattened liquid container"},
+        {"part_id": "neck", "plain_name": "neck", "geometry_role": "short pouring neck"},
+        {"part_id": "stopper", "plain_name": "stopper", "geometry_role": "plug or cap"},
+        {"part_id": "cord_loop", "plain_name": "cord loop", "geometry_role": "hanging or carrying cord"},
+        {"part_id": "seam", "plain_name": "seam", "geometry_role": "edge stitching or stitched leather joint"},
+        {"part_id": "patch", "plain_name": "optional patch", "geometry_role": "repair panel for travel/ruin variants"}
+      ],
+      "materials": ["leather or gourd-like body", "wood stopper", "cord", "dark mouth material", "patch leather"],
+      "real_tools": ["knife", "awl", "needle", "cord", "stopper carving tool", "wax or sealing material"],
+      "craft_sequence": [
+        "Build a flattened rounded body with visible seam edge.",
+        "Add neck, stopper, and cord loop as separate parts.",
+        "Use patches and dents for traveler or ruin variants.",
+        "Declare liquid state separately from mesh.",
+        "Keep collision simple and broad."
+      ],
+      "attachment_mechanics": "The flask hangs from cord/strap or sits as small clutter; liquid state is a gameplay field, not mesh detail.",
+      "geometry_terms": ["rounded_rectangle_profile", "capsule_profile", "circle_profile", "loft_sections", "offset_profile", "socket", "width", "height", "decorative_only"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cylinder_add", "curve_bezier_add", "curve_bevel_profile", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "procedural_bump_map", "create_collision_proxy"],
+      "drawing_ui_tags": ["soft_body", "neck", "stopper", "cord_loop", "seam", "patch", "liquid_state"],
+      "source_fields_needed": ["body_outline_points", "body_depth_m", "neck_radius_m", "stopper_profile", "cord_path", "seam_path", "patch_profiles", "liquid_state"],
+      "operator_checks": ["Does it read as a container before texture?", "Are neck and stopper separate?", "Is liquid state source-owned and not a material guess?"],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Skin That Holds a Road",
+          "player_reward": "Names soft body, neck, stopper, cord loop, seam, and liquid state.",
+          "detail_prompt": "A full flask changes how a road feels before it changes how far it goes."
+        }
+      ],
+      "deferred_details": ["sloshing animation", "accurate leather swelling", "drink interaction", "character strap fitting"]
+    }
+  ]
+}

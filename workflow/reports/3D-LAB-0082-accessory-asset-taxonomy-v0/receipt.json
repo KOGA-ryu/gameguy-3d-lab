@@ -1,0 +1,56 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0082-accessory-asset-taxonomy-v0",
+  "title": "Accessory asset taxonomy v0",
+  "status": "complete",
+  "new_files": [
+    "data/asset_taxonomy/accessories_v0/accessory_asset_taxonomy_v0.json",
+    "docs/research/accessory_assets_v0/README.md",
+    "docs/research/accessory_assets_v0/accessory_source_index_v0.md",
+    "docs/research/accessory_assets_v0/accessory_style_status_system_v0.md",
+    "docs/research/accessory_assets_v0/accessory_family_build_plans_v0.md",
+    "docs/research/accessory_assets_v0/accessory_lore_book_hooks_v0.md",
+    "docs/research/accessory_assets_v0/operator_accessory_handoff_v0.md",
+    "scripts/validate_accessory_asset_taxonomy_v0.py",
+    "tests/test_validate_accessory_asset_taxonomy_v0.py"
+  ],
+  "updated_files": [
+    "README.md",
+    "data/asset_taxonomy/README.md"
+  ],
+  "status_tier_count": 9,
+  "style_count": 8,
+  "family_count": 8,
+  "accessory_count": 12,
+  "rules": {
+    "game_asset_planning_only": true,
+    "not_fabrication_ready": true,
+    "not_historical_authenticity_claim": true,
+    "not_costume_safety_or_ergonomic_guidance": true,
+    "no_blender_execution": true,
+    "no_generated_assets": true
+  },
+  "validation": {
+    "accessory_json_parse": {
+      "command": "python3 -m json.tool data/asset_taxonomy/accessories_v0/accessory_asset_taxonomy_v0.json",
+      "result": "PASS"
+    },
+    "validator_compile": {
+      "command": "python3 -m py_compile scripts/validate_accessory_asset_taxonomy_v0.py",
+      "result": "PASS"
+    },
+    "accessory_validate": {
+      "command": "python3 scripts/validate_accessory_asset_taxonomy_v0.py",
+      "result": "PASS status_tiers=9 styles=8 families=8 accessories=12 geometry_terms=75 tools=97"
+    },
+    "unit_test": {
+      "command": "python3 -m unittest tests/test_validate_accessory_asset_taxonomy_v0.py",
+      "result": "PASS"
+    },
+    "asset_generation_registry_validate": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS"
+    }
+  },
+  "recommended_next_goal": "Add per-accessory workcards and promote leather_belt_buckle_v0 or key_ring_warded_keys_v0 into a deterministic source-to-tool-plan recipe."
+}
