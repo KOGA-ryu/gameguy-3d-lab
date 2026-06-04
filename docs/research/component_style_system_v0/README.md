@@ -35,6 +35,8 @@ python3 scripts/validate_component_style_sheets_v0.py
   railing research findings and vocabulary.
 - `gothic_railing_post_build_plans_v0.md` turns the research into first build
   plans.
+- `railing_post_style_atlas_v0.md` narrows railing work to one reusable post
+  with many style variants before full railing assemblies return.
 
 ## Boundary
 

@@ -6,6 +6,13 @@ Railings define edges, stairs, balconies, terraces, bridges, parapets, and
 procession routes. They are also one of the best first families for the repo
 because they combine repeated structure with visible ornament.
 
+Near-term focus: do not build the full railing. Build one reusable post and
+compare many post styles. The post style atlas is:
+
+```text
+docs/research/component_style_system_v0/railing_post_style_atlas_v0.md
+```
+
 The current machine-readable starter is:
 
 ```text
@@ -128,11 +135,11 @@ visible result: panel, grille, or tracery field between posts
 
 ## First Build Targets
 
-1. `gothic_railing_post.blind_tracery_box_newel_v0`
-2. `gothic_railing_panel.pointed_arch_infill_v0`
-3. `gothic_railing_run.post_rail_post_panel_v0`
-4. `victorian_turning_baluster_v0`
-5. `art_nouveau_curved_infill_panel_v0`
+1. `post_style.plain_square_reference_v0`
+2. `post_style.gothic_buttress_newel_v0`
+3. `post_style.gothic_clustered_shaft_v0`
+4. `post_style.castle_crenel_cap_v0`
+5. `post_style.rustic_timber_chamfered_v0`
 
 ## Boundary
 

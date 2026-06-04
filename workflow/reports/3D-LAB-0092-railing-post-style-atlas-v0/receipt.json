@@ -1,0 +1,24 @@
+{
+  "id": "3D-LAB-0092",
+  "name": "railing-post-style-atlas-v0",
+  "status": "complete",
+  "kind": "research_documentation",
+  "created_date": "2026-06-04",
+  "scope": {
+    "implemented_code": false,
+    "ran_blender": false,
+    "generated_assets": false,
+    "generated_media": false
+  },
+  "added_files": [
+    "docs/research/component_style_system_v0/railing_post_style_atlas_v0.md",
+    "workflow/reports/3D-LAB-0092-railing-post-style-atlas-v0/report.md",
+    "workflow/reports/3D-LAB-0092-railing-post-style-atlas-v0/receipt.json"
+  ],
+  "updated_files": [
+    "README.md",
+    "docs/research/component_style_system_v0/README.md",
+    "docs/research/component_style_system_v0/asset_families/railings_v0.md"
+  ],
+  "next_recommended_slice": "3D-LAB-0093 single_post_style_matrix_v0"
+}
