@@ -43,6 +43,9 @@ Do not make Blender infer meaning from pixels. Write or compile a recipe, run it
 - `examples/layered_rose_bloom_recipe_v0.json`
   Layered petal-surface proof for rose bosses, leaves, floral caps, curled plates, and bloom-like ornament.
 
+- `examples/spiral_rose_bud_recipe_v0.json`
+  Denser petal-bloom variant with blunter petals, stronger overlap, higher inner curls, and tighter spiral-bud behavior.
+
 - `tests/test_dryrun.py`  
   Minimal tests for the recipe, ASCII backend, validation, and Blender emitter.
 

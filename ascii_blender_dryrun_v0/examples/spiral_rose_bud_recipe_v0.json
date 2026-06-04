@@ -1,0 +1,85 @@
+{
+  "ops": [
+    {
+      "op": "AddPetalBloom",
+      "name": "proof.spiral_rose_bud_v0",
+      "petal": {
+        "length": 1.04,
+        "base_width": 0.16,
+        "max_width": 0.56,
+        "tip_width": 0.32,
+        "width_peak_t": 0.62,
+        "min_thickness": 0.018,
+        "max_thickness": 0.068,
+        "tip_thickness": 0.020,
+        "thickness_peak_t": 0.50,
+        "bend_start_t": 0.32,
+        "samples_length": 17,
+        "samples_width": 11
+      },
+      "layers": [
+        {
+          "count": 10,
+          "radius": 0.38,
+          "length_scale": 0.96,
+          "width_scale": 1.04,
+          "thickness_scale": 1.0,
+          "bend_angle_deg": 34,
+          "curl_angle_deg": 12,
+          "petal_twist_deg": 18,
+          "spiral_offset_deg": 0,
+          "z_offset": 0.0
+        },
+        {
+          "count": 8,
+          "radius": 0.24,
+          "length_scale": 0.78,
+          "width_scale": 0.96,
+          "thickness_scale": 0.88,
+          "bend_angle_deg": 54,
+          "curl_angle_deg": 22,
+          "petal_twist_deg": 26,
+          "spiral_offset_deg": 17,
+          "z_offset": 0.10
+        },
+        {
+          "count": 6,
+          "radius": 0.13,
+          "length_scale": 0.58,
+          "width_scale": 0.78,
+          "thickness_scale": 0.76,
+          "bend_angle_deg": 76,
+          "curl_angle_deg": 32,
+          "petal_twist_deg": 36,
+          "spiral_offset_deg": 42,
+          "z_offset": 0.25
+        },
+        {
+          "count": 4,
+          "radius": 0.055,
+          "length_scale": 0.42,
+          "width_scale": 0.60,
+          "thickness_scale": 0.66,
+          "bend_angle_deg": 96,
+          "curl_angle_deg": 42,
+          "petal_twist_deg": 50,
+          "spiral_offset_deg": 73,
+          "z_offset": 0.46
+        },
+        {
+          "count": 3,
+          "radius": 0.015,
+          "length_scale": 0.28,
+          "width_scale": 0.46,
+          "thickness_scale": 0.58,
+          "bend_angle_deg": 112,
+          "curl_angle_deg": 52,
+          "petal_twist_deg": 66,
+          "spiral_offset_deg": 112,
+          "z_offset": 0.68
+        }
+      ],
+      "material": "limestone"
+    }
+  ]
+}
