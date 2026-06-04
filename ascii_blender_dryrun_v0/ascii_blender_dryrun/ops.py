@@ -72,6 +72,17 @@ class AddMoulding:
 
 
 @dataclass(frozen=True)
+class AddProfileMoulding:
+    name: str
+    base_z: float
+    sequence: List[Dict[str, Any]]
+    x: float = 0.0
+    y: float = 0.0
+    vertices: int = 96
+    material: str = "stone"
+
+
+@dataclass(frozen=True)
 class CutFlutes:
     target: str
     count: int
@@ -90,7 +101,15 @@ class AddLabel:
     z: float
 
 
-BuildOp = Union[AddBox, AddCylinder, AddRing, AddMoulding, CutFlutes, AddLabel]
+BuildOp = Union[
+    AddBox,
+    AddCylinder,
+    AddRing,
+    AddMoulding,
+    AddProfileMoulding,
+    CutFlutes,
+    AddLabel,
+]
 
 
 OP_CLASSES = {
@@ -98,6 +117,7 @@ OP_CLASSES = {
     "AddCylinder": AddCylinder,
     "AddRing": AddRing,
     "AddMoulding": AddMoulding,
+    "AddProfileMoulding": AddProfileMoulding,
     "CutFlutes": CutFlutes,
     "AddLabel": AddLabel,
 }

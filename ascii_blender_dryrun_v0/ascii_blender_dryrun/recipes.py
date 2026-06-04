@@ -8,10 +8,11 @@ reference parser can compile into the same ops.
 
 from __future__ import annotations
 
-from .ops import AddBox, AddCylinder, AddMoulding, CutFlutes, BuildOp
+from .ops import AddBox, AddCylinder, AddProfileMoulding, CutFlutes, BuildOp
+from .profile_mouldings import compile_profile_mouldings
 
 
-def doric_column_plan(
+def doric_column_source_plan(
     height: float = 72.0,
     shaft_radius: float = 5.0,
     flute_count: int = 20,
@@ -52,15 +53,19 @@ def doric_column_plan(
     ops.append(AddBox("plinth.upper_step", width=15.5, depth=15.5, height=plinth_upper_h, z=z + plinth_upper_h / 2))
     z += plinth_upper_h
 
-    ops.append(AddMoulding(
+    ops.append(AddProfileMoulding(
         "base.torus_scotia_moulding",
         base_z=z,
-        profile=[
-            {"term": "lower_fillet", "z": 0.00, "radius": shaft_radius + 0.55},
-            {"term": "torus_swell", "z": 0.18, "radius": shaft_radius + 1.35},
-            {"term": "torus_crown", "z": 0.46, "radius": shaft_radius + 1.65},
-            {"term": "scotia_return", "z": 0.76, "radius": shaft_radius + 1.05},
-            {"term": "upper_fillet", "z": torus_lower_h, "radius": shaft_radius + 0.12},
+        sequence=[
+            {
+                "term": "fillet",
+                "height": 0.08,
+                "start_radius": shaft_radius + 0.55,
+                "end_radius": shaft_radius + 0.55,
+            },
+            {"term": "torus", "height": 0.46, "end_radius": shaft_radius + 1.65},
+            {"term": "scotia", "height": 0.30, "end_radius": shaft_radius + 1.05},
+            {"term": "fillet", "height": 0.16, "end_radius": shaft_radius + 0.12},
         ],
     ))
     z += torus_lower_h
@@ -85,28 +90,35 @@ def doric_column_plan(
     ))
     z += shaft_h
 
-    ops.append(AddMoulding(
+    ops.append(AddProfileMoulding(
         "capital.necking_annuli",
         base_z=z,
-        profile=[
-            {"term": "shaft_seat", "z": 0.00, "radius": shaft_radius * 0.88},
-            {"term": "lower_annulet", "z": 0.25, "radius": shaft_radius * 1.04},
-            {"term": "groove", "z": 0.52, "radius": shaft_radius * 0.98},
-            {"term": "upper_annulet", "z": 0.90, "radius": shaft_radius * 1.08},
-            {"term": "echinus_seat", "z": neck_h, "radius": shaft_radius * 1.00},
+        sequence=[
+            {
+                "term": "fillet",
+                "height": 0.25,
+                "start_radius": shaft_radius * 0.88,
+                "end_radius": shaft_radius * 1.04,
+            },
+            {"term": "scotia", "height": 0.27, "end_radius": shaft_radius * 0.98},
+            {"term": "annulet", "height": 0.38, "end_radius": shaft_radius * 1.08},
+            {"term": "fillet", "height": neck_h - 0.90, "end_radius": shaft_radius * 1.00},
         ],
     ))
     z += neck_h
 
-    ops.append(AddMoulding(
+    ops.append(AddProfileMoulding(
         "capital.echinus_cushion",
         base_z=z,
-        profile=[
-            {"term": "necking_transition", "z": 0.00, "radius": shaft_radius * 1.00},
-            {"term": "cavetto_underbelly", "z": 0.70, "radius": shaft_radius * 1.20},
-            {"term": "echinus_belly", "z": 1.70, "radius": shaft_radius * 1.46},
-            {"term": "echinus_shoulder", "z": 3.05, "radius": shaft_radius * 1.58},
-            {"term": "abacus_bed", "z": echinus_h, "radius": round(shaft_radius * 1.38, 4)},
+        sequence=[
+            {
+                "term": "cavetto",
+                "height": 0.70,
+                "start_radius": shaft_radius * 1.00,
+                "end_radius": shaft_radius * 1.20,
+            },
+            {"term": "echinus", "height": 2.35, "end_radius": shaft_radius * 1.58},
+            {"term": "fillet", "height": echinus_h - 3.05, "end_radius": shaft_radius * 1.38},
         ],
     ))
     z += echinus_h
@@ -116,3 +128,18 @@ def doric_column_plan(
 
     ops.append(AddBox("entablature.test_block", width=22, depth=18, height=5, z=z + 2.5, material="limestone"))
     return ops
+
+
+def doric_column_plan(
+    height: float = 72.0,
+    shaft_radius: float = 5.0,
+    flute_count: int = 20,
+) -> list[BuildOp]:
+    """Create the compiled low-level Doric build plan consumed by backends."""
+    return compile_profile_mouldings(
+        doric_column_source_plan(
+            height=height,
+            shaft_radius=shaft_radius,
+            flute_count=flute_count,
+        )
+    )

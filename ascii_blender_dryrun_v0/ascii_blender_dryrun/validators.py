@@ -9,7 +9,8 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
-from .ops import AddBox, AddCylinder, AddMoulding, AddRing, CutFlutes, BuildOp
+from .ops import AddBox, AddCylinder, AddMoulding, AddProfileMoulding, AddRing, CutFlutes, BuildOp
+from .profile_mouldings import SUPPORTED_TERMS
 
 
 @dataclass
@@ -66,6 +67,26 @@ def validate_ops(ops: list[BuildOp]) -> list[Finding]:
                 if previous_z is not None and local_z < previous_z:
                     findings.append(Finding("error", "moulding_profile_not_monotonic", f"{op.name} profile z values must rise in order."))
                 previous_z = local_z
+        elif isinstance(op, AddProfileMoulding):
+            if op.base_z < 0:
+                findings.append(Finding("warning", "negative_profile_moulding_base_z", f"{op.name} starts below z=0."))
+            if op.vertices < 12:
+                findings.append(Finding("warning", "low_profile_moulding_vertices", f"{op.name} has low vertex count: {op.vertices}"))
+            if not op.sequence:
+                findings.append(Finding("error", "empty_profile_moulding_sequence", f"{op.name} needs at least one segment."))
+            for index, segment in enumerate(op.sequence):
+                term = segment.get("term")
+                if term not in SUPPORTED_TERMS:
+                    findings.append(Finding("error", "unknown_profile_term", f"{op.name} segment {index} has unknown term: {term!r}"))
+                if float(segment.get("height", 0.0)) <= 0:
+                    findings.append(Finding("error", "bad_profile_segment_height", f"{op.name} segment {index} height must be positive."))
+                if index == 0 and "start_radius" not in segment:
+                    findings.append(Finding("error", "missing_profile_start_radius", f"{op.name} first segment needs start_radius."))
+                for key in ("start_radius", "end_radius"):
+                    if key in segment and float(segment[key]) <= 0:
+                        findings.append(Finding("error", "bad_profile_segment_radius", f"{op.name} segment {index} {key} must be positive."))
+                if "steps" in segment and int(segment["steps"]) < 1:
+                    findings.append(Finding("error", "bad_profile_segment_steps", f"{op.name} segment {index} steps must be at least 1."))
         elif isinstance(op, CutFlutes):
             if op.target not in names:
                 findings.append(Finding("error", "flute_missing_target", f"CutFlutes target does not exist before cut: {op.target}"))

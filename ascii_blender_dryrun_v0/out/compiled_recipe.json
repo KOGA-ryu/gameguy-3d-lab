@@ -28,27 +28,57 @@
       "base_z": 4.0,
       "profile": [
         {
-          "term": "lower_fillet",
+          "term": "fillet_start",
           "z": 0.0,
           "radius": 5.55
         },
         {
-          "term": "torus_swell",
-          "z": 0.18,
-          "radius": 6.35
+          "term": "fillet_01",
+          "z": 0.08,
+          "radius": 5.55
         },
         {
-          "term": "torus_crown",
-          "z": 0.46,
+          "term": "torus_01",
+          "z": 0.195,
+          "radius": 5.7219
+        },
+        {
+          "term": "torus_02",
+          "z": 0.31,
+          "radius": 6.1
+        },
+        {
+          "term": "torus_03",
+          "z": 0.425,
+          "radius": 6.4781
+        },
+        {
+          "term": "torus_04",
+          "z": 0.54,
           "radius": 6.65
         },
         {
-          "term": "scotia_return",
-          "z": 0.76,
+          "term": "scotia_01",
+          "z": 0.615,
+          "radius": 6.6043
+        },
+        {
+          "term": "scotia_02",
+          "z": 0.69,
+          "radius": 6.4743
+        },
+        {
+          "term": "scotia_03",
+          "z": 0.765,
+          "radius": 6.2796
+        },
+        {
+          "term": "scotia_04",
+          "z": 0.84,
           "radius": 6.05
         },
         {
-          "term": "upper_fillet",
+          "term": "fillet_01",
           "z": 1.0,
           "radius": 5.12
         }
@@ -86,27 +116,42 @@
       "base_z": 55.4,
       "profile": [
         {
-          "term": "shaft_seat",
+          "term": "fillet_start",
           "z": 0.0,
           "radius": 4.4
         },
         {
-          "term": "lower_annulet",
+          "term": "fillet_01",
           "z": 0.25,
           "radius": 5.2
         },
         {
-          "term": "groove",
+          "term": "scotia_01",
+          "z": 0.3175,
+          "radius": 5.1772
+        },
+        {
+          "term": "scotia_02",
+          "z": 0.385,
+          "radius": 5.1121
+        },
+        {
+          "term": "scotia_03",
+          "z": 0.4525,
+          "radius": 5.0148
+        },
+        {
+          "term": "scotia_04",
           "z": 0.52,
           "radius": 4.9
         },
         {
-          "term": "upper_annulet",
+          "term": "annulet_01",
           "z": 0.9,
           "radius": 5.4
         },
         {
-          "term": "echinus_seat",
+          "term": "fillet_01",
           "z": 1.2,
           "radius": 5.0
         }
@@ -122,27 +167,62 @@
       "base_z": 56.6,
       "profile": [
         {
-          "term": "necking_transition",
+          "term": "cavetto_start",
           "z": 0.0,
           "radius": 5.0
         },
         {
-          "term": "cavetto_underbelly",
+          "term": "cavetto_01",
+          "z": 0.175,
+          "radius": 5.0761
+        },
+        {
+          "term": "cavetto_02",
+          "z": 0.35,
+          "radius": 5.2929
+        },
+        {
+          "term": "cavetto_03",
+          "z": 0.525,
+          "radius": 5.6173
+        },
+        {
+          "term": "cavetto_04",
           "z": 0.7,
           "radius": 6.0
         },
         {
-          "term": "echinus_belly",
-          "z": 1.7,
-          "radius": 7.3
+          "term": "echinus_01",
+          "z": 1.0917,
+          "radius": 6.2917
         },
         {
-          "term": "echinus_shoulder",
+          "term": "echinus_02",
+          "z": 1.4833,
+          "radius": 6.7189
+        },
+        {
+          "term": "echinus_03",
+          "z": 1.875,
+          "radius": 7.1535
+        },
+        {
+          "term": "echinus_04",
+          "z": 2.2667,
+          "radius": 7.5308
+        },
+        {
+          "term": "echinus_05",
+          "z": 2.6583,
+          "radius": 7.7976
+        },
+        {
+          "term": "echinus_06",
           "z": 3.05,
           "radius": 7.9
         },
         {
-          "term": "abacus_bed",
+          "term": "fillet_01",
           "z": 4.0,
           "radius": 6.9
         }

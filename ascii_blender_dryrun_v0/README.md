@@ -14,7 +14,10 @@ Do not make Blender infer meaning from pixels. Write or compile a recipe, run it
   Typed build operations such as `AddBox`, `AddCylinder`, `AddMoulding`, `AddRing`, and `CutFlutes`.
 
 - `ascii_blender_dryrun/recipes.py`  
-  A deterministic Doric column recipe.
+  A deterministic Doric column source recipe and compiled backend recipe.
+
+- `ascii_blender_dryrun/profile_mouldings.py`
+  Profile helpers that compile terms such as `fillet`, `torus`, `scotia`, `cavetto`, `bead`, `cyma`, `annulet`, and `echinus` into deterministic radius/z moulding points.
 
 - `ascii_blender_dryrun/ascii_backend.py`  
   A dry-run backend that renders front, side, and top ASCII projections.
@@ -63,12 +66,12 @@ pytest
 
 This is v0. It intentionally stabilizes the recipe/backend contract before fancy geometry.
 
-The Blender script currently emits primitive boxes, cylinders, revolved moulding profiles, flute cutters, taper, and entasis. Mouldings are profile-driven: the recipe stores radius/z section points with terms such as `torus_swell`, `scotia_return`, `annulet`, and `echinus`.
+The Blender script currently emits primitive boxes, cylinders, revolved moulding profiles, flute cutters, taper, and entasis. Mouldings are source-term driven: recipes can use `AddProfileMoulding` sequences, and the compiler expands them into low-level `AddMoulding` radius/z points.
 
 ## Next slices
 
-1. Add richer profile helpers for cyma, cavetto, bead, ogee, torus, scotia, and fillet sequences.
-2. Add OBJ dry-run mesh output outside Blender.
-3. Add ASCII/image reference parser that compiles into this same recipe format.
-4. Add material passes for marble, limestone, sandstone, and aged stone.
-5. Add recipe-owned export and preview directives for Blender runs.
+1. Add OBJ dry-run mesh output outside Blender.
+2. Add ASCII/image reference parser that compiles into this same recipe format.
+3. Add material passes for marble, limestone, sandstone, and aged stone.
+4. Add recipe-owned export and preview directives for Blender runs.
+5. Add more architectural profile presets for regional styles and period-specific orders.

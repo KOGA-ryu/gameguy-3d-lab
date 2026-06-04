@@ -26,6 +26,9 @@
             "$ref": "#/$defs/addMoulding"
           },
           {
+            "$ref": "#/$defs/addProfileMoulding"
+          },
+          {
             "$ref": "#/$defs/cutFlutes"
           },
           {
@@ -247,6 +250,104 @@
           "minItems": 2,
           "items": {
             "$ref": "#/$defs/profilePoint"
+          }
+        },
+        "x": {
+          "$ref": "#/$defs/number"
+        },
+        "y": {
+          "$ref": "#/$defs/number"
+        },
+        "vertices": {
+          "$ref": "#/$defs/vertices"
+        },
+        "material": {
+          "$ref": "#/$defs/material"
+        }
+      }
+    },
+    "profileSegment": {
+      "type": "object",
+      "required": [
+        "term",
+        "height"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "term": {
+          "enum": [
+            "annulet",
+            "bead",
+            "cavetto",
+            "cyma",
+            "cyma_recta",
+            "cyma_reversa",
+            "echinus",
+            "fillet",
+            "scotia",
+            "torus"
+          ]
+        },
+        "height": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "start_radius": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "end_radius": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "radius_delta": {
+          "$ref": "#/$defs/number"
+        },
+        "steps": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "end_radius"
+          ]
+        },
+        {
+          "required": [
+            "radius_delta"
+          ]
+        },
+        {
+          "required": [
+            "start_radius"
+          ]
+        }
+      ]
+    },
+    "addProfileMoulding": {
+      "type": "object",
+      "required": [
+        "op",
+        "name",
+        "base_z",
+        "sequence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "AddProfileMoulding"
+        },
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "base_z": {
+          "$ref": "#/$defs/number"
+        },
+        "sequence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/profileSegment"
           }
         },
         "x": {

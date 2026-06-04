@@ -23,34 +23,30 @@
       "material": "stone"
     },
     {
-      "op": "AddMoulding",
+      "op": "AddProfileMoulding",
       "name": "base.torus_scotia_moulding",
       "base_z": 4.0,
-      "profile": [
+      "sequence": [
         {
-          "term": "lower_fillet",
-          "z": 0.0,
-          "radius": 5.55
+          "term": "fillet",
+          "height": 0.08,
+          "start_radius": 5.55,
+          "end_radius": 5.55
         },
         {
-          "term": "torus_swell",
-          "z": 0.18,
-          "radius": 6.35
+          "term": "torus",
+          "height": 0.46,
+          "end_radius": 6.65
         },
         {
-          "term": "torus_crown",
-          "z": 0.46,
-          "radius": 6.65
+          "term": "scotia",
+          "height": 0.3,
+          "end_radius": 6.05
         },
         {
-          "term": "scotia_return",
-          "z": 0.76,
-          "radius": 6.05
-        },
-        {
-          "term": "upper_fillet",
-          "z": 1.0,
-          "radius": 5.12
+          "term": "fillet",
+          "height": 0.16,
+          "end_radius": 5.12
         }
       ],
       "x": 0.0,
@@ -81,34 +77,30 @@
       "end_z": 53.9
     },
     {
-      "op": "AddMoulding",
+      "op": "AddProfileMoulding",
       "name": "capital.necking_annuli",
       "base_z": 55.4,
-      "profile": [
+      "sequence": [
         {
-          "term": "shaft_seat",
-          "z": 0.0,
-          "radius": 4.4
+          "term": "fillet",
+          "height": 0.25,
+          "start_radius": 4.4,
+          "end_radius": 5.2
         },
         {
-          "term": "lower_annulet",
-          "z": 0.25,
-          "radius": 5.2
+          "term": "scotia",
+          "height": 0.27,
+          "end_radius": 4.9
         },
         {
-          "term": "groove",
-          "z": 0.52,
-          "radius": 4.9
+          "term": "annulet",
+          "height": 0.38,
+          "end_radius": 5.4
         },
         {
-          "term": "upper_annulet",
-          "z": 0.9,
-          "radius": 5.4
-        },
-        {
-          "term": "echinus_seat",
-          "z": 1.2,
-          "radius": 5.0
+          "term": "fillet",
+          "height": 0.3,
+          "end_radius": 5.0
         }
       ],
       "x": 0.0,
@@ -117,34 +109,25 @@
       "material": "stone"
     },
     {
-      "op": "AddMoulding",
+      "op": "AddProfileMoulding",
       "name": "capital.echinus_cushion",
       "base_z": 56.6,
-      "profile": [
+      "sequence": [
         {
-          "term": "necking_transition",
-          "z": 0.0,
-          "radius": 5.0
+          "term": "cavetto",
+          "height": 0.7,
+          "start_radius": 5.0,
+          "end_radius": 6.0
         },
         {
-          "term": "cavetto_underbelly",
-          "z": 0.7,
-          "radius": 6.0
+          "term": "echinus",
+          "height": 2.35,
+          "end_radius": 7.9
         },
         {
-          "term": "echinus_belly",
-          "z": 1.7,
-          "radius": 7.3
-        },
-        {
-          "term": "echinus_shoulder",
-          "z": 3.05,
-          "radius": 7.9
-        },
-        {
-          "term": "abacus_bed",
-          "z": 4.0,
-          "radius": 6.9
+          "term": "fillet",
+          "height": 0.95,
+          "end_radius": 6.9
         }
       ],
       "x": 0.0,
