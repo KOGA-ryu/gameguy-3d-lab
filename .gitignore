@@ -12,6 +12,7 @@ target/
 *.jpeg
 *.gif
 *.webp
+*.blend
 *.obj
 *.gltf
 *.glb

@@ -61,6 +61,17 @@ class AddRing:
 
 
 @dataclass(frozen=True)
+class AddMoulding:
+    name: str
+    base_z: float
+    profile: List[Dict[str, Any]]
+    x: float = 0.0
+    y: float = 0.0
+    vertices: int = 96
+    material: str = "stone"
+
+
+@dataclass(frozen=True)
 class CutFlutes:
     target: str
     count: int
@@ -79,13 +90,14 @@ class AddLabel:
     z: float
 
 
-BuildOp = Union[AddBox, AddCylinder, AddRing, CutFlutes, AddLabel]
+BuildOp = Union[AddBox, AddCylinder, AddRing, AddMoulding, CutFlutes, AddLabel]
 
 
 OP_CLASSES = {
     "AddBox": AddBox,
     "AddCylinder": AddCylinder,
     "AddRing": AddRing,
+    "AddMoulding": AddMoulding,
     "CutFlutes": CutFlutes,
     "AddLabel": AddLabel,
 }
@@ -123,3 +135,4 @@ def save_ops(path: str, ops: Iterable[BuildOp]) -> None:
     payload = {"ops": [op_to_dict(op) for op in ops]}
     with open(path, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, ensure_ascii=False)
+        f.write("\n")

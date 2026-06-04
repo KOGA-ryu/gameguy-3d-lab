@@ -16,7 +16,7 @@ import math
 from dataclasses import dataclass
 from typing import Iterable, Literal
 
-from .ops import AddBox, AddCylinder, AddRing, CutFlutes, AddLabel, BuildOp
+from .ops import AddBox, AddCylinder, AddMoulding, AddRing, CutFlutes, AddLabel, BuildOp
 
 
 Projection = Literal["front", "side", "top"]
@@ -53,6 +53,18 @@ def estimate_bounds(ops: Iterable[BuildOp]) -> Bounds:
             max_y = max(max_y, op.y + radius)
             min_z = min(min_z, op.z - height / 2)
             max_z = max(max_z, op.z + height / 2)
+        elif isinstance(op, AddMoulding):
+            radii = [float(point["radius"]) for point in op.profile if "radius" in point]
+            local_zs = [float(point["z"]) for point in op.profile if "z" in point]
+            if not radii or not local_zs:
+                continue
+            radius = max(radii)
+            min_x = min(min_x, op.x - radius)
+            max_x = max(max_x, op.x + radius)
+            min_y = min(min_y, op.y - radius)
+            max_y = max(max_y, op.y + radius)
+            min_z = min(min_z, op.base_z + min(local_zs))
+            max_z = max(max_z, op.base_z + max(local_zs))
 
     if min_x == float("inf"):
         return Bounds(-1, 1, -1, 1, 0, 1)
@@ -172,6 +184,28 @@ class AsciiBackend:
             self._line(c, left_points[index][0], left_points[index][1], left_points[index + 1][0], left_points[index + 1][1], "█")
             self._line(c, right_points[index][0], right_points[index][1], right_points[index + 1][0], right_points[index + 1][1], "█")
 
+    def _draw_moulding_elevation(
+        self,
+        c: AsciiCanvas,
+        mapper,
+        center_axis: float,
+        base_z: float,
+        profile: list[dict],
+    ) -> None:
+        left_points: list[tuple[int, int]] = []
+        right_points: list[tuple[int, int]] = []
+        for point in profile:
+            radius = float(point["radius"])
+            z = base_z + float(point["z"])
+            left = mapper(center_axis - radius, z)
+            right = mapper(center_axis + radius, z)
+            left_points.append(left)
+            right_points.append(right)
+            c.line_h(left[1], left[0], right[0], "▓")
+        for index in range(len(left_points) - 1):
+            self._line(c, left_points[index][0], left_points[index][1], left_points[index + 1][0], left_points[index + 1][1], "█")
+            self._line(c, right_points[index][0], right_points[index][1], right_points[index + 1][0], right_points[index + 1][1], "█")
+
     def _draw_front(self, c: AsciiCanvas, mapper, op: BuildOp) -> None:
         if isinstance(op, AddBox):
             x1, y1 = mapper(op.x - op.width / 2, op.z - op.height / 2)
@@ -185,6 +219,8 @@ class AsciiBackend:
             x1, y1 = mapper(op.x - r, op.z - h / 2)
             x2, y2 = mapper(op.x + r, op.z + h / 2)
             c.rect(x1, y1, x2, y2, fill="▓", border="█")
+        elif isinstance(op, AddMoulding):
+            self._draw_moulding_elevation(c, mapper, op.x, op.base_z, op.profile)
         elif isinstance(op, CutFlutes):
             # Front preview: rhythm markers only, because actual radial boolean
             # cuts belong to the Blender backend.
@@ -207,6 +243,8 @@ class AsciiBackend:
             x1, y1 = mapper(op.y - r, op.z - h / 2)
             x2, y2 = mapper(op.y + r, op.z + h / 2)
             c.rect(x1, y1, x2, y2, fill="▓", border="█")
+        elif isinstance(op, AddMoulding):
+            self._draw_moulding_elevation(c, mapper, op.y, op.base_z, op.profile)
 
     def _draw_top(self, c: AsciiCanvas, mapper, op: BuildOp) -> None:
         if isinstance(op, AddBox):
@@ -221,6 +259,12 @@ class AsciiBackend:
         elif isinstance(op, AddRing):
             cx, cy = mapper(op.x, op.y)
             rx, _ = mapper(op.x + op.radius + op.overhang, op.y)
+            r = abs(rx - cx)
+            c.circle(cx, cy, r, fill="▓", border="█")
+        elif isinstance(op, AddMoulding):
+            cx, cy = mapper(op.x, op.y)
+            radius = max(float(point["radius"]) for point in op.profile)
+            rx, _ = mapper(op.x + radius, op.y)
             r = abs(rx - cx)
             c.circle(cx, cy, r, fill="▓", border="█")
         elif isinstance(op, CutFlutes):

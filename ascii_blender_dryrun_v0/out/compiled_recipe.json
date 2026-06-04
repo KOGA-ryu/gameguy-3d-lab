@@ -23,12 +23,36 @@
       "material": "stone"
     },
     {
-      "op": "AddRing",
-      "name": "base.lower_round",
-      "radius": 6.2,
-      "tube_height": 1.0,
-      "z": 4.5,
-      "overhang": 0.4,
+      "op": "AddMoulding",
+      "name": "base.torus_scotia_moulding",
+      "base_z": 4.0,
+      "profile": [
+        {
+          "term": "lower_fillet",
+          "z": 0.0,
+          "radius": 5.55
+        },
+        {
+          "term": "torus_swell",
+          "z": 0.18,
+          "radius": 6.35
+        },
+        {
+          "term": "torus_crown",
+          "z": 0.46,
+          "radius": 6.65
+        },
+        {
+          "term": "scotia_return",
+          "z": 0.76,
+          "radius": 6.05
+        },
+        {
+          "term": "upper_fillet",
+          "z": 1.0,
+          "radius": 5.12
+        }
+      ],
       "x": 0.0,
       "y": 0.0,
       "vertices": 96,
@@ -57,24 +81,72 @@
       "end_z": 53.9
     },
     {
-      "op": "AddRing",
-      "name": "capital.necking_ring",
-      "radius": 5.1,
-      "tube_height": 1.2,
-      "z": 56.0,
-      "overhang": 0.15,
+      "op": "AddMoulding",
+      "name": "capital.necking_annuli",
+      "base_z": 55.4,
+      "profile": [
+        {
+          "term": "shaft_seat",
+          "z": 0.0,
+          "radius": 4.4
+        },
+        {
+          "term": "lower_annulet",
+          "z": 0.25,
+          "radius": 5.2
+        },
+        {
+          "term": "groove",
+          "z": 0.52,
+          "radius": 4.9
+        },
+        {
+          "term": "upper_annulet",
+          "z": 0.9,
+          "radius": 5.4
+        },
+        {
+          "term": "echinus_seat",
+          "z": 1.2,
+          "radius": 5.0
+        }
+      ],
       "x": 0.0,
       "y": 0.0,
       "vertices": 96,
       "material": "stone"
     },
     {
-      "op": "AddRing",
+      "op": "AddMoulding",
       "name": "capital.echinus_cushion",
-      "radius": 6.75,
-      "tube_height": 4.0,
-      "z": 58.6,
-      "overhang": 0.8,
+      "base_z": 56.6,
+      "profile": [
+        {
+          "term": "necking_transition",
+          "z": 0.0,
+          "radius": 5.0
+        },
+        {
+          "term": "cavetto_underbelly",
+          "z": 0.7,
+          "radius": 6.0
+        },
+        {
+          "term": "echinus_belly",
+          "z": 1.7,
+          "radius": 7.3
+        },
+        {
+          "term": "echinus_shoulder",
+          "z": 3.05,
+          "radius": 7.9
+        },
+        {
+          "term": "abacus_bed",
+          "z": 4.0,
+          "radius": 6.9
+        }
+      ],
       "x": 0.0,
       "y": 0.0,
       "vertices": 96,

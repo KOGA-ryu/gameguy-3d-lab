@@ -11,7 +11,7 @@ Do not make Blender infer meaning from pixels. Write or compile a recipe, run it
 ## What this zip contains
 
 - `ascii_blender_dryrun/ops.py`  
-  Typed build operations such as `AddBox`, `AddCylinder`, `AddRing`, and `CutFlutes`.
+  Typed build operations such as `AddBox`, `AddCylinder`, `AddMoulding`, `AddRing`, and `CutFlutes`.
 
 - `ascii_blender_dryrun/recipes.py`  
   A deterministic Doric column recipe.
@@ -50,7 +50,7 @@ out/doric_top_preview.txt
 out/build_doric_column_v0.py
 ```
 
-Open the `.txt` previews first. If they look wrong, fix the recipe. Do not open Blender yet. Blender is not where bad plans go to become good plans. That is how one summons the time goblin.
+Open the `.txt` previews first. If they look wrong, fix the recipe before running Blender.
 
 ## Run tests
 
@@ -63,12 +63,12 @@ pytest
 
 This is v0. It intentionally stabilizes the recipe/backend contract before fancy geometry.
 
-The Blender script currently emits primitive boxes, cylinders, and rings. It marks flute cutting, taper, and entasis as TODO comments in the emitted script. That is deliberate. The ASCII dry-run needs to catch plan problems first.
+The Blender script currently emits primitive boxes, cylinders, revolved moulding profiles, flute cutters, taper, and entasis. Mouldings are profile-driven: the recipe stores radius/z section points with terms such as `torus_swell`, `scotia_return`, `annulet`, and `echinus`.
 
 ## Next slices
 
-1. Implement real shaft taper and entasis in Blender backend.
-2. Implement radial flute boolean cutters.
-3. Add OBJ dry-run mesh output outside Blender.
-4. Add ASCII/image reference parser that compiles into this same recipe format.
-5. Add material passes for marble, limestone, sandstone, and aged stone.
+1. Add richer profile helpers for cyma, cavetto, bead, ogee, torus, scotia, and fillet sequences.
+2. Add OBJ dry-run mesh output outside Blender.
+3. Add ASCII/image reference parser that compiles into this same recipe format.
+4. Add material passes for marble, limestone, sandstone, and aged stone.
+5. Add recipe-owned export and preview directives for Blender runs.

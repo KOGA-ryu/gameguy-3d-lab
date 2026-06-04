@@ -12,7 +12,7 @@ adds bevels to keep the test asset readable.
 
 from __future__ import annotations
 
-from .ops import AddBox, AddCylinder, AddRing, CutFlutes, AddLabel, BuildOp
+from .ops import AddBox, AddCylinder, AddMoulding, AddRing, CutFlutes, AddLabel, BuildOp
 
 
 class BlenderBackend:
@@ -103,6 +103,35 @@ class BlenderBackend:
             "    obj = add_cylinder(name, radius, tube_height, loc, vertices, material)",
             "    return obj",
             "",
+            "def add_moulding(name, base_z, profile, loc, vertices, material):",
+            "    profile_points = [(float(point['radius']), float(point['z'])) for point in profile]",
+            "    verts = []",
+            "    faces = []",
+            "    vertices = max(4, int(vertices))",
+            "    for ring_index, (radius, local_z) in enumerate(profile_points):",
+            "        rr = max(0.001, radius)",
+            "        for index in range(vertices):",
+            "            angle = math.tau * index / vertices",
+            "            verts.append((math.cos(angle) * rr, math.sin(angle) * rr, local_z))",
+            "    for ring_index in range(len(profile_points) - 1):",
+            "        current = ring_index * vertices",
+            "        next_ring = (ring_index + 1) * vertices",
+            "        for index in range(vertices):",
+            "            nxt = (index + 1) % vertices",
+            "            faces.append([current + index, current + nxt, next_ring + nxt, next_ring + index])",
+            "    faces.append(list(range(vertices - 1, -1, -1)))",
+            "    top_start = (len(profile_points) - 1) * vertices",
+            "    faces.append(list(range(top_start, top_start + vertices)))",
+            "    mesh = bpy.data.meshes.new(name + '_mesh')",
+            "    mesh.from_pydata(verts, [], faces)",
+            "    mesh.update(calc_edges=True)",
+            "    obj = bpy.data.objects.new(name, mesh)",
+            "    bpy.context.collection.objects.link(obj)",
+            "    obj.location = (loc[0], loc[1], base_z)",
+            "    assign_mat(obj, material)",
+            "    bevel(obj, 0.03, 2)",
+            "    return obj",
+            "",
             "def cut_flutes(target_name, count, depth, width_ratio, start_z, end_z):",
             "    target = bpy.data.objects.get(target_name)",
             "    if target is None:",
@@ -131,6 +160,10 @@ class BlenderBackend:
             "        target.select_set(True)",
             "        bpy.context.view_layer.objects.active = target",
             "        try:",
+            "            bpy.ops.object.modifier_move_to_index(modifier=mod.name, index=0)",
+            "        except Exception:",
+            "            pass",
+            "        try:",
             "            bpy.ops.object.modifier_apply(modifier=mod.name)",
             "        except Exception as exc:",
             "            print(f'Failed to apply {mod.name}: {exc}')",
@@ -158,6 +191,10 @@ class BlenderBackend:
                 radius = op.radius + op.overhang
                 lines.append(
                     f"add_ring({op.name!r}, {radius}, {op.tube_height}, ({op.x}, {op.y}, {op.z}), {op.vertices}, {op.material!r})"
+                )
+            elif isinstance(op, AddMoulding):
+                lines.append(
+                    f"add_moulding({op.name!r}, {op.base_z}, {op.profile!r}, ({op.x}, {op.y}, 0.0), {op.vertices}, {op.material!r})"
                 )
             elif isinstance(op, CutFlutes):
                 lines.append(

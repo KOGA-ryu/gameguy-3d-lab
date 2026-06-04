@@ -82,6 +82,35 @@ def add_ring(name, radius, tube_height, loc, vertices, material):
     obj = add_cylinder(name, radius, tube_height, loc, vertices, material)
     return obj
 
+def add_moulding(name, base_z, profile, loc, vertices, material):
+    profile_points = [(float(point['radius']), float(point['z'])) for point in profile]
+    verts = []
+    faces = []
+    vertices = max(4, int(vertices))
+    for ring_index, (radius, local_z) in enumerate(profile_points):
+        rr = max(0.001, radius)
+        for index in range(vertices):
+            angle = math.tau * index / vertices
+            verts.append((math.cos(angle) * rr, math.sin(angle) * rr, local_z))
+    for ring_index in range(len(profile_points) - 1):
+        current = ring_index * vertices
+        next_ring = (ring_index + 1) * vertices
+        for index in range(vertices):
+            nxt = (index + 1) % vertices
+            faces.append([current + index, current + nxt, next_ring + nxt, next_ring + index])
+    faces.append(list(range(vertices - 1, -1, -1)))
+    top_start = (len(profile_points) - 1) * vertices
+    faces.append(list(range(top_start, top_start + vertices)))
+    mesh = bpy.data.meshes.new(name + '_mesh')
+    mesh.from_pydata(verts, [], faces)
+    mesh.update(calc_edges=True)
+    obj = bpy.data.objects.new(name, mesh)
+    bpy.context.collection.objects.link(obj)
+    obj.location = (loc[0], loc[1], base_z)
+    assign_mat(obj, material)
+    bevel(obj, 0.03, 2)
+    return obj
+
 def cut_flutes(target_name, count, depth, width_ratio, start_z, end_z):
     target = bpy.data.objects.get(target_name)
     if target is None:
@@ -110,6 +139,10 @@ def cut_flutes(target_name, count, depth, width_ratio, start_z, end_z):
         target.select_set(True)
         bpy.context.view_layer.objects.active = target
         try:
+            bpy.ops.object.modifier_move_to_index(modifier=mod.name, index=0)
+        except Exception:
+            pass
+        try:
             bpy.ops.object.modifier_apply(modifier=mod.name)
         except Exception as exc:
             print(f'Failed to apply {mod.name}: {exc}')
@@ -118,11 +151,11 @@ def cut_flutes(target_name, count, depth, width_ratio, start_z, end_z):
 
 add_box('plinth.lower_step', 18, 18, 2.0, (0.0, 0.0, 1.0), 'stone')
 add_box('plinth.upper_step', 15.5, 15.5, 2.0, (0.0, 0.0, 3.0), 'stone')
-add_ring('base.lower_round', 6.6000000000000005, 1.0, (0.0, 0.0, 4.5), 96, 'stone')
+add_moulding('base.torus_scotia_moulding', 4.0, [{'term': 'lower_fillet', 'z': 0.0, 'radius': 5.55}, {'term': 'torus_swell', 'z': 0.18, 'radius': 6.35}, {'term': 'torus_crown', 'z': 0.46, 'radius': 6.65}, {'term': 'scotia_return', 'z': 0.76, 'radius': 6.05}, {'term': 'upper_fillet', 'z': 1.0, 'radius': 5.12}], (0.0, 0.0, 0.0), 96, 'stone')
 obj = add_tapered_cylinder('shaft.tapered_fluted_core', 5.0, 4.3, 50.4, (0.0, 0.0, 30.2), 128, 'stone', entasis=True)
 cut_flutes('shaft.tapered_fluted_core', 20, 0.45, 0.34, 6.5, 53.9)
-add_ring('capital.necking_ring', 5.25, 1.2, (0.0, 0.0, 56.0), 96, 'stone')
-add_ring('capital.echinus_cushion', 7.55, 4.0, (0.0, 0.0, 58.6), 96, 'stone')
+add_moulding('capital.necking_annuli', 55.4, [{'term': 'shaft_seat', 'z': 0.0, 'radius': 4.4}, {'term': 'lower_annulet', 'z': 0.25, 'radius': 5.2}, {'term': 'groove', 'z': 0.52, 'radius': 4.9}, {'term': 'upper_annulet', 'z': 0.9, 'radius': 5.4}, {'term': 'echinus_seat', 'z': 1.2, 'radius': 5.0}], (0.0, 0.0, 0.0), 96, 'stone')
+add_moulding('capital.echinus_cushion', 56.6, [{'term': 'necking_transition', 'z': 0.0, 'radius': 5.0}, {'term': 'cavetto_underbelly', 'z': 0.7, 'radius': 6.0}, {'term': 'echinus_belly', 'z': 1.7, 'radius': 7.3}, {'term': 'echinus_shoulder', 'z': 3.05, 'radius': 7.9}, {'term': 'abacus_bed', 'z': 4.0, 'radius': 6.9}], (0.0, 0.0, 0.0), 96, 'stone')
 add_box('capital.abacus_square_slab', 16.5, 16.5, 3.0, (0.0, 0.0, 62.1), 'stone')
 add_box('entablature.test_block', 22, 18, 5, (0.0, 0.0, 66.1), 'limestone')
 

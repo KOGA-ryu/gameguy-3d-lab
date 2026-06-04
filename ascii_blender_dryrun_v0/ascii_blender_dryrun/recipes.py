@@ -8,7 +8,7 @@ reference parser can compile into the same ops.
 
 from __future__ import annotations
 
-from .ops import AddBox, AddCylinder, AddRing, CutFlutes, BuildOp
+from .ops import AddBox, AddCylinder, AddMoulding, CutFlutes, BuildOp
 
 
 def doric_column_plan(
@@ -52,7 +52,17 @@ def doric_column_plan(
     ops.append(AddBox("plinth.upper_step", width=15.5, depth=15.5, height=plinth_upper_h, z=z + plinth_upper_h / 2))
     z += plinth_upper_h
 
-    ops.append(AddRing("base.lower_round", radius=shaft_radius + 1.2, tube_height=torus_lower_h, z=z + torus_lower_h / 2, overhang=0.4))
+    ops.append(AddMoulding(
+        "base.torus_scotia_moulding",
+        base_z=z,
+        profile=[
+            {"term": "lower_fillet", "z": 0.00, "radius": shaft_radius + 0.55},
+            {"term": "torus_swell", "z": 0.18, "radius": shaft_radius + 1.35},
+            {"term": "torus_crown", "z": 0.46, "radius": shaft_radius + 1.65},
+            {"term": "scotia_return", "z": 0.76, "radius": shaft_radius + 1.05},
+            {"term": "upper_fillet", "z": torus_lower_h, "radius": shaft_radius + 0.12},
+        ],
+    ))
     z += torus_lower_h
 
     shaft_start_z = z
@@ -75,10 +85,30 @@ def doric_column_plan(
     ))
     z += shaft_h
 
-    ops.append(AddRing("capital.necking_ring", radius=shaft_radius * 1.02, tube_height=neck_h, z=z + neck_h / 2, overhang=0.15))
+    ops.append(AddMoulding(
+        "capital.necking_annuli",
+        base_z=z,
+        profile=[
+            {"term": "shaft_seat", "z": 0.00, "radius": shaft_radius * 0.88},
+            {"term": "lower_annulet", "z": 0.25, "radius": shaft_radius * 1.04},
+            {"term": "groove", "z": 0.52, "radius": shaft_radius * 0.98},
+            {"term": "upper_annulet", "z": 0.90, "radius": shaft_radius * 1.08},
+            {"term": "echinus_seat", "z": neck_h, "radius": shaft_radius * 1.00},
+        ],
+    ))
     z += neck_h
 
-    ops.append(AddRing("capital.echinus_cushion", radius=shaft_radius * 1.35, tube_height=echinus_h, z=z + echinus_h / 2, overhang=0.8))
+    ops.append(AddMoulding(
+        "capital.echinus_cushion",
+        base_z=z,
+        profile=[
+            {"term": "necking_transition", "z": 0.00, "radius": shaft_radius * 1.00},
+            {"term": "cavetto_underbelly", "z": 0.70, "radius": shaft_radius * 1.20},
+            {"term": "echinus_belly", "z": 1.70, "radius": shaft_radius * 1.46},
+            {"term": "echinus_shoulder", "z": 3.05, "radius": shaft_radius * 1.58},
+            {"term": "abacus_bed", "z": echinus_h, "radius": round(shaft_radius * 1.38, 4)},
+        ],
+    ))
     z += echinus_h
 
     ops.append(AddBox("capital.abacus_square_slab", width=16.5, depth=16.5, height=abacus_h, z=z + abacus_h / 2))
