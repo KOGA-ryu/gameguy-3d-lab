@@ -1,0 +1,102 @@
+{
+  "schema": "imported_asset_taxonomy_manifest_v0",
+  "manifest_id": "document_asset_taxonomy_import_v0",
+  "purpose": "Catalog taxonomy seed JSON files imported from the user's local Documents folder for later organization into game asset, character, armor, textile, prop, material, and drafting workflows.",
+  "import_policy": {
+    "raw_seed_preservation": true,
+    "canonical_pipeline_input": false,
+    "architecture_taxonomy_input": false,
+    "requires_triage_before_recipe_use": true,
+    "binary_spec_sheets_imported": false
+  },
+  "imported_on": "2026-06-04",
+  "source_root": "/Users/kogaryu/Documents",
+  "seeds": [
+    {
+      "seed_id": "armor_history_taxonomy_seed",
+      "source_path": "/Users/kogaryu/Documents/armor_history_taxonomy_seed.json",
+      "repo_path": "data/asset_taxonomy/imported_seeds_v0/armor_history_taxonomy_seed.json",
+      "sha256": "ffae3ae76f46fbf73e6b605791d935b3d4adc30dd63347738863072d8ff44de6",
+      "domain": "armor_history",
+      "counts": {
+        "period_chunks": 11,
+        "shape_library": 17,
+        "construction_methods": 10,
+        "chunk_templates": 10,
+        "armor_entries": 81,
+        "render_tiers": 5
+      },
+      "triage_status": "imported_raw_seed"
+    },
+    {
+      "seed_id": "armor_making_taxonomy_seed",
+      "source_path": "/Users/kogaryu/Documents/armor_making_taxonomy_seed.json",
+      "repo_path": "data/asset_taxonomy/imported_seeds_v0/armor_making_taxonomy_seed.json",
+      "sha256": "01fa830d12945dea65988805bbdcefe35d2a569ff35914397c3e37dae63a6ef0",
+      "domain": "armor_making_tools_materials_techniques",
+      "counts": {
+        "workflow": 8,
+        "entries": 111,
+        "recommended_blender_collections": 7
+      },
+      "triage_status": "imported_raw_seed"
+    },
+    {
+      "seed_id": "human_meat_taxonomy_seed",
+      "source_path": "/Users/kogaryu/Documents/human_meat_taxonomy_seed.json",
+      "repo_path": "data/asset_taxonomy/imported_seeds_v0/human_meat_taxonomy_seed.json",
+      "sha256": "6462bcdefbc939a4dd526a839f358fa2e18d48abd81556474622bd331ffaca32",
+      "domain": "human_body_anatomy_proxy",
+      "counts": {
+        "shape_vocab": 17,
+        "layers": 11,
+        "render_tiers": 6,
+        "chunk_groups": 9,
+        "chunk_entries": 121,
+        "assembly_rules": 8
+      },
+      "triage_status": "imported_raw_seed"
+    },
+    {
+      "seed_id": "human_textile_taxonomy_seed",
+      "source_path": "/Users/kogaryu/Documents/human_textile_taxonomy_seed.json",
+      "repo_path": "data/asset_taxonomy/imported_seeds_v0/human_textile_taxonomy_seed.json",
+      "sha256": "105691bc7bc992e941f1b1d882c944df54baeb2553d808105d88506ceb3da443",
+      "domain": "human_textile_clothing",
+      "counts": {
+        "stitches": 17,
+        "pattern_shapes": 15,
+        "seams": 15,
+        "region_groups": 7,
+        "region_entries": 43,
+        "surface_patterns": 14,
+        "materials": 9
+      },
+      "triage_status": "imported_raw_seed"
+    },
+    {
+      "seed_id": "sewing_equipment_taxonomy_seed",
+      "source_path": "/Users/kogaryu/Documents/sewing_equipment_taxonomy_seed.json",
+      "repo_path": "data/asset_taxonomy/imported_seeds_v0/sewing_equipment_taxonomy_seed.json",
+      "sha256": "c272f4dec09e10dd9d4343db6de122fdb72f57a72955a4bd2f3f784072af1913",
+      "domain": "sewing_textile_equipment_props",
+      "counts": {
+        "shape_type_legend": 10,
+        "sections": 15,
+        "equipment_items": 138
+      },
+      "triage_status": "imported_raw_seed"
+    }
+  ],
+  "related_unimported_documents": [
+    "/Users/kogaryu/Documents/armor_making_tools_materials_techniques_spec_sheet.docx",
+    "/Users/kogaryu/Documents/full_human_meat_model_build_packet.docx",
+    "/Users/kogaryu/Documents/human_anatomy_bone_spec_sheet.docx",
+    "/Users/kogaryu/Documents/human_anatomy_muscle_chunk_spec_sheet.docx",
+    "/Users/kogaryu/Documents/human_armor_history_spec_sheet.docx",
+    "/Users/kogaryu/Documents/human_textile_clothing_stitching_spec_sheet.docx",
+    "/Users/kogaryu/Documents/human_textile_sewing_equipment_spec_sheet.docx"
+  ],
+  "recommended_next_use": "Create normalized domain ledgers that map imported shape_type and blender_proxy fields into the repo's geometry dictionary, Blender tool cards, and per-asset workcards."
+}
+

@@ -1,0 +1,929 @@
+{
+  "schema": {
+    "piece_name": "stable lowercase object name",
+    "region": "body region",
+    "pattern_shape_type": "flat pattern shape",
+    "shape_type_3d": "Blender proxy type",
+    "seam_type": "construction seam",
+    "stitch_type": "visible/structural stitch",
+    "anchors": "body landmarks",
+    "material_family": "fabric/material family",
+    "generator_note": "implementation note"
+  },
+  "stitches": [
+    {
+      "name": "running_stitch",
+      "class": "structural / visible",
+      "shape_logic": "short repeated line segments",
+      "blender_proxy": "bevelled_curve dashes",
+      "best_use": "general seams, guide stitches, rough repairs"
+    },
+    {
+      "name": "backstitch",
+      "class": "structural",
+      "shape_logic": "overlapping line segments",
+      "blender_proxy": "curve chain with back-overlap",
+      "best_use": "strong hand seam, historical costume look"
+    },
+    {
+      "name": "lockstitch",
+      "class": "machine structural",
+      "shape_logic": "tight uniform line",
+      "blender_proxy": "thin repeated cylinders or texture",
+      "best_use": "modern seams; use as clean production stitch"
+    },
+    {
+      "name": "whipstitch",
+      "class": "edge join",
+      "shape_logic": "diagonal wraps over edge",
+      "blender_proxy": "helical/diagonal curve segments",
+      "best_use": "closing edges, attaching patches"
+    },
+    {
+      "name": "blanket_stitch",
+      "class": "edge finish",
+      "shape_logic": "perpendicular loops on border",
+      "blender_proxy": "L-shaped curve instances",
+      "best_use": "cloak edges, felt/wool trim, stylized cuffs"
+    },
+    {
+      "name": "overcast_stitch",
+      "class": "edge finish",
+      "shape_logic": "diagonal thread over raw edge",
+      "blender_proxy": "angled curve array",
+      "best_use": "fray prevention on inner edges"
+    },
+    {
+      "name": "ladder_stitch",
+      "class": "hidden closure",
+      "shape_logic": "alternating tiny internal bites",
+      "blender_proxy": "nearly hidden curves",
+      "best_use": "invisible closing seam, doll stuffing closure"
+    },
+    {
+      "name": "slip_stitch",
+      "class": "hidden hem",
+      "shape_logic": "tiny barely visible bites",
+      "blender_proxy": "thin sparse dash curve",
+      "best_use": "hems, linings, robe facing"
+    },
+    {
+      "name": "herringbone_stitch",
+      "class": "flexible decorative hem",
+      "shape_logic": "crossed zigzag pattern",
+      "blender_proxy": "zigzag curve rail",
+      "best_use": "decorative hems, stretch-friendly joins"
+    },
+    {
+      "name": "chain_stitch",
+      "class": "decorative / structural",
+      "shape_logic": "interlocking loops",
+      "blender_proxy": "looped curve array",
+      "best_use": "embroidery outlines, robe symbols"
+    },
+    {
+      "name": "satin_stitch",
+      "class": "embroidery fill",
+      "shape_logic": "dense parallel thread fill",
+      "blender_proxy": "raised strip field / normal map",
+      "best_use": "filled sigils, medallions, glyphs"
+    },
+    {
+      "name": "stem_stitch",
+      "class": "embroidery outline",
+      "shape_logic": "twisted rope-like line",
+      "blender_proxy": "bevelled curve with twist normal",
+      "best_use": "scrollwork, vines, borders"
+    },
+    {
+      "name": "couching",
+      "class": "embroidery / trim",
+      "shape_logic": "thick cord tacked down by small stitches",
+      "blender_proxy": "large curve plus tiny clamp curves",
+      "best_use": "gold cord borders, ceremonial robe trim"
+    },
+    {
+      "name": "cross_stitch",
+      "class": "decorative grid",
+      "shape_logic": "X-shaped stitch cells",
+      "blender_proxy": "instanced X curves",
+      "best_use": "pixel-like symbols, folk pattern bands"
+    },
+    {
+      "name": "seed_stitch_embroidery",
+      "class": "texture scatter",
+      "shape_logic": "random small stitches",
+      "blender_proxy": "scatter tiny curve dashes",
+      "best_use": "cloth texture, worn repair, magical grain"
+    },
+    {
+      "name": "french_knot",
+      "class": "raised dot",
+      "shape_logic": "small thread knot",
+      "blender_proxy": "tiny torus/sphere bead",
+      "best_use": "beads, eyes, stars, punctuation points in pattern"
+    },
+    {
+      "name": "bullion_knot",
+      "class": "raised coil",
+      "shape_logic": "wrapped coil stitch",
+      "blender_proxy": "spiral curve/capsule coil",
+      "best_use": "floral relief, ornate raised detail"
+    }
+  ],
+  "pattern_shapes": [
+    {
+      "name": "rectangle_panel",
+      "definition": "flat rectangular fabric piece",
+      "use_cases": "tunic body, scarf, sash, bandage wrap",
+      "blender_proxy": "plane mesh with subdivisions"
+    },
+    {
+      "name": "trapezoid_panel",
+      "definition": "top narrow, bottom wide panel",
+      "use_cases": "robe front/back, cloak gores, skirt panels",
+      "blender_proxy": "plane mesh with four-corner outline"
+    },
+    {
+      "name": "curved_gore",
+      "definition": "tapered curved triangular insert",
+      "use_cases": "hood, skirt expansion, cloak flare",
+      "blender_proxy": "Bezier outline converted to mesh"
+    },
+    {
+      "name": "sleeve_taper",
+      "definition": "wide shoulder / wrist tube pattern",
+      "use_cases": "robe sleeve, jacket sleeve, glove cuff",
+      "blender_proxy": "rolled mesh cylinder with seam line"
+    },
+    {
+      "name": "bell_sleeve",
+      "definition": "narrow upper, large opening",
+      "use_cases": "wizard robe, ceremonial garment",
+      "blender_proxy": "flared cone shell with cuff ring"
+    },
+    {
+      "name": "hood_two_piece",
+      "definition": "left/right hood sides joined center-back",
+      "use_cases": "plain hood, monk robe hood",
+      "blender_proxy": "two curved planes with center seam"
+    },
+    {
+      "name": "hood_gusseted",
+      "definition": "hood with top/neck gusset",
+      "use_cases": "large stylized hood, fantasy robe",
+      "blender_proxy": "3 panels: left, right, center strip"
+    },
+    {
+      "name": "collar_band",
+      "definition": "narrow strip around neck",
+      "use_cases": "shirt collar, robe collar, armor underlayer",
+      "blender_proxy": "curved ribbon around neck ring"
+    },
+    {
+      "name": "facing_strip",
+      "definition": "inside reinforcement strip",
+      "use_cases": "robe opening, sleeve edge",
+      "blender_proxy": "thin inner ribbon mesh"
+    },
+    {
+      "name": "bias_binding",
+      "definition": "folded strip wrapping an edge",
+      "use_cases": "cloak hem, cuffs, neckline",
+      "blender_proxy": "U-shaped edge strip / bevelled ribbon"
+    },
+    {
+      "name": "dart",
+      "definition": "wedge removed to shape fabric",
+      "use_cases": "chest shaping, waist fit",
+      "blender_proxy": "triangular seam annotation + crease"
+    },
+    {
+      "name": "pleat_box",
+      "definition": "folded cloth volume",
+      "use_cases": "skirt, robe lower body",
+      "blender_proxy": "folded parallel planes"
+    },
+    {
+      "name": "pleat_knife",
+      "definition": "one-direction repeating folds",
+      "use_cases": "robe panels, military skirt, sleeves",
+      "blender_proxy": "alternating ridge/valley mesh deformation"
+    },
+    {
+      "name": "gusset_diamond",
+      "definition": "diamond insert for movement",
+      "use_cases": "underarm, crotch, glove thumb",
+      "blender_proxy": "diamond mesh patch"
+    },
+    {
+      "name": "applique_patch",
+      "definition": "decorative fabric placed on surface",
+      "use_cases": "symbols, borders, repairs",
+      "blender_proxy": "raised thin mesh decal"
+    }
+  ],
+  "seams": [
+    {
+      "name": "plain_seam",
+      "definition": "two edges joined inside",
+      "best_use": "standard shirt/robe panels",
+      "generator_note": "seam curve + inward seam allowance line"
+    },
+    {
+      "name": "flat_felled_seam",
+      "definition": "folded and topstitched strong seam",
+      "best_use": "trousers, workwear, durable fantasy garments",
+      "generator_note": "double seam lines plus folded strip"
+    },
+    {
+      "name": "french_seam",
+      "definition": "raw edge enclosed inside",
+      "best_use": "fine robes, linen, silk",
+      "generator_note": "clean seam ridge with no raw edge"
+    },
+    {
+      "name": "lapped_seam",
+      "definition": "one panel overlaps another",
+      "best_use": "armor cloth, patches, heavy cloak panels",
+      "generator_note": "overlap mesh edge + visible topstitch"
+    },
+    {
+      "name": "welt_seam",
+      "definition": "raised seam cord or ridge",
+      "best_use": "ornate robes, leather, military detail",
+      "generator_note": "raised bevelled seam bead"
+    },
+    {
+      "name": "princess_seam",
+      "definition": "long curved shaping seam",
+      "best_use": "fitted bodice, tailored tunic",
+      "generator_note": "curved seam following torso contours"
+    },
+    {
+      "name": "shoulder_seam",
+      "definition": "body front/back join over shoulder",
+      "best_use": "shirts, coats, robes",
+      "generator_note": "anchor at clavicle/scapula line"
+    },
+    {
+      "name": "side_seam",
+      "definition": "body side join",
+      "best_use": "tunic, robe, trousers",
+      "generator_note": "vertical seam from underarm or waist"
+    },
+    {
+      "name": "inseam",
+      "definition": "inside leg seam",
+      "best_use": "pants, leggings",
+      "generator_note": "line from crotch to ankle inner leg"
+    },
+    {
+      "name": "outseam",
+      "definition": "outer leg seam",
+      "best_use": "pants, boots, armor cloth",
+      "generator_note": "line from hip to ankle outer leg"
+    },
+    {
+      "name": "armscye_seam",
+      "definition": "sleeve attached to body opening",
+      "best_use": "shirts, coats, robes",
+      "generator_note": "oval seam curve around shoulder socket"
+    },
+    {
+      "name": "cuff_seam",
+      "definition": "sleeve/leg end finishing join",
+      "best_use": "sleeves, gloves, pants, boots",
+      "generator_note": "ring seam around wrist/ankle"
+    },
+    {
+      "name": "hem_fold",
+      "definition": "fabric folded at edge",
+      "best_use": "robe bottom, cloak, skirt",
+      "generator_note": "folded strip + stitch line"
+    },
+    {
+      "name": "rolled_hem",
+      "definition": "small rounded edge finish",
+      "best_use": "thin fabrics, veils",
+      "generator_note": "small curved tube along edge"
+    },
+    {
+      "name": "bound_edge",
+      "definition": "separate strip encases raw edge",
+      "best_use": "cloak, robe, leatherwork",
+      "generator_note": "bias binding ribbon around edge"
+    }
+  ],
+  "regions": {
+    "head_neck": [
+      {
+        "piece_name": "hood_shell",
+        "region": "head/neck",
+        "pattern_shape_type": "hood_two_piece or hood_gusseted",
+        "shape_type_3d": "cloth_shell_mesh",
+        "seam_stitch_detail": "center_back_seam + neck_ring seam",
+        "anchor_landmarks": "neck_ring, skull_back, face_frame",
+        "material_family": "linen/wool/leather",
+        "generator_note": "smooth shell; pin neck, allow hood rim to hover"
+      },
+      {
+        "piece_name": "hood_face_rim",
+        "region": "head/neck",
+        "pattern_shape_type": "collar_band / curved_ribbon",
+        "shape_type_3d": "curve_strip",
+        "seam_stitch_detail": "bound_edge + topstitch",
+        "anchor_landmarks": "face_oval_landmarks",
+        "material_family": "leather/cloth binding",
+        "generator_note": "use bevelled curve following face opening"
+      },
+      {
+        "piece_name": "veil_panel",
+        "region": "head/neck",
+        "pattern_shape_type": "rectangle_panel",
+        "shape_type_3d": "thin cloth plane",
+        "seam_stitch_detail": "rolled_hem + slip_stitch",
+        "anchor_landmarks": "brow_line, cheek_line",
+        "material_family": "silk/gauze",
+        "generator_note": "transparent material, low stiffness, high drape"
+      },
+      {
+        "piece_name": "scarf_wrap",
+        "region": "head/neck",
+        "pattern_shape_type": "long_rectangle_panel",
+        "shape_type_3d": "curve_surface_ribbon",
+        "seam_stitch_detail": "running_stitch edge",
+        "anchor_landmarks": "neck_ring, clavicle_l/r",
+        "material_family": "wool/linen",
+        "generator_note": "wrap path around neck using curve modifier"
+      },
+      {
+        "piece_name": "mask_underlayer",
+        "region": "head/neck",
+        "pattern_shape_type": "fitted_face_plate",
+        "shape_type_3d": "thin shell mesh",
+        "seam_stitch_detail": "lapped seam at sides",
+        "anchor_landmarks": "eye_socket_l/r, nose_bridge, jaw",
+        "material_family": "leather/painted cloth",
+        "generator_note": "separate from anatomical face so costume can swap"
+      }
+    ],
+    "shoulders": [
+      {
+        "piece_name": "shoulder_yoke",
+        "region": "shoulders",
+        "pattern_shape_type": "curved_yoke_panel",
+        "shape_type_3d": "cloth_shell_mesh",
+        "seam_stitch_detail": "shoulder_seam + topstitch",
+        "anchor_landmarks": "clavicle_l/r, scapula_l/r",
+        "material_family": "linen/wool",
+        "generator_note": "controls robe drape from shoulders"
+      },
+      {
+        "piece_name": "capelet",
+        "region": "shoulders",
+        "pattern_shape_type": "semi_circle_panel",
+        "shape_type_3d": "cloth_plane_mesh",
+        "seam_stitch_detail": "bound_edge + blanket_stitch",
+        "anchor_landmarks": "neck_ring, shoulder_l/r",
+        "material_family": "wool/felt",
+        "generator_note": "short cloak layer over upper torso"
+      },
+      {
+        "piece_name": "pauldron_padding",
+        "region": "shoulders",
+        "pattern_shape_type": "oval_pad_panel",
+        "shape_type_3d": "padded_shell",
+        "seam_stitch_detail": "quilt_stitch grid",
+        "anchor_landmarks": "deltoid_l/r, clavicle_l/r",
+        "material_family": "quilted cloth/leather",
+        "generator_note": "soft armor silhouette under robe"
+      },
+      {
+        "piece_name": "epaulette_trim",
+        "region": "shoulders",
+        "pattern_shape_type": "narrow_strip",
+        "shape_type_3d": "raised_curve_strip",
+        "seam_stitch_detail": "couching + tassels",
+        "anchor_landmarks": "shoulder_top_l/r",
+        "material_family": "metal_thread",
+        "generator_note": "ceremonial trim layer"
+      }
+    ],
+    "body_torso": [
+      {
+        "piece_name": "tunic_front",
+        "region": "body",
+        "pattern_shape_type": "rectangle_or_trapezoid_panel",
+        "shape_type_3d": "cloth_plane_mesh",
+        "seam_stitch_detail": "side_seam + shoulder_seam",
+        "anchor_landmarks": "neck_ring, waist_ring, shoulder_l/r",
+        "material_family": "linen",
+        "generator_note": "base garment layer under robe"
+      },
+      {
+        "piece_name": "tunic_back",
+        "region": "body",
+        "pattern_shape_type": "rectangle_panel",
+        "shape_type_3d": "cloth_plane_mesh",
+        "seam_stitch_detail": "center_back optional",
+        "anchor_landmarks": "neck_back, waist_back, scapula_l/r",
+        "material_family": "linen",
+        "generator_note": "simple back panel collision fitted to torso"
+      },
+      {
+        "piece_name": "robe_front_center_panel",
+        "region": "body",
+        "pattern_shape_type": "long_trapezoid_panel",
+        "shape_type_3d": "cloth_plane_mesh",
+        "seam_stitch_detail": "welt_edge + topstitch",
+        "anchor_landmarks": "sternum, navel, hem_front",
+        "material_family": "heavy wool/linen",
+        "generator_note": "main visual panel for robed figure"
+      },
+      {
+        "piece_name": "robe_left_front_panel",
+        "region": "body",
+        "pattern_shape_type": "long_trapezoid_panel",
+        "shape_type_3d": "cloth_plane_mesh",
+        "seam_stitch_detail": "lapped_seam",
+        "anchor_landmarks": "left_chest, waist_l, hem_l",
+        "material_family": "wool",
+        "generator_note": "overlap center panel slightly"
+      },
+      {
+        "piece_name": "robe_right_front_panel",
+        "region": "body",
+        "pattern_shape_type": "long_trapezoid_panel",
+        "shape_type_3d": "cloth_plane_mesh",
+        "seam_stitch_detail": "lapped_seam",
+        "anchor_landmarks": "right_chest, waist_r, hem_r",
+        "material_family": "wool",
+        "generator_note": "mirror left panel"
+      },
+      {
+        "piece_name": "robe_back_panel",
+        "region": "body",
+        "pattern_shape_type": "wide_trapezoid_panel",
+        "shape_type_3d": "cloth_plane_mesh",
+        "seam_stitch_detail": "center_back_seam optional",
+        "anchor_landmarks": "neck_back, scapula_l/r, hem_back",
+        "material_family": "wool",
+        "generator_note": "larger unbroken cloth field for rear silhouette"
+      },
+      {
+        "piece_name": "belt_sash",
+        "region": "body/hips",
+        "pattern_shape_type": "long_rectangle_panel",
+        "shape_type_3d": "wrapped_curve_surface",
+        "seam_stitch_detail": "running_stitch edge",
+        "anchor_landmarks": "waist_ring",
+        "material_family": "linen/leather",
+        "generator_note": "wrap around waist and pin robe volumes"
+      },
+      {
+        "piece_name": "chest_applique",
+        "region": "body",
+        "pattern_shape_type": "applique_patch",
+        "shape_type_3d": "raised_mesh_decal",
+        "seam_stitch_detail": "satin_stitch + couching",
+        "anchor_landmarks": "sternum_landmark",
+        "material_family": "silk/metal_thread",
+        "generator_note": "symbols, medallions, faction marks"
+      }
+    ],
+    "arms": [
+      {
+        "piece_name": "upper_sleeve_l",
+        "region": "arms",
+        "pattern_shape_type": "sleeve_taper",
+        "shape_type_3d": "rolled_cloth_tube",
+        "seam_stitch_detail": "armscye_seam + underarm seam",
+        "anchor_landmarks": "l_shoulder, l_elbow",
+        "material_family": "linen/wool",
+        "generator_note": "taper around upper arm, allow elbow bend"
+      },
+      {
+        "piece_name": "upper_sleeve_r",
+        "region": "arms",
+        "pattern_shape_type": "sleeve_taper",
+        "shape_type_3d": "rolled_cloth_tube",
+        "seam_stitch_detail": "armscye_seam + underarm seam",
+        "anchor_landmarks": "r_shoulder, r_elbow",
+        "material_family": "linen/wool",
+        "generator_note": "mirror left"
+      },
+      {
+        "piece_name": "bell_sleeve_l",
+        "region": "arms",
+        "pattern_shape_type": "bell_sleeve",
+        "shape_type_3d": "flared_cone_shell",
+        "seam_stitch_detail": "cuff bound edge + blanket stitch",
+        "anchor_landmarks": "l_elbow, l_wrist",
+        "material_family": "heavy wool",
+        "generator_note": "wide opening; good for robed cult figure"
+      },
+      {
+        "piece_name": "bell_sleeve_r",
+        "region": "arms",
+        "pattern_shape_type": "bell_sleeve",
+        "shape_type_3d": "flared_cone_shell",
+        "seam_stitch_detail": "cuff bound edge + blanket stitch",
+        "anchor_landmarks": "r_elbow, r_wrist",
+        "material_family": "heavy wool",
+        "generator_note": "mirror left"
+      },
+      {
+        "piece_name": "forearm_wrap_l",
+        "region": "arms",
+        "pattern_shape_type": "spiral_strip",
+        "shape_type_3d": "curve_ribbon_wrap",
+        "seam_stitch_detail": "overlap wrap",
+        "anchor_landmarks": "l_wrist, l_elbow",
+        "material_family": "linen/leather",
+        "generator_note": "bandage/wrap look, easy procedural curve"
+      },
+      {
+        "piece_name": "forearm_wrap_r",
+        "region": "arms",
+        "pattern_shape_type": "spiral_strip",
+        "shape_type_3d": "curve_ribbon_wrap",
+        "seam_stitch_detail": "overlap wrap",
+        "anchor_landmarks": "r_wrist, r_elbow",
+        "material_family": "linen/leather",
+        "generator_note": "mirror left"
+      }
+    ],
+    "hands": [
+      {
+        "piece_name": "glove_palm_l",
+        "region": "hands",
+        "pattern_shape_type": "mitten_or_palm_panel",
+        "shape_type_3d": "thin_shell_mesh",
+        "seam_stitch_detail": "side seam + thumb gusset",
+        "anchor_landmarks": "l_palm, l_wrist",
+        "material_family": "leather/cloth",
+        "generator_note": "start as mitten, split fingers later"
+      },
+      {
+        "piece_name": "glove_palm_r",
+        "region": "hands",
+        "pattern_shape_type": "mitten_or_palm_panel",
+        "shape_type_3d": "thin_shell_mesh",
+        "seam_stitch_detail": "side seam + thumb gusset",
+        "anchor_landmarks": "r_palm, r_wrist",
+        "material_family": "leather/cloth",
+        "generator_note": "mirror left"
+      },
+      {
+        "piece_name": "finger_sleeves_l",
+        "region": "hands",
+        "pattern_shape_type": "tube_segments",
+        "shape_type_3d": "small_cloth_tubes",
+        "seam_stitch_detail": "tiny side seams",
+        "anchor_landmarks": "l_finger_joints",
+        "material_family": "leather/cloth",
+        "generator_note": "only hero tier; use cylinders at first"
+      },
+      {
+        "piece_name": "finger_sleeves_r",
+        "region": "hands",
+        "pattern_shape_type": "tube_segments",
+        "shape_type_3d": "small_cloth_tubes",
+        "seam_stitch_detail": "tiny side seams",
+        "anchor_landmarks": "r_finger_joints",
+        "material_family": "leather/cloth",
+        "generator_note": "mirror left"
+      },
+      {
+        "piece_name": "wrist_cuff_l",
+        "region": "hands/arms",
+        "pattern_shape_type": "collar_band",
+        "shape_type_3d": "ring_strip",
+        "seam_stitch_detail": "cuff seam + topstitch",
+        "anchor_landmarks": "l_wrist",
+        "material_family": "leather/wool",
+        "generator_note": "hides sleeve/glove intersection"
+      },
+      {
+        "piece_name": "wrist_cuff_r",
+        "region": "hands/arms",
+        "pattern_shape_type": "collar_band",
+        "shape_type_3d": "ring_strip",
+        "seam_stitch_detail": "cuff seam + topstitch",
+        "anchor_landmarks": "r_wrist",
+        "material_family": "leather/wool",
+        "generator_note": "mirror left"
+      }
+    ],
+    "legs_knees": [
+      {
+        "piece_name": "trouser_front_l",
+        "region": "legs",
+        "pattern_shape_type": "leg_taper_panel",
+        "shape_type_3d": "cloth_shell_mesh",
+        "seam_stitch_detail": "inseam + outseam",
+        "anchor_landmarks": "l_hip, l_knee, l_ankle",
+        "material_family": "linen/wool",
+        "generator_note": "under robe; useful for blank body clothing"
+      },
+      {
+        "piece_name": "trouser_front_r",
+        "region": "legs",
+        "pattern_shape_type": "leg_taper_panel",
+        "shape_type_3d": "cloth_shell_mesh",
+        "seam_stitch_detail": "inseam + outseam",
+        "anchor_landmarks": "r_hip, r_knee, r_ankle",
+        "material_family": "linen/wool",
+        "generator_note": "mirror left"
+      },
+      {
+        "piece_name": "robe_lower_gore_front",
+        "region": "legs/body",
+        "pattern_shape_type": "curved_gore",
+        "shape_type_3d": "cloth_plane_mesh",
+        "seam_stitch_detail": "vertical seam + hem",
+        "anchor_landmarks": "waist_front, hem_front",
+        "material_family": "wool",
+        "generator_note": "adds robe flare without making traffic cone geometry"
+      },
+      {
+        "piece_name": "robe_lower_gore_back",
+        "region": "legs/body",
+        "pattern_shape_type": "curved_gore",
+        "shape_type_3d": "cloth_plane_mesh",
+        "seam_stitch_detail": "vertical seam + hem",
+        "anchor_landmarks": "waist_back, hem_back",
+        "material_family": "wool",
+        "generator_note": "back flare and walk clearance"
+      },
+      {
+        "piece_name": "knee_reinforcement_l",
+        "region": "knees",
+        "pattern_shape_type": "oval_patch",
+        "shape_type_3d": "applique_patch",
+        "seam_stitch_detail": "lapped seam + cross stitch",
+        "anchor_landmarks": "l_knee",
+        "material_family": "leather/quilted cloth",
+        "generator_note": "movement/wear detail"
+      },
+      {
+        "piece_name": "knee_reinforcement_r",
+        "region": "knees",
+        "pattern_shape_type": "oval_patch",
+        "shape_type_3d": "applique_patch",
+        "seam_stitch_detail": "lapped seam + cross stitch",
+        "anchor_landmarks": "r_knee",
+        "material_family": "leather/quilted cloth",
+        "generator_note": "mirror left"
+      }
+    ],
+    "feet": [
+      {
+        "piece_name": "sock_l",
+        "region": "feet",
+        "pattern_shape_type": "foot_tube",
+        "shape_type_3d": "soft_shell_mesh",
+        "seam_stitch_detail": "toe seam + ankle cuff",
+        "anchor_landmarks": "l_ankle, l_toes",
+        "material_family": "knit wool",
+        "generator_note": "simple underlayer"
+      },
+      {
+        "piece_name": "sock_r",
+        "region": "feet",
+        "pattern_shape_type": "foot_tube",
+        "shape_type_3d": "soft_shell_mesh",
+        "seam_stitch_detail": "toe seam + ankle cuff",
+        "anchor_landmarks": "r_ankle, r_toes",
+        "material_family": "knit wool",
+        "generator_note": "mirror left"
+      },
+      {
+        "piece_name": "boot_upper_l",
+        "region": "feet",
+        "pattern_shape_type": "boot_upper_panel",
+        "shape_type_3d": "stiff_shell_mesh",
+        "seam_stitch_detail": "side seam + top edge binding",
+        "anchor_landmarks": "l_ankle, l_heel, l_instep",
+        "material_family": "leather",
+        "generator_note": "stiff material, not full cloth sim"
+      },
+      {
+        "piece_name": "boot_upper_r",
+        "region": "feet",
+        "pattern_shape_type": "boot_upper_panel",
+        "shape_type_3d": "stiff_shell_mesh",
+        "seam_stitch_detail": "side seam + top edge binding",
+        "anchor_landmarks": "r_ankle, r_heel, r_instep",
+        "material_family": "leather",
+        "generator_note": "mirror left"
+      },
+      {
+        "piece_name": "sole_l",
+        "region": "feet",
+        "pattern_shape_type": "sole_outline",
+        "shape_type_3d": "extruded_shape",
+        "seam_stitch_detail": "welt seam",
+        "anchor_landmarks": "l_heel, l_ball, l_toes",
+        "material_family": "leather/rubber/wood",
+        "generator_note": "extrude foot outline downward"
+      },
+      {
+        "piece_name": "sole_r",
+        "region": "feet",
+        "pattern_shape_type": "sole_outline",
+        "shape_type_3d": "extruded_shape",
+        "seam_stitch_detail": "welt seam",
+        "anchor_landmarks": "r_heel, r_ball, r_toes",
+        "material_family": "leather/rubber/wood",
+        "generator_note": "mirror left"
+      },
+      {
+        "piece_name": "toe_cap_l",
+        "region": "feet",
+        "pattern_shape_type": "curved_cap_panel",
+        "shape_type_3d": "shell_mesh",
+        "seam_stitch_detail": "lapped seam",
+        "anchor_landmarks": "l_toe_box",
+        "material_family": "leather/metal",
+        "generator_note": "protective boot silhouette"
+      },
+      {
+        "piece_name": "toe_cap_r",
+        "region": "feet",
+        "pattern_shape_type": "curved_cap_panel",
+        "shape_type_3d": "shell_mesh",
+        "seam_stitch_detail": "lapped seam",
+        "anchor_landmarks": "r_toe_box",
+        "material_family": "leather/metal",
+        "generator_note": "mirror left"
+      }
+    ]
+  },
+  "surface_patterns": [
+    {
+      "name": "plain_weave",
+      "class": "woven texture",
+      "visual_logic": "over-under grid",
+      "blender_proxy": "procedural bump/normal map",
+      "best_use": "linen, canvas, basic robe fabric"
+    },
+    {
+      "name": "twill_weave",
+      "class": "woven texture",
+      "visual_logic": "diagonal ribs",
+      "blender_proxy": "diagonal normal pattern",
+      "best_use": "denim, durable wool, cloak fabric"
+    },
+    {
+      "name": "satin_weave",
+      "class": "woven texture",
+      "visual_logic": "smooth reflective long floats",
+      "blender_proxy": "anisotropic shader + subtle normal",
+      "best_use": "silk robe, ceremonial cloth"
+    },
+    {
+      "name": "herringbone_weave",
+      "class": "woven texture",
+      "visual_logic": "broken V-shaped twill",
+      "blender_proxy": "chevron normal/displacement",
+      "best_use": "coats, historical cloth, trim bands"
+    },
+    {
+      "name": "jacquard_damask",
+      "class": "woven ornament",
+      "visual_logic": "woven pattern inside cloth",
+      "blender_proxy": "texture mask + color variation",
+      "best_use": "royal robe, symbols woven into material"
+    },
+    {
+      "name": "stockinette_knit",
+      "class": "knit",
+      "visual_logic": "V-shaped repeated loops",
+      "blender_proxy": "normal map or loop curves close-up",
+      "best_use": "socks, soft sleeves, undershirt"
+    },
+    {
+      "name": "garter_knit",
+      "class": "knit",
+      "visual_logic": "horizontal ridges",
+      "blender_proxy": "ribbed displacement",
+      "best_use": "scarves, cuffs, simple knitted bands"
+    },
+    {
+      "name": "rib_knit_1x1",
+      "class": "knit",
+      "visual_logic": "alternating vertical ribs",
+      "blender_proxy": "procedural ridge pattern",
+      "best_use": "cuffs, collars, sock ankles"
+    },
+    {
+      "name": "cable_knit",
+      "class": "knit",
+      "visual_logic": "intertwined raised ropes",
+      "blender_proxy": "raised curve ropes on fabric",
+      "best_use": "hero-tier sweater/scarf details"
+    },
+    {
+      "name": "moss_seed_knit",
+      "class": "knit texture",
+      "visual_logic": "small alternating bumps",
+      "blender_proxy": "scatter bump field",
+      "best_use": "dense texture without big pattern"
+    },
+    {
+      "name": "quilting_grid",
+      "class": "stitched padding",
+      "visual_logic": "grid or diamond compression",
+      "blender_proxy": "seam curves + puffed panels",
+      "best_use": "armor padding, shoulder pads, winter garments"
+    },
+    {
+      "name": "smocking",
+      "class": "gathered embroidery",
+      "visual_logic": "compressed fabric folds",
+      "blender_proxy": "pinch lattice mesh deformation",
+      "best_use": "decorative sleeves/collar; advanced tier"
+    },
+    {
+      "name": "pleated_fabric",
+      "class": "fold system",
+      "visual_logic": "repeating folds",
+      "blender_proxy": "ridge/valley deformation",
+      "best_use": "skirts, robes, ceremonial lower panels"
+    },
+    {
+      "name": "fringe_tassel",
+      "class": "edge ornament",
+      "visual_logic": "loose hanging threads",
+      "blender_proxy": "hair curves / thin cylinders",
+      "best_use": "cloak edges, epaulettes, staff cloth"
+    }
+  ],
+  "materials": [
+    {
+      "name": "linen",
+      "class": "light woven cloth",
+      "behavior": "medium drape, low shine, fine weave",
+      "best_use": "robe underlayers, tunics, wraps",
+      "generator_note": "shader: diffuse rough; normal: fine plain weave"
+    },
+    {
+      "name": "wool",
+      "class": "heavier fuzzy cloth",
+      "behavior": "soft thick drape, matte, can felt",
+      "best_use": "robes, cloaks, hoods",
+      "generator_note": "add fuzz via shader/particle micro fibers in hero tier"
+    },
+    {
+      "name": "felt",
+      "class": "dense nonwoven cloth",
+      "behavior": "thick, stiff, soft edge",
+      "best_use": "capelets, hats, puppet costume",
+      "generator_note": "excellent for stylized simplified garments"
+    },
+    {
+      "name": "silk",
+      "class": "smooth fine cloth",
+      "behavior": "high drape, soft shine",
+      "best_use": "veils, ceremonial lining",
+      "generator_note": "anisotropic/specular shader, subtle wrinkling"
+    },
+    {
+      "name": "canvas",
+      "class": "coarse durable cloth",
+      "behavior": "stiff, visible weave",
+      "best_use": "bags, straps, rugged tunics",
+      "generator_note": "coarse weave normal, strong seams"
+    },
+    {
+      "name": "leather",
+      "class": "animal hide material",
+      "behavior": "stiff, wrinkles, edge thickness",
+      "best_use": "boots, gloves, belts, masks",
+      "generator_note": "use shell mesh, not floppy cloth sim"
+    },
+    {
+      "name": "fur",
+      "class": "hair/fiber surface",
+      "behavior": "soft volume, directional pile",
+      "best_use": "collars, trims, cloaks",
+      "generator_note": "particle hair/fur cards; heavy render cost"
+    },
+    {
+      "name": "metal_thread",
+      "class": "ornamental thread",
+      "behavior": "raised reflective cord",
+      "best_use": "embroidery, ceremonial trim",
+      "generator_note": "bevelled curves with metallic shader"
+    },
+    {
+      "name": "chainmail",
+      "class": "interlinked rings",
+      "behavior": "flexible metal textile",
+      "best_use": "armor underlayers",
+      "generator_note": "use normal/displacement far away, rings only close-up"
+    }
+  ]
+}

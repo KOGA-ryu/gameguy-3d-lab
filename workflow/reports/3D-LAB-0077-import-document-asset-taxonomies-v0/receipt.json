@@ -1,0 +1,52 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0077-import-document-asset-taxonomies-v0",
+  "title": "Import document asset taxonomies v0",
+  "status": "complete",
+  "import_root": "data/asset_taxonomy",
+  "source_root": "/Users/kogaryu/Documents",
+  "imported_seeds": [
+    "data/asset_taxonomy/imported_seeds_v0/armor_history_taxonomy_seed.json",
+    "data/asset_taxonomy/imported_seeds_v0/armor_making_taxonomy_seed.json",
+    "data/asset_taxonomy/imported_seeds_v0/human_meat_taxonomy_seed.json",
+    "data/asset_taxonomy/imported_seeds_v0/human_textile_taxonomy_seed.json",
+    "data/asset_taxonomy/imported_seeds_v0/sewing_equipment_taxonomy_seed.json"
+  ],
+  "new_docs": [
+    "data/asset_taxonomy/README.md",
+    "data/asset_taxonomy/imported_taxonomy_manifest_v0.json",
+    "docs/research/imported_asset_taxonomies_v0/README.md",
+    "docs/research/imported_asset_taxonomies_v0/import_summary_v0.md",
+    "docs/research/imported_asset_taxonomies_v0/organization_plan_v0.md"
+  ],
+  "updated_docs": [
+    "README.md"
+  ],
+  "rules": {
+    "raw_seed_preservation": true,
+    "canonical_pipeline_input": false,
+    "architecture_taxonomy_input": false,
+    "docx_spec_sheets_imported": false,
+    "no_blender_execution": true,
+    "no_generated_assets": true
+  },
+  "validation": {
+    "seed_json_parse": {
+      "command": "for f in data/asset_taxonomy/imported_seeds_v0/*.json; do python3 -m json.tool \"$f\" >/tmp/\"$(basename \"$f\")\" || exit 1; done",
+      "result": "PASS files=5"
+    },
+    "manifest_json_parse": {
+      "command": "python3 -m json.tool data/asset_taxonomy/imported_taxonomy_manifest_v0.json",
+      "result": "PASS"
+    },
+    "receipt_json_parse": {
+      "command": "python3 -m json.tool workflow/reports/3D-LAB-0077-import-document-asset-taxonomies-v0/receipt.json",
+      "result": "PASS"
+    },
+    "asset_generation_registry_validate": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS source_component_style_sheets=5"
+    }
+  },
+  "recommended_next_goal": "Build a normalized shape_type crosswalk from imported taxonomy terms to geometry dictionary terms and Blender tool cards."
+}

@@ -1,0 +1,1473 @@
+{
+  "schema": "sewing_equipment_taxonomy_seed.v1",
+  "purpose": "Generate sewing, textile, embroidery, knitting, crochet, weaving, pressing, and maintenance equipment as named Blender proxy assets.",
+  "shape_type_legend": {
+    "bevelled_box": "soft-edged rectangular solid",
+    "cylinder": "round rod, spool, pin, peg, dial, disk",
+    "cone": "needle tip, awl point, tapered nozzle",
+    "torus": "ring, hoop, loop handle",
+    "bezier_curve": "thread, cord, cable, flexible tape, wire",
+    "cloth_plane": "fabric sheet, pattern paper, stabilizer",
+    "flat_spline_plate": "rulers and drafting curves with curved outlines",
+    "blade_mesh": "shear, scissor, cutter, knife geometry",
+    "frame": "loom, hoop, embroidery frame, machine shell supports",
+    "soft_form": "ham, sleeve roll, padded mitt, pincushion"
+  },
+  "sections": [
+    {
+      "section": "01 measuring and pattern drafting",
+      "items": [
+        {
+          "id": "eq_measure_tape",
+          "name": "flexible measuring tape",
+          "equipment_class": "measurement",
+          "shape_type": "thin ribbon curve",
+          "function": "captures body and garment circumference, curved lengths, hem drops",
+          "blender_proxy": "bezier_curve_strip with tick marks; can wrap around torso or limb proxies",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "01"
+        },
+        {
+          "id": "eq_clear_grid_ruler",
+          "name": "clear grid ruler",
+          "equipment_class": "measurement",
+          "shape_type": "flat transparent rectangle",
+          "function": "straight lines, seam allowances, grainline checks, quilting grids",
+          "blender_proxy": "thin bevelled_box with engraved grid texture and alpha material",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "01"
+        },
+        {
+          "id": "eq_yardstick",
+          "name": "yardstick / meter stick",
+          "equipment_class": "measurement",
+          "shape_type": "long flat cuboid",
+          "function": "long straight measurement and layout",
+          "blender_proxy": "long bevelled_box with unit markings along one edge",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "01"
+        },
+        {
+          "id": "eq_l_square",
+          "name": "L square",
+          "equipment_class": "drafting",
+          "shape_type": "right angle bar pair",
+          "function": "square corners, bodice blocks, garment drafting",
+          "blender_proxy": "two thin cuboids joined at 90 degrees, measurement ticks on both arms",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "01"
+        },
+        {
+          "id": "eq_french_curve",
+          "name": "French curve",
+          "equipment_class": "drafting",
+          "shape_type": "curved flat spline plate",
+          "function": "armholes, necklines, style lines, organic pattern curves",
+          "blender_proxy": "2D bezier outline extruded as thin plate; multiple control points",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "01"
+        },
+        {
+          "id": "eq_hip_curve",
+          "name": "hip curve",
+          "equipment_class": "drafting",
+          "shape_type": "long curved spline plate",
+          "function": "side seams, skirt curves, trouser hip lines",
+          "blender_proxy": "long flattened bezier plate with shallow S curve",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "01"
+        },
+        {
+          "id": "eq_pattern_paper",
+          "name": "pattern paper",
+          "equipment_class": "pattern base",
+          "shape_type": "thin paper plane",
+          "function": "drafts clothing pieces before fabric cutting",
+          "blender_proxy": "cloth_plane with light grid or dotted texture; supports fold and roll states",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "01"
+        },
+        {
+          "id": "eq_tracing_paper",
+          "name": "tracing paper",
+          "equipment_class": "pattern transfer",
+          "shape_type": "transparent thin plane",
+          "function": "copies pattern shapes and design marks",
+          "blender_proxy": "thin alpha plane; stacked over pattern/fabric layer",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "01"
+        },
+        {
+          "id": "eq_pattern_weights",
+          "name": "pattern weights",
+          "equipment_class": "layout",
+          "shape_type": "low cylinders / pucks",
+          "function": "holds paper to fabric without pin holes",
+          "blender_proxy": "short cylinders or rounded stones placed along pattern perimeter",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "01"
+        },
+        {
+          "id": "eq_tracing_wheel",
+          "name": "tracing wheel",
+          "equipment_class": "transfer",
+          "shape_type": "small toothed disk on handle",
+          "function": "transfers pattern marks through carbon paper",
+          "blender_proxy": "cylinder wheel with radial teeth plus handle capsule",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "01"
+        },
+        {
+          "id": "eq_awl_pattern",
+          "name": "pattern awl",
+          "equipment_class": "marking",
+          "shape_type": "needle cone on handle",
+          "function": "pokes accurate dots, pivot points, eyelet starts",
+          "blender_proxy": "thin cone point plus tapered cylinder handle",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "01"
+        },
+        {
+          "id": "eq_seam_gauge",
+          "name": "seam gauge",
+          "equipment_class": "measurement",
+          "shape_type": "sliding metal ruler",
+          "function": "small hems, button spacing, seam allowances",
+          "blender_proxy": "thin cuboid ruler with movable rectangular slider",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "01"
+        }
+      ]
+    },
+    {
+      "section": "02 marking and layout tools",
+      "items": [
+        {
+          "id": "eq_tailors_chalk",
+          "name": "tailor's chalk",
+          "equipment_class": "marking",
+          "shape_type": "flat triangular prism",
+          "function": "temporary garment marks on fabric",
+          "blender_proxy": "triangular prism with softened bevels and chalk material",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "02"
+        },
+        {
+          "id": "eq_chalk_wheel",
+          "name": "chalk wheel marker",
+          "equipment_class": "marking",
+          "shape_type": "small wheel dispenser",
+          "function": "draws clean chalk lines on fabric",
+          "blender_proxy": "rounded plastic capsule body with tiny wheel at tip",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "02"
+        },
+        {
+          "id": "eq_fabric_marker",
+          "name": "water soluble fabric marker",
+          "equipment_class": "marking",
+          "shape_type": "pen cylinder",
+          "function": "temporary drawn notches, dots, quilting lines",
+          "blender_proxy": "cylinder pen with cap, fine tip cone",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "02"
+        },
+        {
+          "id": "eq_tailor_tacks",
+          "name": "tailor tacks",
+          "equipment_class": "marking method",
+          "shape_type": "short thread loops",
+          "function": "thread-marked construction points through fabric layers",
+          "blender_proxy": "short bezier thread loops piercing cloth plane",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "02"
+        },
+        {
+          "id": "eq_dressmakers_carbon",
+          "name": "dressmaker carbon paper",
+          "equipment_class": "transfer",
+          "shape_type": "thin pigment sheet",
+          "function": "transfers markings under tracing wheel",
+          "blender_proxy": "thin colored plane between pattern and fabric",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "02"
+        },
+        {
+          "id": "eq_notcher",
+          "name": "pattern notcher",
+          "equipment_class": "pattern cutter",
+          "shape_type": "plier with bite jaw",
+          "function": "clips registration notches into paper patterns",
+          "blender_proxy": "two handle capsules, hinge cylinder, crescent cut jaw",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "02"
+        },
+        {
+          "id": "eq_pin_marker_flags",
+          "name": "pin flags",
+          "equipment_class": "layout marker",
+          "shape_type": "pin plus paper tab",
+          "function": "labels temporary construction points",
+          "blender_proxy": "thin pin cylinder with small flag plane",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "02"
+        }
+      ]
+    },
+    {
+      "section": "03 cutting equipment",
+      "items": [
+        {
+          "id": "eq_fabric_shears",
+          "name": "fabric shears",
+          "equipment_class": "cutting",
+          "shape_type": "two curved blades with loop handles",
+          "function": "long clean fabric cuts; reserved for fabric only",
+          "blender_proxy": "two blade meshes crossing at pivot disk, loop handles as torus curves",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "03"
+        },
+        {
+          "id": "eq_thread_snips",
+          "name": "thread snips",
+          "equipment_class": "cutting",
+          "shape_type": "spring V blades",
+          "function": "quick thread trimming",
+          "blender_proxy": "two narrow blade wedges joined by spring curve",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "03"
+        },
+        {
+          "id": "eq_rotary_cutter",
+          "name": "rotary cutter",
+          "equipment_class": "cutting",
+          "shape_type": "round blade in handle",
+          "function": "fast straight/curved cuts using mat and ruler",
+          "blender_proxy": "thin disk blade with guard arc and ergonomic handle capsule",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "03"
+        },
+        {
+          "id": "eq_cutting_mat",
+          "name": "self healing cutting mat",
+          "equipment_class": "surface",
+          "shape_type": "flat gridded rectangle",
+          "function": "safe cutting base and measurement grid",
+          "blender_proxy": "large thin plane with grid texture and bevelled border",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "03"
+        },
+        {
+          "id": "eq_pinking_shears",
+          "name": "pinking shears",
+          "equipment_class": "edge cutting",
+          "shape_type": "zigzag blades",
+          "function": "cuts anti-fray zigzag fabric edges",
+          "blender_proxy": "scissor proxy with sawtooth blade mesh",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "03"
+        },
+        {
+          "id": "eq_seam_ripper",
+          "name": "seam ripper",
+          "equipment_class": "unpick tool",
+          "shape_type": "forked hook blade",
+          "function": "opens seams and removes stitches",
+          "blender_proxy": "small handle cylinder, U hook curve, red safety ball",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "03"
+        },
+        {
+          "id": "eq_craft_knife",
+          "name": "craft knife",
+          "equipment_class": "precision cutting",
+          "shape_type": "slim handle plus angled blade",
+          "function": "cuts templates, paper, stabilizer, leather details",
+          "blender_proxy": "metal cylinder handle with triangular blade wedge",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "03"
+        },
+        {
+          "id": "eq_rotary_replacement_blade",
+          "name": "rotary replacement blade",
+          "equipment_class": "maintenance",
+          "shape_type": "thin disk",
+          "function": "spare blade for rotary cutter",
+          "blender_proxy": "stacked thin disks in case",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "03"
+        }
+      ]
+    },
+    {
+      "section": "04 pins clips and holding tools",
+      "items": [
+        {
+          "id": "eq_straight_pins",
+          "name": "straight pins",
+          "equipment_class": "holding",
+          "shape_type": "thin shaft with ball head",
+          "function": "temporarily joins fabric layers",
+          "blender_proxy": "needle cylinders with UV sphere heads; scatter along seam",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "04"
+        },
+        {
+          "id": "eq_glass_head_pins",
+          "name": "glass head pins",
+          "equipment_class": "holding",
+          "shape_type": "pin plus round bead",
+          "function": "heat resistant pinning near pressing",
+          "blender_proxy": "thin cylinder plus colored bead sphere",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "04"
+        },
+        {
+          "id": "eq_safety_pins",
+          "name": "safety pins",
+          "equipment_class": "holding",
+          "shape_type": "looped wire clasp",
+          "function": "temporary fastening and elastic threading",
+          "blender_proxy": "bezier wire loop with clasp block",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "04"
+        },
+        {
+          "id": "eq_fabric_clips",
+          "name": "sewing clips",
+          "equipment_class": "holding",
+          "shape_type": "small clamp",
+          "function": "holds thick fabric, leather, binding without holes",
+          "blender_proxy": "two tiny cuboids with spring hinge cylinder",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "04"
+        },
+        {
+          "id": "eq_pincushion",
+          "name": "pincushion",
+          "equipment_class": "storage",
+          "shape_type": "soft dome / tomato sphere",
+          "function": "stores pins and needles visibly",
+          "blender_proxy": "squashed sphere with pins embedded",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "04"
+        },
+        {
+          "id": "eq_magnetic_pin_dish",
+          "name": "magnetic pin dish",
+          "equipment_class": "storage",
+          "shape_type": "shallow dish",
+          "function": "collects scattered pins",
+          "blender_proxy": "low bowl mesh with pins attracted to surface",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "04"
+        },
+        {
+          "id": "eq_thimble",
+          "name": "thimble",
+          "equipment_class": "hand protection",
+          "shape_type": "small perforated cap",
+          "function": "protects finger while pushing needles",
+          "blender_proxy": "short hollow cylinder with dotted bump texture",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "04"
+        },
+        {
+          "id": "eq_fabric_glue_clip",
+          "name": "binding clamp set",
+          "equipment_class": "holding",
+          "shape_type": "mini rectangular clamps",
+          "function": "holds glued or folded fabric while curing",
+          "blender_proxy": "repeated clamp proxies along edge",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "04"
+        }
+      ]
+    },
+    {
+      "section": "05 hand sewing toolkit",
+      "items": [
+        {
+          "id": "eq_hand_needle_sharp",
+          "name": "sharp hand needle",
+          "equipment_class": "needle",
+          "shape_type": "long thin cylinder with eye",
+          "function": "general hand sewing",
+          "blender_proxy": "micro cylinder with oval eye cut/texture near rear",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "05"
+        },
+        {
+          "id": "eq_hand_needle_between",
+          "name": "between / quilting needle",
+          "equipment_class": "needle",
+          "shape_type": "short thin cylinder",
+          "function": "small quilting stitches",
+          "blender_proxy": "short micro cylinder with tiny eye",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "05"
+        },
+        {
+          "id": "eq_embroidery_needle",
+          "name": "embroidery needle",
+          "equipment_class": "needle",
+          "shape_type": "thin cylinder with larger eye",
+          "function": "floss and decorative stitches",
+          "blender_proxy": "micro cylinder with elongated eye",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "05"
+        },
+        {
+          "id": "eq_tapestry_needle",
+          "name": "tapestry needle",
+          "equipment_class": "needle",
+          "shape_type": "blunt cylinder with large eye",
+          "function": "yarn, cross stitch, needlepoint",
+          "blender_proxy": "rounded tip cylinder, oversized eye",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "05"
+        },
+        {
+          "id": "eq_needle_threader",
+          "name": "needle threader",
+          "equipment_class": "aid",
+          "shape_type": "wire loop on flat tab",
+          "function": "pulls thread through tiny needle eye",
+          "blender_proxy": "flat coin tab plus fine wire diamond loop",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "05"
+        },
+        {
+          "id": "eq_beeswax",
+          "name": "thread wax",
+          "equipment_class": "thread prep",
+          "shape_type": "small wax disk",
+          "function": "stiffens thread and reduces tangles",
+          "blender_proxy": "translucent squat cylinder with groove",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "05"
+        },
+        {
+          "id": "eq_thread_card",
+          "name": "thread card",
+          "equipment_class": "storage",
+          "shape_type": "flat card with wraps",
+          "function": "keeps embroidery thread organized",
+          "blender_proxy": "flat rectangle with colored bezier thread wraps",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "05"
+        },
+        {
+          "id": "eq_hand_thread_spool",
+          "name": "small thread spool",
+          "equipment_class": "thread",
+          "shape_type": "cylinder spool",
+          "function": "hand sewing thread supply",
+          "blender_proxy": "two flange disks plus central cylinder and thread coil material",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "05"
+        }
+      ]
+    },
+    {
+      "section": "06 sewing machine main body",
+      "items": [
+        {
+          "id": "eq_sewing_machine_body",
+          "name": "domestic sewing machine body",
+          "equipment_class": "machine",
+          "shape_type": "rounded rectangular appliance shell",
+          "function": "powered stitch formation platform",
+          "blender_proxy": "bevelled cuboid shell with arm, head, bed, throat space",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_machine_bed",
+          "name": "machine bed",
+          "equipment_class": "machine part",
+          "shape_type": "flat platform",
+          "function": "supports fabric under needle",
+          "blender_proxy": "wide bevelled_box surface with seam guide lines",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_free_arm",
+          "name": "free arm",
+          "equipment_class": "machine part",
+          "shape_type": "narrow protruding platform",
+          "function": "sleeves, cuffs, small circular garments",
+          "blender_proxy": "narrow rounded cuboid extension",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_needle_bar",
+          "name": "needle bar",
+          "equipment_class": "machine part",
+          "shape_type": "vertical sliding cylinder",
+          "function": "drives needle up and down",
+          "blender_proxy": "thin vertical cylinder with keyframed z motion",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_machine_needle",
+          "name": "machine needle",
+          "equipment_class": "machine part",
+          "shape_type": "thin tapered needle",
+          "function": "pierces fabric and carries upper thread",
+          "blender_proxy": "micro cone/cylinder, eye near point",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_needle_clamp",
+          "name": "needle clamp",
+          "equipment_class": "machine part",
+          "shape_type": "small screw clamp block",
+          "function": "holds machine needle",
+          "blender_proxy": "tiny cuboid clamp with screw cylinder",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_presser_bar",
+          "name": "presser bar",
+          "equipment_class": "machine part",
+          "shape_type": "vertical cylinder",
+          "function": "holds presser foot against fabric",
+          "blender_proxy": "vertical cylinder above foot",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_presser_foot_standard",
+          "name": "standard presser foot",
+          "equipment_class": "machine foot",
+          "shape_type": "small metal fork plate",
+          "function": "general straight and zigzag stitching",
+          "blender_proxy": "flat U-shaped plate mesh with ankle connector",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_throat_plate",
+          "name": "throat plate",
+          "equipment_class": "machine part",
+          "shape_type": "metal plate with slot",
+          "function": "fabric support, needle hole, seam guides",
+          "blender_proxy": "thin metal rectangle with slot and engraved guide lines",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_feed_dogs",
+          "name": "feed dogs",
+          "equipment_class": "machine part",
+          "shape_type": "toothed bars",
+          "function": "move fabric under presser foot",
+          "blender_proxy": "small serrated cuboids keyframed forward/up/down",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_bobbin",
+          "name": "bobbin",
+          "equipment_class": "thread system",
+          "shape_type": "small flanged spool",
+          "function": "lower thread supply",
+          "blender_proxy": "tiny spool cylinder with thread coil",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_bobbin_case",
+          "name": "bobbin case",
+          "equipment_class": "thread system",
+          "shape_type": "round cup",
+          "function": "holds bobbin and controls lower tension",
+          "blender_proxy": "short hollow cylinder/cup with latch tab",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_spool_pin",
+          "name": "spool pin",
+          "equipment_class": "thread system",
+          "shape_type": "vertical peg",
+          "function": "holds upper thread spool",
+          "blender_proxy": "small cylinder peg on machine top",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_thread_tension_dial",
+          "name": "tension dial",
+          "equipment_class": "machine control",
+          "shape_type": "round knob",
+          "function": "sets upper thread tension",
+          "blender_proxy": "knurled cylinder knob with indicator mark",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_handwheel",
+          "name": "handwheel",
+          "equipment_class": "machine control",
+          "shape_type": "large side disk",
+          "function": "manual needle movement",
+          "blender_proxy": "large cylinder disk on right side",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_foot_pedal",
+          "name": "foot pedal",
+          "equipment_class": "machine control",
+          "shape_type": "angled rectangular pedal",
+          "function": "speed control by foot pressure",
+          "blender_proxy": "tilted bevelled_box with cable curve",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        },
+        {
+          "id": "eq_power_cable",
+          "name": "power cable",
+          "equipment_class": "machine support",
+          "shape_type": "flexible cable curve",
+          "function": "connects machine to power",
+          "blender_proxy": "bezier curve with plug cuboid",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "06"
+        }
+      ]
+    },
+    {
+      "section": "07 presser feet and machine attachments",
+      "items": [
+        {
+          "id": "eq_zipper_foot",
+          "name": "zipper foot",
+          "equipment_class": "presser foot",
+          "shape_type": "narrow offset foot",
+          "function": "stitches close to zipper teeth",
+          "blender_proxy": "small asymmetric plate with side clearance",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "07"
+        },
+        {
+          "id": "eq_invisible_zipper_foot",
+          "name": "invisible zipper foot",
+          "equipment_class": "presser foot",
+          "shape_type": "grooved foot",
+          "function": "rolls zipper teeth open while stitching",
+          "blender_proxy": "small foot with two underside grooves",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "07"
+        },
+        {
+          "id": "eq_buttonhole_foot",
+          "name": "buttonhole foot",
+          "equipment_class": "presser foot",
+          "shape_type": "long sliding frame",
+          "function": "automatic buttonhole stitching",
+          "blender_proxy": "rectangular frame with sliding button gauge",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "07"
+        },
+        {
+          "id": "eq_button_foot",
+          "name": "button sewing foot",
+          "equipment_class": "presser foot",
+          "shape_type": "short clamp foot",
+          "function": "holds button while zigzag secures it",
+          "blender_proxy": "short clear foot with button plate",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "07"
+        },
+        {
+          "id": "eq_walking_foot",
+          "name": "walking foot",
+          "equipment_class": "presser foot",
+          "shape_type": "bulky foot with upper feed",
+          "function": "feeds top and bottom fabric layers together",
+          "blender_proxy": "chunky housing with fork arm and moving sole",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "07"
+        },
+        {
+          "id": "eq_quarter_inch_foot",
+          "name": "quarter inch foot",
+          "equipment_class": "presser foot",
+          "shape_type": "narrow guide foot",
+          "function": "accurate quilting seams",
+          "blender_proxy": "small foot with side guide flange",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "07"
+        },
+        {
+          "id": "eq_rolled_hem_foot",
+          "name": "rolled hem foot",
+          "equipment_class": "presser foot",
+          "shape_type": "curled scroll foot",
+          "function": "rolls fabric edge into tiny hem",
+          "blender_proxy": "tiny plate with spiral funnel curl",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "07"
+        },
+        {
+          "id": "eq_overcast_foot",
+          "name": "overcast foot",
+          "equipment_class": "presser foot",
+          "shape_type": "guide bar foot",
+          "function": "zigzag over raw fabric edges",
+          "blender_proxy": "flat foot with center guide bar",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "07"
+        },
+        {
+          "id": "eq_gathering_foot",
+          "name": "gathering foot",
+          "equipment_class": "presser foot",
+          "shape_type": "raised angled plate",
+          "function": "creates gathers while stitching",
+          "blender_proxy": "sloped foot plate with front opening",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "07"
+        },
+        {
+          "id": "eq_edge_guide",
+          "name": "magnetic seam guide",
+          "equipment_class": "guide",
+          "shape_type": "small rectangular magnet",
+          "function": "keeps seam allowance consistent",
+          "blender_proxy": "small block on machine bed beside fabric path",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "07"
+        }
+      ]
+    },
+    {
+      "section": "08 thread notions and closures",
+      "items": [
+        {
+          "id": "eq_thread_spool",
+          "name": "thread spool",
+          "equipment_class": "notion",
+          "shape_type": "flanged cylinder",
+          "function": "upper thread supply",
+          "blender_proxy": "central cylinder with top/bottom flanges and helical thread texture",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "08"
+        },
+        {
+          "id": "eq_cone_thread",
+          "name": "serger cone thread",
+          "equipment_class": "notion",
+          "shape_type": "tall cone spool",
+          "function": "high-volume thread supply",
+          "blender_proxy": "tapered cone cylinder with thread spiral material",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "08"
+        },
+        {
+          "id": "eq_embroidery_floss_skein",
+          "name": "embroidery floss skein",
+          "equipment_class": "notion",
+          "shape_type": "soft loop bundle",
+          "function": "decorative hand embroidery thread",
+          "blender_proxy": "stacked bezier loops tied by paper bands",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "08"
+        },
+        {
+          "id": "eq_elastic_band",
+          "name": "elastic band",
+          "equipment_class": "notion",
+          "shape_type": "flat stretchy ribbon",
+          "function": "waistbands, cuffs, gathers",
+          "blender_proxy": "flat ribbon curve or strip with ribbed texture",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "08"
+        },
+        {
+          "id": "eq_bias_tape",
+          "name": "bias tape",
+          "equipment_class": "notion",
+          "shape_type": "folded fabric strip",
+          "function": "edge binding and clean finishes",
+          "blender_proxy": "long folded strip mesh with center crease",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "08"
+        },
+        {
+          "id": "eq_zipper_coil",
+          "name": "coil zipper",
+          "equipment_class": "closure",
+          "shape_type": "tape strips plus teeth line",
+          "function": "garment openings and bags",
+          "blender_proxy": "two fabric strips with repeated teeth cubes and pull tab",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "08"
+        },
+        {
+          "id": "eq_metal_zipper",
+          "name": "metal zipper",
+          "equipment_class": "closure",
+          "shape_type": "tape plus metal teeth",
+          "function": "heavier garments and bags",
+          "blender_proxy": "repeated metallic tooth blocks along two tapes",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "08"
+        },
+        {
+          "id": "eq_button_flat",
+          "name": "flat button",
+          "equipment_class": "closure",
+          "shape_type": "small disk with holes",
+          "function": "shirt and garment closure",
+          "blender_proxy": "thin cylinder with 2 or 4 hole cut/texture",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "08"
+        },
+        {
+          "id": "eq_snap_fastener",
+          "name": "snap fastener",
+          "equipment_class": "closure",
+          "shape_type": "paired metal disks",
+          "function": "press-together closure",
+          "blender_proxy": "two shallow metal disks with male/female center shapes",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "08"
+        },
+        {
+          "id": "eq_hook_and_eye",
+          "name": "hook and eye",
+          "equipment_class": "closure",
+          "shape_type": "small wire hook and loop",
+          "function": "waistbands, bras, hidden closures",
+          "blender_proxy": "bezier wire hook plus loop oval",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "08"
+        },
+        {
+          "id": "eq_interfacing_sheet",
+          "name": "interfacing",
+          "equipment_class": "structure material",
+          "shape_type": "thin fabric sheet",
+          "function": "adds stiffness to collars, cuffs, facings",
+          "blender_proxy": "thin translucent cloth_plane bonded to fabric layer",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "08"
+        },
+        {
+          "id": "eq_stabilizer_sheet",
+          "name": "embroidery stabilizer",
+          "equipment_class": "support material",
+          "shape_type": "thin backing sheet",
+          "function": "supports embroidery stitches",
+          "blender_proxy": "thin tearaway/washaway sheet behind fabric plane",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "08"
+        }
+      ]
+    },
+    {
+      "section": "09 pressing and shaping equipment",
+      "items": [
+        {
+          "id": "eq_steam_iron",
+          "name": "steam iron",
+          "equipment_class": "pressing",
+          "shape_type": "wedge appliance with handle",
+          "function": "sets seams, shapes fabric, fuses interfacing",
+          "blender_proxy": "rounded wedge body, flat soleplate, handle arch, steam holes texture",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "09"
+        },
+        {
+          "id": "eq_iron_board",
+          "name": "ironing board",
+          "equipment_class": "pressing surface",
+          "shape_type": "long tapered padded board",
+          "function": "general pressing support",
+          "blender_proxy": "long tapered board on folding legs",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "09"
+        },
+        {
+          "id": "eq_pressing_cloth",
+          "name": "pressing cloth",
+          "equipment_class": "heat barrier",
+          "shape_type": "thin fabric rectangle",
+          "function": "protects delicate fabrics from shine/burns",
+          "blender_proxy": "thin cloth_plane draped between iron and garment",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "09"
+        },
+        {
+          "id": "eq_tailors_ham",
+          "name": "tailor's ham",
+          "equipment_class": "shaping form",
+          "shape_type": "stuffed oval cushion",
+          "function": "presses curved seams, bust, hip, sleeve cap",
+          "blender_proxy": "ellipsoid cushion with seam line texture",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "09"
+        },
+        {
+          "id": "eq_sleeve_roll",
+          "name": "sleeve roll",
+          "equipment_class": "shaping form",
+          "shape_type": "long stuffed cylinder",
+          "function": "presses sleeves and narrow seams",
+          "blender_proxy": "soft cylinder with fabric texture",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "09"
+        },
+        {
+          "id": "eq_seam_roll",
+          "name": "seam roll",
+          "equipment_class": "shaping form",
+          "shape_type": "long oval cylinder",
+          "function": "presses seams without imprinting edges",
+          "blender_proxy": "long ellipsoid/capsule cushion",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "09"
+        },
+        {
+          "id": "eq_clapper",
+          "name": "tailor's clapper",
+          "equipment_class": "wood pressing tool",
+          "shape_type": "rectangular wood block",
+          "function": "locks crisp seams after steam",
+          "blender_proxy": "rounded wooden cuboid with grip groove",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "09"
+        },
+        {
+          "id": "eq_point_presser",
+          "name": "point presser",
+          "equipment_class": "wood shaping tool",
+          "shape_type": "triangular point form",
+          "function": "presses collars, points, corners",
+          "blender_proxy": "triangular wedge prism on base",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "09"
+        },
+        {
+          "id": "eq_pressing_mitt",
+          "name": "pressing mitt",
+          "equipment_class": "hand form",
+          "shape_type": "padded mitten",
+          "function": "presses small curved areas safely",
+          "blender_proxy": "mitten-shaped cloth mesh",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "09"
+        },
+        {
+          "id": "eq_spray_bottle",
+          "name": "spray bottle",
+          "equipment_class": "pressing aid",
+          "shape_type": "bottle cylinder with trigger",
+          "function": "adds moisture for pressing",
+          "blender_proxy": "transparent bottle cylinder plus trigger handle",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "09"
+        }
+      ]
+    },
+    {
+      "section": "10 embroidery equipment",
+      "items": [
+        {
+          "id": "eq_embroidery_hoop",
+          "name": "embroidery hoop",
+          "equipment_class": "frame",
+          "shape_type": "paired circular rings",
+          "function": "holds fabric taut for hand embroidery",
+          "blender_proxy": "two torus rings with screw clamp block",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "10"
+        },
+        {
+          "id": "eq_embroidery_frame",
+          "name": "scroll embroidery frame",
+          "equipment_class": "frame",
+          "shape_type": "two rods plus side bars",
+          "function": "holds larger fabric panels",
+          "blender_proxy": "rectangular frame with fabric plane wrapped to rods",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "10"
+        },
+        {
+          "id": "eq_floss_bobbin",
+          "name": "floss bobbin",
+          "equipment_class": "thread storage",
+          "shape_type": "flat card spool",
+          "function": "stores embroidery floss colors",
+          "blender_proxy": "small flat H-shaped card with thread wraps",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "10"
+        },
+        {
+          "id": "eq_embroidery_stand",
+          "name": "embroidery stand",
+          "equipment_class": "support",
+          "shape_type": "adjustable arm stand",
+          "function": "holds hoop hands-free",
+          "blender_proxy": "vertical rod, clamp joints, hoop mount",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "10"
+        },
+        {
+          "id": "eq_transfer_pen",
+          "name": "embroidery transfer pen",
+          "equipment_class": "marking",
+          "shape_type": "pen cylinder",
+          "function": "draws transferable embroidery patterns",
+          "blender_proxy": "small pen cylinder with fine tip",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "10"
+        },
+        {
+          "id": "eq_bead_tray",
+          "name": "bead tray",
+          "equipment_class": "embroidery aid",
+          "shape_type": "shallow tray",
+          "function": "organizes beads/sequins for embellishment",
+          "blender_proxy": "low dish with small spheres/disks sorted in cells",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "10"
+        },
+        {
+          "id": "eq_embroidery_scissors",
+          "name": "embroidery scissors",
+          "equipment_class": "cutting",
+          "shape_type": "small ornate scissors",
+          "function": "precise thread trimming",
+          "blender_proxy": "tiny scissor blades with loop handles",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "10"
+        },
+        {
+          "id": "eq_punch_needle",
+          "name": "punch needle",
+          "equipment_class": "needle tool",
+          "shape_type": "hollow needle in handle",
+          "function": "looped pile embroidery",
+          "blender_proxy": "handle cylinder with hollow needle tube and depth collar",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "10"
+        }
+      ]
+    },
+    {
+      "section": "11 knitting equipment",
+      "items": [
+        {
+          "id": "eq_straight_knitting_needles",
+          "name": "straight knitting needles",
+          "equipment_class": "knitting",
+          "shape_type": "paired long rods with caps",
+          "function": "flat knitting rows",
+          "blender_proxy": "two long cylinders with end cap spheres",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "11"
+        },
+        {
+          "id": "eq_circular_knitting_needles",
+          "name": "circular knitting needles",
+          "equipment_class": "knitting",
+          "shape_type": "two short rods joined by cable",
+          "function": "round knitting and wide panels",
+          "blender_proxy": "two cylinders connected by flexible bezier cable",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "11"
+        },
+        {
+          "id": "eq_double_pointed_needles",
+          "name": "double pointed needles",
+          "equipment_class": "knitting",
+          "shape_type": "set of pointed rods",
+          "function": "small circular knitting like socks",
+          "blender_proxy": "five thin cylinders pointed both ends",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "11"
+        },
+        {
+          "id": "eq_cable_needle",
+          "name": "cable needle",
+          "equipment_class": "knitting",
+          "shape_type": "short bent rod",
+          "function": "holds stitches aside for cable patterns",
+          "blender_proxy": "small U or J shaped curve rod",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "11"
+        },
+        {
+          "id": "eq_stitch_markers",
+          "name": "stitch markers",
+          "equipment_class": "knitting aid",
+          "shape_type": "small rings/clips",
+          "function": "marks rounds, repeats, shaping points",
+          "blender_proxy": "tiny torus rings or safety-pin curves",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "11"
+        },
+        {
+          "id": "eq_row_counter",
+          "name": "row counter",
+          "equipment_class": "knitting aid",
+          "shape_type": "numbered cylinder/clicker",
+          "function": "tracks rows and repeats",
+          "blender_proxy": "small rotating numbered barrel or clicker box",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "11"
+        },
+        {
+          "id": "eq_yarn_swift",
+          "name": "yarn swift",
+          "equipment_class": "yarn prep",
+          "shape_type": "umbrella frame",
+          "function": "holds yarn hank for winding",
+          "blender_proxy": "radial expandable arms on central vertical pole",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "11"
+        },
+        {
+          "id": "eq_ball_winder",
+          "name": "yarn ball winder",
+          "equipment_class": "yarn prep",
+          "shape_type": "crank mechanism with cone",
+          "function": "winds yarn into center-pull cakes",
+          "blender_proxy": "base clamp, crank, angled cone spindle",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "11"
+        },
+        {
+          "id": "eq_blocking_mats",
+          "name": "blocking mats",
+          "equipment_class": "finishing",
+          "shape_type": "foam puzzle squares",
+          "function": "shape knitted fabric while drying",
+          "blender_proxy": "grid floor tiles with pins around fabric perimeter",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "11"
+        },
+        {
+          "id": "eq_tapestry_needle_knit",
+          "name": "tapestry needle",
+          "equipment_class": "finishing",
+          "shape_type": "blunt large-eye needle",
+          "function": "weaves in yarn ends and seams knits",
+          "blender_proxy": "large blunt needle cylinder with wide eye",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "11"
+        }
+      ]
+    },
+    {
+      "section": "12 crochet equipment",
+      "items": [
+        {
+          "id": "eq_crochet_hook",
+          "name": "crochet hook",
+          "equipment_class": "crochet",
+          "shape_type": "rod with hooked tip",
+          "function": "forms crochet loops and stitches",
+          "blender_proxy": "cylinder handle, tapered shaft, hook beak mesh",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "12"
+        },
+        {
+          "id": "eq_ergonomic_crochet_hook",
+          "name": "ergonomic crochet hook",
+          "equipment_class": "crochet",
+          "shape_type": "soft handle plus hook shaft",
+          "function": "reduces hand strain",
+          "blender_proxy": "thick rounded handle capsule plus metal hook",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "12"
+        },
+        {
+          "id": "eq_crochet_stitch_markers",
+          "name": "crochet stitch markers",
+          "equipment_class": "crochet aid",
+          "shape_type": "locking clips",
+          "function": "marks rounds and pattern positions",
+          "blender_proxy": "tiny safety-pin curves attached to fabric loops",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "12"
+        },
+        {
+          "id": "eq_crochet_blocking_board",
+          "name": "blocking board",
+          "equipment_class": "finishing",
+          "shape_type": "peg grid board",
+          "function": "blocks granny squares and motifs",
+          "blender_proxy": "flat board with repeated peg cylinders",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "12"
+        },
+        {
+          "id": "eq_yarn_bowl",
+          "name": "yarn bowl",
+          "equipment_class": "yarn holder",
+          "shape_type": "bowl with spiral slot",
+          "function": "controls yarn ball while working",
+          "blender_proxy": "open bowl mesh with curled side slot",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "12"
+        }
+      ]
+    },
+    {
+      "section": "13 weaving and textile structure equipment",
+      "items": [
+        {
+          "id": "eq_rigid_heddle_loom",
+          "name": "rigid heddle loom",
+          "equipment_class": "weaving",
+          "shape_type": "rectangular frame with heddle",
+          "function": "basic woven cloth construction",
+          "blender_proxy": "wood frame cuboids, heddle comb, warp thread curves",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "13"
+        },
+        {
+          "id": "eq_frame_loom",
+          "name": "frame loom",
+          "equipment_class": "weaving",
+          "shape_type": "simple rectangular frame",
+          "function": "small tapestry and sample weaving",
+          "blender_proxy": "four bars, warp threads as parallel curves",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "13"
+        },
+        {
+          "id": "eq_shuttle",
+          "name": "weaving shuttle",
+          "equipment_class": "weaving tool",
+          "shape_type": "flat boat shape",
+          "function": "carries weft thread through warp",
+          "blender_proxy": "flattened capsule/boat mesh with thread spool",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "13"
+        },
+        {
+          "id": "eq_heddle",
+          "name": "heddle",
+          "equipment_class": "loom part",
+          "shape_type": "slotted comb plate",
+          "function": "raises/lowers warp groups",
+          "blender_proxy": "thin comb grid with alternating slots",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "13"
+        },
+        {
+          "id": "eq_reed",
+          "name": "reed",
+          "equipment_class": "loom part",
+          "shape_type": "fine comb",
+          "function": "spaces warp and beats weft",
+          "blender_proxy": "dense vertical bar array in frame",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "13"
+        },
+        {
+          "id": "eq_warping_board",
+          "name": "warping board",
+          "equipment_class": "warp prep",
+          "shape_type": "peg board",
+          "function": "measures warp thread lengths",
+          "blender_proxy": "rectangular frame with staggered pegs and thread path curves",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "13"
+        },
+        {
+          "id": "eq_tapestry_beater",
+          "name": "tapestry beater",
+          "equipment_class": "weaving tool",
+          "shape_type": "comb paddle",
+          "function": "packs weft rows",
+          "blender_proxy": "handle cuboid plus comb teeth",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "13"
+        }
+      ]
+    },
+    {
+      "section": "14 heavy fabric leather and hardware tools",
+      "items": [
+        {
+          "id": "eq_leather_awl",
+          "name": "leather awl",
+          "equipment_class": "piercing",
+          "shape_type": "stout spike handle",
+          "function": "pierces leather and heavy fabric",
+          "blender_proxy": "thick handle cylinder plus sharp cone spike",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "14"
+        },
+        {
+          "id": "eq_hole_punch",
+          "name": "rotary hole punch",
+          "equipment_class": "punch",
+          "shape_type": "plier with rotating punch wheel",
+          "function": "makes holes for eyelets, snaps, belts",
+          "blender_proxy": "two handles, hinge, rotating disk with punch cylinders",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "14"
+        },
+        {
+          "id": "eq_rivet_setter",
+          "name": "rivet setter",
+          "equipment_class": "hardware",
+          "shape_type": "metal post/anvil pair",
+          "function": "sets rivets and snaps",
+          "blender_proxy": "short metal cylinders with concave tips",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "14"
+        },
+        {
+          "id": "eq_grommet_setter",
+          "name": "grommet setter",
+          "equipment_class": "hardware",
+          "shape_type": "punch and anvil",
+          "function": "sets grommets/eyelets",
+          "blender_proxy": "paired cylinders and ring hardware",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "14"
+        },
+        {
+          "id": "eq_rubber_mallet",
+          "name": "rubber mallet",
+          "equipment_class": "striking",
+          "shape_type": "cylinder head on handle",
+          "function": "sets hardware without marring",
+          "blender_proxy": "large cylinder head plus handle capsule",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "14"
+        },
+        {
+          "id": "eq_waxed_thread",
+          "name": "waxed thread spool",
+          "equipment_class": "thread",
+          "shape_type": "thick cord spool",
+          "function": "durable leather hand stitching",
+          "blender_proxy": "thick thread coil around small spool",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "14"
+        },
+        {
+          "id": "eq_stitching_pony",
+          "name": "stitching pony",
+          "equipment_class": "clamp",
+          "shape_type": "wood clamp stand",
+          "function": "holds leather while hand stitching",
+          "blender_proxy": "vertical wooden clamp jaws with base",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "14"
+        },
+        {
+          "id": "eq_edge_beveler",
+          "name": "edge beveler",
+          "equipment_class": "leather finish",
+          "shape_type": "small hooked blade",
+          "function": "rounds leather edges",
+          "blender_proxy": "handle cylinder plus tiny U blade",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "14"
+        }
+      ]
+    },
+    {
+      "section": "15 maintenance safety and storage",
+      "items": [
+        {
+          "id": "eq_machine_oil",
+          "name": "sewing machine oil",
+          "equipment_class": "maintenance",
+          "shape_type": "small bottle with nozzle",
+          "function": "lubricates moving parts where allowed",
+          "blender_proxy": "small translucent cylinder bottle with cone nozzle",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "15"
+        },
+        {
+          "id": "eq_lint_brush",
+          "name": "lint brush",
+          "equipment_class": "maintenance",
+          "shape_type": "small brush",
+          "function": "cleans feed dogs, bobbin area, serger lint",
+          "blender_proxy": "handle cuboid plus bristle array",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "15"
+        },
+        {
+          "id": "eq_screwdriver_small",
+          "name": "small screwdriver",
+          "equipment_class": "maintenance",
+          "shape_type": "handle plus metal shaft",
+          "function": "changes needle plate, machine parts, attachments",
+          "blender_proxy": "capsule handle plus thin shaft and flat tip",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "15"
+        },
+        {
+          "id": "eq_spare_needles_case",
+          "name": "needle case",
+          "equipment_class": "storage",
+          "shape_type": "flat packet",
+          "function": "stores machine needles by size/type",
+          "blender_proxy": "thin folded card packet with labeled slots",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "15"
+        },
+        {
+          "id": "eq_blade_disposal",
+          "name": "sharps container",
+          "equipment_class": "safety",
+          "shape_type": "small lidded box",
+          "function": "stores dull rotary blades and broken needles",
+          "blender_proxy": "small box with slot lid",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "15"
+        },
+        {
+          "id": "eq_tool_roll",
+          "name": "sewing tool roll",
+          "equipment_class": "storage",
+          "shape_type": "folding fabric organizer",
+          "function": "organizes needles, scissors, rulers",
+          "blender_proxy": "cloth plane with pocket rectangles and tie cords",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "15"
+        },
+        {
+          "id": "eq_thread_rack",
+          "name": "thread rack",
+          "equipment_class": "storage",
+          "shape_type": "board with pegs",
+          "function": "stores thread spools visibly",
+          "blender_proxy": "vertical board, repeated angled peg cylinders, spool instances",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "15"
+        },
+        {
+          "id": "eq_label_tags",
+          "name": "project labels",
+          "equipment_class": "organization",
+          "shape_type": "small paper tags",
+          "function": "tracks fabric type, pattern piece, seam notes",
+          "blender_proxy": "small rectangles tied with string curves",
+          "render_tier": "proxy_to_hero",
+          "asset_layer": "15"
+        }
+      ]
+    }
+  ]
+}

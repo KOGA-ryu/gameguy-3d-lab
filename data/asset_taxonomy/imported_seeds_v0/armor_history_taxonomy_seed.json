@@ -1,0 +1,1233 @@
+{
+  "name": "armor_history_taxonomy_seed",
+  "version": "0.1",
+  "purpose": "Machine-readable seed for generating historical armor layers in Blender/Python.",
+  "coordinate_assumptions": {
+    "z": "height",
+    "x": "left_right",
+    "y": "front_back",
+    "unit": "normalized_body_height_or_blender_unit"
+  },
+  "period_chunks": [
+    {
+      "period": "prehistoric / early craft",
+      "representative_armor": "hide wraps, bone/wood splints, fiber bindings",
+      "materials": "skin, leather, rawhide, bark, wood, cordage",
+      "shape_grammar": "soft shell + tied splint arrays",
+      "generator_use": "Build as flexible wraps and strapped plates. Useful for primitive fantasy, tribal scouts, survival armor."
+    },
+    {
+      "period": "bronze / iron age",
+      "representative_armor": "bronze helmets, linen cuirasses, leather scale, greaves, shields",
+      "materials": "bronze, linen, leather, wood, rawhide",
+      "shape_grammar": "dome shells, conical shells, scale arrays, rimmed shields",
+      "generator_use": "Good first hard-surface layer: simple helmets, greaves, chest shells, big readable shields."
+    },
+    {
+      "period": "classical mediterranean",
+      "representative_armor": "corinthian helmet, muscle cuirass, linothorax, pteruges, scutum",
+      "materials": "bronze, iron, linen, leather, wood",
+      "shape_grammar": "face shell, anatomical torso shell, skirt strips",
+      "generator_use": "Use torso anatomy underneath; armor follows idealized chest/abdomen silhouette."
+    },
+    {
+      "period": "steppe / persian / eastern scale",
+      "representative_armor": "scale shirts, lamellar, spangenhelms, segmented helmets",
+      "materials": "iron, bronze, leather, rawhide lacing",
+      "shape_grammar": "tile arrays + laced rectangular strips",
+      "generator_use": "High repeat-count systems; perfect for procedural arrays and instancing."
+    },
+    {
+      "period": "early medieval",
+      "representative_armor": "mail hauberk, nasal helm, coif, chausses, kite shield",
+      "materials": "iron rings, wool padding, leather straps",
+      "shape_grammar": "chain mesh, cone/dome helmet, tapered shield",
+      "generator_use": "Mail is a material/texture problem first, geometry problem second. Don't model every ring unless close-up."
+    },
+    {
+      "period": "high medieval",
+      "representative_armor": "gambeson, surcoat, great helm, chausses, poleyns, coat of plates",
+      "materials": "quilted textile, steel, leather, rivets",
+      "shape_grammar": "padded slabs + boxy helm + hidden plate grid",
+      "generator_use": "Great for clothing/armor overlap: underlayer, mail, surcoat, plate reinforcement."
+    },
+    {
+      "period": "late medieval transitional",
+      "representative_armor": "bascinet, aventail, brigandine, gauntlets, arm harness, leg harness",
+      "materials": "steel plate, mail, velvet/cloth shell, leather",
+      "shape_grammar": "segmented plates + riveted textile shell",
+      "generator_use": "This is the hinge between textile craft and plate engineering. Extremely useful for your generator."
+    },
+    {
+      "period": "japanese samurai",
+      "representative_armor": "kabuto, menpo, do, sode, kote, kusazuri, haidate, suneate",
+      "materials": "lacquered iron/leather, silk cord, textile, mail",
+      "shape_grammar": "lamellar rows, cords, skirt panels, sleeve armor",
+      "generator_use": "Procedural lacing and lamellar rows are the crown jewel here. Lots of visible construction logic."
+    },
+    {
+      "period": "renaissance plate",
+      "representative_armor": "armet, close helm, gorget, cuirass, pauldrons, couters, gauntlets, cuisses, sabatons",
+      "materials": "steel, leather points, straps, buckles",
+      "shape_grammar": "smooth curved shells + articulated plates",
+      "generator_use": "Best tier for clean hard-surface mastery. Shape grammar is arcs, shells, flanges, slots, rivets."
+    },
+    {
+      "period": "early modern / gunpowder",
+      "representative_armor": "buff coat, lobster-tail pot, breastplate, tassets, cavalry boots",
+      "materials": "thick leather, iron/steel, brass fittings",
+      "shape_grammar": "leather coat + reduced plate coverage",
+      "generator_use": "Armor becomes selective: torso/head protection over mobile textile/leather systems."
+    },
+    {
+      "period": "industrial / modern protective",
+      "representative_armor": "ballistic helmet, plate carrier, soft armor panels, riot armor, EOD suit",
+      "materials": "aramid fabric, ceramic plates, polymer, nylon webbing",
+      "shape_grammar": "modular pads, pouches, straps, foam shells",
+      "generator_use": "Useful for tactical variants: MOLLE grids, panels, buckles, clips, velcro, foam padding."
+    }
+  ],
+  "shape_library": [
+    {
+      "shape_type": "dome_shell",
+      "used_for": "helmet bowl, skull cap, knee cap",
+      "blender_proxy_method": "UV sphere cut, solidify shell, bevel rim"
+    },
+    {
+      "shape_type": "conical_shell",
+      "used_for": "nasal helm, spire helmet, cap",
+      "blender_proxy_method": "cone/frustum with rim band"
+    },
+    {
+      "shape_type": "face_mask_shell",
+      "used_for": "visor, menpo, barbute face opening",
+      "blender_proxy_method": "curved mask plane with eye/mouth cutouts"
+    },
+    {
+      "shape_type": "anatomical_torso_shell",
+      "used_for": "muscle cuirass, fantasy heroic breastplate",
+      "blender_proxy_method": "ellipsoid chest shell with pectoral/ab ridges"
+    },
+    {
+      "shape_type": "cuirass_shell",
+      "used_for": "breastplate/backplate",
+      "blender_proxy_method": "two ellipsoid shells clipped at sides"
+    },
+    {
+      "shape_type": "quilted_padded_slab",
+      "used_for": "gambeson, arming doublet, padded cap",
+      "blender_proxy_method": "cloth surface + quilt curves + seam channels"
+    },
+    {
+      "shape_type": "mail_mesh_surface",
+      "used_for": "hauberk, coif, aventail",
+      "blender_proxy_method": "surface material with ring normal/displacement; close-up instanced torus rings"
+    },
+    {
+      "shape_type": "scale_tile_array",
+      "used_for": "scale shirt, scale skirt, dragonscale armor",
+      "blender_proxy_method": "overlapping teardrop/rectangle plates on surface"
+    },
+    {
+      "shape_type": "lamellar_strip_array",
+      "used_for": "samurai do, lamellar cuirass",
+      "blender_proxy_method": "small horizontal/vertical laced plates"
+    },
+    {
+      "shape_type": "brigandine_rivet_grid",
+      "used_for": "cloth shell with hidden plates",
+      "blender_proxy_method": "textile vest + rivet heads in rows"
+    },
+    {
+      "shape_type": "segmented_plate_arc",
+      "used_for": "pauldron, lame, tasset, sabaton",
+      "blender_proxy_method": "overlapping curved rectangular plates"
+    },
+    {
+      "shape_type": "hinge_joint_plate",
+      "used_for": "elbow/knee/couter/poleyn",
+      "blender_proxy_method": "cap shell with side wings and strap anchors"
+    },
+    {
+      "shape_type": "gauntlet_finger_chain",
+      "used_for": "finger armor",
+      "blender_proxy_method": "small overlapping plates on finger bones"
+    },
+    {
+      "shape_type": "strap_band",
+      "used_for": "leather belt/retention strap",
+      "blender_proxy_method": "curve bevel_depth or rectangular strip"
+    },
+    {
+      "shape_type": "buckle_frame",
+      "used_for": "fastener",
+      "blender_proxy_method": "torus/curve rectangle + pin cylinder"
+    },
+    {
+      "shape_type": "rivet_head",
+      "used_for": "plate fastening",
+      "blender_proxy_method": "small hemisphere or flattened sphere"
+    },
+    {
+      "shape_type": "shield_board",
+      "used_for": "shield body",
+      "blender_proxy_method": "flattened extruded shape with boss and rim"
+    }
+  ],
+  "construction_methods": [
+    {
+      "method": "quilting",
+      "definition": "parallel or diamond seam channels hold stuffing in place",
+      "blender_detail_instruction": "Use raised/indented curves on cloth surface; add stitch dash pattern along channel."
+    },
+    {
+      "method": "binding tape",
+      "definition": "edge strip covers raw cloth/leather edges",
+      "blender_detail_instruction": "Add narrow strip along robe/armor edge, usually slightly raised."
+    },
+    {
+      "method": "lacing",
+      "definition": "cord passes through paired holes to bind plates or close garments",
+      "blender_detail_instruction": "Use bevelled curves crossing between holes; alternate over/under pattern."
+    },
+    {
+      "method": "buckling",
+      "definition": "leather strap through metal frame with tongue",
+      "blender_detail_instruction": "Use strap_band + buckle_frame + tongue pin; add punched holes."
+    },
+    {
+      "method": "riveting",
+      "definition": "metal fastener pins plate to leather/textile or plate to plate",
+      "blender_detail_instruction": "Use rivet_head instances on grid, seam, or edge line."
+    },
+    {
+      "method": "hinging",
+      "definition": "metal plates rotate around pin or leather articulation",
+      "blender_detail_instruction": "Use cylinders as hinge barrels; add rotation constraints in rig mode."
+    },
+    {
+      "method": "overlap lames",
+      "definition": "segmented plates overlap to allow bending",
+      "blender_detail_instruction": "Layer plates from top to bottom or front to back; keep visible lip."
+    },
+    {
+      "method": "mail linking",
+      "definition": "interlocked metal rings create flexible armor",
+      "blender_detail_instruction": "Texture/normal for mid distance; torus-ring grid only for hero closeups."
+    },
+    {
+      "method": "scale overlap",
+      "definition": "plates overlap downward like shingles",
+      "blender_detail_instruction": "Array scales with row offset; upper row covers attachment of lower row."
+    },
+    {
+      "method": "lamellar lacing",
+      "definition": "small plates tied edge-to-edge without full textile backing",
+      "blender_detail_instruction": "Repeat rectangular plates and cord loops. Gorgeous, annoying, worth it."
+    }
+  ],
+  "chunk_templates": [
+    {
+      "chunk": "head",
+      "expected_objects": "helmet_shell, visor, face_mask, aventail, chin_strap",
+      "anchors": "skull, jaw, neck_01, clavicles",
+      "shape_types": "dome_shell, face_mask_shell, mail_mesh_surface",
+      "rig_animation_rule": "Helmet rotates with head; aventail follows neck/shoulders with cloth-like lag."
+    },
+    {
+      "chunk": "shoulders",
+      "expected_objects": "pauldron, spaulder, sode, armpit_disc",
+      "anchors": "clavicle, scapula, upper_arm",
+      "shape_types": "segmented_plate_arc, lamellar_panel",
+      "rig_animation_rule": "Must preserve arm-lift clearance; do not fuse shoulder plates to torso."
+    },
+    {
+      "chunk": "torso",
+      "expected_objects": "gambeson, mail, cuirass, brigandine, carrier",
+      "anchors": "spine_01-03, ribs, pelvis",
+      "shape_types": "cloth_shell, cuirass_shell, rivet_grid",
+      "rig_animation_rule": "Layer order matters: padding, mail/textile, hard plate, straps/accessories."
+    },
+    {
+      "chunk": "hips_pelvis",
+      "expected_objects": "fauld, tassets, pteruges, kusazuri, groin_pad",
+      "anchors": "pelvis, hip joints, upper thighs",
+      "shape_types": "hanging_strip_array, segmented_plate_arc",
+      "rig_animation_rule": "Hanging panels need independent motion or at least offset pivots."
+    },
+    {
+      "chunk": "arms",
+      "expected_objects": "rerebrace, couter, vambrace, kote",
+      "anchors": "upper_arm, forearm, elbow",
+      "shape_types": "tapered_shell, hinge_joint_plate",
+      "rig_animation_rule": "Elbow gap is sacred. Break it and the model folds like wet cardboard."
+    },
+    {
+      "chunk": "hands",
+      "expected_objects": "glove, gauntlet, finger_lames, knuckle_plate",
+      "anchors": "hand, fingers",
+      "shape_types": "gauntlet_finger_chain, soft_glove_shell",
+      "rig_animation_rule": "Finger armor must be attached to finger bone chains, not painted on as one dead mitten unless stylized."
+    },
+    {
+      "chunk": "legs",
+      "expected_objects": "cuisses, chausses, greaves, suneate",
+      "anchors": "thigh, shin, ankle",
+      "shape_types": "tapered_shell, splint_array",
+      "rig_animation_rule": "Knee and ankle require visible articulation breaks."
+    },
+    {
+      "chunk": "knees",
+      "expected_objects": "poleyn, knee_pad",
+      "anchors": "knee joint",
+      "shape_types": "hinge_joint_plate, soft_pad_dome",
+      "rig_animation_rule": "Model as separate cap with upper/lower articulation plates."
+    },
+    {
+      "chunk": "feet",
+      "expected_objects": "boot, sabaton, mail_foot, sandal",
+      "anchors": "foot, toe",
+      "shape_types": "soft_boot_shell, segmented_plate_wedge",
+      "rig_animation_rule": "Toe bend needs segmented plates or a flexible boot crease."
+    },
+    {
+      "chunk": "shield_and_gear",
+      "expected_objects": "shield_body, boss, straps, handle",
+      "anchors": "hand grip or forearm strap",
+      "shape_types": "shield_board, concave_panel",
+      "rig_animation_rule": "Treat as prop with grip constraints and optional damage layers."
+    }
+  ],
+  "armor_entries": [
+    {
+      "chunk": "head",
+      "piece": "padded arming cap",
+      "era": "ancient-medieval",
+      "coverage": "scalp, crown, under helmet",
+      "shape_type": "quilted_padded_slab / dome_shell",
+      "materials": "linen, wool, cotton padding",
+      "construction": "segmented cap panels, quilt lines, chin tie",
+      "blender_proxy": "dome cloth shell + stitch curves",
+      "detail_notes": "Add radial panel seams, sweat band, and slight compression under helmet."
+    },
+    {
+      "chunk": "head",
+      "piece": "leather skull cap",
+      "era": "ancient-early medieval",
+      "coverage": "scalp",
+      "shape_type": "dome_shell",
+      "materials": "boiled leather, rawhide",
+      "construction": "stitched wedges, edge binding",
+      "blender_proxy": "cut UV sphere shell + seam strips",
+      "detail_notes": "Good low-tier primitive helmet base."
+    },
+    {
+      "chunk": "head",
+      "piece": "bronze dome helmet",
+      "era": "bronze age",
+      "coverage": "skull",
+      "shape_type": "dome_shell",
+      "materials": "bronze",
+      "construction": "hammered bowl, rolled rim",
+      "blender_proxy": "hemisphere shell + rim torus",
+      "detail_notes": "Add dents, hammer marks, patina only at hero tier."
+    },
+    {
+      "chunk": "head",
+      "piece": "corinthian helmet",
+      "era": "classical greek",
+      "coverage": "skull, cheeks, nose",
+      "shape_type": "face_mask_shell / dome_shell",
+      "materials": "bronze",
+      "construction": "one-piece bowl with T-shaped face opening",
+      "blender_proxy": "helmet shell + eye/nose cutouts",
+      "detail_notes": "Strong silhouette. Cheek guards curve inward."
+    },
+    {
+      "chunk": "head",
+      "piece": "nasal helmet",
+      "era": "early medieval",
+      "coverage": "skull, nose",
+      "shape_type": "conical_shell",
+      "materials": "iron/steel",
+      "construction": "cone or spangen panels with nasal strip",
+      "blender_proxy": "cone shell + vertical nasal plate",
+      "detail_notes": "Add riveted brow band and four panel seams."
+    },
+    {
+      "chunk": "head",
+      "piece": "spangenhelm",
+      "era": "late antique-early medieval",
+      "coverage": "skull, cheeks optional",
+      "shape_type": "segmented_panel_dome",
+      "materials": "iron/bronze bands",
+      "construction": "metal frame with infill plates",
+      "blender_proxy": "dome sections + raised ribs + rivets",
+      "detail_notes": "Great procedural pattern: ribs first, plates second, rivets third."
+    },
+    {
+      "chunk": "head",
+      "piece": "mail coif",
+      "era": "medieval",
+      "coverage": "head, neck, shoulders",
+      "shape_type": "mail_mesh_surface",
+      "materials": "iron rings",
+      "construction": "flexible mail hood",
+      "blender_proxy": "cloth hood mesh + mail material",
+      "detail_notes": "Use shader/normal for most renders; torus rings around face edge for closeup."
+    },
+    {
+      "chunk": "head",
+      "piece": "great helm",
+      "era": "high medieval",
+      "coverage": "full head",
+      "shape_type": "cylindrical_box_shell",
+      "materials": "steel",
+      "construction": "flat plates riveted into barrel helm",
+      "blender_proxy": "beveled cylinder/cube shell + slit visor",
+      "detail_notes": "Boxy. Heavy. Beautifully unsubtle."
+    },
+    {
+      "chunk": "head",
+      "piece": "bascinet",
+      "era": "late medieval",
+      "coverage": "skull, face optional",
+      "shape_type": "pointed_dome_shell",
+      "materials": "steel",
+      "construction": "pointed skull with visor/aventail options",
+      "blender_proxy": "elongated dome + hinge visor",
+      "detail_notes": "Attach aventail as mail skirt around lower edge."
+    },
+    {
+      "chunk": "head",
+      "piece": "aventail",
+      "era": "late medieval",
+      "coverage": "neck, shoulders",
+      "shape_type": "mail_mesh_surface",
+      "materials": "iron/steel rings",
+      "construction": "mail curtain fastened to helmet vervelles",
+      "blender_proxy": "cloth-like drape surface + ring material",
+      "detail_notes": "Add small rivet/loop points around helmet rim."
+    },
+    {
+      "chunk": "head",
+      "piece": "sallet",
+      "era": "late medieval",
+      "coverage": "skull, back of neck",
+      "shape_type": "swept_dome_shell",
+      "materials": "steel",
+      "construction": "smooth helmet with tail flare",
+      "blender_proxy": "smooth shell + rear flange",
+      "detail_notes": "Excellent silhouette for dark fantasy."
+    },
+    {
+      "chunk": "head",
+      "piece": "barbute",
+      "era": "renaissance",
+      "coverage": "skull, cheeks",
+      "shape_type": "face_mask_shell",
+      "materials": "steel",
+      "construction": "T or Y shaped face opening",
+      "blender_proxy": "dome shell + cutout",
+      "detail_notes": "Reads ancient and medieval at once. Useful hybrid."
+    },
+    {
+      "chunk": "head",
+      "piece": "armet",
+      "era": "renaissance",
+      "coverage": "full head",
+      "shape_type": "articulated_helmet_shell",
+      "materials": "steel",
+      "construction": "close-fitting helmet with hinged cheekpieces",
+      "blender_proxy": "multiple helmet shells + hinges",
+      "detail_notes": "Use separate visor, bevor, cheek plates for rigging."
+    },
+    {
+      "chunk": "head",
+      "piece": "close helm",
+      "era": "renaissance",
+      "coverage": "full head",
+      "shape_type": "articulated_helmet_shell",
+      "materials": "steel",
+      "construction": "visor and bevor pivot together",
+      "blender_proxy": "helmet shell + rotating visor plates",
+      "detail_notes": "Hero-tier object. Needs hinge barrels and pin details."
+    },
+    {
+      "chunk": "head",
+      "piece": "kabuto",
+      "era": "samurai",
+      "coverage": "skull",
+      "shape_type": "segmented_panel_dome",
+      "materials": "lacquered iron/leather",
+      "construction": "multi-plate bowl with crest mount",
+      "blender_proxy": "ribbed dome + crest socket",
+      "detail_notes": "Add shikoro neck guard as layered segmented plates."
+    },
+    {
+      "chunk": "head",
+      "piece": "menpo",
+      "era": "samurai",
+      "coverage": "face lower half",
+      "shape_type": "face_mask_shell",
+      "materials": "lacquered iron/leather",
+      "construction": "moustache/teeth optional, tied with cords",
+      "blender_proxy": "curved mask shell + cord anchors",
+      "detail_notes": "Expression layer for intimidating face design."
+    },
+    {
+      "chunk": "head",
+      "piece": "gorget",
+      "era": "late medieval-renaissance",
+      "coverage": "throat, base of neck",
+      "shape_type": "stacked_ring_collar",
+      "materials": "steel",
+      "construction": "front/back collar plates, sometimes articulated lames",
+      "blender_proxy": "torus/curved collar plates",
+      "detail_notes": "Important transition piece between head and torso."
+    },
+    {
+      "chunk": "head",
+      "piece": "modern ballistic helmet",
+      "era": "modern",
+      "coverage": "skull",
+      "shape_type": "cut_dome_shell",
+      "materials": "aramid/composite, padding, rails",
+      "construction": "composite shell with suspension pads and straps",
+      "blender_proxy": "dome shell + rail strips + pad blocks",
+      "detail_notes": "Add NVG mount, side rails, chin strap in tactical tier."
+    },
+    {
+      "chunk": "shoulders",
+      "piece": "cloth shoulder padding",
+      "era": "all",
+      "coverage": "top shoulder",
+      "shape_type": "quilted_padded_slab",
+      "materials": "linen, wool, cotton, leather",
+      "construction": "small padded cap sewn into garment",
+      "blender_proxy": "soft ellipsoid cap + quilt lines",
+      "detail_notes": "Under armor shoulder mass. Saves deformation from looking skeletal."
+    },
+    {
+      "chunk": "shoulders",
+      "piece": "mail shoulder fall",
+      "era": "medieval",
+      "coverage": "shoulder slopes",
+      "shape_type": "mail_mesh_surface",
+      "materials": "iron/steel rings",
+      "construction": "mail extends from coif/hauberk",
+      "blender_proxy": "draped surface over deltoids",
+      "detail_notes": "Use gravity-shaped cloth sim or static drape mesh."
+    },
+    {
+      "chunk": "shoulders",
+      "piece": "sode",
+      "era": "samurai",
+      "coverage": "outer shoulder/upper arm",
+      "shape_type": "lamellar_strip_array",
+      "materials": "lacquered plates, silk cord",
+      "construction": "rectangular hanging shoulder guard",
+      "blender_proxy": "stacked plate rows + lacing curves",
+      "detail_notes": "Should hang from shoulder cord, not fuse to arm."
+    },
+    {
+      "chunk": "shoulders",
+      "piece": "pauldron",
+      "era": "late medieval-renaissance",
+      "coverage": "shoulder cap",
+      "shape_type": "segmented_plate_arc",
+      "materials": "steel",
+      "construction": "overlapping lames around shoulder dome",
+      "blender_proxy": "curved plates over deltoid",
+      "detail_notes": "Must allow arm lift. Use 3-6 lames depending tier."
+    },
+    {
+      "chunk": "shoulders",
+      "piece": "spaulder",
+      "era": "medieval",
+      "coverage": "smaller shoulder cap",
+      "shape_type": "segmented_plate_arc",
+      "materials": "steel/leather",
+      "construction": "small overlapping plates",
+      "blender_proxy": "short lame stack",
+      "detail_notes": "Lighter than full pauldron. Good for scout armor."
+    },
+    {
+      "chunk": "shoulders",
+      "piece": "besagew",
+      "era": "late medieval",
+      "coverage": "armpit gap",
+      "shape_type": "round_disc_plate",
+      "materials": "steel",
+      "construction": "small circular plate tied near armpit",
+      "blender_proxy": "disc + strap/lace",
+      "detail_notes": "Tiny but historically useful gap cover."
+    },
+    {
+      "chunk": "shoulders",
+      "piece": "modern shoulder pad",
+      "era": "modern",
+      "coverage": "deltoid",
+      "shape_type": "foam_shell_pad",
+      "materials": "polymer, foam, nylon",
+      "construction": "curved pad mounted by straps/velcro",
+      "blender_proxy": "soft shell + strap bands",
+      "detail_notes": "Riot/tactical silhouette."
+    },
+    {
+      "chunk": "torso",
+      "piece": "gambeson",
+      "era": "medieval",
+      "coverage": "torso, arms optional",
+      "shape_type": "quilted_padded_slab",
+      "materials": "linen/wool layers, stuffing",
+      "construction": "quilted garment, ties/buttons",
+      "blender_proxy": "cloth torso shell + quilt pattern",
+      "detail_notes": "This is the under-armor king. Build it before metal."
+    },
+    {
+      "chunk": "torso",
+      "piece": "linothorax",
+      "era": "classical",
+      "coverage": "torso",
+      "shape_type": "wrapped_textile_cuirass",
+      "materials": "linen, glue, leather edging",
+      "construction": "layered linen body wrap with shoulder flaps",
+      "blender_proxy": "torso shell + flap panels",
+      "detail_notes": "Add pteruges strips below waist."
+    },
+    {
+      "chunk": "torso",
+      "piece": "muscle cuirass",
+      "era": "classical",
+      "coverage": "chest/back",
+      "shape_type": "anatomical_torso_shell",
+      "materials": "bronze/iron",
+      "construction": "front/back anatomical plates joined at sides",
+      "blender_proxy": "anatomy-fitted cuirass shell",
+      "detail_notes": "Pecs and abs are stylized armor relief, not actual flesh."
+    },
+    {
+      "chunk": "torso",
+      "piece": "leather cuirass",
+      "era": "ancient-medieval-fantasy",
+      "coverage": "torso",
+      "shape_type": "cuirass_shell",
+      "materials": "boiled leather",
+      "construction": "molded front/back panels, stitched/buckled sides",
+      "blender_proxy": "torso shell + side straps",
+      "detail_notes": "Good medium tier. Add edge binding and punch holes."
+    },
+    {
+      "chunk": "torso",
+      "piece": "scale corselet",
+      "era": "ancient-steppe",
+      "coverage": "torso",
+      "shape_type": "scale_tile_array",
+      "materials": "bronze/iron/leather scales",
+      "construction": "scales sewn or riveted to backing",
+      "blender_proxy": "torso cloth shell + scale array",
+      "detail_notes": "Rows overlap downward. Use instancing or geometry nodes."
+    },
+    {
+      "chunk": "torso",
+      "piece": "lamellar cuirass",
+      "era": "ancient-medieval-east asian",
+      "coverage": "torso",
+      "shape_type": "lamellar_strip_array",
+      "materials": "iron/leather plates, cord",
+      "construction": "small plates laced to each other",
+      "blender_proxy": "plate tiles + lacing curves",
+      "detail_notes": "No full backing required. Visible cords are key."
+    },
+    {
+      "chunk": "torso",
+      "piece": "mail hauberk",
+      "era": "medieval",
+      "coverage": "torso, upper arms, thighs",
+      "shape_type": "mail_mesh_surface",
+      "materials": "iron/steel rings",
+      "construction": "tunic of mail rings",
+      "blender_proxy": "loose tunic mesh + mail shader",
+      "detail_notes": "Add split skirt for riding variants."
+    },
+    {
+      "chunk": "torso",
+      "piece": "surcoat",
+      "era": "high medieval",
+      "coverage": "over mail/torso",
+      "shape_type": "cloth_tunic_shell",
+      "materials": "wool/linen",
+      "construction": "sleeveless cloth garment, side slits",
+      "blender_proxy": "cloth layer over armor",
+      "detail_notes": "Useful heraldry/embroidery surface."
+    },
+    {
+      "chunk": "torso",
+      "piece": "coat of plates",
+      "era": "high medieval",
+      "coverage": "torso",
+      "shape_type": "hidden_plate_grid",
+      "materials": "cloth/leather shell, iron plates, rivets",
+      "construction": "internal plates riveted to outer garment",
+      "blender_proxy": "vest shell + rivet grid",
+      "detail_notes": "The plates are hidden. Rivets reveal the construction."
+    },
+    {
+      "chunk": "torso",
+      "piece": "brigandine",
+      "era": "late medieval",
+      "coverage": "torso",
+      "shape_type": "brigandine_rivet_grid",
+      "materials": "cloth/velvet/leather, steel plates",
+      "construction": "small overlapping internal plates riveted to shell",
+      "blender_proxy": "cloth vest + dense rivets",
+      "detail_notes": "Gorgeous textile-metal hybrid. Essential."
+    },
+    {
+      "chunk": "torso",
+      "piece": "breastplate",
+      "era": "late medieval-renaissance",
+      "coverage": "front torso",
+      "shape_type": "cuirass_shell",
+      "materials": "steel",
+      "construction": "shaped front plate with medial ridge optional",
+      "blender_proxy": "ellipsoid front shell + bevels",
+      "detail_notes": "Add rolled edges, arm cutouts, neck cutout."
+    },
+    {
+      "chunk": "torso",
+      "piece": "backplate",
+      "era": "late medieval-renaissance",
+      "coverage": "back torso",
+      "shape_type": "cuirass_shell",
+      "materials": "steel",
+      "construction": "shaped back plate tied/strapped to breastplate",
+      "blender_proxy": "ellipsoid rear shell",
+      "detail_notes": "Make separate object for don/doff logic."
+    },
+    {
+      "chunk": "torso",
+      "piece": "cuirass",
+      "era": "renaissance",
+      "coverage": "front/back torso",
+      "shape_type": "two_part_cuirass_shell",
+      "materials": "steel",
+      "construction": "breastplate + backplate with side fasteners",
+      "blender_proxy": "two shells + straps/buckles",
+      "detail_notes": "Base for full plate suit."
+    },
+    {
+      "chunk": "torso",
+      "piece": "fauld",
+      "era": "late medieval-renaissance",
+      "coverage": "lower torso/waist",
+      "shape_type": "segmented_plate_arc",
+      "materials": "steel",
+      "construction": "horizontal lames below breastplate",
+      "blender_proxy": "stacked curved waist plates",
+      "detail_notes": "Connects torso armor to tassets."
+    },
+    {
+      "chunk": "torso",
+      "piece": "samurai do",
+      "era": "samurai",
+      "coverage": "torso",
+      "shape_type": "lamellar_or_solid_cuirass",
+      "materials": "lacquered iron/leather, cord",
+      "construction": "laced plates or solid cuirass body",
+      "blender_proxy": "torso shell + laced rows",
+      "detail_notes": "Use lacquer material and bright cord color in hero tier."
+    },
+    {
+      "chunk": "torso",
+      "piece": "buff coat",
+      "era": "early modern",
+      "coverage": "torso, arms",
+      "shape_type": "heavy_leather_coat",
+      "materials": "thick leather",
+      "construction": "tailored coat, seams, buttons, cuffs",
+      "blender_proxy": "long coat mesh + seam/stitch details",
+      "detail_notes": "Armor becomes clothing-heavy here."
+    },
+    {
+      "chunk": "torso",
+      "piece": "modern plate carrier",
+      "era": "modern",
+      "coverage": "torso vital zone",
+      "shape_type": "modular_vest_shell",
+      "materials": "nylon, ceramic plates, webbing",
+      "construction": "front/back carrier, cummerbund, MOLLE rows",
+      "blender_proxy": "vest panels + webbing grid + pouches",
+      "detail_notes": "Pattern grid matters more than shiny material."
+    },
+    {
+      "chunk": "hips_pelvis",
+      "piece": "pteruges",
+      "era": "classical",
+      "coverage": "hips, upper thighs",
+      "shape_type": "hanging_strip_array",
+      "materials": "leather/linen",
+      "construction": "overlapping skirt strips",
+      "blender_proxy": "rectangular/tapered strips around waist",
+      "detail_notes": "Animate strips separately for movement."
+    },
+    {
+      "chunk": "hips_pelvis",
+      "piece": "mail skirt",
+      "era": "medieval",
+      "coverage": "hips, thighs",
+      "shape_type": "mail_mesh_surface",
+      "materials": "iron/steel rings",
+      "construction": "hauberk extension or separate skirt",
+      "blender_proxy": "draped skirt mesh + mail material",
+      "detail_notes": "Use split front/back for mounted figures."
+    },
+    {
+      "chunk": "hips_pelvis",
+      "piece": "tassets",
+      "era": "late medieval-renaissance",
+      "coverage": "front thighs/hips",
+      "shape_type": "segmented_plate_arc",
+      "materials": "steel",
+      "construction": "hanging plate lames from fauld",
+      "blender_proxy": "left/right hanging plate stacks",
+      "detail_notes": "Key silhouette on full plate."
+    },
+    {
+      "chunk": "hips_pelvis",
+      "piece": "kusazuri",
+      "era": "samurai",
+      "coverage": "hip/thigh skirt",
+      "shape_type": "lamellar_panel_array",
+      "materials": "lacquered plates, silk cord",
+      "construction": "hanging laced skirt panels",
+      "blender_proxy": "separate lamellar panels around waist",
+      "detail_notes": "Use 4-8 hanging panels; cords visible."
+    },
+    {
+      "chunk": "hips_pelvis",
+      "piece": "groin protector",
+      "era": "modern",
+      "coverage": "groin/lower pelvis",
+      "shape_type": "soft_hanging_pad",
+      "materials": "aramid, nylon, foam",
+      "construction": "hanging pad from vest/belt",
+      "blender_proxy": "soft rectangular flap + straps",
+      "detail_notes": "For tactical/riot armor."
+    },
+    {
+      "chunk": "arms",
+      "piece": "arming sleeve",
+      "era": "medieval",
+      "coverage": "arm under armor",
+      "shape_type": "quilted_padded_sleeve",
+      "materials": "linen, wool padding",
+      "construction": "fitted sleeve with quilting and points",
+      "blender_proxy": "arm cloth shell + seam channels",
+      "detail_notes": "Tie-on points anchor plate pieces."
+    },
+    {
+      "chunk": "arms",
+      "piece": "mail sleeve",
+      "era": "medieval",
+      "coverage": "upper/lower arm",
+      "shape_type": "mail_mesh_surface",
+      "materials": "iron/steel rings",
+      "construction": "integrated hauberk sleeve",
+      "blender_proxy": "arm sleeve mesh + mail shader",
+      "detail_notes": "Use sleeve opening and wrist taper."
+    },
+    {
+      "chunk": "arms",
+      "piece": "vambrace",
+      "era": "medieval-renaissance",
+      "coverage": "forearm",
+      "shape_type": "tapered_cylinder_shell",
+      "materials": "steel/leather",
+      "construction": "forearm tube, often two hinged halves",
+      "blender_proxy": "tapered cylinder split shell",
+      "detail_notes": "Add wrist and elbow edges, straps on inner side."
+    },
+    {
+      "chunk": "arms",
+      "piece": "rerebrace",
+      "era": "medieval-renaissance",
+      "coverage": "upper arm",
+      "shape_type": "tapered_cylinder_shell",
+      "materials": "steel",
+      "construction": "upper arm plate tube",
+      "blender_proxy": "tapered cylinder shell over humerus",
+      "detail_notes": "Usually tied/strapped to pauldron and couter."
+    },
+    {
+      "chunk": "arms",
+      "piece": "couter",
+      "era": "medieval-renaissance",
+      "coverage": "elbow",
+      "shape_type": "hinge_joint_plate",
+      "materials": "steel",
+      "construction": "elbow cap with wing/flange",
+      "blender_proxy": "dome/cap shell + side wing",
+      "detail_notes": "Needs pivot clearance. Don't weld to forearm mesh."
+    },
+    {
+      "chunk": "arms",
+      "piece": "kote",
+      "era": "samurai",
+      "coverage": "sleeve/forearm/hand back",
+      "shape_type": "cloth_sleeve_plus_plate_array",
+      "materials": "textile, mail, lacquered plates",
+      "construction": "armored sleeve with sewn plates and mail",
+      "blender_proxy": "cloth sleeve + plate strips + mail patches",
+      "detail_notes": "Hybrid textile/metal surface, very generator-friendly."
+    },
+    {
+      "chunk": "arms",
+      "piece": "modern forearm guard",
+      "era": "modern",
+      "coverage": "forearm",
+      "shape_type": "foam_or_polymer_shell",
+      "materials": "polymer, foam, straps",
+      "construction": "curved pad strapped over forearm",
+      "blender_proxy": "curved shell + elastic straps",
+      "detail_notes": "Riot/sport/tactical variants."
+    },
+    {
+      "chunk": "hands",
+      "piece": "leather glove",
+      "era": "all",
+      "coverage": "hand",
+      "shape_type": "soft_glove_shell",
+      "materials": "leather/thread",
+      "construction": "palm/finger panels, seams, cuff",
+      "blender_proxy": "hand surface shell + seam curves",
+      "detail_notes": "Base layer for all gauntlets."
+    },
+    {
+      "chunk": "hands",
+      "piece": "mail mitten",
+      "era": "medieval",
+      "coverage": "hand",
+      "shape_type": "mail_mesh_surface",
+      "materials": "iron rings, leather palm",
+      "construction": "mail attached to glove/hauberk sleeve",
+      "blender_proxy": "mitten mesh + mail shader",
+      "detail_notes": "Simpler than finger gauntlet. Good low detail."
+    },
+    {
+      "chunk": "hands",
+      "piece": "hourglass gauntlet",
+      "era": "late medieval",
+      "coverage": "wrist/hand/fingers",
+      "shape_type": "articulated_hand_shell",
+      "materials": "steel, leather glove",
+      "construction": "flared cuff, knuckle plates, finger lames",
+      "blender_proxy": "cuff shell + metacarpal plate + finger chains",
+      "detail_notes": "A little machine cathedral for the hand."
+    },
+    {
+      "chunk": "hands",
+      "piece": "finger gauntlet",
+      "era": "late medieval-renaissance",
+      "coverage": "individual fingers",
+      "shape_type": "gauntlet_finger_chain",
+      "materials": "steel plates, leather glove",
+      "construction": "overlapping lames riveted to leather fingers",
+      "blender_proxy": "plate instances along finger bones",
+      "detail_notes": "Use rig bone names: index_proximal, middle, distal."
+    },
+    {
+      "chunk": "hands",
+      "piece": "mitten gauntlet",
+      "era": "renaissance",
+      "coverage": "hand/fingers grouped",
+      "shape_type": "segmented_mitten_shell",
+      "materials": "steel, leather",
+      "construction": "finger area covered by broad overlapping plates",
+      "blender_proxy": "wide lames over fingers",
+      "detail_notes": "Simpler rig, strong armored silhouette."
+    },
+    {
+      "chunk": "hands",
+      "piece": "tekko",
+      "era": "samurai",
+      "coverage": "hand back",
+      "shape_type": "hand_plate_array",
+      "materials": "cloth, mail, iron plates",
+      "construction": "plates sewn to glove",
+      "blender_proxy": "cloth glove + dorsal plates",
+      "detail_notes": "Pairs with kote."
+    },
+    {
+      "chunk": "hands",
+      "piece": "modern tactical glove",
+      "era": "modern",
+      "coverage": "hand/knuckles",
+      "shape_type": "soft_glove_shell + knuckle_pad",
+      "materials": "leather, synthetic fabric, polymer",
+      "construction": "stitched panels, rubber knuckle pads",
+      "blender_proxy": "glove shell + pad ellipsoids",
+      "detail_notes": "Add palm texture and finger seam lines."
+    },
+    {
+      "chunk": "legs",
+      "piece": "greave",
+      "era": "ancient-medieval-renaissance",
+      "coverage": "shin/calf",
+      "shape_type": "tapered_cylinder_shell",
+      "materials": "bronze/steel/leather",
+      "construction": "front shin plate or hinged full lower-leg shell",
+      "blender_proxy": "tapered lower-leg shell",
+      "detail_notes": "Ancient greaves hug calf; plate greaves can be hinged two-piece."
+    },
+    {
+      "chunk": "legs",
+      "piece": "cuisse",
+      "era": "medieval-renaissance",
+      "coverage": "thigh",
+      "shape_type": "tapered_cylinder_shell",
+      "materials": "steel/leather",
+      "construction": "thigh plate strapped to arming garment",
+      "blender_proxy": "upper-leg shell + straps",
+      "detail_notes": "Usually connects visually to poleyn/knee."
+    },
+    {
+      "chunk": "legs",
+      "piece": "chausses",
+      "era": "medieval",
+      "coverage": "legs/feet",
+      "shape_type": "mail_mesh_surface",
+      "materials": "iron/steel rings",
+      "construction": "mail leggings tied to belt/garment",
+      "blender_proxy": "leg mesh + mail material",
+      "detail_notes": "Can cover foot top as mail shoe."
+    },
+    {
+      "chunk": "legs",
+      "piece": "haidate",
+      "era": "samurai",
+      "coverage": "thighs",
+      "shape_type": "cloth_panel_plus_plate_array",
+      "materials": "cloth, mail, plates",
+      "construction": "apron-like thigh guards",
+      "blender_proxy": "front thigh panels + plates",
+      "detail_notes": "Hanging panels over thighs, not full tubes."
+    },
+    {
+      "chunk": "legs",
+      "piece": "suneate",
+      "era": "samurai",
+      "coverage": "shins",
+      "shape_type": "splint_array_shell",
+      "materials": "iron splints, cloth/leather backing",
+      "construction": "vertical splints tied around lower leg",
+      "blender_proxy": "shin backing + vertical plates + cords",
+      "detail_notes": "Great for procedural vertical strip arrays."
+    },
+    {
+      "chunk": "knees",
+      "piece": "poleyn",
+      "era": "medieval-renaissance",
+      "coverage": "knee",
+      "shape_type": "hinge_joint_plate",
+      "materials": "steel",
+      "construction": "knee cap with side wing and articulation lames",
+      "blender_proxy": "knee dome + wing + upper/lower lames",
+      "detail_notes": "This is the knee lawgiver. Separate object, pivot-aware."
+    },
+    {
+      "chunk": "knees",
+      "piece": "quilted knee pad",
+      "era": "all",
+      "coverage": "knee",
+      "shape_type": "soft_pad_dome",
+      "materials": "cloth, padding, leather",
+      "construction": "padded oval/dome sewn to trousers",
+      "blender_proxy": "soft ellipsoid cap + stitch ring",
+      "detail_notes": "Useful for training, modern, low fantasy, under-armor."
+    },
+    {
+      "chunk": "knees",
+      "piece": "modern knee protector",
+      "era": "modern",
+      "coverage": "knee",
+      "shape_type": "polymer_cap_plus_straps",
+      "materials": "polymer shell, foam, elastic straps",
+      "construction": "hard cap over foam pad with rear straps",
+      "blender_proxy": "dome cap + pad rim + straps",
+      "detail_notes": "Use exact knee pivot gap."
+    },
+    {
+      "chunk": "feet",
+      "piece": "leather boot",
+      "era": "all",
+      "coverage": "foot/ankle",
+      "shape_type": "soft_boot_shell",
+      "materials": "leather/thread",
+      "construction": "sole, upper, heel, seams, laces/straps",
+      "blender_proxy": "foot shell + sole slab + seam curves",
+      "detail_notes": "Base for sabatons or cavalry boots."
+    },
+    {
+      "chunk": "feet",
+      "piece": "mail foot",
+      "era": "medieval",
+      "coverage": "top of foot",
+      "shape_type": "mail_mesh_surface",
+      "materials": "iron/steel rings",
+      "construction": "mail chausses extending over foot",
+      "blender_proxy": "foot cover mesh + mail material",
+      "detail_notes": "Keep sole leather visible."
+    },
+    {
+      "chunk": "feet",
+      "piece": "sabatons",
+      "era": "late medieval-renaissance",
+      "coverage": "foot",
+      "shape_type": "segmented_plate_wedge",
+      "materials": "steel",
+      "construction": "overlapping foot plates from ankle to toe",
+      "blender_proxy": "wedge plate chain over foot",
+      "detail_notes": "Pointy, broad, or bear-paw depending era/style."
+    },
+    {
+      "chunk": "feet",
+      "piece": "waraji/sandal with armor",
+      "era": "samurai",
+      "coverage": "foot support",
+      "shape_type": "woven_sole_plus_straps",
+      "materials": "straw, cord, leather",
+      "construction": "woven sole and straps, sometimes with shin armor above",
+      "blender_proxy": "flat sole + cord curves",
+      "detail_notes": "Textile/cord modeling crosses into footwear craft."
+    },
+    {
+      "chunk": "feet",
+      "piece": "modern combat boot",
+      "era": "modern",
+      "coverage": "foot/ankle",
+      "shape_type": "soft_boot_shell",
+      "materials": "leather, nylon, rubber",
+      "construction": "stitched panels, lug sole, laces",
+      "blender_proxy": "boot shell + tread blocks + lace curves",
+      "detail_notes": "Use as modern tactical default."
+    },
+    {
+      "chunk": "shield_and_gear",
+      "piece": "round shield",
+      "era": "ancient-medieval",
+      "coverage": "portable defense",
+      "shape_type": "shield_board",
+      "materials": "wood, hide, metal boss",
+      "construction": "laminated boards, rim, central boss",
+      "blender_proxy": "extruded disk + boss dome + straps",
+      "detail_notes": "Add rear grip/strap geometry if visible."
+    },
+    {
+      "chunk": "shield_and_gear",
+      "piece": "hoplon/aspis",
+      "era": "classical greek",
+      "coverage": "portable defense",
+      "shape_type": "concave_round_shield",
+      "materials": "wood, bronze facing",
+      "construction": "large concave round shield",
+      "blender_proxy": "shallow concave disk + rim + arm band",
+      "detail_notes": "Bowl profile matters."
+    },
+    {
+      "chunk": "shield_and_gear",
+      "piece": "scutum",
+      "era": "roman",
+      "coverage": "portable defense",
+      "shape_type": "curved_rectangular_shield",
+      "materials": "wood, leather, metal boss",
+      "construction": "curved board, edge binding, boss",
+      "blender_proxy": "curved rectangle shell + central boss",
+      "detail_notes": "Large vertical curve; strong wall formation silhouette."
+    },
+    {
+      "chunk": "shield_and_gear",
+      "piece": "kite shield",
+      "era": "early-high medieval",
+      "coverage": "portable defense",
+      "shape_type": "tapered_shield_board",
+      "materials": "wood, leather, paint",
+      "construction": "teardrop/kite board with rim",
+      "blender_proxy": "extruded kite shape + straps",
+      "detail_notes": "Good cavalry silhouette."
+    },
+    {
+      "chunk": "shield_and_gear",
+      "piece": "heater shield",
+      "era": "high-late medieval",
+      "coverage": "portable defense",
+      "shape_type": "heater_shield_board",
+      "materials": "wood, gesso, paint, leather straps",
+      "construction": "flat/curved shield with heraldry surface",
+      "blender_proxy": "extruded heater outline + rim",
+      "detail_notes": "Excellent heraldry/embroidery crossover surface."
+    },
+    {
+      "chunk": "shield_and_gear",
+      "piece": "buckler",
+      "era": "medieval-renaissance",
+      "coverage": "hand shield",
+      "shape_type": "small_round_shield",
+      "materials": "steel/wood",
+      "construction": "small round shield with central grip",
+      "blender_proxy": "small disk + boss + handle",
+      "detail_notes": "Can be strapped to belt as accessory."
+    },
+    {
+      "chunk": "shield_and_gear",
+      "piece": "riot shield",
+      "era": "modern",
+      "coverage": "portable defense",
+      "shape_type": "transparent_curved_panel",
+      "materials": "polycarbonate, metal/rubber grip",
+      "construction": "curved rectangular transparent shield",
+      "blender_proxy": "transparent curved panel + handle blocks",
+      "detail_notes": "Use alpha material and bevelled edge."
+    }
+  ],
+  "render_tiers": [
+    {
+      "tier": "tier_0_measure",
+      "purpose": "flat proxy silhouettes",
+      "geometry_allowed": "boxes, cylinders, cones, domes",
+      "notes": "Use for body coverage and scale checks."
+    },
+    {
+      "tier": "tier_1_blockout",
+      "purpose": "readable armor chunks",
+      "geometry_allowed": "simple shells + straps",
+      "notes": "No rivets, no stitches, no hero pain yet."
+    },
+    {
+      "tier": "tier_2_construction",
+      "purpose": "visible sewing/straps/rivets/lacing",
+      "geometry_allowed": "curves, small instanced geometry",
+      "notes": "This is the engineering tier."
+    },
+    {
+      "tier": "tier_3_material",
+      "purpose": "cloth, leather, metal, lacquer, mail normals",
+      "geometry_allowed": "shader/material pass",
+      "notes": "Adds visual believability without sculpting every atom."
+    },
+    {
+      "tier": "tier_4_hero",
+      "purpose": "damage, patina, engraved lines, worn edges",
+      "geometry_allowed": "manual sculpt + procedural noise + decals",
+      "notes": "Only for close-up assets. Otherwise you're just polishing a rivet nobody sees."
+    }
+  ],
+  "naming_examples": [
+    "armor_l_pauldron_lame_03",
+    "armor_torso_brigandine_rivet_grid",
+    "armor_head_bascinet_visor",
+    "armor_r_hand_gauntlet_index_lame_02",
+    "armor_feet_sabaton_toe_lame_04"
+  ]
+}

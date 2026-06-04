@@ -1,0 +1,1203 @@
+{
+  "document": "full_human_meat_model_build_packet",
+  "version": "0.1",
+  "purpose": "Python-readable seed taxonomy for procedural Blender anatomy generation.",
+  "shape_vocab": [
+    {
+      "shape_type": "capsule",
+      "geometry_meaning": "rounded cylinder",
+      "used_for": "limb muscle bellies, fingers, tendons with thickness"
+    },
+    {
+      "shape_type": "tapered_capsule",
+      "geometry_meaning": "capsule with changing radius",
+      "used_for": "arms, legs, forearms, calves, neck straps"
+    },
+    {
+      "shape_type": "ellipsoid",
+      "geometry_meaning": "scaled sphere/oval",
+      "used_for": "organs, pads, muscle bulges, glands, lobes"
+    },
+    {
+      "shape_type": "flattened_ellipsoid",
+      "geometry_meaning": "thin oval pad",
+      "used_for": "fat pads, cheek pads, pectoral sheets, glute planes"
+    },
+    {
+      "shape_type": "fan_sheet",
+      "geometry_meaning": "triangular/radial surface",
+      "used_for": "pectoralis, temporalis, latissimus, adductors"
+    },
+    {
+      "shape_type": "strap_ribbon",
+      "geometry_meaning": "long flat strip",
+      "used_for": "sartorius, sternocleidomastoid, gracilis, tendinous straps"
+    },
+    {
+      "shape_type": "layered_sheet",
+      "geometry_meaning": "stacked membranes",
+      "used_for": "fascia, abdominal wall, scalp layers, intercostals"
+    },
+    {
+      "shape_type": "ring_band",
+      "geometry_meaning": "torus/loop band",
+      "used_for": "eye, mouth, sphincter, joint rim, retinaculum loops"
+    },
+    {
+      "shape_type": "cord_curve",
+      "geometry_meaning": "bezier curve with bevel depth",
+      "used_for": "tendons, ligaments, nerves, vessels"
+    },
+    {
+      "shape_type": "branch_curve_tree",
+      "geometry_meaning": "branching curves",
+      "used_for": "vascular and nerve maps"
+    },
+    {
+      "shape_type": "hollow_shell",
+      "geometry_meaning": "surface shell with thickness",
+      "used_for": "skin, organ cavities, skull/torso cavities"
+    },
+    {
+      "shape_type": "coil_tube",
+      "geometry_meaning": "coiled tube path",
+      "used_for": "intestines, vessels, ducts"
+    },
+    {
+      "shape_type": "lobe_stack",
+      "geometry_meaning": "cluster of ellipsoids",
+      "used_for": "brain lobes, liver lobes, lung lobes, gland groups"
+    },
+    {
+      "shape_type": "hinge_constraint_proxy",
+      "geometry_meaning": "non-rendered rig empty/axis",
+      "used_for": "knees, elbows, fingers, toes, jaw"
+    },
+    {
+      "shape_type": "ball_socket_proxy",
+      "geometry_meaning": "sphere center + rotation limits",
+      "used_for": "shoulders, hips, neck/head"
+    },
+    {
+      "shape_type": "sliding_track_proxy",
+      "geometry_meaning": "guided curve/rail",
+      "used_for": "patella tracking, scapula glide, tendon sheaths"
+    },
+    {
+      "shape_type": "surface_driver_patch",
+      "geometry_meaning": "deformation mask area",
+      "used_for": "skin wrinkles, muscle bulges, fascia tension"
+    }
+  ],
+  "layers": [
+    {
+      "layer": "00_root_scale",
+      "role": "global proportions and landmarks",
+      "contents": "height, head count, symmetry plane, handedness"
+    },
+    {
+      "layer": "01_bones",
+      "role": "hard landmarks",
+      "contents": "already started in bone spec; bones define anchors"
+    },
+    {
+      "layer": "02_joint_law",
+      "role": "movement law",
+      "contents": "joint centers, axes, rotation limits, collisions"
+    },
+    {
+      "layer": "03_deep_organs",
+      "role": "internal masses",
+      "contents": "brain, eyes, lungs, heart, liver, digestive coil, kidneys, bladder"
+    },
+    {
+      "layer": "04_deep_muscle",
+      "role": "deep stabilizers",
+      "contents": "rotator cuff, hip rotators, intercostals, pelvic floor, intrinsic spine"
+    },
+    {
+      "layer": "05_surface_muscle",
+      "role": "visible meat volumes",
+      "contents": "pecs, delts, arms, glutes, quads, calves, face"
+    },
+    {
+      "layer": "06_tendons_ligaments",
+      "role": "cords and straps",
+      "contents": "achilles, patellar, biceps, finger tendons, joint ligaments"
+    },
+    {
+      "layer": "07_fascia_aponeurosis",
+      "role": "membrane network",
+      "contents": "thoracolumbar fascia, palmar/plantar fascia, abdominal aponeurosis"
+    },
+    {
+      "layer": "08_fat_pads_soft_tissue",
+      "role": "cushion and silhouette",
+      "contents": "cheeks, palms, heels, knees, elbows, abdomen, breast/chest fat"
+    },
+    {
+      "layer": "09_skin_surface",
+      "role": "outer mesh and deformation masks",
+      "contents": "skin shell, pores/scars optional, wrinkle drivers"
+    },
+    {
+      "layer": "10_external_layers",
+      "role": "hair, nails, clothing, armor",
+      "contents": "not anatomy core but attaches to skin/bone landmarks"
+    }
+  ],
+  "render_tiers": [
+    {
+      "tier": "tier_0_landmarks",
+      "visible_contents": "points, axes, labels, ruler grid",
+      "purpose": "Debug proportions before making meat soup."
+    },
+    {
+      "tier": "tier_1_bone_puppet",
+      "visible_contents": "bone proxies and joint empties",
+      "purpose": "Animation skeleton and anchors."
+    },
+    {
+      "tier": "tier_2_deep_meat",
+      "visible_contents": "organs, deep muscles, fascia core",
+      "purpose": "Internal anatomy and cutaway mode."
+    },
+    {
+      "tier": "tier_3_surface_muscle",
+      "visible_contents": "major visible muscles, tendons, ligaments",
+      "purpose": "The main anatomy doll."
+    },
+    {
+      "tier": "tier_4_soft_body_skin",
+      "visible_contents": "fat pads, skin shell, wrinkle patches",
+      "purpose": "Human silhouette and deformation."
+    },
+    {
+      "tier": "tier_5_hero_surface",
+      "visible_contents": "skin shader, micro detail, hair, nails, lighting",
+      "purpose": "Da Vinci gets his robe back and stops judging us."
+    }
+  ],
+  "chunks": {
+    "head_neck": [
+      {
+        "chunk": "head_neck",
+        "layer": "organ",
+        "proxy_name": "brain_lobes",
+        "shape_type": "lobe_stack",
+        "anchors": "cranial_cavity",
+        "generator_notes": "frontal/parietal/temporal/occipital lobes as separate ellipsoid clusters for educational cutaways"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "organ",
+        "proxy_name": "cerebellum",
+        "shape_type": "ellipsoid",
+        "anchors": "posterior_cranial_fossa",
+        "generator_notes": "small rear lower brain mass; optional visible in cutaway tier"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "organ",
+        "proxy_name": "brainstem",
+        "shape_type": "tapered_capsule",
+        "anchors": "brain_to_cervical_spine",
+        "generator_notes": "connects brain to spinal cord; rig-safe internal landmark"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "organ",
+        "proxy_name": "eyeballs_l_r",
+        "shape_type": "ellipsoid",
+        "anchors": "orbital_sockets",
+        "generator_notes": "spheres with cornea lens layer; attach eye aim constraints"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "organ",
+        "proxy_name": "tongue",
+        "shape_type": "flattened_ellipsoid",
+        "anchors": "mandible_floor_to_mouth",
+        "generator_notes": "soft deforming volume; shape keys for mouth poses"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "gland",
+        "proxy_name": "parotid_glands_l_r",
+        "shape_type": "ellipsoid",
+        "anchors": "cheek/jaw angle",
+        "generator_notes": "soft cheek-side masses; subtle silhouette only"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "muscle",
+        "proxy_name": "temporalis_l_r",
+        "shape_type": "fan_sheet",
+        "anchors": "temporal_fossa_to_mandible",
+        "generator_notes": "jaw power fan; visible temple plane on lean heads"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "muscle",
+        "proxy_name": "masseter_l_r",
+        "shape_type": "thick_capsule",
+        "anchors": "zygomatic_arch_to_mandible_angle",
+        "generator_notes": "jaw block; critical for skull/hero faces"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "muscle",
+        "proxy_name": "orbicularis_oculi_l_r",
+        "shape_type": "ring_band",
+        "anchors": "around_eye_socket",
+        "generator_notes": "blink/squint ring; expression controller layer"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "muscle",
+        "proxy_name": "orbicularis_oris",
+        "shape_type": "ring_band",
+        "anchors": "around_mouth",
+        "generator_notes": "mouth loop; shape key driver"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "muscle",
+        "proxy_name": "zygomaticus_group_l_r",
+        "shape_type": "strap_ribbon",
+        "anchors": "cheekbone_to_mouth_corner",
+        "generator_notes": "smile/sneer diagonals; facial expression rails"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "muscle",
+        "proxy_name": "buccinator_l_r",
+        "shape_type": "flattened_ellipsoid",
+        "anchors": "cheek_wall",
+        "generator_notes": "cheek filler and mouth compression"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "muscle",
+        "proxy_name": "frontalis_occipitalis_scalp",
+        "shape_type": "layered_sheet",
+        "anchors": "scalp_over_cranium",
+        "generator_notes": "forehead/scalp sheet; wrinkle driver"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "muscle",
+        "proxy_name": "sternocleidomastoid_l_r",
+        "shape_type": "strap_ribbon",
+        "anchors": "mastoid_to_sternum_clavicle",
+        "generator_notes": "major neck cable; head turn silhouette"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "muscle",
+        "proxy_name": "scalene_group_l_r",
+        "shape_type": "strap_cluster",
+        "anchors": "cervical_spine_to_ribs",
+        "generator_notes": "deep side neck; breathing/posture layer"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "muscle",
+        "proxy_name": "trapezius_upper_l_r",
+        "shape_type": "fan_sheet",
+        "anchors": "neck_to_clavicle_scapula",
+        "generator_notes": "neck-to-shoulder slope"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "fascia",
+        "proxy_name": "galea_aponeurotica",
+        "shape_type": "layered_sheet",
+        "anchors": "forehead_to_occiput",
+        "generator_notes": "scalp fascia; skin slide plane"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "skin_soft",
+        "proxy_name": "cheek_fat_pads_l_r",
+        "shape_type": "flattened_ellipsoid",
+        "anchors": "zygomatic_to_mandible",
+        "generator_notes": "face softness/silhouette; independent of muscle layer"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "joint",
+        "proxy_name": "jaw_tmj_l_r",
+        "shape_type": "hinge_constraint_proxy",
+        "anchors": "mandible_condyle_to_temporal",
+        "generator_notes": "hinge + slight slide; drives mouth opening"
+      },
+      {
+        "chunk": "head_neck",
+        "layer": "joint",
+        "proxy_name": "neck_stack_c1_c7",
+        "shape_type": "ball_socket_proxy",
+        "anchors": "cervical_spine",
+        "generator_notes": "stacked rotations, not one rubber neck tube"
+      }
+    ],
+    "shoulders_chest_back": [
+      {
+        "chunk": "shoulders_chest_back",
+        "layer": "joint",
+        "proxy_name": "shoulder_glenohumeral_l_r",
+        "shape_type": "ball_socket_proxy",
+        "anchors": "scapula_glenoid_to_humerus_head",
+        "generator_notes": "main arm rotation center with limits"
+      },
+      {
+        "chunk": "shoulders_chest_back",
+        "layer": "joint",
+        "proxy_name": "scapula_glide_l_r",
+        "shape_type": "sliding_track_proxy",
+        "anchors": "rib_cage_surface",
+        "generator_notes": "scapula rides on rib cage; gives believable arm lift"
+      },
+      {
+        "chunk": "shoulders_chest_back",
+        "layer": "muscle",
+        "proxy_name": "deltoid_heads_l_r",
+        "shape_type": "ellipsoid_cap_cluster",
+        "anchors": "clavicle/acromion/scapula_to_humerus",
+        "generator_notes": "anterior/middle/posterior caps; major silhouette"
+      },
+      {
+        "chunk": "shoulders_chest_back",
+        "layer": "muscle",
+        "proxy_name": "rotator_cuff_l_r",
+        "shape_type": "small_capsule_cluster",
+        "anchors": "scapula_to_humerus",
+        "generator_notes": "supraspinatus, infraspinatus, teres minor, subscapularis; stability layer"
+      },
+      {
+        "chunk": "shoulders_chest_back",
+        "layer": "muscle",
+        "proxy_name": "pectoralis_major_l_r",
+        "shape_type": "fan_sheet",
+        "anchors": "clavicle_sternum_ribs_to_humerus",
+        "generator_notes": "large chest fan, separated clavicular/sternal regions"
+      },
+      {
+        "chunk": "shoulders_chest_back",
+        "layer": "muscle",
+        "proxy_name": "pectoralis_minor_l_r",
+        "shape_type": "small_fan_sheet",
+        "anchors": "ribs_to_coracoid",
+        "generator_notes": "deep shoulder/chest stabilizer"
+      },
+      {
+        "chunk": "shoulders_chest_back",
+        "layer": "muscle",
+        "proxy_name": "serratus_anterior_l_r",
+        "shape_type": "ribbed_strap_series",
+        "anchors": "ribs_to_scapula",
+        "generator_notes": "saw-tooth side ribs; high visual value"
+      },
+      {
+        "chunk": "shoulders_chest_back",
+        "layer": "muscle",
+        "proxy_name": "latissimus_dorsi_l_r",
+        "shape_type": "large_fan_sheet",
+        "anchors": "spine/pelvis_to_humerus",
+        "generator_notes": "back wing; huge silhouette driver"
+      },
+      {
+        "chunk": "shoulders_chest_back",
+        "layer": "muscle",
+        "proxy_name": "trapezius_mid_lower_l_r",
+        "shape_type": "fan_sheet",
+        "anchors": "spine_to_scapula",
+        "generator_notes": "upper back planes and scapula motion"
+      },
+      {
+        "chunk": "shoulders_chest_back",
+        "layer": "muscle",
+        "proxy_name": "rhomboids_l_r",
+        "shape_type": "flat_ribbon_stack",
+        "anchors": "spine_to_scapula_inner_edge",
+        "generator_notes": "scapula retraction layer"
+      },
+      {
+        "chunk": "shoulders_chest_back",
+        "layer": "muscle",
+        "proxy_name": "erector_spinae",
+        "shape_type": "paired_tapered_capsules",
+        "anchors": "sacrum_to_skull/ribs",
+        "generator_notes": "back column masses; posture layer"
+      },
+      {
+        "chunk": "shoulders_chest_back",
+        "layer": "ligament",
+        "proxy_name": "acromioclavicular_coracoclavicular_l_r",
+        "shape_type": "cord_curve",
+        "anchors": "clavicle_to_scapula",
+        "generator_notes": "shoulder belt support cords"
+      },
+      {
+        "chunk": "shoulders_chest_back",
+        "layer": "fascia",
+        "proxy_name": "thoracolumbar_fascia",
+        "shape_type": "planar_fascia",
+        "anchors": "low_back_to_pelvis",
+        "generator_notes": "large back membrane; attaches lats/glutes"
+      }
+    ],
+    "torso_organs_core": [
+      {
+        "chunk": "torso_organs_core",
+        "layer": "organ",
+        "proxy_name": "heart",
+        "shape_type": "ellipsoid",
+        "anchors": "central_left_chest",
+        "generator_notes": "tilted muscular organ proxy inside rib cage"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "organ",
+        "proxy_name": "lungs_l_r",
+        "shape_type": "lobe_stack",
+        "anchors": "rib_cage",
+        "generator_notes": "left/right lobes; breathing expansion driver"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "organ",
+        "proxy_name": "diaphragm",
+        "shape_type": "dome_sheet",
+        "anchors": "lower_ribs_to_spine",
+        "generator_notes": "breathing dome; separates chest and abdomen"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "organ",
+        "proxy_name": "liver",
+        "shape_type": "lobe_stack",
+        "anchors": "right_upper_abdomen",
+        "generator_notes": "large right-side lobe mass under ribs"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "organ",
+        "proxy_name": "stomach",
+        "shape_type": "ellipsoid",
+        "anchors": "left_upper_abdomen",
+        "generator_notes": "curved sac volume; optional cutaway"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "organ",
+        "proxy_name": "spleen",
+        "shape_type": "ellipsoid",
+        "anchors": "left_lateral_upper_abdomen",
+        "generator_notes": "small oval organ behind stomach"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "organ",
+        "proxy_name": "pancreas",
+        "shape_type": "flattened_ellipsoid",
+        "anchors": "posterior_upper_abdomen",
+        "generator_notes": "thin leaf under stomach"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "organ",
+        "proxy_name": "kidneys_l_r",
+        "shape_type": "bean_ellipsoid",
+        "anchors": "posterior_abdomen_l_r",
+        "generator_notes": "bean-shaped paired organs"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "organ",
+        "proxy_name": "small_intestine",
+        "shape_type": "coil_tube",
+        "anchors": "central_abdomen",
+        "generator_notes": "coiled tube path in abdominal cavity"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "organ",
+        "proxy_name": "large_intestine_colon",
+        "shape_type": "tube_frame",
+        "anchors": "abdomen_perimeter",
+        "generator_notes": "ascending/transverse/descending/sigmoid frame"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "muscle",
+        "proxy_name": "rectus_abdominis_l_r",
+        "shape_type": "segmented_capsule_stack",
+        "anchors": "pubis_to_sternum/ribs",
+        "generator_notes": "six-pack blocks; separate segments"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "muscle",
+        "proxy_name": "external_obliques_l_r",
+        "shape_type": "layered_sheet",
+        "anchors": "ribs_to_pelvis",
+        "generator_notes": "diagonal abdominal sheet"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "muscle",
+        "proxy_name": "internal_obliques_l_r",
+        "shape_type": "layered_sheet",
+        "anchors": "pelvis_to_ribs",
+        "generator_notes": "opposite diagonal deep sheet"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "muscle",
+        "proxy_name": "transversus_abdominis",
+        "shape_type": "wrap_sheet",
+        "anchors": "abdomen_circumference",
+        "generator_notes": "corset layer for core compression"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "muscle",
+        "proxy_name": "intercostals",
+        "shape_type": "rib_between_sheet_stack",
+        "anchors": "between_ribs",
+        "generator_notes": "breathing rib mesh; repeated per rib gap"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "fascia",
+        "proxy_name": "linea_alba_abdominal_aponeurosis",
+        "shape_type": "planar_fascia",
+        "anchors": "sternum_to_pubis_midline",
+        "generator_notes": "central abdominal seam"
+      },
+      {
+        "chunk": "torso_organs_core",
+        "layer": "skin_soft",
+        "proxy_name": "abdominal_fat_layer",
+        "shape_type": "hollow_shell",
+        "anchors": "abdomen_skin_zone",
+        "generator_notes": "body-shape slider layer above muscle"
+      }
+    ],
+    "pelvis_hips": [
+      {
+        "chunk": "pelvis_hips",
+        "layer": "organ",
+        "proxy_name": "bladder",
+        "shape_type": "ellipsoid",
+        "anchors": "pelvic_cavity",
+        "generator_notes": "expandable pelvic organ proxy"
+      },
+      {
+        "chunk": "pelvis_hips",
+        "layer": "organ",
+        "proxy_name": "rectum",
+        "shape_type": "tube_segment",
+        "anchors": "posterior_pelvis",
+        "generator_notes": "lower digestive tube; cutaway tier only"
+      },
+      {
+        "chunk": "pelvis_hips",
+        "layer": "muscle",
+        "proxy_name": "gluteus_maximus_l_r",
+        "shape_type": "large_ellipsoid_slab",
+        "anchors": "sacrum/pelvis_to_femur",
+        "generator_notes": "dominant rear hip mass"
+      },
+      {
+        "chunk": "pelvis_hips",
+        "layer": "muscle",
+        "proxy_name": "gluteus_medius_l_r",
+        "shape_type": "fan_sheet",
+        "anchors": "ilium_to_femur",
+        "generator_notes": "side hip cap"
+      },
+      {
+        "chunk": "pelvis_hips",
+        "layer": "muscle",
+        "proxy_name": "gluteus_minimus_l_r",
+        "shape_type": "small_fan_sheet",
+        "anchors": "ilium_to_femur",
+        "generator_notes": "deep side hip"
+      },
+      {
+        "chunk": "pelvis_hips",
+        "layer": "muscle",
+        "proxy_name": "iliopsoas_l_r",
+        "shape_type": "deep_tapered_capsule",
+        "anchors": "lumbar_spine/pelvis_to_femur",
+        "generator_notes": "deep hip flexor; posture critical"
+      },
+      {
+        "chunk": "pelvis_hips",
+        "layer": "muscle",
+        "proxy_name": "tensor_fasciae_latae_l_r",
+        "shape_type": "short_capsule",
+        "anchors": "outer_ilium_to_it_band",
+        "generator_notes": "front-side hip oval"
+      },
+      {
+        "chunk": "pelvis_hips",
+        "layer": "muscle",
+        "proxy_name": "adductor_group_l_r",
+        "shape_type": "fan_sheet_cluster",
+        "anchors": "pubis_to_femur",
+        "generator_notes": "inner thigh fan system"
+      },
+      {
+        "chunk": "pelvis_hips",
+        "layer": "muscle",
+        "proxy_name": "deep_external_rotators_l_r",
+        "shape_type": "small_capsule_cluster",
+        "anchors": "pelvis_to_femur",
+        "generator_notes": "piriformis, obturators, gemelli, quadratus femoris"
+      },
+      {
+        "chunk": "pelvis_hips",
+        "layer": "muscle",
+        "proxy_name": "pelvic_floor",
+        "shape_type": "bowl_sheet",
+        "anchors": "pelvic_outlet",
+        "generator_notes": "support sling; internal rig layer"
+      },
+      {
+        "chunk": "pelvis_hips",
+        "layer": "ligament",
+        "proxy_name": "sacroiliac_ligament_set",
+        "shape_type": "cord_curve_cluster",
+        "anchors": "sacrum_to_ilium",
+        "generator_notes": "pelvis stability cords"
+      },
+      {
+        "chunk": "pelvis_hips",
+        "layer": "ligament",
+        "proxy_name": "iliofemoral_pubofemoral_ischiofemoral_l_r",
+        "shape_type": "cord_curve_cluster",
+        "anchors": "pelvis_to_femur",
+        "generator_notes": "hip capsule reinforcement"
+      },
+      {
+        "chunk": "pelvis_hips",
+        "layer": "fascia",
+        "proxy_name": "iliotibial_band_l_r",
+        "shape_type": "long_planar_fascia_strip",
+        "anchors": "outer_hip_to_outer_tibia",
+        "generator_notes": "long side-leg strap; key surface landmark"
+      },
+      {
+        "chunk": "pelvis_hips",
+        "layer": "skin_soft",
+        "proxy_name": "gluteal_fat_layer_l_r",
+        "shape_type": "hollow_shell_patch",
+        "anchors": "buttock_surface",
+        "generator_notes": "soft silhouette layer above glute muscles"
+      }
+    ],
+    "arms_elbows_forearms": [
+      {
+        "chunk": "arms_elbows_forearms",
+        "layer": "joint",
+        "proxy_name": "elbow_hinge_l_r",
+        "shape_type": "hinge_constraint_proxy",
+        "anchors": "humerus_to_ulna/radius",
+        "generator_notes": "flexion/extension plus forearm rotation setup"
+      },
+      {
+        "chunk": "arms_elbows_forearms",
+        "layer": "joint",
+        "proxy_name": "forearm_pronation_supination_l_r",
+        "shape_type": "twist_axis_proxy",
+        "anchors": "radius_around_ulna",
+        "generator_notes": "radius rotates around ulna; do not fake with one cylinder"
+      },
+      {
+        "chunk": "arms_elbows_forearms",
+        "layer": "muscle",
+        "proxy_name": "biceps_brachii_l_r",
+        "shape_type": "two_capsule_heads",
+        "anchors": "scapula_to_radius",
+        "generator_notes": "front upper arm; long and short head"
+      },
+      {
+        "chunk": "arms_elbows_forearms",
+        "layer": "muscle",
+        "proxy_name": "brachialis_l_r",
+        "shape_type": "deep_capsule",
+        "anchors": "humerus_to_ulna",
+        "generator_notes": "elbow flexion under biceps"
+      },
+      {
+        "chunk": "arms_elbows_forearms",
+        "layer": "muscle",
+        "proxy_name": "triceps_brachii_l_r",
+        "shape_type": "three_capsule_heads",
+        "anchors": "scapula/humerus_to_olecranon",
+        "generator_notes": "rear arm horseshoe"
+      },
+      {
+        "chunk": "arms_elbows_forearms",
+        "layer": "muscle",
+        "proxy_name": "brachioradialis_l_r",
+        "shape_type": "long_tapered_capsule",
+        "anchors": "outer_humerus_to_radius",
+        "generator_notes": "forearm ridge; very visible"
+      },
+      {
+        "chunk": "arms_elbows_forearms",
+        "layer": "muscle",
+        "proxy_name": "forearm_flexor_group_l_r",
+        "shape_type": "feathered_bundle",
+        "anchors": "medial_elbow_to_wrist/fingers",
+        "generator_notes": "grouped muscles with tendon fan into hand"
+      },
+      {
+        "chunk": "arms_elbows_forearms",
+        "layer": "muscle",
+        "proxy_name": "forearm_extensor_group_l_r",
+        "shape_type": "feathered_bundle",
+        "anchors": "lateral_elbow_to_wrist/fingers",
+        "generator_notes": "back forearm bundle and tendon fan"
+      },
+      {
+        "chunk": "arms_elbows_forearms",
+        "layer": "tendon",
+        "proxy_name": "biceps_tendon_l_r",
+        "shape_type": "cord_curve",
+        "anchors": "biceps_to_radius",
+        "generator_notes": "visible elbow tendon cord"
+      },
+      {
+        "chunk": "arms_elbows_forearms",
+        "layer": "tendon",
+        "proxy_name": "triceps_tendon_l_r",
+        "shape_type": "cord_curve",
+        "anchors": "triceps_to_olecranon",
+        "generator_notes": "rear elbow tendon"
+      },
+      {
+        "chunk": "arms_elbows_forearms",
+        "layer": "ligament",
+        "proxy_name": "ulnar_radial_collateral_ligaments_l_r",
+        "shape_type": "cord_curve_cluster",
+        "anchors": "elbow_sides",
+        "generator_notes": "elbow side supports and bend limits"
+      },
+      {
+        "chunk": "arms_elbows_forearms",
+        "layer": "skin_soft",
+        "proxy_name": "elbow_fat_bursa_pad_l_r",
+        "shape_type": "small_pad_ellipsoid",
+        "anchors": "olecranon_surface",
+        "generator_notes": "surface cushion over elbow point"
+      }
+    ],
+    "hands_wrists": [
+      {
+        "chunk": "hands_wrists",
+        "layer": "joint",
+        "proxy_name": "wrist_joint_l_r",
+        "shape_type": "compound_hinge_proxy",
+        "anchors": "radius/ulna_to_carpals",
+        "generator_notes": "flexion/extension plus deviation"
+      },
+      {
+        "chunk": "hands_wrists",
+        "layer": "joint",
+        "proxy_name": "finger_joint_chains_l_r",
+        "shape_type": "hinge_constraint_proxy",
+        "anchors": "metacarpal/proximal/middle/distal",
+        "generator_notes": "each finger: MCP, PIP, DIP axes"
+      },
+      {
+        "chunk": "hands_wrists",
+        "layer": "muscle",
+        "proxy_name": "thenar_group_l_r",
+        "shape_type": "ellipsoid_pad_cluster",
+        "anchors": "thumb_side_palm",
+        "generator_notes": "thumb pad and opposition system"
+      },
+      {
+        "chunk": "hands_wrists",
+        "layer": "muscle",
+        "proxy_name": "hypothenar_group_l_r",
+        "shape_type": "ellipsoid_pad_cluster",
+        "anchors": "pinky_side_palm",
+        "generator_notes": "pinky pad and palm cup"
+      },
+      {
+        "chunk": "hands_wrists",
+        "layer": "muscle",
+        "proxy_name": "lumbricals_l_r",
+        "shape_type": "web_bundle",
+        "anchors": "palm_to_finger_extensor_hoods",
+        "generator_notes": "worm muscles for finger finesse"
+      },
+      {
+        "chunk": "hands_wrists",
+        "layer": "muscle",
+        "proxy_name": "interossei_l_r",
+        "shape_type": "web_bundle",
+        "anchors": "between_metacarpals",
+        "generator_notes": "finger spread/close muscles"
+      },
+      {
+        "chunk": "hands_wrists",
+        "layer": "tendon",
+        "proxy_name": "flexor_tendon_tracks_l_r",
+        "shape_type": "cord_curve_set",
+        "anchors": "forearm_to_fingertips",
+        "generator_notes": "palm-side cable tracks; grip animation"
+      },
+      {
+        "chunk": "hands_wrists",
+        "layer": "tendon",
+        "proxy_name": "extensor_tendon_tracks_l_r",
+        "shape_type": "cord_curve_set",
+        "anchors": "back_wrist_to_fingertips",
+        "generator_notes": "back-hand visible tendons"
+      },
+      {
+        "chunk": "hands_wrists",
+        "layer": "fascia",
+        "proxy_name": "palmar_aponeurosis_l_r",
+        "shape_type": "fan_sheet",
+        "anchors": "center_palm_to_fingers",
+        "generator_notes": "palm fascia and crease map"
+      },
+      {
+        "chunk": "hands_wrists",
+        "layer": "fascia",
+        "proxy_name": "flexor_extensor_retinacula_l_r",
+        "shape_type": "ring_band",
+        "anchors": "wrist_tendon_channels",
+        "generator_notes": "wrist tendon straps holding cords down"
+      },
+      {
+        "chunk": "hands_wrists",
+        "layer": "skin_soft",
+        "proxy_name": "finger_pulp_pads_l_r",
+        "shape_type": "small_ellipsoid_set",
+        "anchors": "finger_tips",
+        "generator_notes": "soft fingertip pads"
+      },
+      {
+        "chunk": "hands_wrists",
+        "layer": "skin_soft",
+        "proxy_name": "palm_fat_pads_l_r",
+        "shape_type": "flattened_ellipsoid_cluster",
+        "anchors": "palm_surface",
+        "generator_notes": "grip cushion layer"
+      },
+      {
+        "chunk": "hands_wrists",
+        "layer": "external",
+        "proxy_name": "fingernails_l_r",
+        "shape_type": "thin_curved_plate",
+        "anchors": "distal_phalanges",
+        "generator_notes": "external keratin plates; useful visual anchors"
+      }
+    ],
+    "thighs_knees": [
+      {
+        "chunk": "thighs_knees",
+        "layer": "joint",
+        "proxy_name": "knee_hinge_l_r",
+        "shape_type": "hinge_constraint_proxy",
+        "anchors": "femur_to_tibia",
+        "generator_notes": "main knee flexion; lock side bend hard"
+      },
+      {
+        "chunk": "thighs_knees",
+        "layer": "joint",
+        "proxy_name": "patella_track_l_r",
+        "shape_type": "sliding_track_proxy",
+        "anchors": "femur_front_to_tibia",
+        "generator_notes": "kneecap glides in groove during bend"
+      },
+      {
+        "chunk": "thighs_knees",
+        "layer": "muscle",
+        "proxy_name": "quadriceps_l_r",
+        "shape_type": "four_capsule_cluster",
+        "anchors": "pelvis/femur_to_patella/tibia",
+        "generator_notes": "rectus femoris, vasti group; front thigh power"
+      },
+      {
+        "chunk": "thighs_knees",
+        "layer": "muscle",
+        "proxy_name": "hamstrings_l_r",
+        "shape_type": "three_capsule_cluster",
+        "anchors": "ischium/femur_to_tibia/fibula",
+        "generator_notes": "rear thigh power; biceps femoris/semitendinosus/semimembranosus"
+      },
+      {
+        "chunk": "thighs_knees",
+        "layer": "muscle",
+        "proxy_name": "sartorius_l_r",
+        "shape_type": "long_strap_ribbon",
+        "anchors": "outer_hip_to_inner_knee",
+        "generator_notes": "diagonal thigh strap; great landmark"
+      },
+      {
+        "chunk": "thighs_knees",
+        "layer": "muscle",
+        "proxy_name": "gracilis_l_r",
+        "shape_type": "long_strap_ribbon",
+        "anchors": "pubis_to_inner_tibia",
+        "generator_notes": "inner thigh long strap"
+      },
+      {
+        "chunk": "thighs_knees",
+        "layer": "tendon",
+        "proxy_name": "quadriceps_tendon_l_r",
+        "shape_type": "cord_curve_sheet",
+        "anchors": "quad_to_patella",
+        "generator_notes": "above kneecap tendon sheet"
+      },
+      {
+        "chunk": "thighs_knees",
+        "layer": "tendon",
+        "proxy_name": "patellar_tendon_l_r",
+        "shape_type": "thick_cord_curve",
+        "anchors": "patella_to_tibial_tuberosity",
+        "generator_notes": "front knee strap"
+      },
+      {
+        "chunk": "thighs_knees",
+        "layer": "ligament",
+        "proxy_name": "acl_pcl_l_r",
+        "shape_type": "crossing_cord_curves",
+        "anchors": "inside_knee_joint",
+        "generator_notes": "internal cross ligaments; cutaway/rig limit layer"
+      },
+      {
+        "chunk": "thighs_knees",
+        "layer": "ligament",
+        "proxy_name": "mcl_lcl_l_r",
+        "shape_type": "side_cord_curves",
+        "anchors": "knee_sides",
+        "generator_notes": "side support cords"
+      },
+      {
+        "chunk": "thighs_knees",
+        "layer": "cartilage",
+        "proxy_name": "menisci_l_r",
+        "shape_type": "crescent_ring_pads",
+        "anchors": "tibia_plateau",
+        "generator_notes": "shock pads inside knee"
+      },
+      {
+        "chunk": "thighs_knees",
+        "layer": "skin_soft",
+        "proxy_name": "knee_fat_pads_l_r",
+        "shape_type": "small_pad_cluster",
+        "anchors": "around_patella",
+        "generator_notes": "soft surface cushions around kneecap"
+      }
+    ],
+    "lower_legs_feet": [
+      {
+        "chunk": "lower_legs_feet",
+        "layer": "joint",
+        "proxy_name": "ankle_joint_l_r",
+        "shape_type": "hinge_constraint_proxy",
+        "anchors": "tibia/fibula_to_talus",
+        "generator_notes": "dorsiflexion/plantarflexion main axis"
+      },
+      {
+        "chunk": "lower_legs_feet",
+        "layer": "joint",
+        "proxy_name": "subtalar_joint_l_r",
+        "shape_type": "tilt_axis_proxy",
+        "anchors": "talus_to_calcaneus",
+        "generator_notes": "foot inversion/eversion"
+      },
+      {
+        "chunk": "lower_legs_feet",
+        "layer": "muscle",
+        "proxy_name": "gastrocnemius_l_r",
+        "shape_type": "two_large_capsules",
+        "anchors": "femur_to_achilles",
+        "generator_notes": "visible calf heads"
+      },
+      {
+        "chunk": "lower_legs_feet",
+        "layer": "muscle",
+        "proxy_name": "soleus_l_r",
+        "shape_type": "broad_flat_capsule",
+        "anchors": "tibia/fibula_to_achilles",
+        "generator_notes": "deep calf mass"
+      },
+      {
+        "chunk": "lower_legs_feet",
+        "layer": "muscle",
+        "proxy_name": "tibialis_anterior_l_r",
+        "shape_type": "long_tapered_capsule",
+        "anchors": "front_tibia_to_inner_foot",
+        "generator_notes": "shin ridge"
+      },
+      {
+        "chunk": "lower_legs_feet",
+        "layer": "muscle",
+        "proxy_name": "fibularis_group_l_r",
+        "shape_type": "long_tapered_capsules",
+        "anchors": "outer_fibula_to_foot",
+        "generator_notes": "outer lower-leg strip"
+      },
+      {
+        "chunk": "lower_legs_feet",
+        "layer": "muscle",
+        "proxy_name": "toe_extensor_group_l_r",
+        "shape_type": "thin_feathered_bundle",
+        "anchors": "front_leg_to_toes",
+        "generator_notes": "front ankle tendon fan"
+      },
+      {
+        "chunk": "lower_legs_feet",
+        "layer": "muscle",
+        "proxy_name": "toe_flexor_group_l_r",
+        "shape_type": "deep_feathered_bundle",
+        "anchors": "posterior_leg_to_toes",
+        "generator_notes": "deep foot curl system"
+      },
+      {
+        "chunk": "lower_legs_feet",
+        "layer": "tendon",
+        "proxy_name": "achilles_tendon_l_r",
+        "shape_type": "thick_cord_curve",
+        "anchors": "calf_to_calcaneus",
+        "generator_notes": "big heel cord; must be separate geometry"
+      },
+      {
+        "chunk": "lower_legs_feet",
+        "layer": "fascia",
+        "proxy_name": "plantar_fascia_l_r",
+        "shape_type": "fan_sheet",
+        "anchors": "heel_to_toes",
+        "generator_notes": "arch-support sheet; key for foot shape"
+      },
+      {
+        "chunk": "lower_legs_feet",
+        "layer": "muscle",
+        "proxy_name": "intrinsic_foot_muscles_l_r",
+        "shape_type": "web_bundle_cluster",
+        "anchors": "plantar_foot_to_toes",
+        "generator_notes": "small foot control muscles; grouped proxies"
+      },
+      {
+        "chunk": "lower_legs_feet",
+        "layer": "skin_soft",
+        "proxy_name": "heel_fat_pad_l_r",
+        "shape_type": "ellipsoid_pad",
+        "anchors": "calcaneus_bottom",
+        "generator_notes": "heel cushion; critical for grounded stance"
+      },
+      {
+        "chunk": "lower_legs_feet",
+        "layer": "skin_soft",
+        "proxy_name": "ball_of_foot_pads_l_r",
+        "shape_type": "flattened_ellipsoid_set",
+        "anchors": "metatarsal_heads",
+        "generator_notes": "walking contact pads"
+      },
+      {
+        "chunk": "lower_legs_feet",
+        "layer": "external",
+        "proxy_name": "toenails_l_r",
+        "shape_type": "thin_curved_plate_set",
+        "anchors": "distal_toes",
+        "generator_notes": "external keratin anchors"
+      }
+    ],
+    "skin_surface_global": [
+      {
+        "chunk": "skin_surface_global",
+        "layer": "skin",
+        "proxy_name": "full_skin_shell",
+        "shape_type": "hollow_shell",
+        "anchors": "whole_body_landmark_surface",
+        "generator_notes": "final outer mesh driven by bones/muscles/fat pads"
+      },
+      {
+        "chunk": "skin_surface_global",
+        "layer": "skin",
+        "proxy_name": "wrinkle_driver_patches",
+        "shape_type": "surface_driver_patch",
+        "anchors": "face/neck/elbow/knee/hand/foot",
+        "generator_notes": "deformation patches for folds and compression"
+      },
+      {
+        "chunk": "skin_surface_global",
+        "layer": "skin",
+        "proxy_name": "surface_detail_maps",
+        "shape_type": "texture_map_set",
+        "anchors": "whole_skin_shell",
+        "generator_notes": "pores, scars, veins, discoloration; tier 4 only"
+      },
+      {
+        "chunk": "skin_surface_global",
+        "layer": "vascular",
+        "proxy_name": "major_vessel_map",
+        "shape_type": "branch_curve_tree",
+        "anchors": "neck/arms/legs/torso",
+        "generator_notes": "artery/vein educational overlay; not needed for basic silhouette"
+      },
+      {
+        "chunk": "skin_surface_global",
+        "layer": "nerve",
+        "proxy_name": "major_nerve_map",
+        "shape_type": "branch_curve_tree",
+        "anchors": "spine_to_limbs",
+        "generator_notes": "animation/cutaway education layer; keep separate and hideable"
+      },
+      {
+        "chunk": "skin_surface_global",
+        "layer": "lymph",
+        "proxy_name": "lymph_node_groups",
+        "shape_type": "small_ellipsoid_cluster",
+        "anchors": "neck/armpit/groin",
+        "generator_notes": "optional educational overlay"
+      }
+    ]
+  },
+  "assembly_rules": [
+    {
+      "rule": "name_everything",
+      "implementation_note": "Every generated object gets a stable lowercase proxy name."
+    },
+    {
+      "rule": "never_boolean_first",
+      "implementation_note": "Do not begin with boolean-carved masterpiece meshes. Build proxies first, then refine."
+    },
+    {
+      "rule": "keep_layers_hideable",
+      "implementation_note": "Bones, muscles, organs, tendons, fascia, fat, skin, nerves, vessels must be independent collections."
+    },
+    {
+      "rule": "anchors_over_vibes",
+      "implementation_note": "Every part must declare anchor landmarks before geometry exists."
+    },
+    {
+      "rule": "shape_type_required",
+      "implementation_note": "Every part must have a shape type so Python can choose the builder."
+    },
+    {
+      "rule": "left_right_mirroring",
+      "implementation_note": "Use l_ and r_ naming; generate one side and mirror when possible."
+    },
+    {
+      "rule": "deformation_later",
+      "implementation_note": "First generate static volumes, then add rigging constraints and shape keys."
+    },
+    {
+      "rule": "hero_detail_last",
+      "implementation_note": "Micro texture and sculpt detail come after proportions, or the project becomes a decorative swamp."
+    }
+  ]
+}
