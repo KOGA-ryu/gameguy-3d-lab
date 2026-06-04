@@ -1,0 +1,40 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0088-music-theory-playing-method-research-v0",
+  "title": "Music theory and playing method research v0",
+  "status": "complete",
+  "new_files": [
+    "docs/research/musical_instrument_assets_v0/music_theory_and_playing_source_index_v0.md",
+    "docs/research/musical_instrument_assets_v0/music_theory_and_playing_method_research_v0.md",
+    "docs/research/musical_instrument_assets_v0/operator_music_theory_handoff_v0.md"
+  ],
+  "updated_files": [
+    "docs/research/musical_instrument_assets_v0/README.md",
+    "README.md"
+  ],
+  "rules": {
+    "research_documentation_only": true,
+    "not_formal_music_instruction": true,
+    "not_performance_coaching": true,
+    "not_acoustic_engineering": true,
+    "not_historical_authenticity_claim": true,
+    "not_playable_audio_implementation": true,
+    "no_blender_execution": true,
+    "no_generated_assets": true
+  },
+  "validation": {
+    "receipt_json_parse": {
+      "command": "python3 -m json.tool workflow/reports/3D-LAB-0088-music-theory-playing-method-research-v0/receipt.json",
+      "result": "PASS"
+    },
+    "musical_instrument_taxonomy_validate": {
+      "command": "python3 scripts/validate_musical_instrument_taxonomy_v0.py",
+      "result": "PASS"
+    },
+    "diff_check": {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  },
+  "recommended_next_goal": "Promote one small playable/readable planning record only when a concrete asset, animation, or sound feature needs it."
+}

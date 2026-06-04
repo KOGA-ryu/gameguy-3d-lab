@@ -47,9 +47,17 @@ hardware.
 - `instrument_lore_book_hooks_v0.md` captures player-facing book/detail hooks.
 - `operator_instrument_handoff_v0.md` defines what the future drafting/manual UI
   should collect before Blender work.
+- `music_theory_and_playing_source_index_v0.md` records theory and playing
+  method source anchors.
+- `music_theory_and_playing_method_research_v0.md` maps mode, rhythm, melody,
+  harmony, notation, and playing actions into game-asset, animation, sound, and
+  lore planning.
+- `operator_music_theory_handoff_v0.md` defines future fields for playable
+  motion, notation pages, sound hooks, and music-readable world details.
 
 ## Boundary
 
 This is game-asset planning and lore documentation only. It is not acoustic
-engineering, instrument-making instruction, conservation guidance, historical
-authenticity proof, or playable-audio implementation.
+engineering, instrument-making instruction, formal music instruction,
+performance coaching, conservation guidance, historical authenticity proof, or
+playable-audio implementation.
