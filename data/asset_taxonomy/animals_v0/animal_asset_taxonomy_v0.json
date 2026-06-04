@@ -1,0 +1,892 @@
+{
+  "schema": "animal_asset_taxonomy_v0",
+  "bundle_id": "animal_asset_taxonomy_v0",
+  "purpose": "Plan animal and creature-adjacent game assets as source records before any sculpt, rig, Blender execution, or generated mesh. Each record maps visible anatomy, body plan, locomotion read, geometry terms, Blender tools, drawing tags, operator checks, and player-facing lore hooks.",
+  "rules": {
+    "game_asset_planning_only": true,
+    "not_biological_accuracy_claim": true,
+    "not_animal_care_or_welfare_guidance": true,
+    "not_animation_or_ai_runtime": true,
+    "not_historical_authenticity_claim": true,
+    "no_blender_execution": true,
+    "no_generated_assets": true,
+    "requires_reference_packet_before_asset_use": true
+  },
+  "animal_role_tiers": [
+    {
+      "role_tier_id": "domestic_companion_v0",
+      "plain_name": "domestic companion",
+      "game_read": "close to people, hearths, barns, workshops, and living quarters",
+      "material_rules": ["short fur or mixed fur", "warm body color variation", "readable eyes and nose"],
+      "silhouette_rules": ["friendly scale", "low threat posture", "clear head-ear-tail read"],
+      "starter_animals": ["village_dog_v0", "barn_cat_v0"]
+    },
+    {
+      "role_tier_id": "working_mount_pack_v0",
+      "plain_name": "working mount or pack animal",
+      "game_read": "transport, carrying, stable life, roads, courtyards, and trade routes",
+      "material_rules": ["hide coat", "mane or tail accents", "optional tack sockets"],
+      "silhouette_rules": ["long body", "four clear support legs", "high readable shoulder and neck mass"],
+      "starter_animals": ["riding_horse_v0", "pack_donkey_mule_v0"]
+    },
+    {
+      "role_tier_id": "livestock_food_fiber_v0",
+      "plain_name": "livestock, food, or fiber animal",
+      "game_read": "farm economy, kitchens, wool, hide, horn, bone, and village background life",
+      "material_rules": ["hide, fleece, bristle, horn, or hoof material slots", "mud and barn wear masks"],
+      "silhouette_rules": ["stocky body", "readable belly line", "clear hoof or snout feature"],
+      "starter_animals": ["cattle_ox_v0", "sheep_goat_small_ruminant_v0", "farm_pig_boar_v0"]
+    },
+    {
+      "role_tier_id": "barnyard_poultry_v0",
+      "plain_name": "barnyard poultry",
+      "game_read": "farmyard motion, market cages, kitchen source, and low-cost flock dressing",
+      "material_rules": ["feather slot", "comb or beak accent", "thin leg material"],
+      "silhouette_rules": ["small oval body", "short legs", "beak and tail wedge visible from game camera"],
+      "starter_animals": ["chicken_flock_bird_v0"]
+    },
+    {
+      "role_tier_id": "urban_vermin_v0",
+      "plain_name": "urban vermin",
+      "game_read": "cellars, alleys, ruin corners, plague mood, and scale reference",
+      "material_rules": ["dark fur", "small eye glints", "thin tail curve"],
+      "silhouette_rules": ["small low body", "long tail", "pointed muzzle"],
+      "starter_animals": ["rat_vermin_v0"]
+    },
+    {
+      "role_tier_id": "wild_game_prey_v0",
+      "plain_name": "wild game or prey",
+      "game_read": "forest approach, hunting grounds, noble parks, and food chain signposting",
+      "material_rules": ["hide coat", "antler or ear accents", "seasonal color variants"],
+      "silhouette_rules": ["alert neck", "thin legs", "ears or antlers readable above vegetation"],
+      "starter_animals": ["deer_stag_hind_v0"]
+    },
+    {
+      "role_tier_id": "wild_predator_v0",
+      "plain_name": "wild predator",
+      "game_read": "danger, wilderness pressure, heraldry, and night encounter staging",
+      "material_rules": ["darker fur or scale variants", "teeth/claw accent slots", "scar mask optional"],
+      "silhouette_rules": ["forward posture", "long spine", "weaponized head or body line"],
+      "starter_animals": ["gray_wolf_v0", "snake_v0"]
+    },
+    {
+      "role_tier_id": "cave_nocturnal_v0",
+      "plain_name": "cave or nocturnal animal",
+      "game_read": "vault ceilings, caves, crypts, rafters, and ambient motion clusters",
+      "material_rules": ["dark body material", "thin membrane or small fur slots", "high contrast eyes optional"],
+      "silhouette_rules": ["small body", "wide wing or tail span", "readable against dark backgrounds"],
+      "starter_animals": ["cave_bat_v0", "rat_vermin_v0"]
+    },
+    {
+      "role_tier_id": "aquatic_wetland_v0",
+      "plain_name": "aquatic or wetland animal",
+      "game_read": "ponds, cisterns, kitchens, fishing props, and damp dungeon details",
+      "material_rules": ["wet sheen", "scale or slick skin material", "waterline mask optional"],
+      "silhouette_rules": ["streamlined fish shape or squat amphibian body", "clear fin, tail, or leg read"],
+      "starter_animals": ["river_fish_v0", "frog_toad_v0"]
+    },
+    {
+      "role_tier_id": "omen_ritual_heraldic_v0",
+      "plain_name": "omen, ritual, or heraldic animal",
+      "game_read": "symbolic carving, banners, book illustrations, grave markers, and faction identity",
+      "material_rules": ["can become stone, bronze, ink, painted wood, or living material", "strong silhouette over anatomical realism"],
+      "silhouette_rules": ["iconic outline", "symmetrical pose option", "clear emblem read at distance"],
+      "starter_animals": ["crow_raven_v0", "gray_wolf_v0", "snake_v0", "riding_horse_v0"]
+    }
+  ],
+  "animal_body_plan_styles": [
+    {
+      "style_id": "small_quadruped_pet_v0",
+      "plain_name": "small quadruped companion body",
+      "visual_rules": ["compact trunk", "large readable head relative to body", "expressive ear and tail shapes"],
+      "geometry_terms": ["capsule_profile", "circle_profile", "custom_polygon_profile", "radial_stack", "scale_profile", "socket", "bounding_box"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_ico_sphere_add", "mesh_from_pydata", "modifier_mirror", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part"],
+      "drawing_ui_tags": ["side silhouette", "front silhouette", "ear shape", "tail curve", "paw blocks"]
+    },
+    {
+      "style_id": "canine_predator_v0",
+      "plain_name": "canine predator body",
+      "visual_rules": ["long muzzle", "sloped neck-to-back line", "forward alert stance"],
+      "geometry_terms": ["capsule_profile", "triangle_profile", "custom_polygon_profile", "loft_sections", "scale_profile", "radial", "width"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cone_add", "mesh_from_pydata", "modifier_mirror", "modifier_lattice", "modifier_bevel", "shade_smooth"],
+      "drawing_ui_tags": ["muzzle wedge", "shoulder slope", "tail line", "leg rhythm"]
+    },
+    {
+      "style_id": "equine_mount_pack_v0",
+      "plain_name": "equine mount and pack body",
+      "visual_rules": ["barrel torso", "long neck", "thin load-bearing legs", "mane and tail accent strips"],
+      "geometry_terms": ["capsule_profile", "circle_profile", "radial_stack", "loft_sections", "height", "length", "attachment_point"],
+      "blender_tool_ids": ["primitive_cylinder_add", "primitive_uv_sphere_add", "mesh_from_pydata", "modifier_mirror", "modifier_lattice", "modifier_bevel", "create_collision_proxy"],
+      "drawing_ui_tags": ["barrel torso", "neck arc", "leg columns", "hoof blocks", "saddle socket"]
+    },
+    {
+      "style_id": "hoofed_livestock_v0",
+      "plain_name": "hoofed livestock or game body",
+      "visual_rules": ["large torso mass", "thin legs", "horn, antler, or ear silhouette hooks"],
+      "geometry_terms": ["capsule_profile", "trapezoid_profile", "custom_polygon_profile", "scale_profile", "height", "width", "socket"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cone_add", "mesh_from_pydata", "modifier_mirror", "modifier_lattice", "modifier_bevel", "material_principled_shader"],
+      "drawing_ui_tags": ["torso block", "hoof stance", "horn sockets", "ear silhouette"]
+    },
+    {
+      "style_id": "swine_body_v0",
+      "plain_name": "swine body",
+      "visual_rules": ["low heavy body", "blunt snout disk", "small legs tucked under mass"],
+      "geometry_terms": ["capsule_profile", "circle_profile", "radial_stack", "scale_profile", "diameter", "height", "origin"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cylinder_add", "primitive_torus_add", "modifier_mirror", "modifier_lattice", "modifier_bevel", "procedural_noise_texture"],
+      "drawing_ui_tags": ["snout disk", "round belly", "short leg posts", "curled tail"]
+    },
+    {
+      "style_id": "wool_fleece_ruminant_v0",
+      "plain_name": "wool or fleece ruminant body",
+      "visual_rules": ["fleece shell over body mass", "small head projection", "thin leg read below fleece"],
+      "geometry_terms": ["capsule_profile", "circle_profile", "offset_profile", "radial_stack", "relief_stack", "height", "bounds"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "modifier_displace", "procedural_noise_texture", "procedural_bump_map", "modifier_mirror", "modifier_bevel", "material_assign_by_part"],
+      "drawing_ui_tags": ["fleece envelope", "head wedge", "leg pegs", "horn option"]
+    },
+    {
+      "style_id": "ground_bird_poultry_v0",
+      "plain_name": "ground bird or poultry body",
+      "visual_rules": ["egg body", "thin neck and legs", "comb, beak, wing patch, and tail wedge"],
+      "geometry_terms": ["circle_profile", "triangle_profile", "capsule_profile", "custom_polygon_profile", "scale_profile", "height", "width"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cone_add", "mesh_from_pydata", "modifier_mirror", "modifier_bevel", "material_assign_by_part", "shade_smooth"],
+      "drawing_ui_tags": ["egg body", "beak cone", "comb tabs", "wing patch", "tail wedge"]
+    },
+    {
+      "style_id": "flying_bird_corvid_v0",
+      "plain_name": "flying bird or corvid body",
+      "visual_rules": ["dark wedge body", "beak forward", "wing slab choices for perched or spread pose"],
+      "geometry_terms": ["triangle_profile", "capsule_profile", "custom_polygon_profile", "mirror_axis", "attachment_point", "angle", "width"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cone_add", "modifier_mirror", "modifier_solidify", "modifier_bevel", "material_principled_shader", "create_lod_variant"],
+      "drawing_ui_tags": ["perched pose", "spread wing", "beak wedge", "tail fan"]
+    },
+    {
+      "style_id": "winged_bat_v0",
+      "plain_name": "winged bat body",
+      "visual_rules": ["tiny body", "large thin wings", "finger ribs visible in membrane"],
+      "geometry_terms": ["triangle_profile", "capsule_profile", "array_radial", "mirror_axis", "angle", "attachment_point", "bounds"],
+      "blender_tool_ids": ["mesh_from_pydata", "curve_polyline_add", "curve_bevel_profile", "modifier_mirror", "modifier_solidify", "modifier_bevel", "material_assign_by_part"],
+      "drawing_ui_tags": ["wing membrane", "finger ribs", "hanging pose", "small body"]
+    },
+    {
+      "style_id": "rodent_vermin_v0",
+      "plain_name": "rodent vermin body",
+      "visual_rules": ["small low body", "pointed muzzle", "long thin tail", "rounded ears"],
+      "geometry_terms": ["capsule_profile", "circle_profile", "custom_polygon_profile", "scale_profile", "length", "width", "origin"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cone_add", "curve_bezier_add", "curve_bevel_profile", "modifier_mirror", "modifier_bevel", "create_lod_variant"],
+      "drawing_ui_tags": ["long tail", "point muzzle", "small ears", "low belly"]
+    },
+    {
+      "style_id": "fish_streamlined_v0",
+      "plain_name": "streamlined fish body",
+      "visual_rules": ["lens body", "tail fork", "top and side fin markers", "scale bands optional"],
+      "geometry_terms": ["capsule_profile", "triangle_profile", "radial_stack", "loft_sections", "length", "diameter", "offset_profile"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "mesh_from_pydata", "modifier_mirror", "modifier_lattice", "modifier_bevel", "material_assign_by_part", "procedural_bump_map"],
+      "drawing_ui_tags": ["lens body", "fork tail", "fin triangles", "scale bands"]
+    },
+    {
+      "style_id": "snake_limber_body_v0",
+      "plain_name": "limber snake body",
+      "visual_rules": ["continuous body curve", "head wedge", "belly scale strip", "coil or strike pose variants"],
+      "geometry_terms": ["capsule_profile", "circle_profile", "custom_polygon_profile", "loft_sections", "angle", "radius", "length"],
+      "blender_tool_ids": ["curve_bezier_add", "curve_bevel_profile", "curve_to_mesh", "modifier_lattice", "modifier_bevel", "material_assign_by_part", "create_collision_proxy"],
+      "drawing_ui_tags": ["spine curve", "head wedge", "coil radius", "belly strip"]
+    },
+    {
+      "style_id": "amphibian_squat_v0",
+      "plain_name": "squat amphibian body",
+      "visual_rules": ["wide squat trunk", "large eyes", "long rear leg arcs", "webbed foot hints"],
+      "geometry_terms": ["circle_profile", "capsule_profile", "triangle_profile", "scale_profile", "angle", "width", "height"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_ico_sphere_add", "mesh_from_pydata", "modifier_mirror", "modifier_lattice", "modifier_bevel", "shade_smooth"],
+      "drawing_ui_tags": ["squat body", "bulging eyes", "rear leg arc", "webbed foot"]
+    }
+  ],
+  "animal_families": [
+    {
+      "family_id": "domestic_companions_v0",
+      "plain_name": "domestic companions",
+      "core_function": "settlement, household, barn, and character-adjacent living detail",
+      "starter_animals": ["village_dog_v0", "barn_cat_v0"],
+      "drawing_ui_tags": ["household scale", "soft silhouette", "head-tail read"]
+    },
+    {
+      "family_id": "equines_mount_pack_v0",
+      "plain_name": "equines, mounts, and pack animals",
+      "core_function": "travel, transport, stables, carts, cavalry dressing, and trade routes",
+      "starter_animals": ["riding_horse_v0", "pack_donkey_mule_v0"],
+      "drawing_ui_tags": ["barrel torso", "leg rhythm", "saddle socket"]
+    },
+    {
+      "family_id": "livestock_hoofed_v0",
+      "plain_name": "livestock and hoofed farm animals",
+      "core_function": "farm economy, food/fiber props, village yards, and butcher/kitchen context",
+      "starter_animals": ["cattle_ox_v0", "sheep_goat_small_ruminant_v0", "farm_pig_boar_v0"],
+      "drawing_ui_tags": ["stocky body", "hoof blocks", "horn or snout cue"]
+    },
+    {
+      "family_id": "birds_poultry_corvids_v0",
+      "plain_name": "birds, poultry, and corvids",
+      "core_function": "farmyard flocks, rooftop silhouettes, market cages, omens, and banners",
+      "starter_animals": ["chicken_flock_bird_v0", "crow_raven_v0"],
+      "drawing_ui_tags": ["beak wedge", "wing patch", "tail fan"]
+    },
+    {
+      "family_id": "vermin_nocturnal_v0",
+      "plain_name": "vermin and nocturnal animals",
+      "core_function": "cellars, caves, crypts, rafters, ruins, and low-cost ambient life",
+      "starter_animals": ["rat_vermin_v0", "cave_bat_v0"],
+      "drawing_ui_tags": ["tiny body", "dark silhouette", "tail or wing cue"]
+    },
+    {
+      "family_id": "wild_game_prey_v0",
+      "plain_name": "wild game and prey",
+      "core_function": "forest, meadow, hunting, noble park, and wilderness ecosystem reads",
+      "starter_animals": ["deer_stag_hind_v0"],
+      "drawing_ui_tags": ["alert neck", "thin legs", "antler option"]
+    },
+    {
+      "family_id": "wild_predators_v0",
+      "plain_name": "wild predators and threat animals",
+      "core_function": "combat readability, wilderness danger, heraldic motifs, and caution cues",
+      "starter_animals": ["gray_wolf_v0", "snake_v0"],
+      "drawing_ui_tags": ["forward posture", "teeth or head wedge", "threat curve"]
+    },
+    {
+      "family_id": "aquatic_wetland_v0",
+      "plain_name": "aquatic and wetland animals",
+      "core_function": "ponds, rivers, cisterns, food props, damp dungeons, and waterline life",
+      "starter_animals": ["river_fish_v0", "frog_toad_v0"],
+      "drawing_ui_tags": ["wet material", "fin or leg cue", "low waterline"]
+    }
+  ],
+  "animal_items": [
+    {
+      "animal_id": "village_dog_v0",
+      "plain_name": "village dog",
+      "family_id": "domestic_companions_v0",
+      "role_tier_ids": ["domestic_companion_v0", "omen_ritual_heraldic_v0"],
+      "style_ids": ["small_quadruped_pet_v0", "canine_predator_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - dog",
+          "url": "https://www.britannica.com/animal/dog",
+          "support_summary": "Supports dog as domestic canid reference with breed/body variation useful for settlement asset planning."
+        }
+      ],
+      "game_use_roles": ["settlement ambience", "kennel prop", "guard warning silhouette", "heraldic carving reference"],
+      "anatomy_parts": [
+        {"part_id": "torso_capsule", "plain_name": "torso capsule", "geometry_role": "main body mass"},
+        {"part_id": "muzzle_wedge", "plain_name": "muzzle wedge", "geometry_role": "head direction and species read"},
+        {"part_id": "ear_pair", "plain_name": "ear pair", "geometry_role": "silhouette marker"},
+        {"part_id": "tail_curve", "plain_name": "tail curve", "geometry_role": "mood and breed cue"},
+        {"part_id": "leg_paw_set", "plain_name": "leg and paw set", "geometry_role": "stance and scale"}
+      ],
+      "materials": ["short fur", "nose leather", "eye gloss", "paw pads"],
+      "real_tools": ["side silhouette reference", "front proportion sketch", "walk-cycle note sheet", "breed variation board"],
+      "craft_sequence": ["block torso and head", "place four leg cylinders", "add muzzle and ear wedges", "add tail curve", "assign fur and nose materials", "capture low-poly silhouette check"],
+      "locomotion_mechanics": "Small quadruped gait with alternating leg rhythm; first asset can be a static standing pose with future walk-cycle sockets.",
+      "geometry_terms": ["capsule_profile", "triangle_profile", "circle_profile", "custom_polygon_profile", "scale_profile", "socket", "bounding_box"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cone_add", "mesh_from_pydata", "curve_bezier_add", "curve_bevel_profile", "modifier_mirror", "modifier_bevel", "modifier_weighted_normal", "material_assign_by_part", "create_lod_variant"],
+      "drawing_ui_tags": ["side silhouette", "muzzle wedge", "ear pair", "tail curve", "paw blocks"],
+      "source_fields_needed": ["body_length", "shoulder_height", "head_size", "muzzle_length", "ear_shape", "tail_curve", "stance"],
+      "operator_checks": ["Dog reads at top-down camera distance.", "Four legs do not merge into one dark block.", "Tail curve stays inside collision bounds unless intentionally raised."],
+      "lore_book_hooks": [
+        {
+          "book_title": "Kennel Marks Of The Lower Ward",
+          "player_reward": "Teaches the player to notice different warning and companion dog silhouettes around villages.",
+          "detail_prompt": "Describe why ear shape, tail carriage, and paw spacing matter more than fine fur on low-distance dogs."
+        }
+      ],
+      "deferred_details": ["breed variants", "barking animation", "collar and tag accessory socket"]
+    },
+    {
+      "animal_id": "barn_cat_v0",
+      "plain_name": "barn cat",
+      "family_id": "domestic_companions_v0",
+      "role_tier_ids": ["domestic_companion_v0", "urban_vermin_v0"],
+      "style_ids": ["small_quadruped_pet_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - cat",
+          "url": "https://www.britannica.com/animal/cat",
+          "support_summary": "Supports cat as small domestic feline reference for compact quadruped and predator-adjacent proportions."
+        }
+      ],
+      "game_use_roles": ["barn ambience", "window ledge silhouette", "pantry vermin-control flavor", "sleeping curled prop"],
+      "anatomy_parts": [
+        {"part_id": "flexible_torso", "plain_name": "flexible torso", "geometry_role": "compact curved body"},
+        {"part_id": "round_head", "plain_name": "round head", "geometry_role": "domestic feline read"},
+        {"part_id": "triangular_ears", "plain_name": "triangular ears", "geometry_role": "high-contrast silhouette"},
+        {"part_id": "thin_tail", "plain_name": "thin tail", "geometry_role": "curve and mood cue"},
+        {"part_id": "small_paws", "plain_name": "small paws", "geometry_role": "stance detail"}
+      ],
+      "materials": ["short fur", "whisker line decal optional", "eye gloss", "claw hint material"],
+      "real_tools": ["curled-pose sketch", "standing side reference", "tail-shape sheet", "eye-line check"],
+      "craft_sequence": ["block small torso", "shape round head", "add triangular ears", "draw tail curve", "place four paw blocks", "assign fur patches"],
+      "locomotion_mechanics": "Low, flexible quadruped motion; first asset can support standing, sitting, and curled static variants from the same body plan.",
+      "geometry_terms": ["capsule_profile", "circle_profile", "triangle_profile", "custom_polygon_profile", "scale_profile", "bounds", "origin"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_ico_sphere_add", "curve_bezier_add", "curve_bevel_profile", "modifier_mirror", "modifier_lattice", "modifier_bevel", "material_assign_by_part", "create_lod_variant"],
+      "drawing_ui_tags": ["curled pose", "triangular ears", "tail curve", "small paws", "eye line"],
+      "source_fields_needed": ["body_length", "body_height", "head_roundness", "ear_angle", "tail_curve", "pose_type"],
+      "operator_checks": ["Cat reads smaller than dog and rat remains clearly smaller than cat.", "Ears stay visible from camera angle.", "Curled pose still has a head/tail read."],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Barn Cat's Ledger",
+          "player_reward": "Explains why farms with stored grain tend to show cat props near sacks, rafters, and pantry doors.",
+          "detail_prompt": "Tie the cat's pose to place: curled near warmth, alert near grain, perched near windows."
+        }
+      ],
+      "deferred_details": ["whisker geometry", "fur pattern masks", "jump and crouch poses"]
+    },
+    {
+      "animal_id": "riding_horse_v0",
+      "plain_name": "riding horse",
+      "family_id": "equines_mount_pack_v0",
+      "role_tier_ids": ["working_mount_pack_v0", "omen_ritual_heraldic_v0"],
+      "style_ids": ["equine_mount_pack_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - horse",
+          "url": "https://www.britannica.com/animal/horse",
+          "support_summary": "Supports equine reference for long neck, hoofed limbs, mane, tail, and riding/working animal planning."
+        }
+      ],
+      "game_use_roles": ["stable asset", "roadside mount", "cart lead animal", "banner and statue reference"],
+      "anatomy_parts": [
+        {"part_id": "barrel_torso", "plain_name": "barrel torso", "geometry_role": "main load-bearing body"},
+        {"part_id": "arched_neck", "plain_name": "arched neck", "geometry_role": "equine profile"},
+        {"part_id": "long_head", "plain_name": "long head", "geometry_role": "species read and bridle socket"},
+        {"part_id": "leg_column_set", "plain_name": "leg column set", "geometry_role": "stance and scale"},
+        {"part_id": "mane_tail", "plain_name": "mane and tail", "geometry_role": "flowing silhouette accent"}
+      ],
+      "materials": ["hide coat", "mane hair", "hoof horn", "tack leather optional"],
+      "real_tools": ["equine proportion chart", "side stance sketch", "tack socket drawing", "hoof placement grid"],
+      "craft_sequence": ["loft barrel torso", "curve neck upward", "attach long head", "place four leg columns with hoof blocks", "add mane and tail strips", "reserve saddle and bridle sockets"],
+      "locomotion_mechanics": "Large quadruped gait with hooves under shoulder and hip masses; first asset is a static standing mount proxy with optional tack sockets.",
+      "geometry_terms": ["capsule_profile", "circle_profile", "radial_stack", "loft_sections", "height", "length", "attachment_point", "socket"],
+      "blender_tool_ids": ["primitive_cylinder_add", "primitive_uv_sphere_add", "mesh_from_pydata", "curve_bezier_add", "curve_bevel_profile", "modifier_mirror", "modifier_lattice", "modifier_bevel", "create_collision_proxy", "material_assign_by_part"],
+      "drawing_ui_tags": ["barrel torso", "arched neck", "hoof grid", "mane strip", "saddle socket"],
+      "source_fields_needed": ["body_length", "shoulder_height", "neck_arc", "head_length", "leg_spacing", "hoof_size", "saddle_socket_bounds"],
+      "operator_checks": ["Horse reads taller and longer than cattle.", "Legs align under body mass instead of splaying randomly.", "Saddle socket does not cut through spine line."],
+      "lore_book_hooks": [
+        {
+          "book_title": "Stable Master's Measures",
+          "player_reward": "Lets the player interpret tack, hoof spacing, and stable stalls as world-building clues.",
+          "detail_prompt": "Explain why the barrel, shoulder, neck, and hoof spacing are enough for a readable mount proxy."
+        }
+      ],
+      "deferred_details": ["bridle kit", "saddle variants", "walk/trot/gallop rig"]
+    },
+    {
+      "animal_id": "pack_donkey_mule_v0",
+      "plain_name": "pack donkey or mule",
+      "family_id": "equines_mount_pack_v0",
+      "role_tier_ids": ["working_mount_pack_v0", "livestock_food_fiber_v0"],
+      "style_ids": ["equine_mount_pack_v0", "hoofed_livestock_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - donkey",
+          "url": "https://www.britannica.com/animal/donkey",
+          "support_summary": "Supports donkey reference for equine body planning with pack-animal proportions and long ear silhouette."
+        }
+      ],
+      "game_use_roles": ["pack train", "market cargo animal", "mine cart route dressing", "rural travel clue"],
+      "anatomy_parts": [
+        {"part_id": "compact_barrel", "plain_name": "compact barrel", "geometry_role": "shorter body than horse"},
+        {"part_id": "long_ears", "plain_name": "long ears", "geometry_role": "donkey silhouette marker"},
+        {"part_id": "pack_socket", "plain_name": "pack socket", "geometry_role": "load attachment bounds"},
+        {"part_id": "short_leg_set", "plain_name": "short leg set", "geometry_role": "sturdy stance"},
+        {"part_id": "tail_tuft", "plain_name": "tail tuft", "geometry_role": "rear silhouette cue"}
+      ],
+      "materials": ["coarse hide", "hoof horn", "pack cloth", "rope straps"],
+      "real_tools": ["pack-load sketch", "long-ear silhouette sheet", "side stance reference", "strap path diagram"],
+      "craft_sequence": ["block compact torso", "place short legs", "add long ears", "add pack socket volumes", "add rope/cloth material slots", "check load clearance"],
+      "locomotion_mechanics": "Sturdy quadruped pack gait; source plan emphasizes static load balance and cargo attachment more than speed.",
+      "geometry_terms": ["capsule_profile", "triangle_profile", "rectangle_profile", "attachment_point", "bounding_box", "height", "width"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cube_add", "mesh_from_pydata", "modifier_mirror", "modifier_bevel", "modifier_lattice", "material_assign_by_part", "create_collision_proxy", "create_lod_variant"],
+      "drawing_ui_tags": ["long ears", "pack frame", "short legs", "cargo bounds", "tail tuft"],
+      "source_fields_needed": ["body_length", "ear_length", "pack_width", "pack_height", "leg_spacing", "tail_tuft_shape"],
+      "operator_checks": ["Long ears distinguish the asset from a small horse.", "Pack load stays centered over torso.", "Legs remain visible below cargo bags."],
+      "lore_book_hooks": [
+        {
+          "book_title": "On Pack Beasts And Narrow Ways",
+          "player_reward": "Connects cargo size, path width, and stable props to route planning inside the world.",
+          "detail_prompt": "Use the pack socket and long ears as the player's quick read."
+        }
+      ],
+      "deferred_details": ["cargo variants", "halter rig", "mule-specific body variant"]
+    },
+    {
+      "animal_id": "cattle_ox_v0",
+      "plain_name": "cattle or ox",
+      "family_id": "livestock_hoofed_v0",
+      "role_tier_ids": ["livestock_food_fiber_v0", "working_mount_pack_v0"],
+      "style_ids": ["hoofed_livestock_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - cattle",
+          "url": "https://www.britannica.com/animal/cattle",
+          "support_summary": "Supports cattle reference for heavy ruminant body, horns, hooves, and domestic livestock planning."
+        }
+      ],
+      "game_use_roles": ["farmyard body", "ox cart puller", "butcher-yard reference", "horn trophy source"],
+      "anatomy_parts": [
+        {"part_id": "heavy_torso", "plain_name": "heavy torso", "geometry_role": "large livestock mass"},
+        {"part_id": "broad_head", "plain_name": "broad head", "geometry_role": "cattle head read"},
+        {"part_id": "horn_pair", "plain_name": "horn pair", "geometry_role": "silhouette and material hook"},
+        {"part_id": "hoof_leg_set", "plain_name": "hoof leg set", "geometry_role": "support stance"},
+        {"part_id": "dewlap_belly_line", "plain_name": "dewlap and belly line", "geometry_role": "profile detail"}
+      ],
+      "materials": ["hide coat", "horn", "hoof horn", "mud mask"],
+      "real_tools": ["livestock side reference", "horn profile sketch", "yoke socket diagram", "weight-bearing stance sheet"],
+      "craft_sequence": ["shape heavy torso", "attach broad head and neck", "add horn pair", "place sturdy legs and hooves", "reserve yoke socket", "assign hide/horn/hoof materials"],
+      "locomotion_mechanics": "Slow heavy quadruped with broad support stance; first asset can be static with yoke and cart attachment sockets.",
+      "geometry_terms": ["capsule_profile", "trapezoid_profile", "circle_profile", "loft_sections", "attachment_point", "height", "width", "support"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cone_add", "mesh_from_pydata", "modifier_mirror", "modifier_lattice", "modifier_bevel", "material_assign_by_part", "create_collision_proxy", "procedural_noise_texture"],
+      "drawing_ui_tags": ["heavy torso", "horn pair", "yoke socket", "hoof stance", "belly line"],
+      "source_fields_needed": ["body_width", "shoulder_height", "horn_span", "head_width", "hoof_spacing", "yoke_socket_height"],
+      "operator_checks": ["Cattle reads heavier than horse.", "Horn pair and broad head are visible from the main camera.", "Yoke socket sits in front of shoulder mass."],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Ox-Yoke And The Furrow",
+          "player_reward": "Explains village labor assets and why yokes, carts, and field boundaries belong near cattle props.",
+          "detail_prompt": "Point out the horn, shoulder, and yoke-socket relationship."
+        }
+      ],
+      "deferred_details": ["breed color patches", "cart harness", "hide hanging prop conversion"]
+    },
+    {
+      "animal_id": "sheep_goat_small_ruminant_v0",
+      "plain_name": "sheep or goat small ruminant",
+      "family_id": "livestock_hoofed_v0",
+      "role_tier_ids": ["livestock_food_fiber_v0", "wild_game_prey_v0"],
+      "style_ids": ["hoofed_livestock_v0", "wool_fleece_ruminant_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - sheep",
+          "url": "https://www.britannica.com/animal/sheep",
+          "support_summary": "Supports sheep reference for fleece, hoofed livestock, and wool-source planning."
+        },
+        {
+          "label": "Britannica - goat",
+          "url": "https://www.britannica.com/animal/goat",
+          "support_summary": "Supports goat reference for horned small-ruminant proportions and browsing livestock variants."
+        }
+      ],
+      "game_use_roles": ["farm flock", "wool economy prop", "mountain trail herd", "shearing-yard clue"],
+      "anatomy_parts": [
+        {"part_id": "fleece_shell", "plain_name": "fleece shell", "geometry_role": "outer soft body envelope"},
+        {"part_id": "small_head", "plain_name": "small head", "geometry_role": "species read"},
+        {"part_id": "horn_option", "plain_name": "horn option", "geometry_role": "goat or ram variant"},
+        {"part_id": "thin_leg_set", "plain_name": "thin leg set", "geometry_role": "stance under fleece"},
+        {"part_id": "tail_or_beard", "plain_name": "tail or beard", "geometry_role": "variant marker"}
+      ],
+      "materials": ["fleece", "short hide", "horn", "hoof horn"],
+      "real_tools": ["fleece silhouette reference", "goat horn sketch", "flock scale sheet", "shearing-state note"],
+      "craft_sequence": ["block compact body", "add fleece offset shell", "place head wedge", "add thin legs", "add horn/beard option", "assign fleece noise material"],
+      "locomotion_mechanics": "Small hoofed quadruped with flock spacing; first asset supports static grazing, standing, and clustered background variants.",
+      "geometry_terms": ["capsule_profile", "circle_profile", "offset_profile", "relief_stack", "height", "width", "bounds", "socket"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cone_add", "modifier_displace", "procedural_noise_texture", "procedural_bump_map", "modifier_mirror", "modifier_bevel", "material_assign_by_part", "create_lod_variant"],
+      "drawing_ui_tags": ["fleece shell", "horn option", "thin legs", "beard option", "flock spacing"],
+      "source_fields_needed": ["body_length", "fleece_offset", "horn_curve", "leg_height", "head_size", "variant_type"],
+      "operator_checks": ["Fleece shell does not hide all four legs.", "Goat variant has horn/beard cues; sheep variant has stronger fleece read.", "Clustered flock instances do not become one merged blob."],
+      "lore_book_hooks": [
+        {
+          "book_title": "Wool Before Cloth",
+          "player_reward": "Links living flock assets to textile, dye, and market systems already documented elsewhere.",
+          "detail_prompt": "Explain fleece shell, shearing state, and why leg visibility keeps the animal readable."
+        }
+      ],
+      "deferred_details": ["sheared variant", "ram horn variant", "goat climbing pose"]
+    },
+    {
+      "animal_id": "farm_pig_boar_v0",
+      "plain_name": "farm pig or boar",
+      "family_id": "livestock_hoofed_v0",
+      "role_tier_ids": ["livestock_food_fiber_v0", "wild_predator_v0"],
+      "style_ids": ["swine_body_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - pig",
+          "url": "https://www.britannica.com/animal/pig-mammal",
+          "support_summary": "Supports pig reference for domestic swine body planning with snout, bristle, hoof, and boar variant cues."
+        }
+      ],
+      "game_use_roles": ["farmyard animal", "butcher-yard clue", "forest boar danger variant", "mud pen ambience"],
+      "anatomy_parts": [
+        {"part_id": "round_belly", "plain_name": "round belly", "geometry_role": "low heavy mass"},
+        {"part_id": "snout_disk", "plain_name": "snout disk", "geometry_role": "species read"},
+        {"part_id": "short_leg_set", "plain_name": "short leg set", "geometry_role": "low stance"},
+        {"part_id": "ear_flaps", "plain_name": "ear flaps", "geometry_role": "silhouette"},
+        {"part_id": "curled_tail_or_tusk", "plain_name": "curled tail or tusk", "geometry_role": "domestic or boar variant"}
+      ],
+      "materials": ["bristled hide", "mud mask", "hoof horn", "tusk ivory optional"],
+      "real_tools": ["snout front sketch", "boar tusk reference", "mud material board", "low-body stance guide"],
+      "craft_sequence": ["squash torso into low oval", "add snout disk", "place short legs", "add ears and curled tail", "add tusk sockets for boar variant", "paint mud mask"],
+      "locomotion_mechanics": "Low heavy quadruped with short steps; first asset should read as pen animal or charging boar by head height and tusk option.",
+      "geometry_terms": ["capsule_profile", "circle_profile", "radial_stack", "scale_profile", "diameter", "height", "origin"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cylinder_add", "primitive_torus_add", "primitive_cone_add", "modifier_mirror", "modifier_lattice", "modifier_bevel", "procedural_noise_texture", "material_assign_by_part"],
+      "drawing_ui_tags": ["snout disk", "round belly", "short legs", "ear flaps", "tusk option"],
+      "source_fields_needed": ["body_roundness", "snout_radius", "leg_height", "ear_shape", "tail_curl", "tusk_length"],
+      "operator_checks": ["Snout disk is visible from front and side.", "Short legs still show under belly.", "Boar variant keeps tusks clear of collision proxy."],
+      "lore_book_hooks": [
+        {
+          "book_title": "Mud, Bristle, And Tusk",
+          "player_reward": "Teaches the player how farm swine and wild boar versions share a body plan but change danger read.",
+          "detail_prompt": "Use snout disk, belly height, and tusk sockets as the readable knobs."
+        }
+      ],
+      "deferred_details": ["piglet variant", "boar mane strip", "mud splash decals"]
+    },
+    {
+      "animal_id": "chicken_flock_bird_v0",
+      "plain_name": "chicken or flock bird",
+      "family_id": "birds_poultry_corvids_v0",
+      "role_tier_ids": ["barnyard_poultry_v0", "livestock_food_fiber_v0"],
+      "style_ids": ["ground_bird_poultry_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - chicken",
+          "url": "https://www.britannica.com/animal/chicken",
+          "support_summary": "Supports chicken reference for domestic poultry planning with beak, comb, feathers, legs, and flock use."
+        }
+      ],
+      "game_use_roles": ["farmyard flock", "market cage", "kitchen yard clue", "low-cost motion scatter"],
+      "anatomy_parts": [
+        {"part_id": "egg_body", "plain_name": "egg body", "geometry_role": "main rounded body"},
+        {"part_id": "beak_cone", "plain_name": "beak cone", "geometry_role": "direction cue"},
+        {"part_id": "comb_tabs", "plain_name": "comb tabs", "geometry_role": "poultry silhouette"},
+        {"part_id": "wing_patch", "plain_name": "wing patch", "geometry_role": "side feather panel"},
+        {"part_id": "thin_leg_pair", "plain_name": "thin leg pair", "geometry_role": "scale and stance"}
+      ],
+      "materials": ["feather body", "beak horn", "comb red accent", "thin leg skin"],
+      "real_tools": ["egg-body sketch", "comb silhouette sheet", "flock spacing guide", "cage clearance note"],
+      "craft_sequence": ["make egg body", "add head and beak", "add comb tabs", "add wing patch", "place thin legs and feet", "create flock LOD variant"],
+      "locomotion_mechanics": "Small bipedal bird walk with head bob; first asset can be static or simple flock scatter with clear beak direction.",
+      "geometry_terms": ["circle_profile", "triangle_profile", "capsule_profile", "custom_polygon_profile", "height", "width", "bounds"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cone_add", "mesh_from_pydata", "modifier_mirror", "modifier_bevel", "material_assign_by_part", "create_lod_variant", "shade_smooth"],
+      "drawing_ui_tags": ["egg body", "beak cone", "comb tabs", "wing patch", "thin legs"],
+      "source_fields_needed": ["body_height", "body_width", "beak_length", "comb_count", "leg_height", "flock_spacing"],
+      "operator_checks": ["Chicken reads as bird from distance, not as round rock.", "Comb and beak survive low-poly LOD.", "Legs are not wider than body."],
+      "lore_book_hooks": [
+        {
+          "book_title": "The Yard That Scratches",
+          "player_reward": "Explains how poultry props mark food supply, household scale, and safe farm spaces.",
+          "detail_prompt": "Describe the egg body, comb tabs, and beak direction as the three essential reads."
+        }
+      ],
+      "deferred_details": ["rooster tail", "nest and egg props", "pecking loop"]
+    },
+    {
+      "animal_id": "rat_vermin_v0",
+      "plain_name": "rat vermin",
+      "family_id": "vermin_nocturnal_v0",
+      "role_tier_ids": ["urban_vermin_v0", "cave_nocturnal_v0"],
+      "style_ids": ["rodent_vermin_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - rat",
+          "url": "https://www.britannica.com/animal/rat",
+          "support_summary": "Supports rat reference for small rodent body planning with pointed muzzle, tail, ears, and urban/cellar use."
+        }
+      ],
+      "game_use_roles": ["cellar ambience", "sewer movement cue", "pantry infestation clue", "scale reference near crumbs"],
+      "anatomy_parts": [
+        {"part_id": "low_body", "plain_name": "low body", "geometry_role": "small rodent mass"},
+        {"part_id": "point_muzzle", "plain_name": "point muzzle", "geometry_role": "direction and species read"},
+        {"part_id": "round_ear_pair", "plain_name": "round ear pair", "geometry_role": "head silhouette"},
+        {"part_id": "thin_tail_curve", "plain_name": "thin tail curve", "geometry_role": "vermin silhouette marker"},
+        {"part_id": "tiny_feet", "plain_name": "tiny feet", "geometry_role": "stance and scale"}
+      ],
+      "materials": ["dark fur", "bare tail", "eye glint", "dust mask"],
+      "real_tools": ["tiny silhouette sheet", "tail curve sketch", "cellar scale board", "low-poly LOD note"],
+      "craft_sequence": ["block small body", "add pointed muzzle", "add ears", "draw tail as bevel curve", "place tiny feet", "create low-cost scatter variants"],
+      "locomotion_mechanics": "Very small quadruped scurry; first asset emphasizes silhouette and scale over detailed limbs.",
+      "geometry_terms": ["capsule_profile", "circle_profile", "custom_polygon_profile", "length", "width", "scale_reference", "origin"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cone_add", "curve_bezier_add", "curve_bevel_profile", "modifier_mirror", "modifier_bevel", "create_lod_variant", "material_assign_by_part"],
+      "drawing_ui_tags": ["tiny silhouette", "point muzzle", "round ears", "long tail", "scatter pose"],
+      "source_fields_needed": ["body_length", "muzzle_length", "ear_radius", "tail_length", "tail_curve", "scatter_count"],
+      "operator_checks": ["Rat stays tiny but readable beside barrels or food.", "Tail is not thicker than body.", "Scatter count does not become visual noise on lower compute hardware."],
+      "lore_book_hooks": [
+        {
+          "book_title": "Gnaw Marks In The Granary",
+          "player_reward": "Tells the player that crumbs, tooth marks, and tiny silhouettes can signal hidden stores or decay.",
+          "detail_prompt": "Use scale, tail curve, and pantry context to make the rat feel placed."
+        }
+      ],
+      "deferred_details": ["nest pile", "chewed sack variant", "scurry animation"]
+    },
+    {
+      "animal_id": "cave_bat_v0",
+      "plain_name": "cave bat",
+      "family_id": "vermin_nocturnal_v0",
+      "role_tier_ids": ["cave_nocturnal_v0", "omen_ritual_heraldic_v0"],
+      "style_ids": ["winged_bat_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - bat",
+          "url": "https://www.britannica.com/animal/bat-mammal",
+          "support_summary": "Supports bat reference for flying mammal body planning with wings, membranes, and cave/roost use."
+        }
+      ],
+      "game_use_roles": ["cave ceiling cluster", "crypt ambience", "roost silhouette", "small flying motion cue"],
+      "anatomy_parts": [
+        {"part_id": "tiny_body", "plain_name": "tiny body", "geometry_role": "central mass"},
+        {"part_id": "wing_membrane_pair", "plain_name": "wing membrane pair", "geometry_role": "large silhouette surface"},
+        {"part_id": "finger_ribs", "plain_name": "finger ribs", "geometry_role": "membrane linework"},
+        {"part_id": "ear_points", "plain_name": "ear points", "geometry_role": "head cue"},
+        {"part_id": "hanging_claws", "plain_name": "hanging claws", "geometry_role": "roost attachment"}
+      ],
+      "materials": ["dark fur", "thin membrane", "rib line material", "eye glint optional"],
+      "real_tools": ["spread-wing sketch", "hanging-pose sketch", "wing rib diagram", "ceiling cluster budget note"],
+      "craft_sequence": ["block tiny body", "draw mirrored wing membranes", "add finger rib curves", "add ear points", "add roost attachment point", "create cluster LOD"],
+      "locomotion_mechanics": "Flying and roosting body plan; first asset should support hanging static and broad-wing silhouette variants.",
+      "geometry_terms": ["triangle_profile", "capsule_profile", "array_radial", "mirror_axis", "angle", "attachment_point", "bounds"],
+      "blender_tool_ids": ["mesh_from_pydata", "curve_polyline_add", "curve_bevel_profile", "modifier_mirror", "modifier_solidify", "modifier_bevel", "material_assign_by_part", "create_lod_variant"],
+      "drawing_ui_tags": ["wing membrane", "finger ribs", "hanging pose", "tiny body", "ceiling socket"],
+      "source_fields_needed": ["wingspan", "body_size", "rib_count", "membrane_thickness", "hanging_socket", "cluster_spacing"],
+      "operator_checks": ["Bat reads by wingspan, not body detail.", "Membrane stays thin and low-cost.", "Cluster density is limited for lower compute hardware."],
+      "lore_book_hooks": [
+        {
+          "book_title": "Reading The Roof Of A Cave",
+          "player_reward": "Shows the player that ceiling silhouettes can reveal caves, hollows, and unused passages.",
+          "detail_prompt": "Explain wing membranes, roost sockets, and why clusters are budgeted separately."
+        }
+      ],
+      "deferred_details": ["flap animation", "guano decal optional", "swarm manager"]
+    },
+    {
+      "animal_id": "deer_stag_hind_v0",
+      "plain_name": "deer, stag, or hind",
+      "family_id": "wild_game_prey_v0",
+      "role_tier_ids": ["wild_game_prey_v0", "omen_ritual_heraldic_v0"],
+      "style_ids": ["hoofed_livestock_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - deer",
+          "url": "https://www.britannica.com/animal/deer",
+          "support_summary": "Supports deer reference for hoofed game body planning with antlers, thin legs, and alert forest silhouette."
+        }
+      ],
+      "game_use_roles": ["forest ambient animal", "hunting sign", "noble park ornament", "antler trophy source"],
+      "anatomy_parts": [
+        {"part_id": "slender_torso", "plain_name": "slender torso", "geometry_role": "light prey body"},
+        {"part_id": "alert_neck", "plain_name": "alert neck", "geometry_role": "posture read"},
+        {"part_id": "antler_or_ear_set", "plain_name": "antler or ear set", "geometry_role": "stag/hind silhouette"},
+        {"part_id": "thin_leg_set", "plain_name": "thin leg set", "geometry_role": "prey stance"},
+        {"part_id": "short_tail_patch", "plain_name": "short tail patch", "geometry_role": "rear cue"}
+      ],
+      "materials": ["hide coat", "antler bone", "hoof horn", "seasonal patch mask"],
+      "real_tools": ["antler branching sketch", "forest silhouette sheet", "hoof stance guide", "seasonal color board"],
+      "craft_sequence": ["block slender torso", "raise alert neck", "place thin legs", "add ear or antler variant", "assign hide/antler materials", "create trophy socket variant"],
+      "locomotion_mechanics": "Light hoofed quadruped; first asset prioritizes alert pose and antler/ear silhouette over detailed muscle.",
+      "geometry_terms": ["capsule_profile", "triangle_profile", "custom_polygon_profile", "height", "length", "attachment_point", "bounds"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cone_add", "mesh_from_pydata", "curve_polyline_add", "curve_bevel_profile", "modifier_mirror", "modifier_bevel", "material_assign_by_part", "create_lod_variant"],
+      "drawing_ui_tags": ["alert neck", "antler branch", "thin legs", "ear option", "forest scale"],
+      "source_fields_needed": ["body_length", "neck_angle", "leg_height", "antler_span", "ear_size", "tail_patch"],
+      "operator_checks": ["Deer reads lighter than cattle and taller than dog.", "Antler variant does not exceed intended bounds.", "Thin legs remain visible against grass or forest floor."],
+      "lore_book_hooks": [
+        {
+          "book_title": "Hunting Signs And Antlers",
+          "player_reward": "Teaches tracking flavor: antlers, hoof prints, and alert posture imply nearby forests or noble hunting grounds.",
+          "detail_prompt": "Use the alert neck and antler span as the player's readable clues."
+        }
+      ],
+      "deferred_details": ["fawn variant", "trophy plaque conversion", "leap pose"]
+    },
+    {
+      "animal_id": "gray_wolf_v0",
+      "plain_name": "gray wolf",
+      "family_id": "wild_predators_v0",
+      "role_tier_ids": ["wild_predator_v0", "omen_ritual_heraldic_v0"],
+      "style_ids": ["canine_predator_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - gray wolf",
+          "url": "https://www.britannica.com/animal/gray-wolf",
+          "support_summary": "Supports wolf reference for wild canid body planning, predator posture, and heraldic/omen use."
+        }
+      ],
+      "game_use_roles": ["forest predator", "banner motif", "grave omen statue", "danger silhouette at distance"],
+      "anatomy_parts": [
+        {"part_id": "long_predator_torso", "plain_name": "long predator torso", "geometry_role": "threat body mass"},
+        {"part_id": "long_muzzle", "plain_name": "long muzzle", "geometry_role": "wolf head read"},
+        {"part_id": "upright_ears", "plain_name": "upright ears", "geometry_role": "alert silhouette"},
+        {"part_id": "fur_ruff", "plain_name": "fur ruff", "geometry_role": "neck and shoulder accent"},
+        {"part_id": "low_tail", "plain_name": "low tail", "geometry_role": "predator posture cue"}
+      ],
+      "materials": ["gray fur", "dark muzzle", "eye glint", "claw/teeth accent"],
+      "real_tools": ["predator side silhouette", "wolf head study", "fur ruff sketch", "threat-pose lineup"],
+      "craft_sequence": ["lengthen canine torso", "angle neck and head forward", "add muzzle and ears", "add fur ruff planes", "place legs for stalking stance", "assign darker muzzle material"],
+      "locomotion_mechanics": "Canid predator gait with forward posture; first asset supports standing, stalking, and emblem/profile variants.",
+      "geometry_terms": ["capsule_profile", "triangle_profile", "custom_polygon_profile", "loft_sections", "angle", "length", "line_of_sight_blocker"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_cone_add", "mesh_from_pydata", "modifier_mirror", "modifier_lattice", "modifier_bevel", "material_assign_by_part", "create_lod_variant", "shade_smooth"],
+      "drawing_ui_tags": ["long muzzle", "upright ears", "fur ruff", "low tail", "stalking stance"],
+      "source_fields_needed": ["body_length", "shoulder_height", "muzzle_length", "ear_angle", "tail_angle", "ruff_depth"],
+      "operator_checks": ["Wolf reads more threatening than village dog.", "Fur ruff does not become random spikes.", "Predator posture remains clear from side silhouette."],
+      "lore_book_hooks": [
+        {
+          "book_title": "Wolf Signs Before Snow",
+          "player_reward": "Uses wolf silhouettes, banners, and tracks as danger and faction flavor.",
+          "detail_prompt": "Explain how muzzle, ruff, and tail angle separate wolf from dog."
+        }
+      ],
+      "deferred_details": ["pack spacing", "howl pose", "pelt prop conversion"]
+    },
+    {
+      "animal_id": "crow_raven_v0",
+      "plain_name": "crow or raven",
+      "family_id": "birds_poultry_corvids_v0",
+      "role_tier_ids": ["omen_ritual_heraldic_v0", "cave_nocturnal_v0"],
+      "style_ids": ["flying_bird_corvid_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - crow",
+          "url": "https://www.britannica.com/animal/crow-bird",
+          "support_summary": "Supports corvid reference for dark bird silhouettes, beak body planning, perched poses, and omen-style use."
+        }
+      ],
+      "game_use_roles": ["graveyard perch", "tower roof silhouette", "banner emblem", "battlefield scavenger cue"],
+      "anatomy_parts": [
+        {"part_id": "wedge_body", "plain_name": "wedge body", "geometry_role": "dark bird mass"},
+        {"part_id": "beak_wedge", "plain_name": "beak wedge", "geometry_role": "direction and corvid read"},
+        {"part_id": "wing_slab_pair", "plain_name": "wing slab pair", "geometry_role": "perched or spread pose"},
+        {"part_id": "tail_fan", "plain_name": "tail fan", "geometry_role": "rear silhouette"},
+        {"part_id": "perch_claws", "plain_name": "perch claws", "geometry_role": "attachment to rail or branch"}
+      ],
+      "materials": ["dark feather", "beak horn", "claw horn", "eye glint"],
+      "real_tools": ["perched corvid sketch", "spread-wing silhouette", "graveyard placement note", "emblem simplification sheet"],
+      "craft_sequence": ["shape dark wedge body", "add beak wedge", "add mirrored wing slabs", "add tail fan", "place perch claws", "create statue/emblem material variant"],
+      "locomotion_mechanics": "Perching and flying bird plan; first asset is a perched static bird with optional spread-wing emblem variant.",
+      "geometry_terms": ["triangle_profile", "capsule_profile", "custom_polygon_profile", "mirror_axis", "attachment_point", "angle", "width"],
+      "blender_tool_ids": ["mesh_from_pydata", "primitive_cone_add", "modifier_mirror", "modifier_solidify", "modifier_bevel", "material_principled_shader", "create_lod_variant", "material_assign_by_part"],
+      "drawing_ui_tags": ["perched pose", "beak wedge", "tail fan", "spread wing", "perch socket"],
+      "source_fields_needed": ["body_length", "beak_length", "wing_pose", "tail_width", "perch_socket", "emblem_symmetry"],
+      "operator_checks": ["Beak direction is readable on dark material.", "Perch claws align with rail, branch, roof, or grave marker.", "Emblem variant stays symmetrical when requested."],
+      "lore_book_hooks": [
+        {
+          "book_title": "Black Birds On The Battlements",
+          "player_reward": "Teaches the player to read perched dark birds as grave, tower, or omen flavor.",
+          "detail_prompt": "Describe beak wedge, tail fan, and perch socket as the core construction."
+        }
+      ],
+      "deferred_details": ["flight loop", "feather-card detail", "statue and banner conversion"]
+    },
+    {
+      "animal_id": "river_fish_v0",
+      "plain_name": "river fish",
+      "family_id": "aquatic_wetland_v0",
+      "role_tier_ids": ["aquatic_wetland_v0", "livestock_food_fiber_v0"],
+      "style_ids": ["fish_streamlined_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - fish",
+          "url": "https://www.britannica.com/animal/fish",
+          "support_summary": "Supports fish reference for streamlined aquatic body planning, fins, tail, scales, and food/river props."
+        }
+      ],
+      "game_use_roles": ["river life", "market fish prop", "kitchen platter source", "pond/cistern ambience"],
+      "anatomy_parts": [
+        {"part_id": "lens_body", "plain_name": "lens body", "geometry_role": "streamlined main body"},
+        {"part_id": "fork_tail", "plain_name": "fork tail", "geometry_role": "aquatic silhouette"},
+        {"part_id": "fin_set", "plain_name": "fin set", "geometry_role": "top and side direction markers"},
+        {"part_id": "eye_pair", "plain_name": "eye pair", "geometry_role": "front scale cue"},
+        {"part_id": "scale_bands", "plain_name": "scale bands", "geometry_role": "surface relief option"}
+      ],
+      "materials": ["wet scale", "fin membrane", "eye gloss", "belly fade"],
+      "real_tools": ["fish side silhouette", "fin placement guide", "scale-band reference", "market prop layout"],
+      "craft_sequence": ["loft lens body", "add tail fork", "add fin triangles", "add eye pair", "add scale bands or bump map", "make wet material variant"],
+      "locomotion_mechanics": "Aquatic swimming body plan; first asset supports static water/market props, with future swim path using body curve and tail direction.",
+      "geometry_terms": ["capsule_profile", "triangle_profile", "radial_stack", "loft_sections", "length", "diameter", "offset_profile"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "mesh_from_pydata", "modifier_mirror", "modifier_lattice", "modifier_bevel", "material_assign_by_part", "procedural_bump_map", "procedural_noise_texture", "create_lod_variant"],
+      "drawing_ui_tags": ["lens body", "fork tail", "fin triangles", "scale bands", "wet material"],
+      "source_fields_needed": ["body_length", "body_diameter", "tail_width", "fin_count", "scale_band_count", "waterline"],
+      "operator_checks": ["Fish reads by lens body and tail fork even without scale detail.", "Market variant can lie flat on platter.", "Wet material works without decals on lower compute hardware."],
+      "lore_book_hooks": [
+        {
+          "book_title": "What The Fishmonger Knows",
+          "player_reward": "Connects river ecology, market props, and kitchen clues.",
+          "detail_prompt": "Explain fins, tail fork, and scale bands as modeling choices that survive low detail."
+        }
+      ],
+      "deferred_details": ["species variants", "schooling behavior", "platter and hook accessory sockets"]
+    },
+    {
+      "animal_id": "snake_v0",
+      "plain_name": "snake",
+      "family_id": "wild_predators_v0",
+      "role_tier_ids": ["wild_predator_v0", "omen_ritual_heraldic_v0"],
+      "style_ids": ["snake_limber_body_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - snake",
+          "url": "https://www.britannica.com/animal/snake",
+          "support_summary": "Supports snake reference for limbless reptile body planning, continuous curves, head shape, and symbolic use."
+        }
+      ],
+      "game_use_roles": ["ruin hazard", "ritual emblem", "coiled floor detail", "staff or carving motif"],
+      "anatomy_parts": [
+        {"part_id": "spine_curve", "plain_name": "spine curve", "geometry_role": "main body path"},
+        {"part_id": "round_body_section", "plain_name": "round body section", "geometry_role": "curve bevel profile"},
+        {"part_id": "head_wedge", "plain_name": "head wedge", "geometry_role": "direction and species read"},
+        {"part_id": "belly_scale_strip", "plain_name": "belly scale strip", "geometry_role": "surface detail and underside cue"},
+        {"part_id": "coil_or_strike_pose", "plain_name": "coil or strike pose", "geometry_role": "pose selection"}
+      ],
+      "materials": ["scale material", "belly strip", "eye gloss", "pattern mask optional"],
+      "real_tools": ["coil geometry sketch", "strike curve sketch", "scale strip note", "emblem simplification sheet"],
+      "craft_sequence": ["draw spine curve", "bevel curve into body", "add head wedge", "assign belly strip material", "add scale bump pattern", "create coil and emblem variants"],
+      "locomotion_mechanics": "Limbless curve-driven body; first asset uses a drawn path with bevel thickness and pose selection instead of limb rigging.",
+      "geometry_terms": ["capsule_profile", "circle_profile", "custom_polygon_profile", "loft_sections", "angle", "radius", "length"],
+      "blender_tool_ids": ["curve_bezier_add", "curve_bevel_profile", "curve_to_mesh", "modifier_lattice", "modifier_bevel", "material_assign_by_part", "procedural_bump_map", "create_collision_proxy", "create_lod_variant"],
+      "drawing_ui_tags": ["spine curve", "coil radius", "head wedge", "belly strip", "emblem pose"],
+      "source_fields_needed": ["path_points", "body_radius", "head_width", "coil_radius", "belly_strip_width", "pose_type"],
+      "operator_checks": ["Snake path does not self-intersect unless intentionally coiled.", "Head wedge clearly shows direction.", "Belly strip stays on underside or facing camera depending on pose."],
+      "lore_book_hooks": [
+        {
+          "book_title": "Curves In The Dust",
+          "player_reward": "Lets the player read snake tracks, staff carvings, and ritual symbols as the same curve grammar.",
+          "detail_prompt": "Explain path, bevel radius, head wedge, and belly strip as the four knobs."
+        }
+      ],
+      "deferred_details": ["animated slither", "venomous color variants", "staff-wrapped variant"]
+    },
+    {
+      "animal_id": "frog_toad_v0",
+      "plain_name": "frog or toad",
+      "family_id": "aquatic_wetland_v0",
+      "role_tier_ids": ["aquatic_wetland_v0", "urban_vermin_v0"],
+      "style_ids": ["amphibian_squat_v0"],
+      "source_support": [
+        {
+          "label": "Britannica - frog",
+          "url": "https://www.britannica.com/animal/frog",
+          "support_summary": "Supports frog reference for amphibian body planning with squat body, long hind legs, eyes, and wetland use."
+        }
+      ],
+      "game_use_roles": ["pond ambience", "wet dungeon detail", "witch hut flavor", "small jump motion cue"],
+      "anatomy_parts": [
+        {"part_id": "squat_body", "plain_name": "squat body", "geometry_role": "wide low trunk"},
+        {"part_id": "bulging_eyes", "plain_name": "bulging eyes", "geometry_role": "amphibian read"},
+        {"part_id": "rear_leg_arcs", "plain_name": "rear leg arcs", "geometry_role": "jump posture"},
+        {"part_id": "front_leg_pair", "plain_name": "front leg pair", "geometry_role": "ground contact"},
+        {"part_id": "webbed_feet", "plain_name": "webbed feet", "geometry_role": "wetland cue"}
+      ],
+      "materials": ["slick skin", "eye gloss", "belly material", "wart bump optional"],
+      "real_tools": ["squat silhouette sketch", "jump-pose guide", "eye placement sheet", "pond scale note"],
+      "craft_sequence": ["shape squat body", "place bulging eyes", "draw rear leg arcs", "add front legs and webbed feet", "assign slick skin material", "create pond scatter variant"],
+      "locomotion_mechanics": "Squat jump body plan; first asset supports static crouch and low-cost hop-ready pose.",
+      "geometry_terms": ["circle_profile", "capsule_profile", "triangle_profile", "scale_profile", "angle", "width", "height"],
+      "blender_tool_ids": ["primitive_uv_sphere_add", "primitive_ico_sphere_add", "mesh_from_pydata", "modifier_mirror", "modifier_lattice", "modifier_bevel", "shade_smooth", "material_assign_by_part", "procedural_bump_map"],
+      "drawing_ui_tags": ["squat body", "bulging eyes", "rear leg arc", "webbed foot", "wet material"],
+      "source_fields_needed": ["body_width", "body_height", "eye_radius", "rear_leg_angle", "foot_width", "skin_bump_strength"],
+      "operator_checks": ["Eyes remain the dominant read at small size.", "Rear legs signal jump without overcomplicating the mesh.", "Wet material does not require decals."],
+      "lore_book_hooks": [
+        {
+          "book_title": "Rain Signs And Pond Voices",
+          "player_reward": "Uses frogs near water, damp stone, and herbalist huts to make environments feel placed.",
+          "detail_prompt": "Explain squat body, eyes, and rear-leg arcs as the core readable details."
+        }
+      ],
+      "deferred_details": ["toad wart variant", "jump loop", "pond ripple VFX hook"]
+    }
+  ]
+}

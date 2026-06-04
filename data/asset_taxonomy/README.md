@@ -28,6 +28,10 @@ characters, clothing, armor, props, tools, materials, and drafting workflows.
   tableware, and pantry prop families, status tiers, styles, visible anatomy,
   serving/storage state, source support, geometry terms, Blender tool IDs,
   drawing UI tags, operator checks, and lore book hooks.
+- `animals_v0/animal_asset_taxonomy_v0.json` records animal role tiers,
+  body-plan styles, families, starter animals, visible anatomy, locomotion read,
+  source support, geometry terms, Blender tool IDs, drawing UI tags, operator
+  checks, and lore book hooks.
 
 ## Boundary
 
@@ -50,3 +54,7 @@ guidance, or active generated-asset inputs.
 Food/drink records are source planning data only. They are not recipe
 instruction, food safety guidance, nutrition guidance, historical-authenticity
 proof, conservation guidance, or active generated-asset inputs.
+
+Animal records are source planning data only. They are not animal-care guidance,
+welfare guidance, biological accuracy proof, animation runtime design, AI
+behavior design, historical-authenticity proof, or active generated-asset inputs.
