@@ -18,6 +18,7 @@ PUMP = ROOT / "scripts" / "asset_pump_v0.py"
 ASSET_CONTRACT = ROOT / "contracts" / "gameguy_asset_v0.json"
 MEASURED_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "measured_components_v0.json"
 SECTION_STACK_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "section_stack_assets_v0.json"
+RADIAL_STACK_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "radial_stack_assets_v0.json"
 BLOCKY_COLUMN_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "blocky_column_assets_v0.json"
 BLOCKY_SHAPE_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "blocky_shape_grammar_assets_v0.json"
 FALSE_CLAIMS = {
@@ -51,6 +52,16 @@ def run_measured_pump(out_root: Path) -> None:
 def run_section_stack_pump(out_root: Path) -> None:
     subprocess.run(
         [sys.executable, str(PUMP), "--bundle", str(SECTION_STACK_BUNDLE), "--out", str(out_root)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
+def run_radial_stack_pump(out_root: Path) -> None:
+    subprocess.run(
+        [sys.executable, str(PUMP), "--bundle", str(RADIAL_STACK_BUNDLE), "--out", str(out_root)],
         cwd=ROOT,
         check=True,
         capture_output=True,
@@ -284,6 +295,47 @@ class AssetPumpTests(unittest.TestCase):
         self.assertEqual(column["source_terms"]["operators"], ["section_stack", "loft_sections"])
         self.assert_mesh_is_well_formed(column)
 
+    def test_radial_stack_bundle_generates_cylindrical_reference_post(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "pump"
+            run_radial_stack_pump(out_root)
+            manifest = load_json(out_root / "manifest.json")
+            post = load_json(out_root / "assets" / "cylindrical_reference_post_v0.json")
+
+        self.assertEqual(manifest["source_bundle_schema"], "asset_mill_radial_stack_bundle_v0")
+        self.assertEqual(manifest["asset_count"], 1)
+        self.assertEqual(post["schema"], "gameguy_asset_v0")
+        self.assertEqual(post["source_schema"], "asset_mill_radial_stack_bundle_v0")
+        self.assertEqual(post["source_operation"], "radial_stack")
+        self.assertEqual(post["asset_kind"], "radial_stack_post")
+        self.assertEqual(post["dimensions_m"], {"width": 1.04, "depth": 0.84, "height": 1.54})
+        self.assertEqual(len(post["mesh"]["vertices"]), 306)
+        self.assertEqual(len(post["mesh"]["faces"]), 300)
+        self.assertEqual(len(post["mesh"]["parts"]), 11)
+        self.assertEqual(post["mesh"]["parts"][0]["part_id"], "radial_stack_body")
+        self.assertEqual(post["mesh"]["parts"][0]["source_primitive"], "radial_stack")
+        self.assertEqual(post["mesh"]["parts"][1]["part_id"], "shaft_rib_00")
+        self.assertEqual(post["mesh"]["parts"][-2]["part_id"], "rail_socket_east")
+        self.assertEqual(post["mesh"]["parts"][-1]["part_id"], "rail_socket_west")
+        self.assertEqual(post["mesh"]["radial_stack"]["grammar"], "radial_stack_v0")
+        self.assertEqual(post["mesh"]["radial_stack"]["segments"], 16)
+        self.assertEqual(post["mesh"]["radial_stack"]["ring_count"], 14)
+        self.assertEqual(post["mesh"]["radial_stack"]["rings"][0]["ring_id"], "round_foot_bottom")
+        self.assertEqual(post["mesh"]["radial_stack"]["rings"][-1]["vertex_range"], [208, 223])
+        self.assertEqual(post["mesh"]["radial_stack"]["cap_triangulation"], "center_fan")
+        self.assertEqual(post["mesh"]["radial_stack"]["bottom_center_vertex"], 224)
+        self.assertEqual(post["mesh"]["radial_stack"]["top_center_vertex"], 225)
+        self.assertEqual(post["mesh"]["radial_stack"]["radial_details"][0]["count"], 8)
+        self.assertEqual(post["mesh"]["radial_stack"]["attachment_count"], 2)
+        self.assertEqual([attachment["part_id"] for attachment in post["mesh"]["radial_stack"]["attachments"]], ["rail_socket_east", "rail_socket_west"])
+        self.assertEqual(sum(1 for face in post["mesh"]["faces"] if len(face) == 3), 32)
+        self.assertEqual(sum(1 for face in post["mesh"]["faces"] if len(face) == 4), 268)
+        self.assertEqual(post["source_terms"]["profiles"], ["circle", "rectangle"])
+        self.assertEqual(post["source_terms"]["operators"], ["radial_stack", "loft_sections", "array_radial", "extrude"])
+        self.assertEqual(post["validation_expectations"]["ring_count"], 14)
+        self.assertEqual(post["validation_expectations"]["rib_count"], 8)
+        self.assert_mesh_is_well_formed(post)
+
     def test_blocky_column_bundle_generates_simple_part_ribbed_column(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             out_root = Path(tmp) / "pump"
@@ -454,6 +506,20 @@ class AssetPumpTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("inner_radius_x must be less than outer_radius_x", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
+
+    def test_radial_stack_rejects_too_few_segments_before_output(self) -> None:
+        source_bundle = load_json(RADIAL_STACK_BUNDLE)
+        source_bundle["assets"][0]["radial_stack"]["segments"] = 6
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            bundle_path = Path(tmp) / "bad_radial_stack_bundle.json"
+            out_root = Path(tmp) / "pump"
+            bundle_path.write_text(json.dumps(source_bundle, indent=2) + "\n", encoding="utf-8")
+            result = run_pump_with_bundle(bundle_path, out_root)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("radial_stack.segments must be >= 8", result.stderr)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_blocky_column_rejects_non_positive_rib_depth_before_output(self) -> None:

@@ -1,0 +1,34 @@
+{
+  "term_id": "radial_stack",
+  "category": "mesh_operation",
+  "plain_name": "Radial Stack",
+  "description": "Builds a deterministic low-poly rotational mesh from ordered height/radius rings, then allows named radial detail parts to be attached.",
+  "required_inputs": {
+    "axis": "z",
+    "segments": "int",
+    "rings": "radial_profile_ring[]"
+  },
+  "outputs": {
+    "type": "mesh"
+  },
+  "constraints": {
+    "axis": "z_only_in_v0",
+    "segments": ">= 8",
+    "min_rings": 2,
+    "ring_positions_must_increase": true,
+    "radii_must_be_positive": true
+  },
+  "common_uses": [
+    "cylindrical post",
+    "banister",
+    "column shaft",
+    "finial base",
+    "round railing support"
+  ],
+  "blender_method": "adapter consumes generated mesh vertices and faces; Blender does not rebuild the revolved profile",
+  "validation": [
+    "manifold_mesh",
+    "outward_normals",
+    "scale_within_bounds"
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "schema": "gameguy_workflow_receipt_v0",
+  "report_id": "3D-LAB-0067-radial-stack-reference-post-v0",
+  "created_utc": "2026-06-04T01:54:50Z",
+  "summary": "Added a canonical radial-stack source lane and first cylindrical reference post generated from height/radius rings with named ribs and rail sockets.",
+  "source_inputs": {
+    "source_recipe": "data/architecture/asset_mill/recipes/radial_stack_assets_v0.json",
+    "operation_term": "geometry_dictionary/operations/radial_stack.json",
+    "generator": "scripts/asset_pump_v0.py",
+    "validator": "scripts/validate_gameguy_asset_v0.py",
+    "preview_adapter": "scripts/export_blender_asset_preview_v0.py"
+  },
+  "generated_asset": {
+    "asset_id": "cylindrical_reference_post_v0",
+    "source_schema": "asset_mill_radial_stack_bundle_v0",
+    "source_operation": "radial_stack",
+    "segments": 16,
+    "ring_count": 14,
+    "radial_detail_count": 1,
+    "rib_count": 8,
+    "attachment_count": 2,
+    "side_socket_count": 2,
+    "vertex_count": 306,
+    "face_count": 300,
+    "part_count": 11,
+    "dimensions_m": {
+      "width": 1.04,
+      "depth": 0.84,
+      "height": 1.54
+    }
+  },
+  "generated_outputs": {
+    "asset_pump_out": "/tmp/gameguy_radial_stack_asset_pump_v0",
+    "asset_json": "/tmp/gameguy_radial_stack_asset_pump_v0/assets/cylindrical_reference_post_v0.json",
+    "manifest": "/tmp/gameguy_radial_stack_asset_pump_v0/manifest.json",
+    "preview_out": "/tmp/gameguy_radial_stack_asset_preview_v0",
+    "preview_png": "/tmp/gameguy_radial_stack_asset_preview_v0/cylindrical_reference_post_v0_preview.png",
+    "writes_repo_outputs": false
+  },
+  "registry": {
+    "canonical_geometry_bundle_count": 6,
+    "canonical_geometry_asset_count": 41,
+    "pipeline_labels_added": [
+      "radial_stack_asset_pump",
+      "radial_stack_asset_validate",
+      "radial_stack_asset_adapter_validate"
+    ]
+  },
+  "validation": {
+    "python_compile": {
+      "command": "python3 -m py_compile scripts/asset_pump_v0.py scripts/validate_generation_pipeline_v0.py",
+      "result": "PASS"
+    },
+    "radial_stack_asset_pump": {
+      "command": "python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/radial_stack_assets_v0.json --clean --out /tmp/gameguy_radial_stack_asset_pump_v0",
+      "result": "pumped assets=1 vertices=306 faces=300 out=/tmp/gameguy_radial_stack_asset_pump_v0"
+    },
+    "radial_stack_asset_validate": {
+      "command": "python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_radial_stack_asset_pump_v0/manifest.json",
+      "result": "PASS gameguy_asset_v0 validation: 1 assets, 306 vertices, 300 faces"
+    },
+    "radial_stack_adapter_validate": {
+      "command": "python3 scripts/export_blender_asset_preview_v0.py --manifest /tmp/gameguy_radial_stack_asset_pump_v0/manifest.json --validate-only",
+      "result": "PASS Blender asset adapter validation: 1 assets, 306 vertices, 300 faces"
+    },
+    "focused_tests": {
+      "command": "python3 -m unittest tests.test_asset_pump_v0 tests.test_validate_asset_generation_registry_v0 tests.test_validate_generation_pipeline_v0",
+      "result": "OK",
+      "test_count": 31
+    },
+    "unit_tests": {
+      "command": "python3 -m unittest discover -s tests",
+      "result": "OK",
+      "test_count": 177
+    },
+    "generation_pipeline_non_blender_skip_unit_tests": {
+      "command": "python3 scripts/validate_generation_pipeline_v0.py --skip-unit-tests --json-report /tmp/gameguy_pipeline_radial_stack_v0_final.json",
+      "result": "PASS generation pipeline validation: commands=46 json=275 include_blender=false",
+      "command_count": 46,
+      "json_file_count": 275
+    },
+    "blender_preview": {
+      "command": "/Applications/Blender.app/Contents/MacOS/Blender --background --python scripts/export_blender_asset_preview_v0.py -- --manifest /tmp/gameguy_radial_stack_asset_pump_v0/manifest.json --out /tmp/gameguy_radial_stack_asset_preview_v0 --render --hide-connectors",
+      "result": "PASS Blender asset preview export: assets=1 out=/tmp/gameguy_radial_stack_asset_preview_v0"
+    }
+  },
+  "rules": {
+    "source_recipe_first": true,
+    "pump_emits_deterministic_json": true,
+    "blender_is_adapter_layer": true,
+    "blender_adapter_reads_source_recipe": false,
+    "generated_outputs_stay_under_tmp": true,
+    "no_repo_mesh_output": true,
+    "no_repo_media_output": true
+  },
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "gym_museum_approval": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false
+  },
+  "recommended_next_goal": "Refine the cylindrical reference post sockets and collars, then add an asset-polish pass for bevels and weighted normals."
+}

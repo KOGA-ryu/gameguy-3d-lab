@@ -34,6 +34,7 @@ GUARD_PANEL_TOOL_PLAN_EXECUTION_OUT = Path("/tmp/gameguy_blender_guard_panel_too
 SIMPLE_ASSET_OUT = Path("/tmp/gameguy_asset_pump_v0")
 MEASURED_ASSET_OUT = Path("/tmp/gameguy_measured_asset_pump_v0")
 SECTION_STACK_ASSET_OUT = Path("/tmp/gameguy_section_stack_asset_pump_v0")
+RADIAL_STACK_ASSET_OUT = Path("/tmp/gameguy_radial_stack_asset_pump_v0")
 BLOCKY_COLUMN_ASSET_OUT = Path("/tmp/gameguy_blocky_column_asset_pump_v0")
 BLOCKY_SHAPE_ASSET_OUT = Path("/tmp/gameguy_blocky_shape_grammar_asset_pump_v0")
 SACRED_GRAPH_OUT = Path("/tmp/gameguy_sacred_graph_v0")
@@ -420,6 +421,22 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
                 ),
             ),
             CommandStep("section_stack_asset_validate", python_script("scripts/validate_gameguy_asset_v0.py", "--manifest", SECTION_STACK_ASSET_OUT / "manifest.json")),
+            CommandStep(
+                "radial_stack_asset_pump",
+                python_script(
+                    "scripts/asset_pump_v0.py",
+                    "--bundle",
+                    "data/architecture/asset_mill/recipes/radial_stack_assets_v0.json",
+                    "--clean",
+                    "--out",
+                    RADIAL_STACK_ASSET_OUT,
+                ),
+            ),
+            CommandStep("radial_stack_asset_validate", python_script("scripts/validate_gameguy_asset_v0.py", "--manifest", RADIAL_STACK_ASSET_OUT / "manifest.json")),
+            CommandStep(
+                "radial_stack_asset_adapter_validate",
+                python_script("scripts/export_blender_asset_preview_v0.py", "--manifest", RADIAL_STACK_ASSET_OUT / "manifest.json", "--validate-only"),
+            ),
             CommandStep(
                 "blocky_column_asset_pump",
                 python_script(

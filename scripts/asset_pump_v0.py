@@ -28,6 +28,7 @@ DICTIONARY_ROOT = ROOT / "geometry_dictionary"
 SIMPLE_BUNDLE_SCHEMA = "asset_mill_recipe_bundle_v0"
 MEASURED_BUNDLE_SCHEMA = "asset_mill_measured_component_bundle_v0"
 SECTION_STACK_BUNDLE_SCHEMA = "asset_mill_section_stack_bundle_v0"
+RADIAL_STACK_BUNDLE_SCHEMA = "asset_mill_radial_stack_bundle_v0"
 BLOCKY_COLUMN_BUNDLE_SCHEMA = "asset_mill_blocky_column_bundle_v0"
 BLOCKY_SHAPE_BUNDLE_SCHEMA = "asset_mill_blocky_shape_grammar_bundle_v0"
 FALSE_CLAIMS = {
@@ -348,6 +349,104 @@ def validate_section_stack_bundle_terms(bundle: dict[str, Any], terms: dict[str,
         if operation not in operation_terms(terms):
             fail(f"{asset_id}.operation uses unknown geometry dictionary operation `{operation}`")
         validate_section_stack_rings(asset.get("section_stack"), terms, f"{asset_id}.section_stack")
+        require_known_terms(asset.get("geometry_terms_used"), known_terms, f"{asset_id}.geometry_terms_used")
+        require_known_terms(asset.get("profile_terms"), terms["profile_primitive"], f"{asset_id}.profile_terms")
+        require_known_terms(asset.get("operations"), operation_terms(terms), f"{asset_id}.operations")
+        for connector_index, connector in enumerate(require_list(asset.get("connectors"), f"{asset_id}.connectors")):
+            connector_id = require_string(connector, f"{asset_id}.connectors[{connector_index}]")
+            if connector_id not in terms["connector"]:
+                fail(f"{asset_id}.connectors[{connector_index}] uses unknown geometry dictionary connector `{connector_id}`")
+        for tag_index, tag in enumerate(require_list(asset.get("semantic_tags"), f"{asset_id}.semantic_tags")):
+            semantic_tag = require_string(tag, f"{asset_id}.semantic_tags[{tag_index}]")
+            if semantic_tag not in terms["semantic_geometry"]:
+                fail(f"{asset_id}.semantic_tags[{tag_index}] uses unknown geometry dictionary semantic tag `{semantic_tag}`")
+        for slot_index, slot in enumerate(require_list(asset.get("child_slots"), f"{asset_id}.child_slots")):
+            require_string(slot, f"{asset_id}.child_slots[{slot_index}]")
+        validate_claims(asset)
+
+
+def validate_radial_stack_ring(value: Any, field: str) -> str:
+    ring = require_object(value, field)
+    ring_id = require_string(ring.get("ring_id"), f"{field}.ring_id")
+    finite_float(ring.get("at"), f"{field}.at")
+    positive_float(ring.get("radius_m"), f"{field}.radius_m")
+    if "material_role" in ring:
+        require_string(ring.get("material_role"), f"{field}.material_role")
+    return ring_id
+
+
+def validate_radial_stack_source(value: Any, field: str) -> None:
+    stack = require_object(value, field)
+    axis = require_string(stack.get("axis"), f"{field}.axis")
+    if axis != "z":
+        fail(f"{field}.axis only supports z in v0")
+    integer_at_least(stack.get("segments"), 8, f"{field}.segments")
+
+    rings = require_list(stack.get("rings"), f"{field}.rings")
+    if len(rings) < 2:
+        fail(f"{field}.rings requires at least two rings")
+    seen_ring_ids: set[str] = set()
+    previous_at: float | None = None
+    for ring_index, item in enumerate(rings):
+        ring = require_object(item, f"{field}.rings[{ring_index}]")
+        ring_id = validate_radial_stack_ring(ring, f"{field}.rings[{ring_index}]")
+        if ring_id in seen_ring_ids:
+            fail(f"{field}.rings duplicate ring_id: {ring_id}")
+        seen_ring_ids.add(ring_id)
+        at = finite_float(ring.get("at"), f"{field}.rings[{ring_index}].at")
+        if previous_at is not None and at <= previous_at:
+            fail(f"{field}.rings[{ring_index}].at must increase")
+        previous_at = at
+
+    seen_part_ids = {"radial_stack_body"}
+    radial_details = require_list(stack.get("radial_details", []), f"{field}.radial_details")
+    for detail_index, item in enumerate(radial_details):
+        detail = require_object(item, f"{field}.radial_details[{detail_index}]")
+        detail_type = require_string(detail.get("detail_type"), f"{field}.radial_details[{detail_index}].detail_type")
+        if detail_type != "radial_box_array":
+            fail(f"{field}.radial_details[{detail_index}].detail_type unsupported: {detail_type}")
+        validate_blocky_ribs(detail, f"{field}.radial_details[{detail_index}]")
+        part_prefix = require_string(detail.get("part_prefix"), f"{field}.radial_details[{detail_index}].part_prefix")
+        count = integer_at_least(detail.get("count"), 1, f"{field}.radial_details[{detail_index}].count")
+        for rib_index in range(count):
+            part_id = f"{part_prefix}_{rib_index:02d}"
+            if part_id in seen_part_ids:
+                fail(f"{field} duplicate expanded part_id: {part_id}")
+            seen_part_ids.add(part_id)
+
+    attachments = require_list(stack.get("attachments", []), f"{field}.attachments")
+    for attachment_index, item in enumerate(attachments):
+        attachment = require_object(item, f"{field}.attachments[{attachment_index}]")
+        part_type = require_string(attachment.get("part_type"), f"{field}.attachments[{attachment_index}].part_type")
+        if part_type != "box":
+            fail(f"{field}.attachments[{attachment_index}].part_type unsupported: {part_type}")
+        validate_blocky_box_part(attachment, f"{field}.attachments[{attachment_index}]")
+        part_id = require_string(attachment.get("part_id"), f"{field}.attachments[{attachment_index}].part_id")
+        if part_id in seen_part_ids:
+            fail(f"{field} duplicate expanded part_id: {part_id}")
+        seen_part_ids.add(part_id)
+
+
+def validate_radial_stack_bundle_terms(bundle: dict[str, Any], terms: dict[str, set[str]]) -> None:
+    assets = require_list(bundle.get("assets"), "assets")
+    if not assets:
+        fail("bundle assets must not be empty")
+    if bundle.get("asset_count") != len(assets):
+        fail("bundle asset_count must match assets length")
+    known_terms = all_terms(terms)
+    seen_asset_ids: set[str] = set()
+    for asset_index, item in enumerate(assets):
+        asset = require_object(item, f"assets[{asset_index}]")
+        asset_id = require_string(asset.get("asset_id"), f"assets[{asset_index}].asset_id")
+        if asset_id in seen_asset_ids:
+            fail(f"duplicate asset_id: {asset_id}")
+        seen_asset_ids.add(asset_id)
+        operation = require_string(asset.get("operation"), f"{asset_id}.operation")
+        if operation != "radial_stack":
+            fail(f"{asset_id}.operation must be radial_stack")
+        if operation not in operation_terms(terms):
+            fail(f"{asset_id}.operation uses unknown geometry dictionary operation `{operation}`")
+        validate_radial_stack_source(asset.get("radial_stack"), f"{asset_id}.radial_stack")
         require_known_terms(asset.get("geometry_terms_used"), known_terms, f"{asset_id}.geometry_terms_used")
         require_known_terms(asset.get("profile_terms"), terms["profile_primitive"], f"{asset_id}.profile_terms")
         require_known_terms(asset.get("operations"), operation_terms(terms), f"{asset_id}.operations")
@@ -936,6 +1035,125 @@ def section_stack_mesh(stack: dict[str, Any]) -> tuple[Mesh, dict[str, Any], lis
     return Mesh(vertices=vertices, faces=faces), metadata, parts
 
 
+def radial_stack_body_mesh(stack: dict[str, Any]) -> tuple[Mesh, dict[str, Any]]:
+    axis = require_string(stack.get("axis"), "radial_stack.axis")
+    if axis != "z":
+        fail("radial_stack.axis only supports z in v0")
+    segments = integer_at_least(stack.get("segments"), 8, "radial_stack.segments")
+    rings_source = require_list(stack.get("rings"), "radial_stack.rings")
+    if len(rings_source) < 2:
+        fail("radial_stack.rings requires at least two rings")
+
+    vertices: list[list[float]] = []
+    rings: list[dict[str, Any]] = []
+    previous_at: float | None = None
+    for ring_index, item in enumerate(rings_source):
+        ring = require_object(item, f"radial_stack.rings[{ring_index}]")
+        ring_id = require_string(ring.get("ring_id"), f"radial_stack.rings[{ring_index}].ring_id")
+        at = finite_float(ring.get("at"), f"radial_stack.rings[{ring_index}].at")
+        if previous_at is not None and at <= previous_at:
+            fail(f"radial_stack.rings[{ring_index}].at must increase")
+        previous_at = at
+        radius = positive_float(ring.get("radius_m"), f"radial_stack.rings[{ring_index}].radius_m")
+        start = len(vertices)
+        for segment_index in range(segments):
+            angle = math.tau * segment_index / segments
+            vertices.append(
+                [
+                    round(math.cos(angle) * radius, 6),
+                    round(math.sin(angle) * radius, 6),
+                    at,
+                ]
+            )
+        ring_record: dict[str, Any] = {
+            "ring_id": ring_id,
+            "at": at,
+            "radius_m": radius,
+            "vertex_range": [start, len(vertices) - 1],
+        }
+        if isinstance(ring.get("material_role"), str) and ring["material_role"]:
+            ring_record["material_role"] = ring["material_role"]
+        rings.append(ring_record)
+
+    last_start = (len(rings) - 1) * segments
+    bottom_center_index = len(vertices)
+    vertices.append(ring_center(vertices[0:segments]))
+    top_center_index = len(vertices)
+    vertices.append(ring_center(vertices[last_start : last_start + segments]))
+
+    faces: list[list[int]] = []
+    for segment_index in range(segments):
+        nxt = (segment_index + 1) % segments
+        faces.append([bottom_center_index, nxt, segment_index])
+    for segment_index in range(segments):
+        nxt = (segment_index + 1) % segments
+        faces.append([top_center_index, last_start + segment_index, last_start + nxt])
+    for ring_index in range(len(rings) - 1):
+        start = ring_index * segments
+        next_start = (ring_index + 1) * segments
+        for segment_index in range(segments):
+            nxt = (segment_index + 1) % segments
+            faces.append([start + segment_index, start + nxt, next_start + nxt, next_start + segment_index])
+
+    metadata = {
+        "axis": axis,
+        "grammar": "radial_stack_v0",
+        "segments": segments,
+        "ring_count": len(rings),
+        "rings": rings,
+        "cap_triangulation": "center_fan",
+        "bottom_center_vertex": bottom_center_index,
+        "top_center_vertex": top_center_index,
+    }
+    return Mesh(vertices=vertices, faces=faces), metadata
+
+
+def append_radial_stack_attachment(parts_mesh: list[Mesh], mesh_parts: list[dict[str, Any]], attachment: dict[str, Any], field: str) -> dict[str, Any]:
+    part_type = require_string(attachment.get("part_type"), f"{field}.part_type")
+    if part_type != "box":
+        fail(f"{field}.part_type unsupported: {part_type}")
+    part_id = require_string(attachment.get("part_id"), f"{field}.part_id")
+    append_mesh_part(parts_mesh, mesh_parts, part_id, "box", attachment.get("material_role"), blocky_box_part_mesh(attachment, field))
+    return {
+        "part_type": "box",
+        "part_id": part_id,
+        "z_range": increasing_range(attachment.get("z_range"), f"{field}.z_range"),
+        "center_xy": part_center_xy(attachment, field),
+    }
+
+
+def radial_stack_mesh(stack: dict[str, Any]) -> tuple[Mesh, dict[str, Any], list[dict[str, Any]]]:
+    body_mesh, body_metadata = radial_stack_body_mesh(stack)
+    parts_mesh: list[Mesh] = []
+    mesh_parts: list[dict[str, Any]] = []
+    append_mesh_part(parts_mesh, mesh_parts, "radial_stack_body", "radial_stack", stack.get("material_role", "body"), body_mesh)
+
+    radial_details: list[dict[str, Any]] = []
+    for detail_index, item in enumerate(require_list(stack.get("radial_details", []), "radial_stack.radial_details")):
+        detail = require_object(item, f"radial_stack.radial_details[{detail_index}]")
+        detail_type = require_string(detail.get("detail_type"), f"radial_stack.radial_details[{detail_index}].detail_type")
+        if detail_type != "radial_box_array":
+            fail(f"radial_stack.radial_details[{detail_index}].detail_type unsupported: {detail_type}")
+        radial_details.append({"detail_type": detail_type, **append_radial_box_array(parts_mesh, mesh_parts, detail, f"radial_stack.radial_details[{detail_index}]")})
+
+    attachments: list[dict[str, Any]] = []
+    for attachment_index, item in enumerate(require_list(stack.get("attachments", []), "radial_stack.attachments")):
+        attachment = require_object(item, f"radial_stack.attachments[{attachment_index}]")
+        attachments.append(append_radial_stack_attachment(parts_mesh, mesh_parts, attachment, f"radial_stack.attachments[{attachment_index}]"))
+
+    metadata = {
+        **body_metadata,
+        "assembly": "revolved_body_with_named_detail_parts",
+        "body_part_id": "radial_stack_body",
+        "radial_detail_count": len(radial_details),
+        "radial_details": radial_details,
+        "attachment_count": len(attachments),
+        "attachments": attachments,
+        "part_count": len(mesh_parts),
+    }
+    return merged_mesh(parts_mesh), metadata, mesh_parts
+
+
 def ring_center(ring: list[list[float]]) -> list[float]:
     if not ring:
         fail("cannot calculate center for empty ring")
@@ -1273,6 +1491,8 @@ def source_profile_terms(asset: dict[str, Any]) -> list[str]:
             if profile_type not in terms:
                 terms.append(profile_type)
         return terms
+    if operation == "radial_stack":
+        return ["circle", "rectangle"]
     if operation == "blocky_column":
         return ["square", "circle", "rectangle"]
     if operation == "blocky_shape":
@@ -1421,6 +1641,9 @@ def compile_asset(asset: dict[str, Any], compiled: dict[str, dict[str, Any]], so
     elif operation == "section_stack":
         mesh, stack_metadata, mesh_parts = section_stack_mesh(require_object(asset.get("section_stack"), f"{asset_id}.section_stack"))
         mesh_extra["section_stack"] = stack_metadata
+    elif operation == "radial_stack":
+        mesh, stack_metadata, mesh_parts = radial_stack_mesh(require_object(asset.get("radial_stack"), f"{asset_id}.radial_stack"))
+        mesh_extra["radial_stack"] = stack_metadata
     elif operation == "blocky_column":
         mesh, column_metadata, mesh_parts = blocky_column_mesh(require_object(asset.get("blocky_column"), f"{asset_id}.blocky_column"))
         mesh_extra["blocky_column"] = column_metadata
@@ -1559,6 +1782,7 @@ def load_bundle(path: Path) -> dict[str, Any]:
         SIMPLE_BUNDLE_SCHEMA,
         MEASURED_BUNDLE_SCHEMA,
         SECTION_STACK_BUNDLE_SCHEMA,
+        RADIAL_STACK_BUNDLE_SCHEMA,
         BLOCKY_COLUMN_BUNDLE_SCHEMA,
         BLOCKY_SHAPE_BUNDLE_SCHEMA,
     }
@@ -1643,6 +1867,8 @@ def main() -> None:
         validate_measured_bundle_terms(bundle, geometry_terms)
     elif source_schema == SECTION_STACK_BUNDLE_SCHEMA:
         validate_section_stack_bundle_terms(bundle, geometry_terms)
+    elif source_schema == RADIAL_STACK_BUNDLE_SCHEMA:
+        validate_radial_stack_bundle_terms(bundle, geometry_terms)
     elif source_schema == BLOCKY_COLUMN_BUNDLE_SCHEMA:
         validate_blocky_column_bundle_terms(bundle, geometry_terms)
     elif source_schema == BLOCKY_SHAPE_BUNDLE_SCHEMA:
@@ -1657,7 +1883,7 @@ def main() -> None:
         if asset_id in seen:
             fail(f"duplicate asset_id: {asset_id}")
         seen.add(asset_id)
-        if source_schema in {SIMPLE_BUNDLE_SCHEMA, SECTION_STACK_BUNDLE_SCHEMA, BLOCKY_COLUMN_BUNDLE_SCHEMA, BLOCKY_SHAPE_BUNDLE_SCHEMA}:
+        if source_schema in {SIMPLE_BUNDLE_SCHEMA, SECTION_STACK_BUNDLE_SCHEMA, RADIAL_STACK_BUNDLE_SCHEMA, BLOCKY_COLUMN_BUNDLE_SCHEMA, BLOCKY_SHAPE_BUNDLE_SCHEMA}:
             compiled[asset_id] = compile_asset(asset, compiled, source_schema)
         else:
             compiled[asset_id] = compile_measured_asset(asset, source_schema)

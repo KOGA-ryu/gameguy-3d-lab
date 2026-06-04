@@ -77,6 +77,8 @@ class GenerationPipelineValidatorTests(unittest.TestCase):
         self.assertIn("lipped_post_context_blender_adapter_validate_only", labels)
         self.assertIn("simple_asset_validate", labels)
         self.assertIn("measured_asset_adapter_validate", labels)
+        self.assertIn("radial_stack_asset_validate", labels)
+        self.assertIn("radial_stack_asset_adapter_validate", labels)
         self.assertIn("script_orbit_audit", labels)
 
         module = load_pipeline_module()

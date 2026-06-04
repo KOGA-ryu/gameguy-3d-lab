@@ -1,0 +1,213 @@
+{
+  "schema": "asset_mill_radial_stack_bundle_v0",
+  "bundle_id": "radial_stack_assets_v0",
+  "purpose": "Radial-stack source asset bundle for cylindrical posts and banister-style supports generated from height/radius side profiles.",
+  "units": "abstract_meter",
+  "rules": {
+    "source_lane": true,
+    "deterministic_output": true,
+    "no_blender_logic": true,
+    "no_generated_outputs": true,
+    "no_wall_clock_fields": true
+  },
+  "asset_count": 1,
+  "assets": [
+    {
+      "asset_id": "cylindrical_reference_post_v0",
+      "asset_kind": "radial_stack_post",
+      "operation": "radial_stack",
+      "architectural_role": "cylindrical_railing_post_with_stepped_moldings_ribs_and_side_rail_sockets",
+      "generation_use": [
+        "fence_post",
+        "banister_post",
+        "rail_anchor",
+        "column_prototype"
+      ],
+      "semantic_tags": [
+        "support",
+        "barrier",
+        "rail",
+        "collision_proxy"
+      ],
+      "connectors": [
+        "floor",
+        "ceiling",
+        "east",
+        "west",
+        "radial"
+      ],
+      "child_slots": [
+        "round_plinth",
+        "lower_molding_lip",
+        "vertical_rib",
+        "side_rail_socket",
+        "upper_capital_ring"
+      ],
+      "geometry_terms_used": [
+        "radial_stack",
+        "loft_sections",
+        "array_radial",
+        "extrude",
+        "circle",
+        "rectangle",
+        "floor",
+        "ceiling",
+        "east",
+        "west",
+        "radial",
+        "support",
+        "barrier",
+        "rail",
+        "collision_proxy"
+      ],
+      "profile_terms": [
+        "circle",
+        "rectangle"
+      ],
+      "operations": [
+        "radial_stack",
+        "loft_sections",
+        "array_radial",
+        "extrude"
+      ],
+      "radial_stack": {
+        "axis": "z",
+        "segments": 16,
+        "material_role": "stone_body",
+        "rings": [
+          {
+            "ring_id": "round_foot_bottom",
+            "at": 0.0,
+            "radius_m": 0.36,
+            "material_role": "plinth"
+          },
+          {
+            "ring_id": "round_foot_wall",
+            "at": 0.08,
+            "radius_m": 0.36,
+            "material_role": "plinth"
+          },
+          {
+            "ring_id": "lower_shadow_lip_out",
+            "at": 0.1,
+            "radius_m": 0.42,
+            "material_role": "lower_lip"
+          },
+          {
+            "ring_id": "lower_shadow_lip_flat",
+            "at": 0.14,
+            "radius_m": 0.42,
+            "material_role": "lower_lip"
+          },
+          {
+            "ring_id": "lower_neck_in",
+            "at": 0.17,
+            "radius_m": 0.31,
+            "material_role": "neck"
+          },
+          {
+            "ring_id": "lower_neck_flat",
+            "at": 0.24,
+            "radius_m": 0.31,
+            "material_role": "neck"
+          },
+          {
+            "ring_id": "shaft_start",
+            "at": 0.28,
+            "radius_m": 0.27,
+            "material_role": "shaft"
+          },
+          {
+            "ring_id": "shaft_end",
+            "at": 1.18,
+            "radius_m": 0.27,
+            "material_role": "shaft"
+          },
+          {
+            "ring_id": "upper_neck_out",
+            "at": 1.22,
+            "radius_m": 0.31,
+            "material_role": "neck"
+          },
+          {
+            "ring_id": "upper_neck_flat",
+            "at": 1.28,
+            "radius_m": 0.31,
+            "material_role": "neck"
+          },
+          {
+            "ring_id": "upper_capital_lip_out",
+            "at": 1.31,
+            "radius_m": 0.42,
+            "material_role": "upper_lip"
+          },
+          {
+            "ring_id": "upper_capital_lip_flat",
+            "at": 1.36,
+            "radius_m": 0.42,
+            "material_role": "upper_lip"
+          },
+          {
+            "ring_id": "top_cap_in",
+            "at": 1.44,
+            "radius_m": 0.34,
+            "material_role": "cap"
+          },
+          {
+            "ring_id": "top_cap_flat",
+            "at": 1.54,
+            "radius_m": 0.34,
+            "material_role": "cap"
+          }
+        ],
+        "radial_details": [
+          {
+            "detail_type": "radial_box_array",
+            "part_prefix": "shaft_rib",
+            "count": 8,
+            "core_radius_m": 0.27,
+            "rib_depth_m": 0.035,
+            "rib_width_m": 0.025,
+            "z_range": [0.3, 1.16],
+            "start_angle_degrees": 22.5,
+            "material_role": "raised_rib"
+          }
+        ],
+        "attachments": [
+          {
+            "part_type": "box",
+            "part_id": "rail_socket_east",
+            "size_m": [0.12, 0.28],
+            "center_xy": [0.46, 0.0],
+            "z_range": [0.64, 0.86],
+            "material_role": "rail_socket"
+          },
+          {
+            "part_type": "box",
+            "part_id": "rail_socket_west",
+            "size_m": [0.12, 0.28],
+            "center_xy": [-0.46, 0.0],
+            "z_range": [0.64, 0.86],
+            "material_role": "rail_socket"
+          }
+        ]
+      },
+      "validation_expectations": {
+        "ring_count": 14,
+        "segments": 16,
+        "radial_detail_count": 1,
+        "rib_count": 8,
+        "attachment_count": 2,
+        "side_socket_count": 2,
+        "nonzero_bounds": true,
+        "known_geometry_terms": true
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false
+      }
+    }
+  ]
+}

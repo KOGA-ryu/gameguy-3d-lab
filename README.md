@@ -143,6 +143,15 @@ python3 scripts/asset_pump_v0.py \
   --out /tmp/gameguy_section_stack_asset_pump_v0
 ```
 
+Radial-stack assets use a side-profile of ordered height/radius rings to generate low-poly cylindrical posts, with named radial ribs and sockets as detail parts:
+
+```bash
+python3 scripts/asset_pump_v0.py \
+  --bundle data/architecture/asset_mill/recipes/radial_stack_assets_v0.json \
+  --clean \
+  --out /tmp/gameguy_radial_stack_asset_pump_v0
+```
+
 Blocky compound columns keep the source simple while generating shape-rich assets from named simple parts:
 
 ```bash
@@ -383,6 +392,9 @@ python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_measured_as
 python3 scripts/export_blender_measured_components_preview_v0.py --manifest /tmp/gameguy_measured_asset_pump_v0/manifest.json --validate-only
 python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/section_stack_assets_v0.json --clean --out /tmp/gameguy_section_stack_asset_pump_v0
 python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_section_stack_asset_pump_v0/manifest.json
+python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/radial_stack_assets_v0.json --clean --out /tmp/gameguy_radial_stack_asset_pump_v0
+python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_radial_stack_asset_pump_v0/manifest.json
+python3 scripts/export_blender_asset_preview_v0.py --manifest /tmp/gameguy_radial_stack_asset_pump_v0/manifest.json --validate-only
 python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/blocky_column_assets_v0.json --clean --out /tmp/gameguy_blocky_column_asset_pump_v0
 python3 scripts/validate_gameguy_asset_v0.py --manifest /tmp/gameguy_blocky_column_asset_pump_v0/manifest.json
 python3 scripts/asset_pump_v0.py --bundle data/architecture/asset_mill/recipes/blocky_shape_grammar_assets_v0.json --clean --out /tmp/gameguy_blocky_shape_grammar_asset_pump_v0
@@ -415,7 +427,7 @@ Expected current checks:
 - Blender tool-plan execution quality evidence is recorded in `workflow/reports/3D-LAB-0021-execution-quality-pass-v0/`.
 - Tiny source fixture validation passes.
 - Measured component source validation passes.
-- Generated `gameguy_asset_v0` validation passes for simple, measured, section-stack, blocky-column, and blocky-shape grammar pump output.
+- Generated `gameguy_asset_v0` validation passes for simple, measured, section-stack, radial-stack, blocky-column, and blocky-shape grammar pump output.
 - Blender adapter validation consumes generated asset JSON.
 - Measured component Blender adapter validation consumes generated measured asset JSON.
 - Script orbit audit runs without deleting or moving files.
