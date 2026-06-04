@@ -124,3 +124,11 @@ Priority for practical writeups:
 14. `create_collision_proxy`
 15. `create_lod_variant`
 
+These first cards now live in:
+
+```text
+docs/research/asset_readiness_system_v0/blender_tool_cards/
+```
+
+Use the cards as the first operator-facing notes before turning them into
+machine-readable tool-plan requirements.

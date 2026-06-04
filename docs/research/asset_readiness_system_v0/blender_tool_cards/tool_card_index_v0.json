@@ -1,0 +1,84 @@
+{
+  "schema": "blender_tool_card_index_v0",
+  "index_id": "asset_readiness_blender_tool_cards_v0",
+  "source_dictionary": "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json",
+  "purpose": "Index the first practical human-facing Blender tool cards for architectural asset operator passes.",
+  "cards": [
+    {
+      "tool_id": "mesh_from_pydata",
+      "stage": "base_form",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md"
+    },
+    {
+      "tool_id": "extrude_faces",
+      "stage": "base_form",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md"
+    },
+    {
+      "tool_id": "modifier_screw",
+      "stage": "base_form",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md"
+    },
+    {
+      "tool_id": "modifier_boolean",
+      "stage": "assembly",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md"
+    },
+    {
+      "tool_id": "modifier_array",
+      "stage": "assembly",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md"
+    },
+    {
+      "tool_id": "modifier_mirror",
+      "stage": "assembly",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md"
+    },
+    {
+      "tool_id": "inset_faces",
+      "stage": "shape_refinement",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md"
+    },
+    {
+      "tool_id": "modifier_bevel",
+      "stage": "shape_refinement",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md"
+    },
+    {
+      "tool_id": "modifier_weighted_normal",
+      "stage": "shape_refinement",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md"
+    },
+    {
+      "tool_id": "curve_bevel_profile",
+      "stage": "shape_refinement",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md"
+    },
+    {
+      "tool_id": "curve_to_mesh",
+      "stage": "retopo_cleanup",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+    },
+    {
+      "tool_id": "uv_cube_project",
+      "stage": "uv_mapping",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+    },
+    {
+      "tool_id": "material_assign_by_part",
+      "stage": "material_texture",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md"
+    },
+    {
+      "tool_id": "create_collision_proxy",
+      "stage": "validation_export",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/game_proxy_tool_cards_v0.md"
+    },
+    {
+      "tool_id": "create_lod_variant",
+      "stage": "validation_export",
+      "doc": "docs/research/asset_readiness_system_v0/blender_tool_cards/game_proxy_tool_cards_v0.md"
+    }
+  ]
+}
+

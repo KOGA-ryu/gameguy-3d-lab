@@ -44,6 +44,8 @@ asset family
   while still moving assets forward.
 - `blender_tool_fillout_queue_v0.md` names the Blender tools that need practical
   tool cards.
+- `blender_tool_cards/` contains the first practical cards for base-form,
+  assembly, refinement, UV/material, and game-proxy tools.
 - `reference_and_drawing_guide_queue_v0.md` defines how reference images and
   construction drawings should be collected and converted into build guides.
 - `modular_game_asset_requirements_v0.md` lists the non-visual requirements for
@@ -59,4 +61,3 @@ compliance. It defines what needs to be known before those tasks are worth doing
 Reference images remain morphology references unless a later source packet states
 license, provenance, and allowed use. Building-code compliance needs a separate
 jurisdiction-specific reference lane.
-

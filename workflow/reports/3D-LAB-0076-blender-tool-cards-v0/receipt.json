@@ -1,0 +1,63 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0076-blender-tool-cards-v0",
+  "title": "Blender tool cards v0",
+  "status": "complete",
+  "documentation_root": "docs/research/asset_readiness_system_v0/blender_tool_cards",
+  "new_docs": [
+    "docs/research/asset_readiness_system_v0/blender_tool_cards/README.md",
+    "docs/research/asset_readiness_system_v0/blender_tool_cards/base_form_tool_cards_v0.md",
+    "docs/research/asset_readiness_system_v0/blender_tool_cards/assembly_tool_cards_v0.md",
+    "docs/research/asset_readiness_system_v0/blender_tool_cards/shape_refinement_tool_cards_v0.md",
+    "docs/research/asset_readiness_system_v0/blender_tool_cards/curve_uv_material_tool_cards_v0.md",
+    "docs/research/asset_readiness_system_v0/blender_tool_cards/game_proxy_tool_cards_v0.md",
+    "docs/research/asset_readiness_system_v0/blender_tool_cards/tool_card_index_v0.json"
+  ],
+  "updated_docs": [
+    "docs/research/asset_readiness_system_v0/README.md",
+    "docs/research/asset_readiness_system_v0/blender_tool_fillout_queue_v0.md"
+  ],
+  "covered_tool_ids": [
+    "mesh_from_pydata",
+    "extrude_faces",
+    "modifier_screw",
+    "modifier_boolean",
+    "modifier_array",
+    "modifier_mirror",
+    "inset_faces",
+    "modifier_bevel",
+    "modifier_weighted_normal",
+    "curve_bevel_profile",
+    "curve_to_mesh",
+    "uv_cube_project",
+    "material_assign_by_part",
+    "create_collision_proxy",
+    "create_lod_variant"
+  ],
+  "rules": {
+    "documentation_only": true,
+    "no_generated_assets": true,
+    "no_blender_execution": true,
+    "no_reference_image_fetch": true,
+    "machine_readable_source_unchanged": true
+  },
+  "validation": {
+    "receipt_json_parse": {
+      "command": "python3 -m json.tool workflow/reports/3D-LAB-0076-blender-tool-cards-v0/receipt.json",
+      "result": "PASS"
+    },
+    "tool_card_index_json_parse": {
+      "command": "python3 -m json.tool docs/research/asset_readiness_system_v0/blender_tool_cards/tool_card_index_v0.json",
+      "result": "PASS"
+    },
+    "tool_ids_crosscheck": {
+      "command": "python3 - <<'PY' ... compare tool_card_index_v0.json to blender_tool_dictionary_v0.json",
+      "result": "PASS cards=15 source_tools=97"
+    },
+    "asset_generation_registry_validate": {
+      "command": "python3 scripts/validate_asset_generation_registry_v0.py",
+      "result": "PASS source_component_style_sheets=5"
+    }
+  },
+  "recommended_next_goal": "Use the per-asset workcard template to prepare one real railing component handoff with reference packet, drawing guide, and selected tool cards."
+}
