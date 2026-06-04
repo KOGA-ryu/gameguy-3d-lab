@@ -38,6 +38,7 @@ REQUIRED_QUALITY_FLAGS = {
     "sweeps_applied",
     "insets_applied",
     "extrusions_applied",
+    "uv_unwrap_applied",
     "material_assignment_applied",
     "bevels_applied",
     "weighted_normals_added",
@@ -50,6 +51,7 @@ REQUIRED_UNIQUE_TOOLS = {
     "modifier_bevel",
     "modifier_boolean",
     "modifier_weighted_normal",
+    "uv_smart_project",
 }
 
 
@@ -136,9 +138,9 @@ def validate_rules(report: dict[str, Any]) -> None:
 def validate_counts(report: dict[str, Any]) -> None:
     step_count = require_int(report.get("step_count"), "step_count", minimum=1)
     supported = require_int(report.get("supported_step_count"), "supported_step_count", minimum=1)
-    future = require_int(report.get("future_step_count"), "future_step_count", minimum=1)
+    future = require_int(report.get("future_step_count"), "future_step_count", minimum=0)
     executed = require_int(report.get("executed_step_count"), "executed_step_count", minimum=1)
-    skipped = require_int(report.get("skipped_future_step_count"), "skipped_future_step_count", minimum=1)
+    skipped = require_int(report.get("skipped_future_step_count"), "skipped_future_step_count", minimum=0)
     unique_tools = require_string_list(report.get("unique_tools"), "unique_tools")
     unique_tool_count = require_int(report.get("unique_tool_count"), "unique_tool_count", minimum=1)
     if step_count != supported + future:
@@ -214,6 +216,27 @@ def validate_quality(report: dict[str, Any]) -> None:
         fail("extruded_lip_surface_count must include four lip surfaces on four shaft panels")
     if require_int(report.get("trim_lip_face_count"), "trim_lip_face_count", minimum=1) < 16:
         fail("trim_lip_face_count must include assigned trim material faces")
+    uv_applications = require_list(report.get("uv_applications"), "uv_applications")
+    if len(uv_applications) < 1:
+        fail("uv_applications must include the visible mesh UV unwrap step")
+    first_uv = require_object(uv_applications[0], "uv_applications[0]")
+    if require_string(first_uv.get("method"), "uv_applications[0].method") != "smart_uv_project":
+        fail("uv_applications[0].method must be smart_uv_project")
+    uv_objects = require_list(first_uv.get("objects"), "uv_applications[0].objects")
+    uv_target_count = require_int(first_uv.get("target_object_count"), "uv_applications[0].target_object_count", minimum=1)
+    if len(uv_objects) != uv_target_count:
+        fail("uv_applications[0].objects length must match target_object_count")
+    for index, item in enumerate(uv_objects):
+        uv_object = require_object(item, f"uv_applications[0].objects[{index}]")
+        require_string(uv_object.get("object"), f"uv_applications[0].objects[{index}].object")
+        require_string(uv_object.get("active_uv_layer"), f"uv_applications[0].objects[{index}].active_uv_layer")
+        require_int(uv_object.get("uv_loop_count"), f"uv_applications[0].objects[{index}].uv_loop_count", minimum=1)
+    if require_int(report.get("uv_unwrap_object_count"), "uv_unwrap_object_count", minimum=1) < report["mesh_object_count"]:
+        fail("uv_unwrap_object_count must cover all visible mesh objects")
+    if require_int(report.get("uv_unwrap_loop_count"), "uv_unwrap_loop_count", minimum=1) < 1:
+        fail("uv_unwrap_loop_count must be positive")
+    if require_int(report.get("uv_generated_object_count"), "uv_generated_object_count", minimum=1) < 1:
+        fail("uv_generated_object_count must include generated polish meshes")
     weighted_normals = require_object(report.get("weighted_normals"), "weighted_normals")
     require_string(weighted_normals.get("modifier_type"), "weighted_normals.modifier_type")
     if weighted_normals["modifier_type"] != "WEIGHTED_NORMAL":

@@ -22,10 +22,10 @@ DEFAULT_REPORT = Path("/tmp/gameguy_asset_polish_blender_adapter_v0/asset_polish
 PLAN_SCHEMA = "asset_polish_tool_plan_v0"
 TOOL_DICTIONARY_SCHEMA = "blender_tool_dictionary_v0"
 REPORT_SCHEMA = "asset_polish_blender_adapter_validation_report_v0"
-SUPPORTED_OPERATIONS = {"bevel_edges", "boolean_cut", "chamfer_edges", "extrude_along_normals", "inset_faces", "material_assign", "sweep_profile", "weighted_normals"}
-SUPPORTED_TOOLS = {"curve_bevel_profile", "extrude_faces", "inset_faces", "material_assign_by_part", "modifier_bevel", "modifier_boolean", "modifier_weighted_normal"}
-FUTURE_OPERATIONS = {"uv_unwrap"}
-FUTURE_TOOLS = {"uv_smart_project", "uv_unwrap"}
+SUPPORTED_OPERATIONS = {"bevel_edges", "boolean_cut", "chamfer_edges", "extrude_along_normals", "inset_faces", "material_assign", "sweep_profile", "uv_unwrap", "weighted_normals"}
+SUPPORTED_TOOLS = {"curve_bevel_profile", "extrude_faces", "inset_faces", "material_assign_by_part", "modifier_bevel", "modifier_boolean", "modifier_weighted_normal", "uv_smart_project", "uv_unwrap"}
+FUTURE_OPERATIONS: set[str] = set()
+FUTURE_TOOLS: set[str] = set()
 KNOWN_OPERATIONS = SUPPORTED_OPERATIONS | FUTURE_OPERATIONS
 KNOWN_SELECTOR_KINDS = {
     "all_visible_hard_edges",

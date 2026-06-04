@@ -36,17 +36,17 @@ def valid_report() -> dict[str, Any]:
         "source_asset_id": "blocky_fence_post_v0",
         "asset_id": "blocky_fence_post_v0",
         "step_count": 10,
-        "supported_step_count": 9,
-        "future_step_count": 1,
-        "executed_step_count": 9,
-        "skipped_future_step_count": 1,
-        "unique_tool_count": 7,
-        "unique_tools": ["curve_bevel_profile", "extrude_faces", "inset_faces", "material_assign_by_part", "modifier_bevel", "modifier_boolean", "modifier_weighted_normal"],
+        "supported_step_count": 10,
+        "future_step_count": 0,
+        "executed_step_count": 10,
+        "skipped_future_step_count": 0,
+        "unique_tool_count": 8,
+        "unique_tools": ["curve_bevel_profile", "extrude_faces", "inset_faces", "material_assign_by_part", "modifier_bevel", "modifier_boolean", "modifier_weighted_normal", "uv_smart_project"],
         "mesh_part_count": 7,
         "generated_outputs_created": True,
         "blend_path": "/tmp/gameguy_asset_polish_blender_execution_v0/asset_polish_execution_v0.blend",
         "object_count": 10,
-        "mesh_object_count": 7,
+        "mesh_object_count": 8,
         "part_object_count": 7,
         "validation_warnings": [],
         "executed_steps": [
@@ -59,11 +59,9 @@ def valid_report() -> dict[str, Any]:
             {"step_id": "bevel_all_visible_hard_edges", "operation": "bevel_edges", "tool_id": "modifier_bevel", "target": "newel.all.hard_edges"},
             {"step_id": "assign_gothic_stone_material_slots", "operation": "material_assign", "tool_id": "material_assign_by_part", "target": "newel.all.visible_parts"},
             {"step_id": "apply_weighted_normals", "operation": "weighted_normals", "tool_id": "modifier_weighted_normal", "target": "newel.all.visible_parts"},
+            {"step_id": "smart_uv_unwrap_visible_parts", "operation": "uv_unwrap", "tool_id": "uv_smart_project", "target": "newel.all.visible_parts"},
         ],
-        "skipped_steps": [
-            {"step_id": f"future_{index}", "operation": "future", "tool_id": "future_tool", "reason": "recognized_future_operation_not_in_first_execution_slice"}
-            for index in range(1)
-        ],
+        "skipped_steps": [],
         "boolean_applications": [
             {
                 "step_id": "define_east_west_socket_reveals",
@@ -148,6 +146,30 @@ def valid_report() -> dict[str, Any]:
                 "added_face_count": 80
             }
         ],
+        "uv_applications": [
+            {
+                "step_id": "smart_uv_unwrap_visible_parts",
+                "tool_id": "uv_smart_project",
+                "operation": "uv_unwrap",
+                "method": "smart_uv_project",
+                "target_selector_kind": "all_visible_mesh_parts",
+                "island_margin": 0.018,
+                "angle_limit_degrees": 66.0,
+                "target_object_count": 8,
+                "uv_loop_count": 2160,
+                "generated_object_uv_count": 1,
+                "objects": [
+                    {"object": "square_foot", "face_count": 106, "uv_layer_count": 1, "active_uv_layer": "polish_uv0", "uv_loop_count": 400, "asset_polish_generated": False},
+                    {"object": "lower_step_band", "face_count": 98, "uv_layer_count": 1, "active_uv_layer": "polish_uv0", "uv_loop_count": 384, "asset_polish_generated": False},
+                    {"object": "post_core", "face_count": 244, "uv_layer_count": 1, "active_uv_layer": "polish_uv0", "uv_loop_count": 976, "asset_polish_generated": False},
+                    {"object": "rail_socket_east", "face_count": 6, "uv_layer_count": 1, "active_uv_layer": "polish_uv0", "uv_loop_count": 24, "asset_polish_generated": False},
+                    {"object": "rail_socket_west", "face_count": 6, "uv_layer_count": 1, "active_uv_layer": "polish_uv0", "uv_loop_count": 24, "asset_polish_generated": False},
+                    {"object": "upper_step_band", "face_count": 26, "uv_layer_count": 1, "active_uv_layer": "polish_uv0", "uv_loop_count": 96, "asset_polish_generated": False},
+                    {"object": "square_cap", "face_count": 26, "uv_layer_count": 1, "active_uv_layer": "polish_uv0", "uv_loop_count": 96, "asset_polish_generated": False},
+                    {"object": "sweep_cap_lower_outer_ogee_lip", "face_count": 40, "uv_layer_count": 1, "active_uv_layer": "polish_uv0", "uv_loop_count": 160, "asset_polish_generated": True}
+                ]
+            }
+        ],
         "extruded_lip_surface_count": 16,
         "trim_lip_face_count": 80,
         "boolean_cut_count": 2,
@@ -155,6 +177,9 @@ def valid_report() -> dict[str, Any]:
         "sweep_profile_object_count": 1,
         "sweep_profile_face_count": 40,
         "sweep_cap_material_face_count": 40,
+        "uv_unwrap_object_count": 8,
+        "uv_unwrap_loop_count": 2160,
+        "uv_generated_object_count": 1,
         "modifier_applications": [
             {"step_id": "chamfer_plinth_outer_arrises", "modifier_type": "BEVEL", "target_objects": ["square_foot"], "applied": True},
             {"step_id": "bevel_all_visible_hard_edges", "modifier_type": "BEVEL", "target_objects": ["square_foot"], "applied": True},
@@ -183,6 +208,7 @@ def valid_report() -> dict[str, Any]:
             "sweeps_applied": True,
             "insets_applied": True,
             "extrusions_applied": True,
+            "uv_unwrap_applied": True,
             "material_assignment_applied": True,
             "bevels_applied": True,
             "weighted_normals_added": True,

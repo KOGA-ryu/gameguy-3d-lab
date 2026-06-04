@@ -45,6 +45,8 @@ SUPPORTED_TOOL_FAMILIES = {
     "modifier_boolean",
     "material_assign_by_part",
     "modifier_weighted_normal",
+    "uv_smart_project",
+    "uv_unwrap",
 }
 MATERIAL_COLORS: dict[str, tuple[float, float, float, float]] = {
     "base": (0.40, 0.38, 0.32, 1.0),
@@ -277,6 +279,7 @@ def make_execution_report(
         "sweep_applications": [],
         "inset_applications": [],
         "extrusion_applications": [],
+        "uv_applications": [],
         "modifier_applications": [],
         "material_assignment": {},
         "weighted_normals": {},
@@ -986,6 +989,109 @@ def add_weighted_normals(step: dict[str, Any], objects: list[Any]) -> dict[str, 
     }
 
 
+def visible_mesh_objects(bpy: Any) -> list[Any]:
+    return [
+        obj
+        for obj in bpy.context.scene.objects
+        if obj.type == "MESH" and not obj.hide_get() and not obj.hide_viewport
+    ]
+
+
+def active_uv_loop_count(obj: Any) -> int:
+    active = obj.data.uv_layers.active
+    if active is None:
+        return 0
+    if hasattr(active, "data"):
+        return len(active.data)
+    if hasattr(active, "uv"):
+        return len(active.uv)
+    return 0
+
+
+def ensure_active_uv_layer(obj: Any) -> Any:
+    if len(obj.data.uv_layers) == 0:
+        layer = obj.data.uv_layers.new(name="polish_uv0")
+    else:
+        layer = obj.data.uv_layers[0]
+        layer.name = "polish_uv0"
+    obj.data.uv_layers.active = layer
+    return layer
+
+
+def apply_uv_unwrap(bpy: Any, step: dict[str, Any], target: dict[str, Any]) -> dict[str, Any]:
+    selector = require_object(target.get("selector"), f"{target['target_id']}.selector")
+    if selector.get("kind") != "all_visible_mesh_parts":
+        fail(f"{step['step_id']} requires an all_visible_mesh_parts selector")
+    params = step["params"]
+    method = require_string(params.get("method"), f"{step['step_id']}.params.method")
+    if method not in {"smart_uv_project", "uv_unwrap"}:
+        fail(f"{step['step_id']} method `{method}` is not supported by this execution slice")
+    island_margin = float(params["island_margin"])
+    angle_limit_degrees = float(params.get("angle_limit_degrees", 66.0))
+    angle_limit = math.radians(angle_limit_degrees)
+    object_reports: list[dict[str, Any]] = []
+    total_loop_count = 0
+    generated_object_count = 0
+    bpy.ops.object.mode_set(mode="OBJECT") if bpy.context.object is not None else None
+    for obj in visible_mesh_objects(bpy):
+        if len(obj.data.polygons) == 0:
+            continue
+        uv_layer = ensure_active_uv_layer(obj)
+        bpy.ops.object.select_all(action="DESELECT")
+        obj.select_set(True)
+        bpy.context.view_layer.objects.active = obj
+        bpy.ops.object.mode_set(mode="EDIT")
+        bpy.ops.mesh.select_mode(type="FACE")
+        bpy.ops.mesh.select_all(action="SELECT")
+        if method == "smart_uv_project":
+            bpy.ops.uv.smart_project(
+                angle_limit=angle_limit,
+                island_margin=island_margin,
+                correct_aspect=True,
+                scale_to_bounds=False,
+            )
+        else:
+            bpy.ops.uv.unwrap(
+                method="ANGLE_BASED",
+                margin=island_margin,
+                correct_aspect=True,
+            )
+        bpy.ops.object.mode_set(mode="OBJECT")
+        uv_layer = ensure_active_uv_layer(obj)
+        obj.data.update()
+        loop_count = active_uv_loop_count(obj)
+        total_loop_count += loop_count
+        if bool(obj.get("asset_polish_generated", False)):
+            generated_object_count += 1
+        obj["polish_uv_unwrapped"] = True
+        obj["polish_uv_method"] = method
+        obj["polish_uv_layer"] = uv_layer.name
+        object_reports.append(
+            {
+                "object": obj.name,
+                "face_count": len(obj.data.polygons),
+                "uv_layer_count": len(obj.data.uv_layers),
+                "active_uv_layer": uv_layer.name,
+                "uv_loop_count": loop_count,
+                "asset_polish_generated": bool(obj.get("asset_polish_generated", False)),
+            }
+        )
+    bpy.ops.object.select_all(action="DESELECT")
+    return {
+        "step_id": step["step_id"],
+        "tool_id": step["tool_id"],
+        "operation": step["operation"],
+        "method": method,
+        "target_selector_kind": selector["kind"],
+        "island_margin": island_margin,
+        "angle_limit_degrees": angle_limit_degrees,
+        "target_object_count": len(object_reports),
+        "uv_loop_count": total_loop_count,
+        "generated_object_uv_count": generated_object_count,
+        "objects": object_reports,
+    }
+
+
 def add_scene_context(bpy: Any, mathutils: Any, render_path: Path | None) -> None:
     bpy.context.scene.world.color = (0.78, 0.80, 0.82)
     bpy.ops.object.light_add(type="AREA", location=(3.2, -4.8, 4.2))
@@ -1066,6 +1172,7 @@ def run_blender_execution(
     report["sweep_applications"] = []
     report["inset_applications"] = []
     report["extrusion_applications"] = []
+    report["uv_applications"] = []
     report["modifier_applications"] = []
     material_assignment: dict[str, Any] = {}
     weighted_normals: dict[str, Any] = {}
@@ -1104,6 +1211,11 @@ def run_blender_execution(
             weighted_normals = add_weighted_normals(step, target_objects(step, targets, objects))
             report["weighted_normals"] = weighted_normals
             report["modifier_applications"].append(weighted_normals)
+        elif step["tool_id"] in {"uv_smart_project", "uv_unwrap"}:
+            target = targets.get(require_string(step.get("target"), f"{step['step_id']}.target"))
+            if target is None:
+                fail(f"{step['step_id']} references unknown target `{step['target']}`")
+            report["uv_applications"].append(apply_uv_unwrap(bpy, step, target))
         else:
             fail(f"{step['step_id']} uses unsupported execution tool `{step['tool_id']}`")
         report["executed_steps"].append(
@@ -1136,6 +1248,9 @@ def run_blender_execution(
     report["sweep_profile_object_count"] = len(report["sweep_applications"])
     report["sweep_profile_face_count"] = sum(item["face_count"] for item in report["sweep_applications"])
     report["sweep_cap_material_face_count"] = sum(item["cap_material_face_count"] for item in report["sweep_applications"])
+    report["uv_unwrap_object_count"] = sum(item["target_object_count"] for item in report["uv_applications"])
+    report["uv_unwrap_loop_count"] = sum(item["uv_loop_count"] for item in report["uv_applications"])
+    report["uv_generated_object_count"] = sum(item["generated_object_uv_count"] for item in report["uv_applications"])
     report["material_assignment"] = material_assignment
     report["trim_lip_face_count"] = material_assignment.get("assigned_faces_by_slot", {}).get(trim_slot_id, 0) if trim_slot_id else 0
     report["weighted_normals"] = weighted_normals
@@ -1148,6 +1263,7 @@ def run_blender_execution(
         "sweeps_applied": report["sweep_profile_object_count"] >= 1 and report["sweep_cap_material_face_count"] >= 40,
         "insets_applied": report["inset_panel_face_count"] >= 8,
         "extrusions_applied": report["extruded_lip_surface_count"] >= 16 and report["trim_lip_face_count"] >= 16,
+        "uv_unwrap_applied": report["uv_unwrap_object_count"] >= report["mesh_object_count"] and report["uv_unwrap_loop_count"] > 0,
         "material_assignment_applied": bool(material_assignment),
         "bevels_applied": sum(1 for item in report["modifier_applications"] if item["modifier_type"] == "BEVEL") == 2,
         "weighted_normals_added": bool(weighted_normals),
