@@ -7,6 +7,8 @@ blocked or waiting, so the repo can return to 3D assets with sharper language.
 
 1. Global style atlas
 
+   Status: first pass added in `global_style_atlas_v0.md`.
+
    Purpose: define dungeon, cathedral, castle, village, market, cave, sewer,
    ruin, workshop, wilderness, and noble/interior looks.
 
@@ -20,6 +22,8 @@ blocked or waiting, so the repo can return to 3D assets with sharper language.
    - low-compute fallback
 
 2. Shape-language dictionary
+
+   Status: first pass added in `shape_language_dictionary_v0.md`.
 
    Purpose: give the user vocabulary for "that lip, curve, rib, bead, lobe,
    frame, recess, star, arch, and panel thing."

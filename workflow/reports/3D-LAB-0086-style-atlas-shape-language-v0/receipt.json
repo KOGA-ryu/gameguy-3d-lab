@@ -1,0 +1,32 @@
+{
+  "schema": "workflow_receipt_v0",
+  "receipt_id": "3D-LAB-0086-style-atlas-shape-language-v0",
+  "title": "Style atlas and shape language v0",
+  "status": "complete",
+  "new_files": [
+    "docs/research/documentation_map_v0/global_style_atlas_v0.md",
+    "docs/research/documentation_map_v0/shape_language_dictionary_v0.md"
+  ],
+  "updated_files": [
+    "docs/research/documentation_map_v0/README.md",
+    "docs/research/documentation_map_v0/documentation_backlog_v0.md"
+  ],
+  "style_sheet_count": 12,
+  "rules": {
+    "documentation_only": true,
+    "no_blender_execution": true,
+    "no_generated_assets": true,
+    "no_asset_recipe_promotion": true
+  },
+  "validation": {
+    "receipt_json_parse": {
+      "command": "python3 -m json.tool workflow/reports/3D-LAB-0086-style-atlas-shape-language-v0/receipt.json",
+      "result": "PASS"
+    },
+    "diff_check": {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  },
+  "recommended_next_goal": "Add the drawing-guide template and manual-edit capture form."
+}
