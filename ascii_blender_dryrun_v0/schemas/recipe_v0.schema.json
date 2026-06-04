@@ -1,0 +1,335 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gameguy://ascii_blender_dryrun/recipe_v0",
+  "title": "ASCII Blender Dry-Run Recipe v0",
+  "type": "object",
+  "required": [
+    "ops"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "ops": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/addBox"
+          },
+          {
+            "$ref": "#/$defs/addCylinder"
+          },
+          {
+            "$ref": "#/$defs/addRing"
+          },
+          {
+            "$ref": "#/$defs/addMoulding"
+          },
+          {
+            "$ref": "#/$defs/cutFlutes"
+          },
+          {
+            "$ref": "#/$defs/addLabel"
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "number": {
+      "type": "number"
+    },
+    "positiveNumber": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "nonNegativeNumber": {
+      "type": "number",
+      "minimum": 0
+    },
+    "material": {
+      "type": "string",
+      "minLength": 1
+    },
+    "vertices": {
+      "type": "integer",
+      "minimum": 4
+    },
+    "commonPlacement": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "$ref": "#/$defs/number"
+        },
+        "y": {
+          "$ref": "#/$defs/number"
+        },
+        "material": {
+          "$ref": "#/$defs/material"
+        }
+      }
+    },
+    "addBox": {
+      "type": "object",
+      "required": [
+        "op",
+        "name",
+        "width",
+        "depth",
+        "height",
+        "z"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "AddBox"
+        },
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "width": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "depth": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "height": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "z": {
+          "$ref": "#/$defs/number"
+        },
+        "x": {
+          "$ref": "#/$defs/number"
+        },
+        "y": {
+          "$ref": "#/$defs/number"
+        },
+        "material": {
+          "$ref": "#/$defs/material"
+        }
+      }
+    },
+    "addCylinder": {
+      "type": "object",
+      "required": [
+        "op",
+        "name",
+        "radius",
+        "height",
+        "z"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "AddCylinder"
+        },
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "radius": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "height": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "z": {
+          "$ref": "#/$defs/number"
+        },
+        "x": {
+          "$ref": "#/$defs/number"
+        },
+        "y": {
+          "$ref": "#/$defs/number"
+        },
+        "vertices": {
+          "$ref": "#/$defs/vertices"
+        },
+        "material": {
+          "$ref": "#/$defs/material"
+        },
+        "taper_top_radius": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "entasis": {
+          "type": "boolean"
+        }
+      }
+    },
+    "addRing": {
+      "type": "object",
+      "required": [
+        "op",
+        "name",
+        "radius",
+        "tube_height",
+        "z"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "AddRing"
+        },
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "radius": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "tube_height": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "z": {
+          "$ref": "#/$defs/number"
+        },
+        "overhang": {
+          "$ref": "#/$defs/nonNegativeNumber"
+        },
+        "x": {
+          "$ref": "#/$defs/number"
+        },
+        "y": {
+          "$ref": "#/$defs/number"
+        },
+        "vertices": {
+          "$ref": "#/$defs/vertices"
+        },
+        "material": {
+          "$ref": "#/$defs/material"
+        }
+      }
+    },
+    "profilePoint": {
+      "type": "object",
+      "required": [
+        "z",
+        "radius"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "term": {
+          "type": "string",
+          "minLength": 1
+        },
+        "z": {
+          "$ref": "#/$defs/nonNegativeNumber"
+        },
+        "radius": {
+          "$ref": "#/$defs/positiveNumber"
+        }
+      }
+    },
+    "addMoulding": {
+      "type": "object",
+      "required": [
+        "op",
+        "name",
+        "base_z",
+        "profile"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "AddMoulding"
+        },
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "base_z": {
+          "$ref": "#/$defs/number"
+        },
+        "profile": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/profilePoint"
+          }
+        },
+        "x": {
+          "$ref": "#/$defs/number"
+        },
+        "y": {
+          "$ref": "#/$defs/number"
+        },
+        "vertices": {
+          "$ref": "#/$defs/vertices"
+        },
+        "material": {
+          "$ref": "#/$defs/material"
+        }
+      }
+    },
+    "cutFlutes": {
+      "type": "object",
+      "required": [
+        "op",
+        "target",
+        "count",
+        "depth"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "CutFlutes"
+        },
+        "target": {
+          "$ref": "#/$defs/name"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "depth": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "width_ratio": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "start_z": {
+          "$ref": "#/$defs/number"
+        },
+        "end_z": {
+          "$ref": "#/$defs/number"
+        }
+      }
+    },
+    "addLabel": {
+      "type": "object",
+      "required": [
+        "op",
+        "name",
+        "text",
+        "x",
+        "y",
+        "z"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "AddLabel"
+        },
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "text": {
+          "type": "string"
+        },
+        "x": {
+          "$ref": "#/$defs/number"
+        },
+        "y": {
+          "$ref": "#/$defs/number"
+        },
+        "z": {
+          "$ref": "#/$defs/number"
+        }
+      }
+    }
+  }
+}

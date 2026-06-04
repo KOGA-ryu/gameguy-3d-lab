@@ -1,6 +1,3 @@
-import json
-from pathlib import Path
-
 from ascii_blender_dryrun.ascii_backend import AsciiBackend
 from ascii_blender_dryrun.blender_backend import BlenderBackend
 from ascii_blender_dryrun.ops import AddMoulding, load_ops, save_ops

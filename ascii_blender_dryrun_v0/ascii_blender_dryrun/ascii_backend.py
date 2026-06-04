@@ -16,7 +16,7 @@ import math
 from dataclasses import dataclass
 from typing import Iterable, Literal
 
-from .ops import AddBox, AddCylinder, AddMoulding, AddRing, CutFlutes, AddLabel, BuildOp
+from .ops import AddBox, AddCylinder, AddMoulding, AddRing, CutFlutes, BuildOp
 
 
 Projection = Literal["front", "side", "top"]

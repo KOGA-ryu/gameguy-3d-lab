@@ -18,7 +18,7 @@ Coordinate convention:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Literal, Union
+from typing import Any, Dict, Iterable, List, Union
 
 
 @dataclass(frozen=True)
