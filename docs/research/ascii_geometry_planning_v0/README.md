@@ -52,9 +52,18 @@ material. It has a useful backend shape:
 typed operations -> ASCII projection -> validation -> Blender script emitter
 ```
 
-It should not be imported as another source engine. The measured ASCII plan
-contract remains canonical because it attaches source pixels, model-space bounds,
-regions, operation hints, and Blender tool hints to selected characters.
+Implementation update: the archive was later implemented directly at:
+
+```text
+ascii_blender_dryrun_v0/
+```
+
+The extracted package code is preserved from the zip. It is a standalone
+dry-run prototype, not a rewrite of the measured ASCII plan contract.
+
+The measured ASCII plan contract remains canonical for source planning because
+it attaches source pixels, model-space bounds, regions, operation hints, and
+Blender tool hints to selected characters.
 
 Audit note:
 

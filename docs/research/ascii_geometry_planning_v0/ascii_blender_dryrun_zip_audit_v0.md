@@ -14,8 +14,15 @@ Audit hash:
 cfc6466196a1b43cbb8c0009be742596d7b71438f6a3040a5b5d3b7192e1e589
 ```
 
-The archive was inspected as local reference material only. It should not be
-imported wholesale because it contains Python cache files and generated output.
+The archive was first inspected as local reference material. It was then
+implemented directly after the user explicitly requested the zip code be used
+exactly instead of being reinterpreted.
+
+Implemented package path:
+
+```text
+ascii_blender_dryrun_v0/
+```
 
 ## Contents
 
@@ -76,9 +83,21 @@ per-region projections instead of one flattened character canvas.
 
 ## Integration Decision
 
-Do not import the package as a new engine.
+The package is implemented exactly as a standalone dry-run prototype. Its code
+is not rewritten into repo-native operation names or compiler methods.
 
-Use it as a donor for the next canonical boundary:
+The package can be run from its own folder:
+
+```bash
+python3 -m ascii_blender_dryrun.cli --demo --out out
+```
+
+The measured ASCII plan remains the source-planning contract for future repo
+work. The direct package implementation should be treated as an executable
+prototype beside that contract, not as a replacement for cell-level measurement
+metadata.
+
+Future integration boundary:
 
 ```text
 gameguy_ascii_plan_v0
@@ -88,9 +107,6 @@ gameguy_ascii_plan_v0
 -> gameguy_tool_plan_v0
 -> Blender adapter
 ```
-
-The measured ASCII plan remains the source of truth. The dry-run operation
-stream is only a compiled preview/execution candidate.
 
 ## Operation Crosswalk
 

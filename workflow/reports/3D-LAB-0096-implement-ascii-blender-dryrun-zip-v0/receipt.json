@@ -1,0 +1,34 @@
+{
+  "schema": "workflow_receipt_v0",
+  "workflow_id": "3D-LAB-0096-implement-ascii-blender-dryrun-zip-v0",
+  "status": "complete",
+  "summary": "Extracted and implemented ascii_blender_dryrun_v0.zip directly as a standalone package without rewriting its methods.",
+  "source_archive": {
+    "path": "ascii_blender_dryrun_v0.zip",
+    "sha256": "cfc6466196a1b43cbb8c0009be742596d7b71438f6a3040a5b5d3b7192e1e589",
+    "implemented_path": "ascii_blender_dryrun_v0/",
+    "byte_match_checked": true
+  },
+  "files_changed": [
+    "ascii_blender_dryrun_v0.zip",
+    "ascii_blender_dryrun_v0/",
+    "docs/research/ascii_geometry_planning_v0/README.md",
+    "docs/research/ascii_geometry_planning_v0/ascii_blender_dryrun_zip_audit_v0.md",
+    "workflow/reports/3D-LAB-0096-implement-ascii-blender-dryrun-zip-v0/report.md",
+    "workflow/reports/3D-LAB-0096-implement-ascii-blender-dryrun-zip-v0/receipt.json"
+  ],
+  "validation": [
+    "python3 -m compileall -q ascii_blender_dryrun_v0/ascii_blender_dryrun",
+    "python3 -m ascii_blender_dryrun.cli --demo --out /tmp/gameguy_ascii_blender_dryrun_repo_run --width 96 --height 72",
+    "zip byte match check",
+    "bundled dry-run assertions",
+    "extracted JSON parse"
+  ],
+  "no_claims": {
+    "package_methods_rewritten": false,
+    "canonical_asset_pump_replaced": false,
+    "blender_executed": false,
+    "render_created": false,
+    "mesh_export_created": false
+  }
+}

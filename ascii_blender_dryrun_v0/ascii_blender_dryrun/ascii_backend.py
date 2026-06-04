@@ -1,0 +1,244 @@
+"""
+ASCII dry-run backend.
+
+This backend interprets the same build ops that the Blender backend uses.
+It produces cheap front/side/top projections so the plan can be inspected
+before Blender is opened.
+
+It intentionally renders approximate symbols rather than high art.
+The purpose is to catch bad scale, missing parts, broken symmetry, wrong
+order, and incorrect footprint.
+"""
+
+from __future__ import annotations
+
+import math
+from dataclasses import dataclass
+from typing import Iterable, Literal
+
+from .ops import AddBox, AddCylinder, AddRing, CutFlutes, AddLabel, BuildOp
+
+
+Projection = Literal["front", "side", "top"]
+
+
+@dataclass
+class Bounds:
+    min_x: float
+    max_x: float
+    min_y: float
+    max_y: float
+    min_z: float
+    max_z: float
+
+
+def estimate_bounds(ops: Iterable[BuildOp]) -> Bounds:
+    min_x = min_y = min_z = float("inf")
+    max_x = max_y = max_z = float("-inf")
+
+    for op in ops:
+        if isinstance(op, AddBox):
+            min_x = min(min_x, op.x - op.width / 2)
+            max_x = max(max_x, op.x + op.width / 2)
+            min_y = min(min_y, op.y - op.depth / 2)
+            max_y = max(max_y, op.y + op.depth / 2)
+            min_z = min(min_z, op.z - op.height / 2)
+            max_z = max(max_z, op.z + op.height / 2)
+        elif isinstance(op, (AddCylinder, AddRing)):
+            radius = op.radius + (op.overhang if isinstance(op, AddRing) else 0.0)
+            height = op.height if isinstance(op, AddCylinder) else op.tube_height
+            min_x = min(min_x, op.x - radius)
+            max_x = max(max_x, op.x + radius)
+            min_y = min(min_y, op.y - radius)
+            max_y = max(max_y, op.y + radius)
+            min_z = min(min_z, op.z - height / 2)
+            max_z = max(max_z, op.z + height / 2)
+
+    if min_x == float("inf"):
+        return Bounds(-1, 1, -1, 1, 0, 1)
+    pad = 2.0
+    return Bounds(min_x - pad, max_x + pad, min_y - pad, max_y + pad, min_z - pad, max_z + pad)
+
+
+class AsciiCanvas:
+    def __init__(self, width: int = 96, height: int = 72):
+        self.width = width
+        self.height = height
+        self.pixels = [[" " for _ in range(width)] for _ in range(height)]
+
+    def set(self, x: int, y: int, ch: str) -> None:
+        if 0 <= x < self.width and 0 <= y < self.height:
+            self.pixels[y][x] = ch
+
+    def line_h(self, y: int, x1: int, x2: int, ch: str = "─") -> None:
+        for x in range(min(x1, x2), max(x1, x2) + 1):
+            self.set(x, y, ch)
+
+    def line_v(self, x: int, y1: int, y2: int, ch: str = "│") -> None:
+        for y in range(min(y1, y2), max(y1, y2) + 1):
+            self.set(x, y, ch)
+
+    def rect(self, x1: int, y1: int, x2: int, y2: int, fill: str = "░", border: str = "█") -> None:
+        xa, xb = sorted((x1, x2))
+        ya, yb = sorted((y1, y2))
+        for y in range(ya, yb + 1):
+            for x in range(xa, xb + 1):
+                if x in (xa, xb) or y in (ya, yb):
+                    self.set(x, y, border)
+                else:
+                    self.set(x, y, fill)
+
+    def circle(self, cx: int, cy: int, r: int, fill: str = "▓", border: str = "█") -> None:
+        if r <= 0:
+            return
+        for y in range(cy - r, cy + r + 1):
+            for x in range(cx - r, cx + r + 1):
+                d = math.sqrt((x - cx) ** 2 + (y - cy) ** 2)
+                if d <= r:
+                    self.set(x, y, border if abs(d - r) < 1.0 else fill)
+
+    def text(self, x: int, y: int, s: str) -> None:
+        for i, ch in enumerate(s):
+            self.set(x + i, y, ch)
+
+    def render(self) -> str:
+        return "\n".join("".join(row).rstrip() for row in self.pixels)
+
+
+class AsciiBackend:
+    def __init__(self, width: int = 96, height: int = 72):
+        self.width = width
+        self.height = height
+
+    def render_projection(self, ops: list[BuildOp], projection: Projection) -> str:
+        bounds = estimate_bounds(ops)
+        c = AsciiCanvas(self.width, self.height)
+
+        def map_front(x: float, z: float) -> tuple[int, int]:
+            sx = (x - bounds.min_x) / max(1e-9, bounds.max_x - bounds.min_x)
+            sz = (z - bounds.min_z) / max(1e-9, bounds.max_z - bounds.min_z)
+            return round(sx * (self.width - 1)), round((1.0 - sz) * (self.height - 1))
+
+        def map_side(y: float, z: float) -> tuple[int, int]:
+            sy = (y - bounds.min_y) / max(1e-9, bounds.max_y - bounds.min_y)
+            sz = (z - bounds.min_z) / max(1e-9, bounds.max_z - bounds.min_z)
+            return round(sy * (self.width - 1)), round((1.0 - sz) * (self.height - 1))
+
+        def map_top(x: float, y: float) -> tuple[int, int]:
+            sx = (x - bounds.min_x) / max(1e-9, bounds.max_x - bounds.min_x)
+            sy = (y - bounds.min_y) / max(1e-9, bounds.max_y - bounds.min_y)
+            return round(sx * (self.width - 1)), round(sy * (self.height - 1))
+
+        for op in ops:
+            if projection == "front":
+                self._draw_front(c, map_front, op)
+            elif projection == "side":
+                self._draw_side(c, map_side, op)
+            elif projection == "top":
+                self._draw_top(c, map_top, op)
+
+        title = f"{projection.upper()} PROJECTION"
+        c.text(1, 1, title)
+        return c.render()
+
+    def _draw_front(self, c: AsciiCanvas, mapper, op: BuildOp) -> None:
+        if isinstance(op, AddBox):
+            x1, y1 = mapper(op.x - op.width / 2, op.z - op.height / 2)
+            x2, y2 = mapper(op.x + op.width / 2, op.z + op.height / 2)
+            c.rect(x1, y1, x2, y2, fill="░", border="█")
+        elif isinstance(op, AddCylinder):
+            r = op.radius
+            tr = op.taper_top_radius or r
+            x1b, yb = mapper(op.x - r, op.z - op.height / 2)
+            x2b, _ = mapper(op.x + r, op.z - op.height / 2)
+            x1t, yt = mapper(op.x - tr, op.z + op.height / 2)
+            x2t, _ = mapper(op.x + tr, op.z + op.height / 2)
+            c.line_h(yb, x1b, x2b, "▄")
+            c.line_h(yt, x1t, x2t, "▀")
+            c.line_v(x1b, yt, yb, "█")
+            c.line_v(x2b, yt, yb, "█")
+            for x in range(min(x1b, x2b), max(x1b, x2b) + 1):
+                for y in range(min(yt, yb) + 1, max(yt, yb)):
+                    if c.pixels[y][x] == " ":
+                        c.pixels[y][x] = "▒"
+        elif isinstance(op, AddRing):
+            r = op.radius + op.overhang
+            h = op.tube_height
+            x1, y1 = mapper(op.x - r, op.z - h / 2)
+            x2, y2 = mapper(op.x + r, op.z + h / 2)
+            c.rect(x1, y1, x2, y2, fill="▓", border="█")
+        elif isinstance(op, CutFlutes):
+            # Front preview: rhythm markers only, because actual radial boolean
+            # cuts belong to the Blender backend.
+            count = min(op.count, 32)
+            for i in range(count):
+                # distribute visible grooves across middle half of canvas
+                x = round(c.width * (0.30 + 0.40 * (i / max(1, count - 1))))
+                c.line_v(x, round(c.height * 0.20), round(c.height * 0.78), "░")
+
+    def _draw_side(self, c: AsciiCanvas, mapper, op: BuildOp) -> None:
+        if isinstance(op, AddBox):
+            x1, y1 = mapper(op.y - op.depth / 2, op.z - op.height / 2)
+            x2, y2 = mapper(op.y + op.depth / 2, op.z + op.height / 2)
+            c.rect(x1, y1, x2, y2, fill="░", border="█")
+        elif isinstance(op, AddCylinder):
+            r = op.radius
+            tr = op.taper_top_radius or r
+            x1b, yb = mapper(op.y - r, op.z - op.height / 2)
+            x2b, _ = mapper(op.y + r, op.z - op.height / 2)
+            x1t, yt = mapper(op.y - tr, op.z + op.height / 2)
+            x2t, _ = mapper(op.y + tr, op.z + op.height / 2)
+            c.rect(x1t, yt, x2b, yb, fill="▒", border="█")
+        elif isinstance(op, AddRing):
+            r = op.radius + op.overhang
+            h = op.tube_height
+            x1, y1 = mapper(op.y - r, op.z - h / 2)
+            x2, y2 = mapper(op.y + r, op.z + h / 2)
+            c.rect(x1, y1, x2, y2, fill="▓", border="█")
+
+    def _draw_top(self, c: AsciiCanvas, mapper, op: BuildOp) -> None:
+        if isinstance(op, AddBox):
+            x1, y1 = mapper(op.x - op.width / 2, op.y - op.depth / 2)
+            x2, y2 = mapper(op.x + op.width / 2, op.y + op.depth / 2)
+            c.rect(x1, y1, x2, y2, fill="░", border="█")
+        elif isinstance(op, AddCylinder):
+            cx, cy = mapper(op.x, op.y)
+            rx, _ = mapper(op.x + op.radius, op.y)
+            r = abs(rx - cx)
+            c.circle(cx, cy, r, fill="▒", border="█")
+        elif isinstance(op, AddRing):
+            cx, cy = mapper(op.x, op.y)
+            rx, _ = mapper(op.x + op.radius + op.overhang, op.y)
+            r = abs(rx - cx)
+            c.circle(cx, cy, r, fill="▓", border="█")
+        elif isinstance(op, CutFlutes):
+            cx, cy = c.width // 2, c.height // 2
+            r1 = round(min(c.width, c.height) * 0.12)
+            r2 = round(min(c.width, c.height) * 0.28)
+            for i in range(op.count):
+                a = 2 * math.pi * i / op.count
+                x1 = round(cx + math.cos(a) * r1)
+                y1 = round(cy + math.sin(a) * r1)
+                x2 = round(cx + math.cos(a) * r2)
+                y2 = round(cy + math.sin(a) * r2)
+                self._line(c, x1, y1, x2, y2, "░")
+
+    @staticmethod
+    def _line(c: AsciiCanvas, x1: int, y1: int, x2: int, y2: int, ch: str) -> None:
+        dx = abs(x2 - x1)
+        dy = -abs(y2 - y1)
+        sx = 1 if x1 < x2 else -1
+        sy = 1 if y1 < y2 else -1
+        err = dx + dy
+        x, y = x1, y1
+        while True:
+            c.set(x, y, ch)
+            if x == x2 and y == y2:
+                break
+            e2 = 2 * err
+            if e2 >= dy:
+                err += dy
+                x += sx
+            if e2 <= dx:
+                err += dx
+                y += sy
