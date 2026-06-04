@@ -1,0 +1,41 @@
+{
+  "id": "3D-LAB-0094",
+  "name": "measurement-backed-ascii-plan-v0",
+  "status": "complete",
+  "kind": "contract_source_fixture_and_validation",
+  "created_date": "2026-06-04",
+  "scope": {
+    "implemented_code": true,
+    "ran_blender": false,
+    "generated_assets": false,
+    "generated_media": false
+  },
+  "added_files": [
+    "contracts/gameguy_ascii_plan_v0.json",
+    "data/architecture/ascii_plans/single_post_ascii_plan_fixture_v0.json",
+    "docs/research/ascii_geometry_planning_v0/README.md",
+    "docs/research/ascii_geometry_planning_v0/measurement_backed_ascii_grid_v0.md",
+    "scripts/validate_gameguy_ascii_plan_v0.py",
+    "workflow/reports/3D-LAB-0094-measurement-backed-ascii-plan-v0/report.md",
+    "workflow/reports/3D-LAB-0094-measurement-backed-ascii-plan-v0/receipt.json"
+  ],
+  "updated_files": [
+    "README.md",
+    "contracts/README.md",
+    "scripts/validate_generation_pipeline_v0.py"
+  ],
+  "validation": {
+    "gameguy_ascii_plan": "pass",
+    "grid": "17x17",
+    "annotated_cell_count": 6,
+    "region_count": 6,
+    "operation_hint_count": 6,
+    "blender_tool_hint_count": 6,
+    "render_contract_allowed": false
+  },
+  "source_direction": {
+    "generated_post_concept_sheet": "rejected",
+    "accepted_direction": "measurement-backed ASCII plan"
+  },
+  "next_recommended_slice": "3D-LAB-0095 image_to_ascii_plan_generator_v0"
+}

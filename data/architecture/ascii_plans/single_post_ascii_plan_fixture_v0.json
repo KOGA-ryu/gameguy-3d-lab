@@ -1,0 +1,272 @@
+{
+  "schema": "gameguy_ascii_plan_v0",
+  "plan_id": "single_post_ascii_plan_fixture_v0",
+  "status": "source_ascii_plan_fixture",
+  "source_ref": {
+    "source_id": "manual_ascii_post_fixture_v0",
+    "source_type": "manual_ascii_draft",
+    "path": "inline_fixture",
+    "accepted_as_style_source": true,
+    "notes": "Tiny fixture proving measured glyph cells, regions, operation hints, and Blender tool hints. It is not a style decision."
+  },
+  "source_resolution_px": {
+    "width": 960,
+    "height": 960,
+    "minimum_dimension_px": 960
+  },
+  "grid": {
+    "columns": 17,
+    "rows": 17,
+    "cell_width_m": 0.05,
+    "cell_height_m": 0.05,
+    "cell_aspect_ratio": 0.5,
+    "origin": "bottom_center",
+    "background_glyph": " "
+  },
+  "coordinate_model": {
+    "unit": "abstract_meter",
+    "coordinate_space": "ascii_grid_local_xz",
+    "axes": {
+      "x": "left-right across columns",
+      "z": "up-down across rows",
+      "y": "depth inferred later"
+    }
+  },
+  "glyph_legend": [
+    { "glyph": " ", "meaning": "empty background", "default_role": "background" },
+    { "glyph": "^", "meaning": "finial apex", "default_role": "apex_edge" },
+    { "glyph": "/", "meaning": "diagonal rising edge", "default_role": "edge_diagonal_left" },
+    { "glyph": "\\", "meaning": "diagonal falling edge", "default_role": "edge_diagonal_right" },
+    { "glyph": "_", "meaning": "horizontal ledge or cap line", "default_role": "edge_horizontal" },
+    { "glyph": "|", "meaning": "vertical edge or shaft side", "default_role": "edge_vertical" },
+    { "glyph": "[", "meaning": "left side of socket hint", "default_role": "socket_hint" },
+    { "glyph": "]", "meaning": "right side of socket hint", "default_role": "socket_hint" }
+  ],
+  "ascii_rows": [
+    "        ^        ",
+    "       / \\       ",
+    "      /___\\      ",
+    "    __|___|__    ",
+    "   |  _____  |   ",
+    "   | |     | |   ",
+    "   | | /\\  | |   ",
+    "   | |/  \\ | |   ",
+    "   | | [ ] | |   ",
+    "   | |    /| |   ",
+    "   | |___/ | |   ",
+    "   |         |   ",
+    "   |_________|   ",
+    "  __|_______|__  ",
+    " |_____________| ",
+    " /_____________\\ ",
+    "|_______________|"
+  ],
+  "annotated_cells": [
+    {
+      "cell_id": "finial_apex_r0_c8",
+      "row": 0,
+      "col": 8,
+      "glyph": "^",
+      "source_px_bbox": [452, 0, 508, 56],
+      "local_xz_bbox_m": [-0.025, 0.8, 0.025, 0.85],
+      "brightness": 0.95,
+      "edge_strength": 0.92,
+      "edge_direction": "apex",
+      "geometry_role": "finial_apex",
+      "region_id": "finial",
+      "measurement_refs": ["cell_width_m", "cell_height_m"],
+      "operation_hints": ["extrude", "bevel_edges"],
+      "blender_tool_hints": ["mesh_from_pydata", "modifier_bevel"],
+      "depth_intent": "raised"
+    },
+    {
+      "cell_id": "cap_left_ledge_r3_c4",
+      "row": 3,
+      "col": 4,
+      "glyph": "_",
+      "source_px_bbox": [226, 169, 282, 226],
+      "local_xz_bbox_m": [-0.225, 0.65, -0.175, 0.7],
+      "brightness": 0.82,
+      "edge_strength": 0.88,
+      "edge_direction": "horizontal",
+      "geometry_role": "cap_ledge",
+      "region_id": "cap",
+      "measurement_refs": ["cell_width_m", "cell_height_m"],
+      "operation_hints": ["extrude", "bevel_edges", "compound_asset"],
+      "blender_tool_hints": ["primitive_cube_add", "modifier_bevel"],
+      "depth_intent": "raised"
+    },
+    {
+      "cell_id": "shaft_left_edge_r7_c3",
+      "row": 7,
+      "col": 3,
+      "glyph": "|",
+      "source_px_bbox": [169, 395, 226, 452],
+      "local_xz_bbox_m": [-0.275, 0.45, -0.225, 0.5],
+      "brightness": 0.74,
+      "edge_strength": 0.91,
+      "edge_direction": "vertical",
+      "geometry_role": "shaft_outer_edge",
+      "region_id": "shaft",
+      "measurement_refs": ["cell_width_m", "cell_height_m"],
+      "operation_hints": ["extrude", "bevel_edges"],
+      "blender_tool_hints": ["primitive_cube_add", "modifier_bevel"],
+      "depth_intent": "mass_edge"
+    },
+    {
+      "cell_id": "socket_left_r8_c7",
+      "row": 8,
+      "col": 7,
+      "glyph": "[",
+      "source_px_bbox": [395, 452, 452, 508],
+      "local_xz_bbox_m": [-0.075, 0.4, -0.025, 0.45],
+      "brightness": 0.55,
+      "edge_strength": 0.86,
+      "edge_direction": "corner",
+      "geometry_role": "rail_socket_hint_left",
+      "region_id": "rail_socket_hint",
+      "measurement_refs": ["cell_width_m", "cell_height_m"],
+      "operation_hints": ["boolean_cut", "relief_stack", "bevel_edges"],
+      "blender_tool_hints": ["mesh_from_pydata", "modifier_boolean", "modifier_bevel"],
+      "depth_intent": "recessed"
+    },
+    {
+      "cell_id": "panel_diagonal_r9_c11",
+      "row": 9,
+      "col": 10,
+      "glyph": "/",
+      "source_px_bbox": [621, 508, 678, 565],
+      "local_xz_bbox_m": [0.125, 0.35, 0.175, 0.4],
+      "brightness": 0.66,
+      "edge_strength": 0.78,
+      "edge_direction": "diagonal_left",
+      "geometry_role": "panel_recess_trace",
+      "region_id": "face_panel",
+      "measurement_refs": ["cell_width_m", "cell_height_m"],
+      "operation_hints": ["offset_profile", "relief_stack", "bevel_edges"],
+      "blender_tool_hints": ["mesh_from_pydata", "modifier_solidify", "modifier_bevel"],
+      "depth_intent": "recessed"
+    },
+    {
+      "cell_id": "base_bottom_edge_r16_c8",
+      "row": 16,
+      "col": 8,
+      "glyph": "_",
+      "source_px_bbox": [452, 904, 508, 960],
+      "local_xz_bbox_m": [-0.025, 0.0, 0.025, 0.05],
+      "brightness": 0.8,
+      "edge_strength": 0.82,
+      "edge_direction": "horizontal",
+      "geometry_role": "plinth_bottom_edge",
+      "region_id": "plinth",
+      "measurement_refs": ["cell_width_m", "cell_height_m"],
+      "operation_hints": ["extrude", "bevel_edges", "compound_asset"],
+      "blender_tool_hints": ["primitive_cube_add", "modifier_bevel"],
+      "depth_intent": "mass_edge"
+    }
+  ],
+  "regions": [
+    {
+      "region_id": "finial",
+      "label": "Finial",
+      "bbox_cells": { "row_min": 0, "row_max": 2, "col_min": 6, "col_max": 10 },
+      "bbox_m": [-0.125, 0.7, 0.125, 0.85],
+      "role_tags": ["finial", "apex", "top_termination"],
+      "accepted_for_generation": true,
+      "operation_hints": ["extrude", "bevel_edges"],
+      "blender_tool_hints": ["mesh_from_pydata", "modifier_bevel"],
+      "manual_qc": ["finial silhouette must read before any surface detail is added"]
+    },
+    {
+      "region_id": "cap",
+      "label": "Cap",
+      "bbox_cells": { "row_min": 3, "row_max": 4, "col_min": 3, "col_max": 13 },
+      "bbox_m": [-0.275, 0.65, 0.275, 0.75],
+      "role_tags": ["cap", "top_block", "ledge"],
+      "accepted_for_generation": true,
+      "operation_hints": ["extrude", "bevel_edges", "compound_asset"],
+      "blender_tool_hints": ["primitive_cube_add", "modifier_bevel", "modifier_weighted_normal"],
+      "manual_qc": ["cap should terminate the shaft cleanly and provide a readable ledge"]
+    },
+    {
+      "region_id": "shaft",
+      "label": "Shaft",
+      "bbox_cells": { "row_min": 4, "row_max": 12, "col_min": 3, "col_max": 13 },
+      "bbox_m": [-0.275, 0.2, 0.275, 0.65],
+      "role_tags": ["shaft", "main_body", "post_mass"],
+      "accepted_for_generation": true,
+      "operation_hints": ["extrude", "relief_stack", "bevel_edges"],
+      "blender_tool_hints": ["primitive_cube_add", "modifier_bevel", "modifier_weighted_normal"],
+      "manual_qc": ["shaft must remain legible after panel and socket details are added"]
+    },
+    {
+      "region_id": "face_panel",
+      "label": "Face Panel",
+      "bbox_cells": { "row_min": 5, "row_max": 10, "col_min": 5, "col_max": 11 },
+      "bbox_m": [-0.175, 0.3, 0.175, 0.6],
+      "role_tags": ["face_panel", "recess", "detail_zone"],
+      "accepted_for_generation": true,
+      "operation_hints": ["offset_profile", "relief_stack", "bevel_edges"],
+      "blender_tool_hints": ["mesh_from_pydata", "modifier_solidify", "modifier_bevel"],
+      "manual_qc": ["panel detail should be readable but subordinate to the shaft silhouette"]
+    },
+    {
+      "region_id": "rail_socket_hint",
+      "label": "Rail Socket Hint",
+      "bbox_cells": { "row_min": 8, "row_max": 8, "col_min": 7, "col_max": 9 },
+      "bbox_m": [-0.075, 0.4, 0.075, 0.45],
+      "role_tags": ["socket_hint", "connector_planning", "no_rail_generated"],
+      "accepted_for_generation": true,
+      "operation_hints": ["boolean_cut", "relief_stack", "bevel_edges"],
+      "blender_tool_hints": ["mesh_from_pydata", "modifier_boolean", "modifier_bevel"],
+      "manual_qc": ["socket hint must not force a rail to be generated"]
+    },
+    {
+      "region_id": "plinth",
+      "label": "Plinth",
+      "bbox_cells": { "row_min": 13, "row_max": 16, "col_min": 0, "col_max": 16 },
+      "bbox_m": [-0.425, 0.0, 0.425, 0.2],
+      "role_tags": ["plinth", "base_mass", "grounding"],
+      "accepted_for_generation": true,
+      "operation_hints": ["extrude", "bevel_edges", "compound_asset"],
+      "blender_tool_hints": ["primitive_cube_add", "modifier_bevel", "modifier_weighted_normal"],
+      "manual_qc": ["base should feel grounded without swallowing the shaft"]
+    }
+  ],
+  "measurement_policy": {
+    "minimum_source_dimension_px": 960,
+    "cell_scale_source": "grid.cell_width_m and grid.cell_height_m",
+    "pixel_to_cell_mapping": "source_px_bbox records the source pixel evidence for selected cells",
+    "measurement_survives_promotion": true,
+    "crop_packets_expected_for_detail": true
+  },
+  "blender_tooling_policy": {
+    "tools_are_hints_until_tool_plan_compile": true,
+    "ascii_cells_do_not_execute_blender": true,
+    "regions_can_promote_to_parts": true,
+    "cells_can_promote_to_profiles_or_cutters": true,
+    "render_contract_allowed": false
+  },
+  "source_acceptance": {
+    "generated_post_concept_sheet_status": "rejected_by_user",
+    "accepted_source_direction": "measurement_backed_ascii_plan",
+    "notes": "Generated post concepts are not source. The accepted direction is detailed ASCII/pixel planning with measurements attached to characters."
+  },
+  "validation_expectations": [
+    "source minimum dimension is at least 960 px",
+    "ascii rows match declared grid size",
+    "annotated cells match row/column glyphs",
+    "operation hints are legal geometry dictionary operations",
+    "Blender tool hints are known tool dictionary IDs",
+    "regions stay within grid bounds",
+    "render contract remains blocked"
+  ],
+  "no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false,
+    "building_code_compliance": false
+  }
+}

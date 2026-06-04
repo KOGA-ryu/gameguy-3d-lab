@@ -243,6 +243,12 @@ The first source-side post matrix is `data/architecture/component_style_sheets/r
 python3 scripts/validate_single_post_style_matrix_v0.py
 ```
 
+Measurement-backed ASCII planning now lives in `docs/research/ascii_geometry_planning_v0/`, with the contract at `contracts/gameguy_ascii_plan_v0.json` and the first fixture at `data/architecture/ascii_plans/single_post_ascii_plan_fixture_v0.json`. This is the corrected direction for image-to-ASCII work: ASCII characters can carry source pixel bounds, local X/Z measurement bounds, region IDs, geometry roles, operation hints, and Blender tool hints before any render contract exists. The generated post concept sheet is rejected as source; the accepted source direction is detailed ASCII planning with measurements attached to characters. Validate the fixture with:
+
+```bash
+python3 scripts/validate_gameguy_ascii_plan_v0.py
+```
+
 The human-facing asset family handbook lives in `docs/research/component_style_system_v0/asset_families/`. It organizes railings, stairs, windows, doors, trim/moulding, ceilings/vaults, walls, floors/ground, columns/piers, arches/arcades, roofs/towers/spires, terrain/cliffs/water, lighting, gates/grates/barriers, ruin/debris kits, props, and mechanisms into component breakdowns, style directions, geometric shaping ledgers, Blender tool groups, and first build targets.
 
 Texture planning now lives in `docs/research/texture_system_v0/`. It tracks material asset families, dungeon style palettes, surface wear rules, UV/trim-sheet TODOs, and a hardware policy where `*** DECALS ***` are high-cost optional detail: lower-compute hardware does not get decals, so base materials, trims, masks, and material slots must carry the asset.
@@ -385,6 +391,7 @@ python3 scripts/validate_railing_detail_profiles_v0.py
 python3 scripts/validate_construction_geometry_taxonomy_v0.py
 python3 scripts/validate_component_style_sheets_v0.py
 python3 scripts/validate_single_post_style_matrix_v0.py
+python3 scripts/validate_gameguy_ascii_plan_v0.py
 python3 scripts/compile_sacred_graph_v0.py --clean --out /tmp/gameguy_sacred_graph_v0
 python3 scripts/compile_construction_cell_selection_v0.py --clean --graph-manifest /tmp/gameguy_sacred_graph_v0/manifest.json --out /tmp/gameguy_construction_cell_selection_v0
 python3 scripts/compile_pattern_field_v0.py --clean --out /tmp/gameguy_pattern_field_v0
@@ -481,6 +488,7 @@ Expected current checks:
 - Construction geometry taxonomy validation proves the source-language terms for construction fields, selection/omission, role promotion, motif orbits, tracery, muqarnas cell plans, and lift/fold/sweep/thicken/bevel operations.
 - Component style sheet validation proves component taxonomy, Gothic railing post style sheets, geometric shaping ledgers, source shape terms, operation terms, edit knobs, and Blender tool stage order before style sheets are promoted into recipes.
 - Single-post style matrix validation proves the source-side one-post/many-styles lane: five variants, shared anatomy, legal source shape terms, legal operation terms, known Blender tools, canonical tool stage order, and no full railing generation.
+- ASCII plan validation proves measurement-backed glyph planning: source minimum dimension, fixed grid rows, annotated cells, source-pixel bounds, local X/Z bounds, named regions, legal operation hints, known Blender tool hints, and a blocked render contract before promotion.
 - Sacred graph compilation proves a source-owned 22-division construction graph with named point, edge, and star-trace selections before 3D lifting/folding.
 - Construction cell selection compilation proves `66` closed ring-band cells and named cell selections for vault webs, tracery openings, and railing recess panels before 3D lifting/folding/sweeping.
 - Pattern field compilation proves a source-owned hex rosette construction field with one center pattern, six surrounding patterns, faint guide layers, and named selected inner-ring trace/linework groups before intersections, omission rules, or 3D promotion.

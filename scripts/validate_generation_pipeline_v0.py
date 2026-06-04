@@ -151,6 +151,7 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
         CommandStep("construction_geometry_taxonomy_validate", python_script("scripts/validate_construction_geometry_taxonomy_v0.py")),
         CommandStep("component_style_sheet_validate", python_script("scripts/validate_component_style_sheets_v0.py")),
         CommandStep("single_post_style_matrix_validate", python_script("scripts/validate_single_post_style_matrix_v0.py")),
+        CommandStep("gameguy_ascii_plan_validate", python_script("scripts/validate_gameguy_ascii_plan_v0.py")),
         CommandStep("sacred_graph_compile", python_script("scripts/compile_sacred_graph_v0.py", "--clean", "--out", SACRED_GRAPH_OUT)),
         CommandStep(
             "construction_cell_selection_compile",

@@ -1,0 +1,134 @@
+{
+  "schema": "gameguy_ascii_plan_contract_v0",
+  "generated_schema": "gameguy_ascii_plan_v0",
+  "status": "source_planning_contract",
+  "purpose": "Define a measurement-backed ASCII planning artifact that can inspect references cheaply before asset recipes, tool plans, Blender execution, renders, or exports.",
+  "producer": "future scripts/image_to_ascii_plan_v0.py or manual ASCII drafting",
+  "source_inputs": [
+    "user reference image",
+    "user sketch",
+    "manual ASCII drawing",
+    "low-compute ASCII/pixel conversion output",
+    "geometry_dictionary/",
+    "data/architecture/asset_mill/blender_tools/blender_tool_dictionary_v0.json"
+  ],
+  "coordinate_model": {
+    "unit": "abstract_meter",
+    "coordinate_space": "ascii_grid_local_xz",
+    "axes": {
+      "x": "left-right across ASCII columns",
+      "z": "up-down across ASCII rows",
+      "y": "depth inferred later by profile, region, or operation hints"
+    }
+  },
+  "required_fields": [
+    "schema",
+    "plan_id",
+    "status",
+    "source_ref",
+    "source_resolution_px",
+    "grid",
+    "coordinate_model",
+    "glyph_legend",
+    "ascii_rows",
+    "annotated_cells",
+    "regions",
+    "measurement_policy",
+    "blender_tooling_policy",
+    "source_acceptance",
+    "validation_expectations",
+    "no_claims"
+  ],
+  "field_contracts": {
+    "schema": "Must equal gameguy_ascii_plan_v0.",
+    "plan_id": "Stable source planning identifier.",
+    "status": "Source planning status; not a generated asset or render.",
+    "source_ref": "Reference provenance for the image, sketch, or manual ASCII source.",
+    "source_resolution_px": "Source image/detail resolution. For serious use, minimum dimension should be at least 960 pixels.",
+    "grid": "ASCII grid dimensions, cell scale, cell aspect policy, origin, and background glyph.",
+    "coordinate_model": "Local X/Z measurement model for attaching each character cell to measurable space.",
+    "glyph_legend": "Meaning of each glyph used by the plan, including whether it marks background, edge, mass, cut, highlight, guide, or label.",
+    "ascii_rows": "The visible ASCII rows. Every row must have the declared column count.",
+    "annotated_cells": "Selected cells with source pixel bbox, local X/Z bbox, intensity/edge evidence, role tags, operation hints, and Blender tool hints.",
+    "regions": "Named groups such as finial, cap, shaft, panel, socket, collar, base, plinth, damage, or ornament.",
+    "measurement_policy": "Rules that map pixels and ASCII cells into model-space measurements.",
+    "blender_tooling_policy": "Rules for using ASCII annotations as later Blender tool hints, not direct Blender execution.",
+    "source_acceptance": "Explicit acceptance/rejection notes. Rejected generated concept images can be recorded here without becoming source.",
+    "validation_expectations": "Checks that must pass before a plan can be promoted into a source recipe or tool plan.",
+    "no_claims": "Required false-claim block."
+  },
+  "cell_contract": {
+    "required_fields": [
+      "cell_id",
+      "row",
+      "col",
+      "glyph",
+      "source_px_bbox",
+      "local_xz_bbox_m",
+      "brightness",
+      "edge_strength",
+      "edge_direction",
+      "geometry_role",
+      "region_id",
+      "measurement_refs",
+      "operation_hints",
+      "blender_tool_hints",
+      "depth_intent"
+    ],
+    "row_col": "Zero-based grid location. The glyph must match ascii_rows[row][col].",
+    "source_px_bbox": "Pixel-space [x_min, y_min, x_max, y_max] from the source image or source planning canvas.",
+    "local_xz_bbox_m": "Model-space [x_min, z_min, x_max, z_max] covered by the ASCII cell.",
+    "brightness": "Normalized 0..1 source brightness or planned mass value.",
+    "edge_strength": "Normalized 0..1 source edge strength or planned edge importance.",
+    "edge_direction": "Plain term such as vertical, horizontal, diagonal_left, diagonal_right, corner, apex, mass, or none.",
+    "geometry_role": "Human-readable planned geometry role such as cap_edge, shaft_edge, socket_hint, panel_recess, or plinth_mass.",
+    "operation_hints": "Geometry dictionary operation terms that may later be used for this cell or region.",
+    "blender_tool_hints": "Known Blender tool dictionary IDs that may later execute the promoted geometry."
+  },
+  "region_contract": {
+    "required_fields": [
+      "region_id",
+      "label",
+      "bbox_cells",
+      "bbox_m",
+      "role_tags",
+      "accepted_for_generation",
+      "operation_hints",
+      "blender_tool_hints",
+      "manual_qc"
+    ],
+    "bbox_cells": "Inclusive row/column min/max bounds for the named region.",
+    "bbox_m": "Model-space [x_min, z_min, x_max, z_max] for the named region.",
+    "accepted_for_generation": "False means reference/guide/rejected-only; true means region may feed future source recipes."
+  },
+  "determinism_rules": {
+    "same_source_settings_same_ascii_plan": true,
+    "no_wall_clock_fields": true,
+    "no_absolute_generated_output_paths": true,
+    "no_blender_runtime_dependency": true,
+    "no_render_or_mesh_export_files": true
+  },
+  "promotion_rules": {
+    "ascii_plan_is_not_asset_geometry": true,
+    "ascii_cells_can_promote_to_source_shapes": true,
+    "ascii_regions_can_promote_to_recipe_parts": true,
+    "measurement_data_must_survive_promotion": true,
+    "blender_tools_are_hints_until_tool_plan_compile": true,
+    "render_contract_requires_prior_ascii_or_source_qc": true
+  },
+  "required_no_claims": {
+    "production_approval": false,
+    "structural_safety": false,
+    "fabrication_ready": false,
+    "historical_accuracy": false,
+    "game_engine_integration": false,
+    "building_code_compliance": false
+  },
+  "non_goals": [
+    "This contract does not define a production image-to-ASCII renderer.",
+    "This contract does not claim ASCII is final art.",
+    "This contract does not generate Blender objects.",
+    "This contract does not select final post styles.",
+    "This contract does not imply structural, fabrication, historical, or code compliance."
+  ]
+}

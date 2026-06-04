@@ -7,6 +7,7 @@ Active contracts in this folder should support the 3D lab lanes:
 - building and floor-plan assembly
 - connector asset placement
 - architecture measurements and shape dictionaries
+- measurement-backed ASCII planning before Blender/tool-plan promotion
 - geometry or cube-volume recipe metadata
 - workflow/factory records narrowed to 3D architecture lab lanes and not tied to 2D-only output
 
