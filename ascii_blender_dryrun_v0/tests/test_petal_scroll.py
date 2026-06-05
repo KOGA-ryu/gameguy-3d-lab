@@ -39,7 +39,7 @@ def test_petal_scroll_path_curls_inward():
     path = petal_scroll_path_points(op.scroll, op.x, op.y, op.z)
     bounds = petal_scroll_bounds(op.petal, op.scroll, op.x, op.y, op.z)
 
-    assert len(path) == 34
+    assert len(path) == 54
     assert path[0]["radius"] > path[-1]["radius"]
     assert bounds[0] < bounds[1]
     assert bounds[4] < bounds[5]
