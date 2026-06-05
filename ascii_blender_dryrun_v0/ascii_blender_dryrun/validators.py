@@ -236,6 +236,16 @@ def validate_ops(ops: list[BuildOp]) -> list[Finding]:
                 findings.append(Finding("error", "bad_petal_scroll_relief", f"{op.name} relief_depth must be non-negative."))
             if float(op.scroll.get("curl_depth", 0.12)) < 0:
                 findings.append(Finding("error", "bad_petal_scroll_curl", f"{op.name} curl_depth must be non-negative."))
+            solid_fill = op.scroll.get("solid_fill")
+            if solid_fill and solid_fill.get("enabled", True):
+                if solid_fill.get("mode", "center_fan") != "center_fan":
+                    findings.append(Finding("error", "bad_petal_scroll_fill_mode", f"{op.name} solid_fill mode must be center_fan."))
+                if float(solid_fill.get("front_depth", 0.0)) < 0:
+                    findings.append(Finding("error", "bad_petal_scroll_fill_depth", f"{op.name} solid_fill front_depth must be non-negative."))
+                if float(solid_fill.get("back_depth", 0.0)) < 0:
+                    findings.append(Finding("error", "bad_petal_scroll_fill_depth", f"{op.name} solid_fill back_depth must be non-negative."))
+                if "edge_bevel" in solid_fill and float(solid_fill["edge_bevel"]) <= 0:
+                    findings.append(Finding("error", "bad_petal_scroll_fill_bevel", f"{op.name} solid_fill edge_bevel must be positive."))
             if op.vein and op.vein.get("enabled", True):
                 if float(op.vein.get("bevel_depth", 0.0)) <= 0:
                     findings.append(Finding("error", "bad_petal_scroll_vein", f"{op.name} vein bevel_depth must be positive."))

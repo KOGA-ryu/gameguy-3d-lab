@@ -460,6 +460,13 @@ class AsciiBackend:
                 left_edge.append(mapper(point["x"] - nx * width * 0.5, depth + curl_depth * 0.25))
                 right_edge.append(mapper(point["x"] + nx * width * 0.5, depth + curl_depth * 0.25))
 
+        solid_fill = op.scroll.get("solid_fill")
+        if projection == "front" and solid_fill and solid_fill.get("enabled", True) and centerline:
+            vertical_lift = float(op.scroll.get("vertical_lift", 0.45))
+            fill_center = mapper(op.x, op.z + vertical_lift * 0.55)
+            for point in left_edge[::2] + right_edge[::2] + centerline[::3]:
+                self._line(c, fill_center[0], fill_center[1], point[0], point[1], "▒")
+
         for points, ch in ((left_edge, "░"), (right_edge, "░"), (centerline, "▓")):
             for start, end in zip(points, points[1:]):
                 self._line(c, start[0], start[1], end[0], end[1], ch)

@@ -111,7 +111,7 @@ The Blender script currently emits primitive boxes, cylinders, revolved moulding
 
 `AddPetalBloomDetail` is the first floral polish pass. It targets a generated bloom and adds recipe-owned ornament details: a center bead or disk, centerline vein ridges, an extra edge bevel, and a round backplate for relief mounting.
 
-`AddPetalScroll` turns one petal into a curling column ornament. The petal owns the skinny-wide-skinny surface, while the scroll path owns volute turns, inward radius, vertical lift, relief depth, side curl, twist, and an optional raised center vein.
+`AddPetalScroll` turns one petal into a curling column ornament. The petal owns the skinny-wide-skinny surface, while the scroll path owns volute turns, inward radius, vertical lift, relief depth, side curl, twist, optional raised center vein, and optional `solid_fill` so the volute can read as filled carved relief instead of a daylight-open strip.
 
 ## Next slices
 

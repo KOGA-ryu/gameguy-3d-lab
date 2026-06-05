@@ -17,7 +17,9 @@ def test_petal_scroll_recipe_validates_and_emits_blender():
     assert len(ops) == 1
     assert isinstance(ops[0], AddPetalScroll)
     assert ops[0].name == "proof.petal_scroll_column_ornament_v0"
+    assert ops[0].scroll["solid_fill"]["enabled"] is True
     assert "add_petal_scroll('proof.petal_scroll_column_ornament_v0'" in script
+    assert "add_petal_scroll_solid_fill(name + '.solid_fill'" in script
     assert "def petal_scroll_surface_point" in script
 
 
@@ -56,6 +58,16 @@ def test_petal_scroll_thickness_slopes_into_inner_roll():
 
     assert outer_edge < mid_roll < inner_roll
     assert tip > outer_edge * 6
+
+
+def test_petal_scroll_solid_fill_closes_daylight():
+    op = load_ops(PETAL_SCROLL)[0]
+    assert isinstance(op, AddPetalScroll)
+
+    fill = op.scroll["solid_fill"]
+
+    assert fill["mode"] == "center_fan"
+    assert fill["front_depth"] > fill["back_depth"]
 
 
 def test_petal_scroll_rejects_bad_direction():

@@ -31,7 +31,14 @@
         "samples": 54,
         "samples_width": 7,
         "edge_bevel": 0.006,
-        "edge_bevel_segments": 1
+        "edge_bevel_segments": 1,
+        "solid_fill": {
+          "enabled": true,
+          "mode": "center_fan",
+          "front_depth": 0.045,
+          "back_depth": 0.035,
+          "edge_bevel": 0.004
+        }
       },
       "vein": {
         "enabled": true,
