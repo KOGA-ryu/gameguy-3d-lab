@@ -1,7 +1,7 @@
 from ascii_blender_dryrun.ascii_backend import AsciiBackend
 from ascii_blender_dryrun.blender_backend import BlenderBackend
 from ascii_blender_dryrun.ops import AddPetalScroll, load_ops
-from ascii_blender_dryrun.sweep_geometry import petal_scroll_bounds, petal_scroll_path_points
+from ascii_blender_dryrun.sweep_geometry import petal_scroll_bounds, petal_scroll_path_points, petal_thickness_at
 from ascii_blender_dryrun.validators import validation_report
 
 
@@ -43,6 +43,19 @@ def test_petal_scroll_path_curls_inward():
     assert path[0]["radius"] > path[-1]["radius"]
     assert bounds[0] < bounds[1]
     assert bounds[4] < bounds[5]
+
+
+def test_petal_scroll_thickness_slopes_into_inner_roll():
+    op = load_ops(PETAL_SCROLL)[0]
+    assert isinstance(op, AddPetalScroll)
+
+    outer_edge = petal_thickness_at(op.petal, 0.0)
+    mid_roll = petal_thickness_at(op.petal, 0.55)
+    inner_roll = petal_thickness_at(op.petal, 0.92)
+    tip = petal_thickness_at(op.petal, 1.0)
+
+    assert outer_edge < mid_roll < inner_roll
+    assert tip > outer_edge * 6
 
 
 def test_petal_scroll_rejects_bad_direction():
