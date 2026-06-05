@@ -22,6 +22,7 @@ from .ops import (
     AddMoulding,
     AddPathSweep,
     AddPetalBloom,
+    AddPetalBloomDetail,
     AddRing,
     AddSectionStack,
     CutFlutes,
@@ -54,6 +55,7 @@ class Bounds:
 def estimate_bounds(ops: Iterable[BuildOp]) -> Bounds:
     min_x = min_y = min_z = float("inf")
     max_x = max_y = max_z = float("-inf")
+    bloom_bounds: dict[str, tuple[float, float, float, float, float, float]] = {}
 
     for op in ops:
         if isinstance(op, AddBox):
@@ -106,6 +108,28 @@ def estimate_bounds(ops: Iterable[BuildOp]) -> Bounds:
             sx0, sx1, sy0, sy1, sz0, sz1 = petal_bloom_bounds(
                 op.petal, op.layers, op.x, op.y, op.z
             )
+            bloom_bounds[op.name] = (sx0, sx1, sy0, sy1, sz0, sz1)
+            min_x = min(min_x, sx0)
+            max_x = max(max_x, sx1)
+            min_y = min(min_y, sy0)
+            max_y = max(max_y, sy1)
+            min_z = min(min_z, sz0)
+            max_z = max(max_z, sz1)
+        elif isinstance(op, AddPetalBloomDetail) and op.target in bloom_bounds:
+            sx0, sx1, sy0, sy1, sz0, sz1 = bloom_bounds[op.target]
+            cx = (sx0 + sx1) * 0.5
+            cy = (sy0 + sy1) * 0.5
+            radius = 0.0
+            if op.mount:
+                radius = max(radius, float(op.mount.get("radius", 0.0)))
+                sz0 -= float(op.mount.get("height", 0.0))
+            if op.center_boss:
+                radius = max(radius, float(op.center_boss.get("radius", 0.0)))
+                sz1 += float(op.center_boss.get("height", op.center_boss.get("radius", 0.0)))
+            sx0 = min(sx0, cx - radius)
+            sx1 = max(sx1, cx + radius)
+            sy0 = min(sy0, cy - radius)
+            sy1 = max(sy1, cy + radius)
             min_x = min(min_x, sx0)
             max_x = max(max_x, sx1)
             min_y = min(min_y, sy0)
@@ -172,6 +196,7 @@ class AsciiBackend:
     def render_projection(self, ops: list[BuildOp], projection: Projection) -> str:
         bounds = estimate_bounds(ops)
         c = AsciiCanvas(self.width, self.height)
+        self._bloom_lookup = {op.name: op for op in ops if isinstance(op, AddPetalBloom)}
 
         def map_front(x: float, z: float) -> tuple[int, int]:
             sx = (x - bounds.min_x) / max(1e-9, bounds.max_x - bounds.min_x)
@@ -339,6 +364,56 @@ class AsciiBackend:
             return mapper(y, z)
         return mapper(x, y)
 
+    def _draw_petal_detail(
+        self,
+        c: AsciiCanvas,
+        mapper,
+        op: AddPetalBloomDetail,
+        projection: Projection,
+    ) -> None:
+        target = getattr(self, "_bloom_lookup", {}).get(op.target)
+        if target is None:
+            return
+        if projection == "top":
+            cx, cy = mapper(target.x, target.y)
+            if op.mount:
+                mx, _ = mapper(target.x + float(op.mount.get("radius", 0.0)), target.y)
+                c.circle(cx, cy, abs(mx - cx), fill=" ", border="▒")
+            if op.veins and op.veins.get("enabled", True):
+                for layer in target.layers:
+                    count = max(1, int(layer["count"]))
+                    radius = float(layer.get("radius", 0.0))
+                    length = float(target.petal["length"]) * float(layer.get("length_scale", 1.0))
+                    for index in range(count):
+                        angle = math.radians(float(layer.get("spiral_offset_deg", 0.0)))
+                        angle += math.tau * index / count
+                        x1 = target.x + math.cos(angle) * radius
+                        y1 = target.y + math.sin(angle) * radius
+                        x2 = target.x + math.cos(angle) * (radius + length * 0.82)
+                        y2 = target.y + math.sin(angle) * (radius + length * 0.82)
+                        p1 = mapper(x1, y1)
+                        p2 = mapper(x2, y2)
+                        self._line(c, p1[0], p1[1], p2[0], p2[1], "╎")
+            if op.center_boss:
+                bx, _ = mapper(target.x + float(op.center_boss.get("radius", 0.0)), target.y)
+                c.circle(cx, cy, abs(bx - cx), fill="●", border="█")
+        else:
+            bounds = petal_bloom_bounds(target.petal, target.layers, target.x, target.y, target.z)
+            center_axis = target.x if projection == "front" else target.y
+            z_top = bounds[5]
+            if op.mount:
+                radius = float(op.mount.get("radius", 0.0))
+                height = float(op.mount.get("height", 0.0))
+                x1, y1 = mapper(center_axis - radius, bounds[4] - height)
+                x2, y2 = mapper(center_axis + radius, bounds[4])
+                c.rect(x1, y1, x2, y2, fill="▒", border="█")
+            if op.center_boss:
+                radius = float(op.center_boss.get("radius", 0.0))
+                height = float(op.center_boss.get("height", radius))
+                x1, y1 = mapper(center_axis - radius, z_top)
+                x2, y2 = mapper(center_axis + radius, z_top + height)
+                c.rect(x1, y1, x2, y2, fill="●", border="█")
+
     def _draw_front(self, c: AsciiCanvas, mapper, op: BuildOp) -> None:
         if isinstance(op, AddBox):
             x1, y1 = mapper(op.x - op.width / 2, op.z - op.height / 2)
@@ -360,6 +435,8 @@ class AsciiBackend:
             self._draw_path_sweep(c, mapper, op, "front")
         elif isinstance(op, AddPetalBloom):
             self._draw_petal_bloom(c, mapper, op, "front")
+        elif isinstance(op, AddPetalBloomDetail):
+            self._draw_petal_detail(c, mapper, op, "front")
         elif isinstance(op, CutFlutes):
             # Front preview: rhythm markers only, because actual radial boolean
             # cuts belong to the Blender backend.
@@ -390,6 +467,8 @@ class AsciiBackend:
             self._draw_path_sweep(c, mapper, op, "side")
         elif isinstance(op, AddPetalBloom):
             self._draw_petal_bloom(c, mapper, op, "side")
+        elif isinstance(op, AddPetalBloomDetail):
+            self._draw_petal_detail(c, mapper, op, "side")
 
     def _draw_top(self, c: AsciiCanvas, mapper, op: BuildOp) -> None:
         if isinstance(op, AddBox):
@@ -426,6 +505,8 @@ class AsciiBackend:
             self._draw_path_sweep(c, mapper, op, "top")
         elif isinstance(op, AddPetalBloom):
             self._draw_petal_bloom(c, mapper, op, "top")
+        elif isinstance(op, AddPetalBloomDetail):
+            self._draw_petal_detail(c, mapper, op, "top")
         elif isinstance(op, CutFlutes):
             cx, cy = c.width // 2, c.height // 2
             r1 = round(min(c.width, c.height) * 0.12)

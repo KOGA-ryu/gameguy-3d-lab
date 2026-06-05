@@ -15,6 +15,7 @@ from .ops import (
     AddMoulding,
     AddPathSweep,
     AddPetalBloom,
+    AddPetalBloomDetail,
     AddPetalBloomPreset,
     AddProfileMoulding,
     AddRing,
@@ -184,6 +185,32 @@ def validate_ops(ops: list[BuildOp]) -> list[Finding]:
                 "uncompiled_petal_bloom_preset",
                 f"{op.name} must be expanded with compile_petal_bloom_presets before validation.",
             ))
+        elif isinstance(op, AddPetalBloomDetail):
+            if op.target not in names:
+                findings.append(Finding("error", "petal_detail_missing_target", f"Petal detail target does not exist before detail: {op.target}"))
+            if op.center_boss:
+                if float(op.center_boss.get("radius", 0.0)) <= 0:
+                    findings.append(Finding("error", "bad_center_boss_radius", f"{op.target} center boss radius must be positive."))
+                if float(op.center_boss.get("height", 0.0)) <= 0:
+                    findings.append(Finding("error", "bad_center_boss_height", f"{op.target} center boss height must be positive."))
+            if op.veins and op.veins.get("enabled", True):
+                if op.veins.get("mode", "centerline") != "centerline":
+                    findings.append(Finding("error", "bad_vein_mode", f"{op.target} vein mode must be centerline."))
+                if float(op.veins.get("bevel_depth", 0.0)) <= 0:
+                    findings.append(Finding("error", "bad_vein_bevel_depth", f"{op.target} vein bevel_depth must be positive."))
+                if int(op.veins.get("samples", 2)) < 2:
+                    findings.append(Finding("error", "bad_vein_samples", f"{op.target} vein samples must be at least 2."))
+                start_t = float(op.veins.get("start_t", 0.16))
+                end_t = float(op.veins.get("end_t", 0.88))
+                if not 0.0 <= start_t <= 1.0 or not 0.0 <= end_t <= 1.0 or end_t <= start_t:
+                    findings.append(Finding("error", "bad_vein_t_range", f"{op.target} vein start_t/end_t must be ordered within 0..1."))
+            if op.edge and "bevel" in op.edge and float(op.edge["bevel"]) <= 0:
+                findings.append(Finding("error", "bad_petal_detail_edge_bevel", f"{op.target} edge bevel must be positive."))
+            if op.mount:
+                if float(op.mount.get("radius", 0.0)) <= 0:
+                    findings.append(Finding("error", "bad_mount_radius", f"{op.target} mount radius must be positive."))
+                if float(op.mount.get("height", 0.0)) <= 0:
+                    findings.append(Finding("error", "bad_mount_height", f"{op.target} mount height must be positive."))
         elif isinstance(op, CutFlutes):
             if op.target not in names:
                 findings.append(Finding("error", "flute_missing_target", f"CutFlutes target does not exist before cut: {op.target}"))

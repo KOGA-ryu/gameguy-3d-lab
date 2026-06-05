@@ -127,6 +127,16 @@ class AddPetalBloomPreset:
 
 
 @dataclass(frozen=True)
+class AddPetalBloomDetail:
+    target: str
+    center_boss: Dict[str, Any] | None = None
+    veins: Dict[str, Any] | None = None
+    edge: Dict[str, Any] | None = None
+    mount: Dict[str, Any] | None = None
+    material: str = "limestone"
+
+
+@dataclass(frozen=True)
 class CutFlutes:
     target: str
     count: int
@@ -155,6 +165,7 @@ BuildOp = Union[
     AddPathSweep,
     AddPetalBloom,
     AddPetalBloomPreset,
+    AddPetalBloomDetail,
     CutFlutes,
     AddLabel,
 ]
@@ -170,6 +181,7 @@ OP_CLASSES = {
     "AddPathSweep": AddPathSweep,
     "AddPetalBloom": AddPetalBloom,
     "AddPetalBloomPreset": AddPetalBloomPreset,
+    "AddPetalBloomDetail": AddPetalBloomDetail,
     "CutFlutes": CutFlutes,
     "AddLabel": AddLabel,
 }

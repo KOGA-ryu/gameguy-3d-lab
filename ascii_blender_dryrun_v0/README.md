@@ -58,6 +58,9 @@ Do not make Blender infer meaning from pixels. Write or compile a recipe, run it
 - `examples/petal_bloom_preset_zoo_recipe_v0.json`
   One-scene comparison sheet for all five preset roles, compiled into five separate `AddPetalBloom` meshes.
 
+- `examples/polished_rose_boss_recipe_v0.json`
+  Floral polish proof that compiles a rose-bud preset, then adds a center boss, vein ridges, edge bevel, and round relief backplate.
+
 - `tests/test_dryrun.py`  
   Minimal tests for the recipe, ASCII backend, validation, and Blender emitter.
 
@@ -102,6 +105,8 @@ The Blender script currently emits primitive boxes, cylinders, revolved moulding
 `AddPetalBloom` is for sheet-like ornamental surfaces such as rose petals, leaves, floral bosses, curled plates, and layered reliefs. Its recipe owns the skinny-wide-skinny petal width curve, thickness curve, bend start, layer counts, layer scale, spiral offsets, curl, and petal twist.
 
 `AddPetalBloomPreset` is a source-side shortcut for reusable petal roles. It references one preset from `presets/petal_bloom_presets_v0.json`, then optional `petal_overrides` and indexed `layer_overrides` are applied before the compiler emits ordinary `AddPetalBloom`.
+
+`AddPetalBloomDetail` is the first floral polish pass. It targets a generated bloom and adds recipe-owned ornament details: a center bead or disk, centerline vein ridges, an extra edge bevel, and a round backplate for relief mounting.
 
 ## Next slices
 

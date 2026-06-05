@@ -41,6 +41,9 @@
             "$ref": "#/$defs/addPetalBloomPreset"
           },
           {
+            "$ref": "#/$defs/addPetalBloomDetail"
+          },
+          {
             "$ref": "#/$defs/cutFlutes"
           },
           {
@@ -909,6 +912,156 @@
           "items": {
             "$ref": "#/$defs/petalLayerOverride"
           }
+        }
+      }
+    },
+    "petalCenterBoss": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "bead",
+            "disk"
+          ]
+        },
+        "radius": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "height": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "vertices": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 128
+        },
+        "bevel": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "material": {
+          "$ref": "#/$defs/material"
+        }
+      }
+    },
+    "petalVeins": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "mode": {
+          "enum": [
+            "centerline"
+          ]
+        },
+        "bevel_depth": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "z_raise": {
+          "$ref": "#/$defs/number"
+        },
+        "start_t": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "end_t": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "samples": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 64
+        },
+        "skip_first_layers": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16
+        },
+        "layer_limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "material": {
+          "$ref": "#/$defs/material"
+        }
+      }
+    },
+    "petalEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "bevel": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "segments": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        }
+      }
+    },
+    "petalMount": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "round_backplate"
+          ]
+        },
+        "radius": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "height": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "vertices": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 128
+        },
+        "bevel": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "material": {
+          "$ref": "#/$defs/material"
+        }
+      }
+    },
+    "addPetalBloomDetail": {
+      "type": "object",
+      "required": [
+        "op",
+        "target"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "AddPetalBloomDetail"
+        },
+        "target": {
+          "$ref": "#/$defs/name"
+        },
+        "center_boss": {
+          "$ref": "#/$defs/petalCenterBoss"
+        },
+        "veins": {
+          "$ref": "#/$defs/petalVeins"
+        },
+        "edge": {
+          "$ref": "#/$defs/petalEdge"
+        },
+        "mount": {
+          "$ref": "#/$defs/petalMount"
+        },
+        "material": {
+          "$ref": "#/$defs/material"
         }
       }
     },

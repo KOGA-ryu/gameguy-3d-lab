@@ -1,0 +1,58 @@
+{
+  "ops": [
+    {
+      "op": "AddPetalBloomPreset",
+      "name": "proof.polished_rose_boss_v0",
+      "preset": "spiral_rose_bud_v0",
+      "scale": 1.06,
+      "petal_overrides": {
+        "max_width": 0.6,
+        "tip_width": 0.36
+      },
+      "layer_overrides": [
+        {
+          "index": 3,
+          "bend_angle_deg": 102,
+          "petal_twist_deg": 56
+        },
+        {
+          "index": 4,
+          "bend_angle_deg": 118,
+          "curl_angle_deg": 58,
+          "petal_twist_deg": 74
+        }
+      ],
+      "material": "limestone"
+    },
+    {
+      "op": "AddPetalBloomDetail",
+      "target": "proof.polished_rose_boss_v0",
+      "center_boss": {
+        "type": "bead",
+        "radius": 0.18,
+        "height": 0.1,
+        "vertices": 32
+      },
+      "veins": {
+        "enabled": true,
+        "mode": "centerline",
+        "bevel_depth": 0.007,
+        "z_raise": 0.018,
+        "start_t": 0.22,
+        "end_t": 0.82,
+        "samples": 7
+      },
+      "edge": {
+        "bevel": 0.01,
+        "segments": 1
+      },
+      "mount": {
+        "type": "round_backplate",
+        "radius": 1.55,
+        "height": 0.08,
+        "vertices": 80
+      },
+      "material": "limestone"
+    }
+  ]
+}

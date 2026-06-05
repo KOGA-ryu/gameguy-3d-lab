@@ -1,6 +1,6 @@
 from ascii_blender_dryrun.ascii_backend import AsciiBackend
 from ascii_blender_dryrun.blender_backend import BlenderBackend
-from ascii_blender_dryrun.ops import AddPetalBloom, AddPetalBloomPreset, load_ops
+from ascii_blender_dryrun.ops import AddPetalBloom, AddPetalBloomDetail, AddPetalBloomPreset, load_ops
 from ascii_blender_dryrun.petal_bloom_presets import (
     compile_petal_bloom_presets,
     load_petal_bloom_presets,
@@ -13,6 +13,7 @@ LAYERED_ROSE = "ascii_blender_dryrun_v0/examples/layered_rose_bloom_recipe_v0.js
 SPIRAL_ROSE_BUD = "ascii_blender_dryrun_v0/examples/spiral_rose_bud_recipe_v0.json"
 PRESET_SPIRAL_ROSE_BUD = "ascii_blender_dryrun_v0/examples/preset_spiral_rose_bud_recipe_v0.json"
 PETAL_BLOOM_PRESET_ZOO = "ascii_blender_dryrun_v0/examples/petal_bloom_preset_zoo_recipe_v0.json"
+POLISHED_ROSE_BOSS = "ascii_blender_dryrun_v0/examples/polished_rose_boss_recipe_v0.json"
 PETAL_BLOOM_RECIPES = [LAYERED_ROSE, SPIRAL_ROSE_BUD]
 
 
@@ -113,6 +114,45 @@ def test_petal_bloom_preset_recipe_compiles_to_low_level_bloom():
     assert ops[0].petal["max_width"] == 0.60
     assert ops[0].layers[-1]["petal_twist_deg"] == 74
     assert "add_petal_bloom('proof.preset_spiral_rose_bud_v0'" in script
+
+
+def test_polished_rose_boss_compiles_and_emits_detail_pass():
+    source_ops = load_ops(POLISHED_ROSE_BOSS)
+    assert isinstance(source_ops[0], AddPetalBloomPreset)
+    assert isinstance(source_ops[1], AddPetalBloomDetail)
+
+    ops = compile_petal_bloom_presets(source_ops)
+    report = validation_report(ops)
+    script = BlenderBackend().emit(ops)
+
+    assert report["ok"], report
+    assert isinstance(ops[0], AddPetalBloom)
+    assert isinstance(ops[1], AddPetalBloomDetail)
+    assert ops[1].target == "proof.polished_rose_boss_v0"
+    assert "add_petal_bloom('proof.polished_rose_boss_v0'" in script
+    assert "add_petal_bloom_detail('proof.polished_rose_boss_v0'" in script
+
+
+def test_ascii_backend_handles_polished_rose_boss_detail():
+    backend = AsciiBackend(width=72, height=54)
+    ops = compile_petal_bloom_presets(load_ops(POLISHED_ROSE_BOSS))
+
+    text = backend.render_projection(ops, "top")
+
+    assert "TOP PROJECTION" in text
+    assert "●" in text or "╎" in text
+
+
+def test_petal_detail_requires_existing_target():
+    report = validation_report([
+        AddPetalBloomDetail(
+            target="missing.bloom",
+            center_boss={"type": "bead", "radius": 0.1, "height": 0.1},
+        )
+    ])
+
+    assert not report["ok"]
+    assert report["findings"][0]["code"] == "petal_detail_missing_target"
 
 
 def test_uncompiled_petal_preset_recipe_fails_validation():
