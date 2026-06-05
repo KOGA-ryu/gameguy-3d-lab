@@ -44,6 +44,9 @@
             "$ref": "#/$defs/addPetalBloomDetail"
           },
           {
+            "$ref": "#/$defs/addPetalScroll"
+          },
+          {
             "$ref": "#/$defs/cutFlutes"
           },
           {
@@ -1059,6 +1062,132 @@
         },
         "mount": {
           "$ref": "#/$defs/petalMount"
+        },
+        "material": {
+          "$ref": "#/$defs/material"
+        }
+      }
+    },
+    "petalScrollSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "volute"
+          ]
+        },
+        "turns": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "radius_start": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "radius_end": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "vertical_lift": {
+          "$ref": "#/$defs/number"
+        },
+        "start_angle_deg": {
+          "$ref": "#/$defs/number"
+        },
+        "direction": {
+          "enum": [
+            "cw",
+            "ccw"
+          ]
+        },
+        "relief_depth": {
+          "$ref": "#/$defs/nonNegativeNumber"
+        },
+        "curl_depth": {
+          "$ref": "#/$defs/nonNegativeNumber"
+        },
+        "twist_deg": {
+          "$ref": "#/$defs/number"
+        },
+        "samples": {
+          "type": "integer",
+          "minimum": 3,
+          "maximum": 128
+        },
+        "samples_width": {
+          "type": "integer",
+          "minimum": 3,
+          "maximum": 64
+        },
+        "edge_bevel": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "edge_bevel_segments": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        }
+      }
+    },
+    "petalScrollVein": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "bevel_depth": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "raise_depth": {
+          "$ref": "#/$defs/nonNegativeNumber"
+        },
+        "start_t": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "end_t": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "material": {
+          "$ref": "#/$defs/material"
+        }
+      }
+    },
+    "addPetalScroll": {
+      "type": "object",
+      "required": [
+        "op",
+        "name",
+        "petal",
+        "scroll"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "AddPetalScroll"
+        },
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "petal": {
+          "$ref": "#/$defs/petalSpec"
+        },
+        "scroll": {
+          "$ref": "#/$defs/petalScrollSpec"
+        },
+        "vein": {
+          "$ref": "#/$defs/petalScrollVein"
+        },
+        "x": {
+          "$ref": "#/$defs/number"
+        },
+        "y": {
+          "$ref": "#/$defs/number"
+        },
+        "z": {
+          "$ref": "#/$defs/number"
         },
         "material": {
           "$ref": "#/$defs/material"

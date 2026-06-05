@@ -17,6 +17,7 @@ from .ops import (
     AddPetalBloom,
     AddPetalBloomDetail,
     AddPetalBloomPreset,
+    AddPetalScroll,
     AddProfileMoulding,
     AddRing,
     AddSectionStack,
@@ -27,6 +28,7 @@ from .profile_mouldings import SUPPORTED_TERMS
 from .sweep_geometry import (
     path_sweep_bounds,
     petal_bloom_bounds,
+    petal_scroll_bounds,
     petal_thickness_at,
     petal_width_at,
     profile_points,
@@ -211,6 +213,42 @@ def validate_ops(ops: list[BuildOp]) -> list[Finding]:
                     findings.append(Finding("error", "bad_mount_radius", f"{op.target} mount radius must be positive."))
                 if float(op.mount.get("height", 0.0)) <= 0:
                     findings.append(Finding("error", "bad_mount_height", f"{op.target} mount height must be positive."))
+        elif isinstance(op, AddPetalScroll):
+            petal = op.petal
+            for key in ("length", "max_width", "max_thickness"):
+                if float(petal.get(key, 0.0)) <= 0:
+                    findings.append(Finding("error", "bad_petal_scroll_dimension", f"{op.name} petal {key} must be positive."))
+            for key in ("base_width", "tip_width", "min_width", "min_thickness", "tip_thickness"):
+                if key in petal and float(petal[key]) <= 0:
+                    findings.append(Finding("error", "bad_petal_scroll_dimension", f"{op.name} petal {key} must be positive."))
+            if op.scroll.get("type", "volute") != "volute":
+                findings.append(Finding("error", "bad_petal_scroll_type", f"{op.name} scroll type must be volute."))
+            if float(op.scroll.get("turns", 0.0)) <= 0:
+                findings.append(Finding("error", "bad_petal_scroll_turns", f"{op.name} scroll turns must be positive."))
+            for key in ("radius_start", "radius_end"):
+                if float(op.scroll.get(key, 0.0)) <= 0:
+                    findings.append(Finding("error", "bad_petal_scroll_radius", f"{op.name} scroll {key} must be positive."))
+            if int(op.scroll.get("samples", 3)) < 3:
+                findings.append(Finding("error", "bad_petal_scroll_samples", f"{op.name} scroll samples must be at least 3."))
+            if op.scroll.get("direction", "ccw") not in ("cw", "ccw"):
+                findings.append(Finding("error", "bad_petal_scroll_direction", f"{op.name} scroll direction must be cw or ccw."))
+            if float(op.scroll.get("relief_depth", 0.06)) < 0:
+                findings.append(Finding("error", "bad_petal_scroll_relief", f"{op.name} relief_depth must be non-negative."))
+            if float(op.scroll.get("curl_depth", 0.12)) < 0:
+                findings.append(Finding("error", "bad_petal_scroll_curl", f"{op.name} curl_depth must be non-negative."))
+            if op.vein and op.vein.get("enabled", True):
+                if float(op.vein.get("bevel_depth", 0.0)) <= 0:
+                    findings.append(Finding("error", "bad_petal_scroll_vein", f"{op.name} vein bevel_depth must be positive."))
+                start_t = float(op.vein.get("start_t", 0.1))
+                end_t = float(op.vein.get("end_t", 0.92))
+                if not 0.0 <= start_t <= 1.0 or not 0.0 <= end_t <= 1.0 or end_t <= start_t:
+                    findings.append(Finding("error", "bad_petal_scroll_vein_range", f"{op.name} vein start_t/end_t must be ordered within 0..1."))
+            try:
+                petal_width_at(petal, 0.5)
+                petal_thickness_at(petal, 0.5)
+                petal_scroll_bounds(petal, op.scroll, op.x, op.y, op.z)
+            except (TypeError, ValueError) as exc:
+                findings.append(Finding("error", "bad_petal_scroll", f"{op.name}: {exc}"))
         elif isinstance(op, CutFlutes):
             if op.target not in names:
                 findings.append(Finding("error", "flute_missing_target", f"CutFlutes target does not exist before cut: {op.target}"))

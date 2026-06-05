@@ -23,6 +23,7 @@ from .ops import (
     AddPathSweep,
     AddPetalBloom,
     AddPetalBloomDetail,
+    AddPetalScroll,
     AddRing,
     AddSectionStack,
     CutFlutes,
@@ -33,6 +34,8 @@ from .sweep_geometry import (
     path_sweep_instances,
     petal_bloom_bounds,
     petal_layer_instances,
+    petal_scroll_bounds,
+    petal_scroll_path_points,
     petal_width_at,
     section_stack_bounds,
     transformed_profile_points,
@@ -130,6 +133,16 @@ def estimate_bounds(ops: Iterable[BuildOp]) -> Bounds:
             sx1 = max(sx1, cx + radius)
             sy0 = min(sy0, cy - radius)
             sy1 = max(sy1, cy + radius)
+            min_x = min(min_x, sx0)
+            max_x = max(max_x, sx1)
+            min_y = min(min_y, sy0)
+            max_y = max(max_y, sy1)
+            min_z = min(min_z, sz0)
+            max_z = max(max_z, sz1)
+        elif isinstance(op, AddPetalScroll):
+            sx0, sx1, sy0, sy1, sz0, sz1 = petal_scroll_bounds(
+                op.petal, op.scroll, op.x, op.y, op.z
+            )
             min_x = min(min_x, sx0)
             max_x = max(max_x, sx1)
             min_y = min(min_y, sy0)
@@ -414,6 +427,49 @@ class AsciiBackend:
                 x2, y2 = mapper(center_axis + radius, z_top + height)
                 c.rect(x1, y1, x2, y2, fill="●", border="█")
 
+    def _draw_petal_scroll(self, c: AsciiCanvas, mapper, op: AddPetalScroll, projection: Projection) -> None:
+        path = petal_scroll_path_points(op.scroll, op.x, op.y, op.z)
+        centerline: list[tuple[int, int]] = []
+        left_edge: list[tuple[int, int]] = []
+        right_edge: list[tuple[int, int]] = []
+        relief_depth = float(op.scroll.get("relief_depth", 0.06))
+        curl_depth = float(op.scroll.get("curl_depth", 0.12))
+
+        for index, point in enumerate(path):
+            previous = path[max(0, index - 1)]
+            next_point = path[min(len(path) - 1, index + 1)]
+            tx = next_point["x"] - previous["x"]
+            tz = next_point["z"] - previous["z"]
+            length = max(1e-9, math.hypot(tx, tz))
+            nx = -tz / length
+            nz = tx / length
+            t = point["t"]
+            width = petal_width_at(op.petal, t)
+            if projection == "front":
+                centerline.append(mapper(point["x"], point["z"]))
+                left_edge.append(mapper(point["x"] - nx * width * 0.5, point["z"] - nz * width * 0.5))
+                right_edge.append(mapper(point["x"] + nx * width * 0.5, point["z"] + nz * width * 0.5))
+            elif projection == "side":
+                depth = op.y + relief_depth + curl_depth * (t ** 1.2)
+                centerline.append(mapper(depth, point["z"]))
+                left_edge.append(mapper(depth + curl_depth * 0.35, point["z"] - width * 0.35))
+                right_edge.append(mapper(depth + curl_depth * 0.35, point["z"] + width * 0.35))
+            else:
+                depth = op.y + relief_depth + curl_depth * (t ** 1.2)
+                centerline.append(mapper(point["x"], depth))
+                left_edge.append(mapper(point["x"] - nx * width * 0.5, depth + curl_depth * 0.25))
+                right_edge.append(mapper(point["x"] + nx * width * 0.5, depth + curl_depth * 0.25))
+
+        for points, ch in ((left_edge, "░"), (right_edge, "░"), (centerline, "▓")):
+            for start, end in zip(points, points[1:]):
+                self._line(c, start[0], start[1], end[0], end[1], ch)
+        if op.vein and op.vein.get("enabled", True):
+            for start, end in zip(centerline, centerline[1:]):
+                self._line(c, start[0], start[1], end[0], end[1], "╎")
+        if centerline:
+            c.set(centerline[0][0], centerline[0][1], "•")
+            c.set(centerline[-1][0], centerline[-1][1], "◆")
+
     def _draw_front(self, c: AsciiCanvas, mapper, op: BuildOp) -> None:
         if isinstance(op, AddBox):
             x1, y1 = mapper(op.x - op.width / 2, op.z - op.height / 2)
@@ -437,6 +493,8 @@ class AsciiBackend:
             self._draw_petal_bloom(c, mapper, op, "front")
         elif isinstance(op, AddPetalBloomDetail):
             self._draw_petal_detail(c, mapper, op, "front")
+        elif isinstance(op, AddPetalScroll):
+            self._draw_petal_scroll(c, mapper, op, "front")
         elif isinstance(op, CutFlutes):
             # Front preview: rhythm markers only, because actual radial boolean
             # cuts belong to the Blender backend.
@@ -469,6 +527,8 @@ class AsciiBackend:
             self._draw_petal_bloom(c, mapper, op, "side")
         elif isinstance(op, AddPetalBloomDetail):
             self._draw_petal_detail(c, mapper, op, "side")
+        elif isinstance(op, AddPetalScroll):
+            self._draw_petal_scroll(c, mapper, op, "side")
 
     def _draw_top(self, c: AsciiCanvas, mapper, op: BuildOp) -> None:
         if isinstance(op, AddBox):
@@ -507,6 +567,8 @@ class AsciiBackend:
             self._draw_petal_bloom(c, mapper, op, "top")
         elif isinstance(op, AddPetalBloomDetail):
             self._draw_petal_detail(c, mapper, op, "top")
+        elif isinstance(op, AddPetalScroll):
+            self._draw_petal_scroll(c, mapper, op, "top")
         elif isinstance(op, CutFlutes):
             cx, cy = c.width // 2, c.height // 2
             r1 = round(min(c.width, c.height) * 0.12)

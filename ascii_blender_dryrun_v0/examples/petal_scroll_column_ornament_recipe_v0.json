@@ -1,0 +1,47 @@
+{
+  "ops": [
+    {
+      "op": "AddPetalScroll",
+      "name": "proof.petal_scroll_column_ornament_v0",
+      "petal": {
+        "length": 1.35,
+        "base_width": 0.16,
+        "max_width": 0.42,
+        "tip_width": 0.1,
+        "min_thickness": 0.018,
+        "max_thickness": 0.06,
+        "tip_thickness": 0.014,
+        "width_peak_t": 0.38,
+        "thickness_peak_t": 0.34,
+        "bend_start_t": 0.42,
+        "samples_length": 34,
+        "samples_width": 7
+      },
+      "scroll": {
+        "type": "volute",
+        "turns": 0.92,
+        "radius_start": 0.95,
+        "radius_end": 0.16,
+        "vertical_lift": 0.42,
+        "start_angle_deg": -105,
+        "direction": "ccw",
+        "relief_depth": 0.08,
+        "curl_depth": 0.16,
+        "twist_deg": 18,
+        "samples": 34,
+        "samples_width": 7,
+        "edge_bevel": 0.008,
+        "edge_bevel_segments": 1
+      },
+      "vein": {
+        "enabled": true,
+        "bevel_depth": 0.012,
+        "raise_depth": 0.025,
+        "start_t": 0.1,
+        "end_t": 0.9,
+        "material": "stone"
+      },
+      "material": "limestone"
+    }
+  ]
+}

@@ -256,6 +256,63 @@ def petal_bloom_bounds(
     return min_x, max_x, min_y, max_y, min_z, max_z
 
 
+def petal_scroll_path_points(
+    scroll: dict[str, Any],
+    origin_x: float,
+    origin_y: float,
+    origin_z: float,
+) -> list[dict[str, float]]:
+    scroll_type = str(scroll.get("type", "volute"))
+    if scroll_type != "volute":
+        raise ValueError(f"Unsupported petal scroll type: {scroll_type!r}")
+
+    samples = max(3, int(scroll.get("samples", 28)))
+    turns = float(scroll.get("turns", 0.9))
+    radius_start = float(scroll.get("radius_start", 0.9))
+    radius_end = float(scroll.get("radius_end", 0.18))
+    vertical_lift = float(scroll.get("vertical_lift", 0.45))
+    start_angle = math.radians(float(scroll.get("start_angle_deg", -100.0)))
+    direction = -1.0 if str(scroll.get("direction", "ccw")) == "cw" else 1.0
+
+    points: list[dict[str, float]] = []
+    for index in range(samples):
+        t = index / max(1, samples - 1)
+        radius = radius_start + (radius_end - radius_start) * t
+        angle = start_angle + direction * math.tau * turns * t
+        points.append({
+            "t": t,
+            "x": origin_x + math.cos(angle) * radius,
+            "y": origin_y,
+            "z": origin_z + vertical_lift * t + math.sin(angle) * radius,
+            "angle": angle,
+            "radius": radius,
+        })
+    return points
+
+
+def petal_scroll_bounds(
+    petal: dict[str, Any],
+    scroll: dict[str, Any],
+    origin_x: float,
+    origin_y: float,
+    origin_z: float,
+) -> tuple[float, float, float, float, float, float]:
+    max_width = float(petal["max_width"])
+    max_thickness = float(petal["max_thickness"])
+    relief_depth = float(scroll.get("relief_depth", 0.06))
+    curl_depth = float(scroll.get("curl_depth", 0.12))
+    pad = max_width * 0.6
+    y_pad = relief_depth + curl_depth + max_thickness
+    points = petal_scroll_path_points(scroll, origin_x, origin_y, origin_z)
+    min_x = min(point["x"] for point in points) - pad
+    max_x = max(point["x"] for point in points) + pad
+    min_y = origin_y - max_thickness * 0.5
+    max_y = origin_y + y_pad
+    min_z = min(point["z"] for point in points) - pad
+    max_z = max(point["z"] for point in points) + pad
+    return min_x, max_x, min_y, max_y, min_z, max_z
+
+
 def _regular_polygon(vertices: int, radius: float, rotation: float) -> list[tuple[float, float]]:
     return [
         (math.cos(math.tau * index / vertices + rotation) * radius,
