@@ -1,12 +1,17 @@
 from ascii_blender_dryrun.ascii_backend import AsciiBackend
 from ascii_blender_dryrun.blender_backend import BlenderBackend
-from ascii_blender_dryrun.ops import AddPetalBloom, load_ops
+from ascii_blender_dryrun.ops import AddPetalBloom, AddPetalBloomPreset, load_ops
+from ascii_blender_dryrun.petal_bloom_presets import (
+    compile_petal_bloom_presets,
+    load_petal_bloom_presets,
+)
 from ascii_blender_dryrun.sweep_geometry import petal_layer_instances, petal_thickness_at, petal_width_at
 from ascii_blender_dryrun.validators import validation_report
 
 
 LAYERED_ROSE = "ascii_blender_dryrun_v0/examples/layered_rose_bloom_recipe_v0.json"
 SPIRAL_ROSE_BUD = "ascii_blender_dryrun_v0/examples/spiral_rose_bud_recipe_v0.json"
+PRESET_SPIRAL_ROSE_BUD = "ascii_blender_dryrun_v0/examples/preset_spiral_rose_bud_recipe_v0.json"
 PETAL_BLOOM_RECIPES = [LAYERED_ROSE, SPIRAL_ROSE_BUD]
 
 
@@ -77,3 +82,50 @@ def test_spiral_rose_bud_is_denser_and_blunter_than_bloom_proof():
     assert width_tip > width_peak * 0.5
     assert op.layers[-1]["bend_angle_deg"] > op.layers[0]["bend_angle_deg"]
     assert op.layers[-1]["petal_twist_deg"] > op.layers[0]["petal_twist_deg"]
+
+
+def test_petal_bloom_preset_registry_has_named_roles():
+    presets = load_petal_bloom_presets()
+
+    assert set(presets) == {
+        "flame_petals_v0",
+        "floral_boss_relief_v0",
+        "leaf_cluster_v0",
+        "open_bloom_chrysanthemum_v0",
+        "spiral_rose_bud_v0",
+    }
+    assert presets["spiral_rose_bud_v0"]["role"] == "rose_bud"
+
+
+def test_petal_bloom_preset_recipe_compiles_to_low_level_bloom():
+    source_ops = load_ops(PRESET_SPIRAL_ROSE_BUD)
+    assert isinstance(source_ops[0], AddPetalBloomPreset)
+
+    ops = compile_petal_bloom_presets(source_ops)
+    report = validation_report(ops)
+    script = BlenderBackend().emit(ops)
+
+    assert report["ok"], report
+    assert isinstance(ops[0], AddPetalBloom)
+    assert ops[0].name == "proof.preset_spiral_rose_bud_v0"
+    assert ops[0].petal["length"] == 1.0816
+    assert ops[0].petal["max_width"] == 0.60
+    assert ops[0].layers[-1]["petal_twist_deg"] == 74
+    assert "add_petal_bloom('proof.preset_spiral_rose_bud_v0'" in script
+
+
+def test_uncompiled_petal_preset_recipe_fails_validation():
+    report = validation_report(load_ops(PRESET_SPIRAL_ROSE_BUD))
+
+    assert not report["ok"]
+    assert report["findings"][0]["code"] == "uncompiled_petal_bloom_preset"
+
+
+def test_ascii_backend_handles_compiled_petal_preset_recipe():
+    backend = AsciiBackend(width=72, height=54)
+    ops = compile_petal_bloom_presets(load_ops(PRESET_SPIRAL_ROSE_BUD))
+
+    text = backend.render_projection(ops, "top")
+
+    assert "TOP PROJECTION" in text
+    assert "▓" in text or "░" in text

@@ -1,0 +1,28 @@
+{
+  "ops": [
+    {
+      "op": "AddPetalBloomPreset",
+      "name": "proof.preset_spiral_rose_bud_v0",
+      "preset": "spiral_rose_bud_v0",
+      "scale": 1.04,
+      "petal_overrides": {
+        "max_width": 0.60,
+        "tip_width": 0.36
+      },
+      "layer_overrides": [
+        {
+          "index": 3,
+          "bend_angle_deg": 102,
+          "petal_twist_deg": 56
+        },
+        {
+          "index": 4,
+          "bend_angle_deg": 118,
+          "curl_angle_deg": 58,
+          "petal_twist_deg": 74
+        }
+      ],
+      "material": "limestone"
+    }
+  ]
+}

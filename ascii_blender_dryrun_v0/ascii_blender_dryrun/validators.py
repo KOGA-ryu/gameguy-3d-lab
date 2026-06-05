@@ -15,6 +15,7 @@ from .ops import (
     AddMoulding,
     AddPathSweep,
     AddPetalBloom,
+    AddPetalBloomPreset,
     AddProfileMoulding,
     AddRing,
     AddSectionStack,
@@ -177,6 +178,12 @@ def validate_ops(ops: list[BuildOp]) -> list[Finding]:
                 petal_bloom_bounds(petal, op.layers, op.x, op.y, op.z)
             except (TypeError, ValueError) as exc:
                 findings.append(Finding("error", "bad_petal_bloom", f"{op.name}: {exc}"))
+        elif isinstance(op, AddPetalBloomPreset):
+            findings.append(Finding(
+                "error",
+                "uncompiled_petal_bloom_preset",
+                f"{op.name} must be expanded with compile_petal_bloom_presets before validation.",
+            ))
         elif isinstance(op, CutFlutes):
             if op.target not in names:
                 findings.append(Finding("error", "flute_missing_target", f"CutFlutes target does not exist before cut: {op.target}"))

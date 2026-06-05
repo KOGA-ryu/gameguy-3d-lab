@@ -14,6 +14,7 @@ from pathlib import Path
 from .ascii_backend import AsciiBackend
 from .blender_backend import BlenderBackend
 from .ops import load_ops, save_ops
+from .petal_bloom_presets import compile_petal_bloom_presets
 from .profile_mouldings import compile_profile_mouldings
 from .recipes import doric_column_source_plan
 from .validators import save_validation, validation_report
@@ -36,7 +37,7 @@ def main() -> int:
     else:
         source_ops = doric_column_source_plan()
 
-    ops = compile_profile_mouldings(source_ops)
+    ops = compile_profile_mouldings(compile_petal_bloom_presets(source_ops))
 
     save_ops(str(out / "compiled_recipe.json"), ops)
     save_validation(str(out / "validation_report.json"), ops)

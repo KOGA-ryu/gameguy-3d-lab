@@ -22,6 +22,12 @@ Do not make Blender infer meaning from pixels. Write or compile a recipe, run it
 - `ascii_blender_dryrun/sweep_geometry.py`
   Deterministic helpers for twisted/tapered section stacks and swept spiral paths.
 
+- `ascii_blender_dryrun/petal_bloom_presets.py`
+  Expands named floral presets into low-level `AddPetalBloom` operations before ASCII, validation, or Blender emission.
+
+- `presets/petal_bloom_presets_v0.json`
+  Named petal-bloom presets for open bloom, rose bud, floral boss relief, leaf cluster, and flame-petal roles.
+
 - `ascii_blender_dryrun/ascii_backend.py`  
   A dry-run backend that renders front, side, and top ASCII projections.
 
@@ -45,6 +51,9 @@ Do not make Blender infer meaning from pixels. Write or compile a recipe, run it
 
 - `examples/spiral_rose_bud_recipe_v0.json`
   Denser petal-bloom variant with blunter petals, stronger overlap, higher inner curls, and tighter spiral-bud behavior.
+
+- `examples/preset_spiral_rose_bud_recipe_v0.json`
+  Source-side preset reference example. It names `spiral_rose_bud_v0` and applies small petal/layer overrides before compilation.
 
 - `tests/test_dryrun.py`  
   Minimal tests for the recipe, ASCII backend, validation, and Blender emitter.
@@ -88,6 +97,8 @@ The Blender script currently emits primitive boxes, cylinders, revolved moulding
 `AddPathSweep` is for bent ornamental strands such as filigree, rose scrolls, vines, ironwork curls, and glass-like bends.
 
 `AddPetalBloom` is for sheet-like ornamental surfaces such as rose petals, leaves, floral bosses, curled plates, and layered reliefs. Its recipe owns the skinny-wide-skinny petal width curve, thickness curve, bend start, layer counts, layer scale, spiral offsets, curl, and petal twist.
+
+`AddPetalBloomPreset` is a source-side shortcut for reusable petal roles. It references one preset from `presets/petal_bloom_presets_v0.json`, then optional `petal_overrides` and indexed `layer_overrides` are applied before the compiler emits ordinary `AddPetalBloom`.
 
 ## Next slices
 

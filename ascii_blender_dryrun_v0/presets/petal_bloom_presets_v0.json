@@ -1,0 +1,307 @@
+{
+  "version": "petal_bloom_presets_v0",
+  "presets": [
+    {
+      "id": "open_bloom_chrysanthemum_v0",
+      "role": "open_bloom",
+      "intent": "Long pointed radial petals for chrysanthemum, water-lily, open floral boss, or broad bloom ornament.",
+      "material": "limestone",
+      "petal": {
+        "length": 1.45,
+        "base_width": 0.10,
+        "max_width": 0.58,
+        "tip_width": 0.10,
+        "width_peak_t": 0.56,
+        "min_thickness": 0.018,
+        "max_thickness": 0.075,
+        "tip_thickness": 0.014,
+        "thickness_peak_t": 0.52,
+        "bend_start_t": 0.42,
+        "samples_length": 17,
+        "samples_width": 11
+      },
+      "layers": [
+        {
+          "count": 8,
+          "radius": 0.46,
+          "length_scale": 1.02,
+          "width_scale": 1.0,
+          "thickness_scale": 1.0,
+          "bend_angle_deg": 42,
+          "curl_angle_deg": 10,
+          "petal_twist_deg": 7,
+          "spiral_offset_deg": 0,
+          "z_offset": 0.0
+        },
+        {
+          "count": 6,
+          "radius": 0.27,
+          "length_scale": 0.74,
+          "width_scale": 0.82,
+          "thickness_scale": 0.84,
+          "bend_angle_deg": 58,
+          "curl_angle_deg": 17,
+          "petal_twist_deg": 12,
+          "spiral_offset_deg": 22,
+          "z_offset": 0.12
+        },
+        {
+          "count": 5,
+          "radius": 0.13,
+          "length_scale": 0.52,
+          "width_scale": 0.66,
+          "thickness_scale": 0.72,
+          "bend_angle_deg": 74,
+          "curl_angle_deg": 25,
+          "petal_twist_deg": 16,
+          "spiral_offset_deg": 49,
+          "z_offset": 0.27
+        },
+        {
+          "count": 3,
+          "radius": 0.02,
+          "length_scale": 0.34,
+          "width_scale": 0.48,
+          "thickness_scale": 0.62,
+          "bend_angle_deg": 88,
+          "curl_angle_deg": 36,
+          "petal_twist_deg": 22,
+          "spiral_offset_deg": 86,
+          "z_offset": 0.45
+        }
+      ]
+    },
+    {
+      "id": "spiral_rose_bud_v0",
+      "role": "rose_bud",
+      "intent": "Shorter blunter petals with dense overlap, strong spiral rotation, and higher inner curled sheets.",
+      "material": "limestone",
+      "petal": {
+        "length": 1.04,
+        "base_width": 0.16,
+        "max_width": 0.56,
+        "tip_width": 0.32,
+        "width_peak_t": 0.62,
+        "min_thickness": 0.018,
+        "max_thickness": 0.068,
+        "tip_thickness": 0.020,
+        "thickness_peak_t": 0.50,
+        "bend_start_t": 0.32,
+        "samples_length": 17,
+        "samples_width": 11
+      },
+      "layers": [
+        {
+          "count": 10,
+          "radius": 0.38,
+          "length_scale": 0.96,
+          "width_scale": 1.04,
+          "thickness_scale": 1.0,
+          "bend_angle_deg": 34,
+          "curl_angle_deg": 12,
+          "petal_twist_deg": 18,
+          "spiral_offset_deg": 0,
+          "z_offset": 0.0
+        },
+        {
+          "count": 8,
+          "radius": 0.24,
+          "length_scale": 0.78,
+          "width_scale": 0.96,
+          "thickness_scale": 0.88,
+          "bend_angle_deg": 54,
+          "curl_angle_deg": 22,
+          "petal_twist_deg": 26,
+          "spiral_offset_deg": 17,
+          "z_offset": 0.10
+        },
+        {
+          "count": 6,
+          "radius": 0.13,
+          "length_scale": 0.58,
+          "width_scale": 0.78,
+          "thickness_scale": 0.76,
+          "bend_angle_deg": 76,
+          "curl_angle_deg": 32,
+          "petal_twist_deg": 36,
+          "spiral_offset_deg": 42,
+          "z_offset": 0.25
+        },
+        {
+          "count": 4,
+          "radius": 0.055,
+          "length_scale": 0.42,
+          "width_scale": 0.60,
+          "thickness_scale": 0.66,
+          "bend_angle_deg": 96,
+          "curl_angle_deg": 42,
+          "petal_twist_deg": 50,
+          "spiral_offset_deg": 73,
+          "z_offset": 0.46
+        },
+        {
+          "count": 3,
+          "radius": 0.015,
+          "length_scale": 0.28,
+          "width_scale": 0.46,
+          "thickness_scale": 0.58,
+          "bend_angle_deg": 112,
+          "curl_angle_deg": 52,
+          "petal_twist_deg": 66,
+          "spiral_offset_deg": 112,
+          "z_offset": 0.68
+        }
+      ]
+    },
+    {
+      "id": "floral_boss_relief_v0",
+      "role": "stone_boss_relief",
+      "intent": "Compressed carved flower for ceiling bosses, railing plaques, square panels, and low-relief trim.",
+      "material": "limestone",
+      "petal": {
+        "length": 0.72,
+        "base_width": 0.18,
+        "max_width": 0.44,
+        "tip_width": 0.22,
+        "width_peak_t": 0.58,
+        "min_thickness": 0.020,
+        "max_thickness": 0.090,
+        "tip_thickness": 0.026,
+        "thickness_peak_t": 0.46,
+        "bend_start_t": 0.52,
+        "samples_length": 13,
+        "samples_width": 9
+      },
+      "layers": [
+        {
+          "count": 8,
+          "radius": 0.24,
+          "length_scale": 1.0,
+          "width_scale": 1.0,
+          "thickness_scale": 1.0,
+          "bend_angle_deg": 18,
+          "curl_angle_deg": 6,
+          "petal_twist_deg": 5,
+          "spiral_offset_deg": 0,
+          "z_offset": 0.0
+        },
+        {
+          "count": 8,
+          "radius": 0.12,
+          "length_scale": 0.66,
+          "width_scale": 0.78,
+          "thickness_scale": 0.85,
+          "bend_angle_deg": 26,
+          "curl_angle_deg": 10,
+          "petal_twist_deg": 10,
+          "spiral_offset_deg": 22.5,
+          "z_offset": 0.055
+        },
+        {
+          "count": 4,
+          "radius": 0.035,
+          "length_scale": 0.40,
+          "width_scale": 0.56,
+          "thickness_scale": 0.75,
+          "bend_angle_deg": 34,
+          "curl_angle_deg": 14,
+          "petal_twist_deg": 18,
+          "spiral_offset_deg": 45,
+          "z_offset": 0.12
+        }
+      ]
+    },
+    {
+      "id": "leaf_cluster_v0",
+      "role": "leaf_cluster",
+      "intent": "Layered leaves for caps, carved vines, botanical trim clusters, and foliage-shaped brackets.",
+      "material": "limestone",
+      "petal": {
+        "length": 1.18,
+        "base_width": 0.11,
+        "max_width": 0.36,
+        "tip_width": 0.055,
+        "width_peak_t": 0.48,
+        "min_thickness": 0.014,
+        "max_thickness": 0.048,
+        "tip_thickness": 0.012,
+        "thickness_peak_t": 0.42,
+        "bend_start_t": 0.38,
+        "samples_length": 17,
+        "samples_width": 9
+      },
+      "layers": [
+        {
+          "count": 6,
+          "radius": 0.18,
+          "length_scale": 1.0,
+          "width_scale": 1.0,
+          "thickness_scale": 1.0,
+          "bend_angle_deg": 38,
+          "curl_angle_deg": 18,
+          "petal_twist_deg": 14,
+          "spiral_offset_deg": 0,
+          "z_offset": 0.0
+        },
+        {
+          "count": 4,
+          "radius": 0.08,
+          "length_scale": 0.68,
+          "width_scale": 0.80,
+          "thickness_scale": 0.82,
+          "bend_angle_deg": 52,
+          "curl_angle_deg": 24,
+          "petal_twist_deg": 24,
+          "spiral_offset_deg": 45,
+          "z_offset": 0.12
+        }
+      ]
+    },
+    {
+      "id": "flame_petals_v0",
+      "role": "flame_petals",
+      "intent": "Tall pointed twisting sheets for stylized flames, sunbursts, spiked floral ornaments, and crest details.",
+      "material": "limestone",
+      "petal": {
+        "length": 1.36,
+        "base_width": 0.08,
+        "max_width": 0.32,
+        "tip_width": 0.035,
+        "width_peak_t": 0.42,
+        "min_thickness": 0.014,
+        "max_thickness": 0.052,
+        "tip_thickness": 0.010,
+        "thickness_peak_t": 0.36,
+        "bend_start_t": 0.26,
+        "samples_length": 17,
+        "samples_width": 9
+      },
+      "layers": [
+        {
+          "count": 9,
+          "radius": 0.22,
+          "length_scale": 1.0,
+          "width_scale": 1.0,
+          "thickness_scale": 1.0,
+          "bend_angle_deg": 72,
+          "curl_angle_deg": 30,
+          "petal_twist_deg": 34,
+          "spiral_offset_deg": 0,
+          "z_offset": 0.0
+        },
+        {
+          "count": 5,
+          "radius": 0.08,
+          "length_scale": 0.68,
+          "width_scale": 0.72,
+          "thickness_scale": 0.75,
+          "bend_angle_deg": 94,
+          "curl_angle_deg": 42,
+          "petal_twist_deg": 54,
+          "spiral_offset_deg": 28,
+          "z_offset": 0.22
+        }
+      ]
+    }
+  ]
+}

@@ -114,6 +114,19 @@ class AddPetalBloom:
 
 
 @dataclass(frozen=True)
+class AddPetalBloomPreset:
+    name: str
+    preset: str
+    x: float = 0.0
+    y: float = 0.0
+    z: float = 0.0
+    scale: float = 1.0
+    material: str | None = None
+    petal_overrides: Dict[str, Any] | None = None
+    layer_overrides: List[Dict[str, Any]] | None = None
+
+
+@dataclass(frozen=True)
 class CutFlutes:
     target: str
     count: int
@@ -141,6 +154,7 @@ BuildOp = Union[
     AddSectionStack,
     AddPathSweep,
     AddPetalBloom,
+    AddPetalBloomPreset,
     CutFlutes,
     AddLabel,
 ]
@@ -155,6 +169,7 @@ OP_CLASSES = {
     "AddSectionStack": AddSectionStack,
     "AddPathSweep": AddPathSweep,
     "AddPetalBloom": AddPetalBloom,
+    "AddPetalBloomPreset": AddPetalBloomPreset,
     "CutFlutes": CutFlutes,
     "AddLabel": AddLabel,
 }
