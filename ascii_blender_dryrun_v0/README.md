@@ -55,6 +55,9 @@ Do not make Blender infer meaning from pixels. Write or compile a recipe, run it
 - `examples/preset_spiral_rose_bud_recipe_v0.json`
   Source-side preset reference example. It names `spiral_rose_bud_v0` and applies small petal/layer overrides before compilation.
 
+- `examples/petal_bloom_preset_zoo_recipe_v0.json`
+  One-scene comparison sheet for all five preset roles, compiled into five separate `AddPetalBloom` meshes.
+
 - `tests/test_dryrun.py`  
   Minimal tests for the recipe, ASCII backend, validation, and Blender emitter.
 

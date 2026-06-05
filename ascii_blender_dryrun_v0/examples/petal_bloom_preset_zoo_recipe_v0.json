@@ -1,0 +1,44 @@
+{
+  "ops": [
+    {
+      "op": "AddPetalBloomPreset",
+      "name": "proof.zoo.open_bloom_chrysanthemum_v0",
+      "preset": "open_bloom_chrysanthemum_v0",
+      "x": -12.0,
+      "scale": 0.95,
+      "material": "limestone"
+    },
+    {
+      "op": "AddPetalBloomPreset",
+      "name": "proof.zoo.spiral_rose_bud_v0",
+      "preset": "spiral_rose_bud_v0",
+      "x": -6.0,
+      "scale": 1.0,
+      "material": "limestone"
+    },
+    {
+      "op": "AddPetalBloomPreset",
+      "name": "proof.zoo.floral_boss_relief_v0",
+      "preset": "floral_boss_relief_v0",
+      "x": 0.0,
+      "scale": 1.45,
+      "material": "limestone"
+    },
+    {
+      "op": "AddPetalBloomPreset",
+      "name": "proof.zoo.leaf_cluster_v0",
+      "preset": "leaf_cluster_v0",
+      "x": 6.0,
+      "scale": 1.05,
+      "material": "limestone"
+    },
+    {
+      "op": "AddPetalBloomPreset",
+      "name": "proof.zoo.flame_petals_v0",
+      "preset": "flame_petals_v0",
+      "x": 12.0,
+      "scale": 1.0,
+      "material": "limestone"
+    }
+  ]
+}

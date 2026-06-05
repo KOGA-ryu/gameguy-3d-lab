@@ -12,6 +12,7 @@ from ascii_blender_dryrun.validators import validation_report
 LAYERED_ROSE = "ascii_blender_dryrun_v0/examples/layered_rose_bloom_recipe_v0.json"
 SPIRAL_ROSE_BUD = "ascii_blender_dryrun_v0/examples/spiral_rose_bud_recipe_v0.json"
 PRESET_SPIRAL_ROSE_BUD = "ascii_blender_dryrun_v0/examples/preset_spiral_rose_bud_recipe_v0.json"
+PETAL_BLOOM_PRESET_ZOO = "ascii_blender_dryrun_v0/examples/petal_bloom_preset_zoo_recipe_v0.json"
 PETAL_BLOOM_RECIPES = [LAYERED_ROSE, SPIRAL_ROSE_BUD]
 
 
@@ -129,3 +130,34 @@ def test_ascii_backend_handles_compiled_petal_preset_recipe():
 
     assert "TOP PROJECTION" in text
     assert "▓" in text or "░" in text
+
+
+def test_petal_bloom_preset_zoo_compiles_all_roles():
+    source_ops = load_ops(PETAL_BLOOM_PRESET_ZOO)
+    assert all(isinstance(op, AddPetalBloomPreset) for op in source_ops)
+
+    ops = compile_petal_bloom_presets(source_ops)
+    report = validation_report(ops)
+    script = BlenderBackend().emit(ops)
+
+    assert report["ok"], report
+    assert len(ops) == 5
+    assert all(isinstance(op, AddPetalBloom) for op in ops)
+    assert [op.name for op in ops] == [
+        "proof.zoo.open_bloom_chrysanthemum_v0",
+        "proof.zoo.spiral_rose_bud_v0",
+        "proof.zoo.floral_boss_relief_v0",
+        "proof.zoo.leaf_cluster_v0",
+        "proof.zoo.flame_petals_v0",
+    ]
+    assert script.count("add_petal_bloom('proof.zoo.") == 5
+
+
+def test_ascii_backend_handles_compiled_petal_zoo_recipe():
+    backend = AsciiBackend(width=120, height=48)
+    ops = compile_petal_bloom_presets(load_ops(PETAL_BLOOM_PRESET_ZOO))
+
+    text = backend.render_projection(ops, "top")
+
+    assert "TOP PROJECTION" in text
+    assert text.count("◆") >= 5
