@@ -31,6 +31,7 @@ class AddBox:
     x: float = 0.0
     y: float = 0.0
     material: str = "stone"
+    z_mode: str = "center"
 
 
 @dataclass(frozen=True)
@@ -45,6 +46,19 @@ class AddCylinder:
     material: str = "stone"
     taper_top_radius: float | None = None
     entasis: bool = False
+    axis: str = "z"
+    z_mode: str = "center"
+
+
+@dataclass(frozen=True)
+class AddSphere:
+    name: str
+    radius: float
+    z: float
+    x: float = 0.0
+    y: float = 0.0
+    vertices: int = 24
+    material: str = "stone"
 
 
 @dataclass(frozen=True)
@@ -170,6 +184,7 @@ class AddLabel:
 BuildOp = Union[
     AddBox,
     AddCylinder,
+    AddSphere,
     AddRing,
     AddMoulding,
     AddProfileMoulding,
@@ -187,6 +202,7 @@ BuildOp = Union[
 OP_CLASSES = {
     "AddBox": AddBox,
     "AddCylinder": AddCylinder,
+    "AddSphere": AddSphere,
     "AddRing": AddRing,
     "AddMoulding": AddMoulding,
     "AddProfileMoulding": AddProfileMoulding,

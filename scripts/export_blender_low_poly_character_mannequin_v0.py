@@ -69,6 +69,9 @@ def make_report(
         "armature_bone_count": len(starter_bones()),
         "beveled_part_count": count_beveled_parts(recipe),
         "weighted_normal_part_count": count_weighted_normal_parts(recipe),
+        "rigid_parent_count": len(rig_parent_map(recipe)),
+        "pose_action_created": generated,
+        "pose_frame_count": 2,
         "blender_tool_passes": recipe.get("blender_tool_passes", {}),
         "generated_outputs_created": generated,
         "render_requested": render,
@@ -81,6 +84,9 @@ def make_report(
             "creates_starter_armature": generated,
             "applies_bevel_modifiers": generated,
             "applies_weighted_normals": generated,
+            "creates_rigid_bone_parenting": generated,
+            "creates_pose_test_action": generated,
+            "renders_pose_proof": generated and render,
             "source_design_logic_in_blender_adapter": False,
         },
     }
@@ -94,8 +100,18 @@ def make_report(
             }
         )
         if render:
-            report["render_path"] = str(out_root / f"{recipe['asset_id']}_front_workbench.png")
-            report["side_render_path"] = str(out_root / f"{recipe['asset_id']}_side_workbench.png")
+            report["render_path"] = str(
+                out_root / f"{recipe['asset_id']}_neutral_front_workbench.png"
+            )
+            report["side_render_path"] = str(
+                out_root / f"{recipe['asset_id']}_neutral_side_workbench.png"
+            )
+            report["pose_front_render_path"] = str(
+                out_root / f"{recipe['asset_id']}_pose_front_workbench.png"
+            )
+            report["pose_side_render_path"] = str(
+                out_root / f"{recipe['asset_id']}_pose_side_workbench.png"
+            )
     return report
 
 
@@ -105,6 +121,26 @@ def count_beveled_parts(recipe: dict[str, Any]) -> int:
 
 def count_weighted_normal_parts(recipe: dict[str, Any]) -> int:
     return sum(1 for part in recipe["parts"] if part.get("weighted_normals") is True)
+
+
+def rig_parent_map(recipe: dict[str, Any]) -> dict[str, str]:
+    mapping = recipe.get("rig_parent_map")
+    if not isinstance(mapping, dict):
+        return {}
+    return {str(key): str(value) for key, value in mapping.items()}
+
+
+def validate_rig_parent_map(recipe: dict[str, Any]) -> None:
+    mapping = rig_parent_map(recipe)
+    part_names = {part["name"] for part in recipe["parts"]}
+    bone_names = {bone["name"] for bone in starter_bones()}
+    if set(mapping) != part_names:
+        missing = sorted(part_names - set(mapping))
+        extra = sorted(set(mapping) - part_names)
+        fail(f"rig_parent_map must cover every part exactly: missing={missing} extra={extra}")
+    for part_name, bone_name in mapping.items():
+        if bone_name not in bone_names:
+            fail(f"rig_parent_map.{part_name} references unknown bone {bone_name}")
 
 
 def starter_bones() -> list[dict[str, Any]]:
@@ -164,13 +200,16 @@ def run_blender_export(
         "guides": ensure_collection(bpy, "scene_guides"),
     }
     materials = make_materials(bpy, recipe)
-    create_mesh_parts(bpy, recipe, objects, materials, collections["parts"])
+    mesh_parts = create_mesh_parts(bpy, recipe, objects, materials, collections["parts"])
     create_reference_sheet(bpy, recipe, materials, collections["reference"])
     armature = create_starter_armature(bpy, mathutils, collections["rig"])
+    parent_parts_to_bones(mesh_parts, armature, recipe)
+    action = create_pose_test_action(bpy, armature)
     create_guides(bpy, materials, collections["guides"])
     add_scene_context(bpy, mathutils, recipe)
 
     blend_path = out_root / f"{recipe['asset_id']}.blend"
+    bpy.context.scene.frame_set(1)
     bpy.ops.wm.save_as_mainfile(filepath=str(blend_path))
 
     report = make_report(
@@ -182,14 +221,11 @@ def run_blender_export(
         render=render,
     )
     report["armature"] = armature.name
+    report["pose_action"] = action.name
     report["scene_object_count"] = len(bpy.context.scene.objects)
     if render:
-        front_render_path = out_root / f"{recipe['asset_id']}_front_workbench.png"
-        side_render_path = out_root / f"{recipe['asset_id']}_side_workbench.png"
-        render_camera_view(bpy, "camera__front_view", front_render_path)
-        render_camera_view(bpy, "camera__side_view", side_render_path)
-        report["render_path"] = str(front_render_path)
-        report["side_render_path"] = str(side_render_path)
+        render_paths = render_pose_proofs(bpy, recipe, out_root)
+        report.update(render_paths)
 
     if json_report is not None:
         report_path = json_report
@@ -260,8 +296,9 @@ def create_mesh_parts(
     objects: list[obj_exporter.MeshObject],
     materials: dict[str, Any],
     collection: Any,
-) -> None:
+) -> dict[str, Any]:
     parts_by_name = {part["name"]: part for part in recipe["parts"]}
+    created: dict[str, Any] = {}
     for mesh_object in objects:
         part = parts_by_name[mesh_object.name]
         origin = part_origin(part, mesh_object)
@@ -285,6 +322,8 @@ def create_mesh_parts(
         obj["rig_note"] = "Separate rigid part; parent to nearest bone after proportion review."
         apply_blender_tool_hints(obj, part)
         link_to_collection(obj, collection)
+        created[mesh_object.name] = obj
+    return created
 
 
 def apply_blender_tool_hints(obj: Any, part: dict[str, Any]) -> None:
@@ -375,6 +414,56 @@ def create_starter_armature(bpy: Any, mathutils: Any, collection: Any) -> Any:
     bpy.ops.object.mode_set(mode="OBJECT")
     link_to_collection(armature, collection)
     return armature
+
+
+def parent_parts_to_bones(
+    mesh_parts: dict[str, Any],
+    armature: Any,
+    recipe: dict[str, Any],
+) -> None:
+    for part_name, bone_name in rig_parent_map(recipe).items():
+        obj = mesh_parts[part_name]
+        matrix_world = obj.matrix_world.copy()
+        obj.parent = armature
+        obj.parent_type = "BONE"
+        obj.parent_bone = bone_name
+        obj.matrix_world = matrix_world
+        obj["rig_parent_bone"] = bone_name
+
+
+def create_pose_test_action(bpy: Any, armature: Any) -> Any:
+    bpy.context.view_layer.objects.active = armature
+    armature.select_set(True)
+    bpy.ops.object.mode_set(mode="POSE")
+    armature.animation_data_create()
+    action = bpy.data.actions.new("ACTION__low_poly_mannequin_pose_test")
+    armature.animation_data.action = action
+
+    for pose_bone in armature.pose.bones:
+        pose_bone.rotation_mode = "XYZ"
+        pose_bone.rotation_euler = (0.0, 0.0, 0.0)
+        pose_bone.keyframe_insert(data_path="rotation_euler", frame=1)
+
+    pose_rotations = {
+        "neck_head": (0.0, 0.0, math.radians(4.0)),
+        "upper_arm_L": (0.0, 0.0, math.radians(-18.0)),
+        "lower_arm_L": (0.0, 0.0, math.radians(-58.0)),
+        "upper_arm_R": (0.0, 0.0, math.radians(18.0)),
+        "lower_arm_R": (0.0, 0.0, math.radians(58.0)),
+        "upper_leg_L": (math.radians(-10.0), 0.0, math.radians(-4.0)),
+        "lower_leg_L": (math.radians(24.0), 0.0, math.radians(4.0)),
+        "upper_leg_R": (math.radians(12.0), 0.0, math.radians(4.0)),
+        "lower_leg_R": (math.radians(-26.0), 0.0, math.radians(-4.0)),
+    }
+    for bone_name, rotation in pose_rotations.items():
+        pose_bone = armature.pose.bones.get(bone_name)
+        if pose_bone is None:
+            fail(f"pose action references unknown bone {bone_name}")
+        pose_bone.rotation_euler = rotation
+        pose_bone.keyframe_insert(data_path="rotation_euler", frame=20)
+
+    bpy.ops.object.mode_set(mode="OBJECT")
+    return action
 
 
 def create_curve_line(
@@ -489,6 +578,24 @@ def render_camera_view(bpy: Any, camera_name: str, render_path: Path) -> None:
     bpy.ops.render.render(write_still=True)
 
 
+def render_pose_proofs(bpy: Any, recipe: dict[str, Any], out_root: Path) -> dict[str, str]:
+    asset_id = recipe["asset_id"]
+    paths = {
+        "render_path": out_root / f"{asset_id}_neutral_front_workbench.png",
+        "side_render_path": out_root / f"{asset_id}_neutral_side_workbench.png",
+        "pose_front_render_path": out_root / f"{asset_id}_pose_front_workbench.png",
+        "pose_side_render_path": out_root / f"{asset_id}_pose_side_workbench.png",
+    }
+    bpy.context.scene.frame_set(1)
+    render_camera_view(bpy, "camera__front_view", paths["render_path"])
+    render_camera_view(bpy, "camera__side_view", paths["side_render_path"])
+    bpy.context.scene.frame_set(20)
+    render_camera_view(bpy, "camera__front_view", paths["pose_front_render_path"])
+    render_camera_view(bpy, "camera__side_view", paths["pose_side_render_path"])
+    bpy.context.scene.frame_set(1)
+    return {key: str(value) for key, value in paths.items()}
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     argv = sys.argv[1:] if argv is None else argv
     if "--" in argv:
@@ -513,6 +620,7 @@ def main(argv: list[str] | None = None) -> int:
     recipe_path = resolve_path(args.recipe)
     recipe = obj_exporter.load_json_object(recipe_path)
     obj_exporter.validate_recipe(recipe, recipe_path)
+    validate_rig_parent_map(recipe)
     objects = obj_exporter.build_mesh_objects(recipe)
 
     if args.validate_only:

@@ -26,6 +26,7 @@ from .ops import (
     AddPetalScroll,
     AddRing,
     AddSectionStack,
+    AddSphere,
     CutFlutes,
     BuildOp,
 )
@@ -55,6 +56,45 @@ class Bounds:
     max_z: float
 
 
+def box_z_center(op: AddBox) -> float:
+    return op.z + op.height / 2 if op.z_mode == "base" else op.z
+
+
+def cylinder_z_center(op: AddCylinder) -> float:
+    return op.z + op.height / 2 if op.z_mode == "base" and op.axis == "z" else op.z
+
+
+def cylinder_extents(op: AddCylinder) -> tuple[float, float, float, float, float, float]:
+    z = cylinder_z_center(op)
+    radius = op.radius
+    if op.axis == "x":
+        return (
+            op.x - op.height / 2,
+            op.x + op.height / 2,
+            op.y - radius,
+            op.y + radius,
+            z - radius,
+            z + radius,
+        )
+    if op.axis == "y":
+        return (
+            op.x - radius,
+            op.x + radius,
+            op.y - op.height / 2,
+            op.y + op.height / 2,
+            z - radius,
+            z + radius,
+        )
+    return (
+        op.x - radius,
+        op.x + radius,
+        op.y - radius,
+        op.y + radius,
+        z - op.height / 2,
+        z + op.height / 2,
+    )
+
+
 def estimate_bounds(ops: Iterable[BuildOp]) -> Bounds:
     min_x = min_y = min_z = float("inf")
     max_x = max_y = max_z = float("-inf")
@@ -62,21 +102,36 @@ def estimate_bounds(ops: Iterable[BuildOp]) -> Bounds:
 
     for op in ops:
         if isinstance(op, AddBox):
+            z = box_z_center(op)
             min_x = min(min_x, op.x - op.width / 2)
             max_x = max(max_x, op.x + op.width / 2)
             min_y = min(min_y, op.y - op.depth / 2)
             max_y = max(max_y, op.y + op.depth / 2)
-            min_z = min(min_z, op.z - op.height / 2)
-            max_z = max(max_z, op.z + op.height / 2)
-        elif isinstance(op, (AddCylinder, AddRing)):
-            radius = op.radius + (op.overhang if isinstance(op, AddRing) else 0.0)
-            height = op.height if isinstance(op, AddCylinder) else op.tube_height
+            min_z = min(min_z, z - op.height / 2)
+            max_z = max(max_z, z + op.height / 2)
+        elif isinstance(op, AddCylinder):
+            x0, x1, y0, y1, z0, z1 = cylinder_extents(op)
+            min_x = min(min_x, x0)
+            max_x = max(max_x, x1)
+            min_y = min(min_y, y0)
+            max_y = max(max_y, y1)
+            min_z = min(min_z, z0)
+            max_z = max(max_z, z1)
+        elif isinstance(op, AddSphere):
+            min_x = min(min_x, op.x - op.radius)
+            max_x = max(max_x, op.x + op.radius)
+            min_y = min(min_y, op.y - op.radius)
+            max_y = max(max_y, op.y + op.radius)
+            min_z = min(min_z, op.z - op.radius)
+            max_z = max(max_z, op.z + op.radius)
+        elif isinstance(op, AddRing):
+            radius = op.radius + op.overhang
             min_x = min(min_x, op.x - radius)
             max_x = max(max_x, op.x + radius)
             min_y = min(min_y, op.y - radius)
             max_y = max(max_y, op.y + radius)
-            min_z = min(min_z, op.z - height / 2)
-            max_z = max(max_z, op.z + height / 2)
+            min_z = min(min_z, op.z - op.tube_height / 2)
+            max_z = max(max_z, op.z + op.tube_height / 2)
         elif isinstance(op, AddMoulding):
             radii = [float(point["radius"]) for point in op.profile if "radius" in point]
             local_zs = [float(point["z"]) for point in op.profile if "z" in point]
@@ -479,11 +534,26 @@ class AsciiBackend:
 
     def _draw_front(self, c: AsciiCanvas, mapper, op: BuildOp) -> None:
         if isinstance(op, AddBox):
-            x1, y1 = mapper(op.x - op.width / 2, op.z - op.height / 2)
-            x2, y2 = mapper(op.x + op.width / 2, op.z + op.height / 2)
+            z = box_z_center(op)
+            x1, y1 = mapper(op.x - op.width / 2, z - op.height / 2)
+            x2, y2 = mapper(op.x + op.width / 2, z + op.height / 2)
             c.rect(x1, y1, x2, y2, fill="░", border="█")
         elif isinstance(op, AddCylinder):
-            self._draw_cylinder_elevation(c, mapper, op.x, op.z, op.radius, op.taper_top_radius or op.radius, op.height, op.entasis)
+            z = cylinder_z_center(op)
+            if op.axis == "x":
+                x1, y1 = mapper(op.x - op.height / 2, z - op.radius)
+                x2, y2 = mapper(op.x + op.height / 2, z + op.radius)
+                c.rect(x1, y1, x2, y2, fill="▒", border="█")
+            elif op.axis == "y":
+                cx, cy = mapper(op.x, z)
+                rx, _ = mapper(op.x + op.radius, z)
+                c.circle(cx, cy, abs(rx - cx), fill="▒", border="█")
+            else:
+                self._draw_cylinder_elevation(c, mapper, op.x, z, op.radius, op.taper_top_radius or op.radius, op.height, op.entasis)
+        elif isinstance(op, AddSphere):
+            cx, cy = mapper(op.x, op.z)
+            rx, _ = mapper(op.x + op.radius, op.z)
+            c.circle(cx, cy, abs(rx - cx), fill="▒", border="█")
         elif isinstance(op, AddRing):
             r = op.radius + op.overhang
             h = op.tube_height
@@ -513,11 +583,26 @@ class AsciiBackend:
 
     def _draw_side(self, c: AsciiCanvas, mapper, op: BuildOp) -> None:
         if isinstance(op, AddBox):
-            x1, y1 = mapper(op.y - op.depth / 2, op.z - op.height / 2)
-            x2, y2 = mapper(op.y + op.depth / 2, op.z + op.height / 2)
+            z = box_z_center(op)
+            x1, y1 = mapper(op.y - op.depth / 2, z - op.height / 2)
+            x2, y2 = mapper(op.y + op.depth / 2, z + op.height / 2)
             c.rect(x1, y1, x2, y2, fill="░", border="█")
         elif isinstance(op, AddCylinder):
-            self._draw_cylinder_elevation(c, mapper, op.y, op.z, op.radius, op.taper_top_radius or op.radius, op.height, op.entasis)
+            z = cylinder_z_center(op)
+            if op.axis == "x":
+                cx, cy = mapper(op.y, z)
+                rx, _ = mapper(op.y + op.radius, z)
+                c.circle(cx, cy, abs(rx - cx), fill="▒", border="█")
+            elif op.axis == "y":
+                x1, y1 = mapper(op.y - op.height / 2, z - op.radius)
+                x2, y2 = mapper(op.y + op.height / 2, z + op.radius)
+                c.rect(x1, y1, x2, y2, fill="▒", border="█")
+            else:
+                self._draw_cylinder_elevation(c, mapper, op.y, z, op.radius, op.taper_top_radius or op.radius, op.height, op.entasis)
+        elif isinstance(op, AddSphere):
+            cx, cy = mapper(op.y, op.z)
+            rx, _ = mapper(op.y + op.radius, op.z)
+            c.circle(cx, cy, abs(rx - cx), fill="▒", border="█")
         elif isinstance(op, AddRing):
             r = op.radius + op.overhang
             h = op.tube_height
@@ -543,10 +628,23 @@ class AsciiBackend:
             x2, y2 = mapper(op.x + op.width / 2, op.y + op.depth / 2)
             c.rect(x1, y1, x2, y2, fill="░", border="█")
         elif isinstance(op, AddCylinder):
+            if op.axis == "x":
+                x1, y1 = mapper(op.x - op.height / 2, op.y - op.radius)
+                x2, y2 = mapper(op.x + op.height / 2, op.y + op.radius)
+                c.rect(x1, y1, x2, y2, fill="▒", border="█")
+            elif op.axis == "y":
+                x1, y1 = mapper(op.x - op.radius, op.y - op.height / 2)
+                x2, y2 = mapper(op.x + op.radius, op.y + op.height / 2)
+                c.rect(x1, y1, x2, y2, fill="▒", border="█")
+            else:
+                cx, cy = mapper(op.x, op.y)
+                rx, _ = mapper(op.x + op.radius, op.y)
+                r = abs(rx - cx)
+                c.circle(cx, cy, r, fill="▒", border="█")
+        elif isinstance(op, AddSphere):
             cx, cy = mapper(op.x, op.y)
             rx, _ = mapper(op.x + op.radius, op.y)
-            r = abs(rx - cx)
-            c.circle(cx, cy, r, fill="▒", border="█")
+            c.circle(cx, cy, abs(rx - cx), fill="▒", border="█")
         elif isinstance(op, AddRing):
             cx, cy = mapper(op.x, op.y)
             rx, _ = mapper(op.x + op.radius + op.overhang, op.y)

@@ -20,6 +20,9 @@
             "$ref": "#/$defs/addCylinder"
           },
           {
+            "$ref": "#/$defs/addSphere"
+          },
+          {
             "$ref": "#/$defs/addRing"
           },
           {
@@ -80,6 +83,21 @@
       "type": "integer",
       "minimum": 4
     },
+    "zMode": {
+      "type": "string",
+      "enum": [
+        "center",
+        "base"
+      ]
+    },
+    "axis": {
+      "type": "string",
+      "enum": [
+        "x",
+        "y",
+        "z"
+      ]
+    },
     "commonPlacement": {
       "type": "object",
       "properties": {
@@ -91,6 +109,9 @@
         },
         "material": {
           "$ref": "#/$defs/material"
+        },
+        "z_mode": {
+          "$ref": "#/$defs/zMode"
         }
       }
     },
@@ -132,6 +153,9 @@
         },
         "material": {
           "$ref": "#/$defs/material"
+        },
+        "z_mode": {
+          "$ref": "#/$defs/zMode"
         }
       }
     },
@@ -178,6 +202,12 @@
         },
         "entasis": {
           "type": "boolean"
+        },
+        "axis": {
+          "$ref": "#/$defs/axis"
+        },
+        "z_mode": {
+          "$ref": "#/$defs/zMode"
         }
       }
     },
@@ -241,6 +271,42 @@
         },
         "radius": {
           "$ref": "#/$defs/positiveNumber"
+        }
+      }
+    },
+    "addSphere": {
+      "type": "object",
+      "required": [
+        "op",
+        "name",
+        "radius",
+        "z"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "AddSphere"
+        },
+        "name": {
+          "$ref": "#/$defs/name"
+        },
+        "radius": {
+          "$ref": "#/$defs/positiveNumber"
+        },
+        "z": {
+          "$ref": "#/$defs/number"
+        },
+        "x": {
+          "$ref": "#/$defs/number"
+        },
+        "y": {
+          "$ref": "#/$defs/number"
+        },
+        "vertices": {
+          "$ref": "#/$defs/vertices"
+        },
+        "material": {
+          "$ref": "#/$defs/material"
         }
       }
     },

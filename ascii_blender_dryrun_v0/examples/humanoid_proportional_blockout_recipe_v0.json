@@ -1,0 +1,346 @@
+{
+  "ops": [
+    {
+      "op": "AddSectionStack",
+      "name": "pelvis",
+      "sections": [
+        {
+          "z": 0.0,
+          "profile": {
+            "type": "oval",
+            "radius_x": 1.25,
+            "radius_y": 0.75,
+            "vertices": 24
+          }
+        },
+        {
+          "z": 1.3,
+          "profile": {
+            "type": "oval",
+            "radius_x": 1.0,
+            "radius_y": 0.68,
+            "vertices": 24
+          }
+        }
+      ],
+      "vertices": 24,
+      "material": "limestone"
+    },
+    {
+      "op": "AddSectionStack",
+      "name": "torso",
+      "sections": [
+        {
+          "z": 1.3,
+          "profile": {
+            "type": "oval",
+            "radius_x": 0.95,
+            "radius_y": 0.72,
+            "vertices": 24
+          }
+        },
+        {
+          "z": 5.3,
+          "profile": {
+            "type": "oval",
+            "radius_x": 1.55,
+            "radius_y": 0.85,
+            "vertices": 24
+          }
+        }
+      ],
+      "vertices": 24,
+      "material": "limestone"
+    },
+    {
+      "op": "AddBox",
+      "name": "shoulder_block",
+      "width": 3.7,
+      "depth": 1.45,
+      "height": 0.45,
+      "z": 5.25,
+      "x": 0.0,
+      "y": 0.0,
+      "material": "limestone",
+      "z_mode": "base"
+    },
+    {
+      "op": "AddCylinder",
+      "name": "neck",
+      "radius": 0.35,
+      "height": 0.7,
+      "z": 5.65,
+      "x": 0.0,
+      "y": 0.0,
+      "vertices": 20,
+      "material": "limestone",
+      "z_mode": "base"
+    },
+    {
+      "op": "AddSphere",
+      "name": "head",
+      "radius": 1.05,
+      "z": 6.95,
+      "x": 0.0,
+      "y": 0.0,
+      "vertices": 24,
+      "material": "limestone"
+    },
+    {
+      "op": "AddSectionStack",
+      "name": "left_thigh",
+      "sections": [
+        {
+          "x": -0.8,
+          "z": -3.35,
+          "profile": {
+            "type": "circle",
+            "radius": 0.55,
+            "vertices": 20
+          }
+        },
+        {
+          "x": -0.65,
+          "z": 0.1,
+          "profile": {
+            "type": "circle",
+            "radius": 0.72,
+            "vertices": 20
+          }
+        }
+      ],
+      "vertices": 20,
+      "material": "limestone"
+    },
+    {
+      "op": "AddSectionStack",
+      "name": "right_thigh",
+      "sections": [
+        {
+          "x": 0.8,
+          "z": -3.35,
+          "profile": {
+            "type": "circle",
+            "radius": 0.55,
+            "vertices": 20
+          }
+        },
+        {
+          "x": 0.65,
+          "z": 0.1,
+          "profile": {
+            "type": "circle",
+            "radius": 0.72,
+            "vertices": 20
+          }
+        }
+      ],
+      "vertices": 20,
+      "material": "limestone"
+    },
+    {
+      "op": "AddSectionStack",
+      "name": "left_calf",
+      "sections": [
+        {
+          "x": -0.85,
+          "z": -6.8,
+          "profile": {
+            "type": "circle",
+            "radius": 0.36,
+            "vertices": 20
+          }
+        },
+        {
+          "x": -0.8,
+          "z": -3.35,
+          "profile": {
+            "type": "circle",
+            "radius": 0.55,
+            "vertices": 20
+          }
+        }
+      ],
+      "vertices": 20,
+      "material": "limestone"
+    },
+    {
+      "op": "AddSectionStack",
+      "name": "right_calf",
+      "sections": [
+        {
+          "x": 0.85,
+          "z": -6.8,
+          "profile": {
+            "type": "circle",
+            "radius": 0.36,
+            "vertices": 20
+          }
+        },
+        {
+          "x": 0.8,
+          "z": -3.35,
+          "profile": {
+            "type": "circle",
+            "radius": 0.55,
+            "vertices": 20
+          }
+        }
+      ],
+      "vertices": 20,
+      "material": "limestone"
+    },
+    {
+      "op": "AddBox",
+      "name": "left_foot",
+      "width": 0.95,
+      "depth": 1.75,
+      "height": 0.45,
+      "z": -7.25,
+      "x": -0.85,
+      "y": 0.58,
+      "material": "limestone",
+      "z_mode": "base"
+    },
+    {
+      "op": "AddBox",
+      "name": "right_foot",
+      "width": 0.95,
+      "depth": 1.75,
+      "height": 0.45,
+      "z": -7.25,
+      "x": 0.85,
+      "y": 0.58,
+      "material": "limestone",
+      "z_mode": "base"
+    },
+    {
+      "op": "AddSectionStack",
+      "name": "left_upper_arm",
+      "sections": [
+        {
+          "x": -3.25,
+          "z": 3.75,
+          "profile": {
+            "type": "circle",
+            "radius": 0.42,
+            "vertices": 18
+          }
+        },
+        {
+          "x": -1.75,
+          "z": 4.75,
+          "profile": {
+            "type": "circle",
+            "radius": 0.58,
+            "vertices": 18
+          }
+        }
+      ],
+      "vertices": 18,
+      "material": "limestone"
+    },
+    {
+      "op": "AddSectionStack",
+      "name": "right_upper_arm",
+      "sections": [
+        {
+          "x": 3.25,
+          "z": 3.75,
+          "profile": {
+            "type": "circle",
+            "radius": 0.42,
+            "vertices": 18
+          }
+        },
+        {
+          "x": 1.75,
+          "z": 4.75,
+          "profile": {
+            "type": "circle",
+            "radius": 0.58,
+            "vertices": 18
+          }
+        }
+      ],
+      "vertices": 18,
+      "material": "limestone"
+    },
+    {
+      "op": "AddSectionStack",
+      "name": "left_forearm",
+      "sections": [
+        {
+          "x": -4.85,
+          "z": 2.65,
+          "profile": {
+            "type": "circle",
+            "radius": 0.34,
+            "vertices": 18
+          }
+        },
+        {
+          "x": -3.25,
+          "z": 3.75,
+          "profile": {
+            "type": "circle",
+            "radius": 0.42,
+            "vertices": 18
+          }
+        }
+      ],
+      "vertices": 18,
+      "material": "limestone"
+    },
+    {
+      "op": "AddSectionStack",
+      "name": "right_forearm",
+      "sections": [
+        {
+          "x": 4.85,
+          "z": 2.65,
+          "profile": {
+            "type": "circle",
+            "radius": 0.34,
+            "vertices": 18
+          }
+        },
+        {
+          "x": 3.25,
+          "z": 3.75,
+          "profile": {
+            "type": "circle",
+            "radius": 0.42,
+            "vertices": 18
+          }
+        }
+      ],
+      "vertices": 18,
+      "material": "limestone"
+    },
+    {
+      "op": "AddBox",
+      "name": "left_hand",
+      "width": 0.55,
+      "depth": 0.55,
+      "height": 0.45,
+      "z": 2.3,
+      "x": -5.15,
+      "y": 0.0,
+      "material": "limestone",
+      "z_mode": "base"
+    },
+    {
+      "op": "AddBox",
+      "name": "right_hand",
+      "width": 0.55,
+      "depth": 0.55,
+      "height": 0.45,
+      "z": 2.3,
+      "x": 5.15,
+      "y": 0.0,
+      "material": "limestone",
+      "z_mode": "base"
+    }
+  ]
+}

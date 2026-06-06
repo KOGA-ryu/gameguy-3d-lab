@@ -55,6 +55,9 @@ class LowPolyCharacterMannequinBlenderExportTests(unittest.TestCase):
         self.assertEqual(report["armature_bone_count"], 11)
         self.assertEqual(report["beveled_part_count"], 7)
         self.assertEqual(report["weighted_normal_part_count"], 7)
+        self.assertEqual(report["rigid_parent_count"], 29)
+        self.assertFalse(report["pose_action_created"])
+        self.assertEqual(report["pose_frame_count"], 2)
         self.assertFalse(report["generated_outputs_created"])
         self.assertFalse(report["rules"]["imports_blender"])
         self.assertFalse(report["rules"]["creates_starter_armature"])
@@ -94,8 +97,12 @@ class LowPolyCharacterMannequinBlenderExportTests(unittest.TestCase):
         self.assertTrue(report["rules"]["creates_starter_armature"])
         self.assertTrue(report["rules"]["applies_bevel_modifiers"])
         self.assertTrue(report["rules"]["applies_weighted_normals"])
+        self.assertTrue(report["rules"]["creates_rigid_bone_parenting"])
+        self.assertTrue(report["rules"]["creates_pose_test_action"])
         self.assertEqual(report["armature_bone_count"], 11)
         self.assertEqual(report["beveled_part_count"], 7)
+        self.assertEqual(report["rigid_parent_count"], 29)
+        self.assertEqual(report["pose_action"], "ACTION__low_poly_mannequin_pose_test")
 
 
 if __name__ == "__main__":

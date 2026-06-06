@@ -21,6 +21,7 @@ from .ops import (
     AddProfileMoulding,
     AddRing,
     AddSectionStack,
+    AddSphere,
     CutFlutes,
     BuildOp,
 )
@@ -58,6 +59,8 @@ def validate_ops(ops: list[BuildOp]) -> list[Finding]:
         if isinstance(op, AddBox):
             if op.width <= 0 or op.depth <= 0 or op.height <= 0:
                 findings.append(Finding("error", "bad_box_dimensions", f"{op.name} has non-positive dimensions."))
+            if op.z_mode not in {"center", "base"}:
+                findings.append(Finding("error", "bad_z_mode", f"{op.name} z_mode must be center or base."))
         elif isinstance(op, AddCylinder):
             cylinders[op.name] = op
             if op.radius <= 0 or op.height <= 0:
@@ -66,6 +69,15 @@ def validate_ops(ops: list[BuildOp]) -> list[Finding]:
                 findings.append(Finding("warning", "low_cylinder_vertices", f"{op.name} has low vertex count: {op.vertices}"))
             if op.taper_top_radius is not None and op.taper_top_radius <= 0:
                 findings.append(Finding("error", "bad_taper_radius", f"{op.name} has invalid top radius."))
+            if op.axis not in {"x", "y", "z"}:
+                findings.append(Finding("error", "bad_cylinder_axis", f"{op.name} axis must be x, y, or z."))
+            if op.z_mode not in {"center", "base"}:
+                findings.append(Finding("error", "bad_z_mode", f"{op.name} z_mode must be center or base."))
+        elif isinstance(op, AddSphere):
+            if op.radius <= 0:
+                findings.append(Finding("error", "bad_sphere_radius", f"{op.name} has non-positive radius."))
+            if op.vertices < 8:
+                findings.append(Finding("warning", "low_sphere_vertices", f"{op.name} has low vertex count: {op.vertices}"))
         elif isinstance(op, AddRing):
             if op.radius <= 0 or op.tube_height <= 0:
                 findings.append(Finding("error", "bad_ring_dimensions", f"{op.name} has non-positive dimensions."))

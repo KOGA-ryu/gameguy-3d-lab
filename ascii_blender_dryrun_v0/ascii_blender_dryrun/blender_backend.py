@@ -22,6 +22,7 @@ from .ops import (
     AddPetalScroll,
     AddRing,
     AddSectionStack,
+    AddSphere,
     CutFlutes,
     AddLabel,
     BuildOp,
@@ -72,15 +73,24 @@ class BlenderBackend:
             "    bevel(obj, 0.04, 1)",
             "    return obj",
             "",
-            "def add_cylinder(name, radius, height, loc, vertices, material):",
+            "def rotate_axis(obj, axis):",
+            "    if axis == 'x':",
+            "        obj.rotation_euler[1] = math.radians(90)",
+            "    elif axis == 'y':",
+            "        obj.rotation_euler[0] = math.radians(90)",
+            "    elif axis != 'z':",
+            "        raise ValueError(f'Unsupported cylinder axis: {axis!r}')",
+            "",
+            "def add_cylinder(name, radius, height, loc, vertices, material, axis='z'):",
             "    bpy.ops.mesh.primitive_cylinder_add(vertices=vertices, radius=radius, depth=height, location=loc)",
             "    obj = bpy.context.object",
             "    obj.name = name",
+            "    rotate_axis(obj, axis)",
             "    assign_mat(obj, material)",
             "    bevel(obj, 0.035, 1)",
             "    return obj",
             "",
-            "def add_tapered_cylinder(name, radius, top_radius, height, loc, vertices, material, entasis=False, rings=24):",
+            "def add_tapered_cylinder(name, radius, top_radius, height, loc, vertices, material, entasis=False, rings=24, axis='z'):",
             "    verts = []",
             "    faces = []",
             "    rings = max(2, int(rings))",
@@ -109,12 +119,21 @@ class BlenderBackend:
             "    obj = bpy.data.objects.new(name, mesh)",
             "    bpy.context.collection.objects.link(obj)",
             "    obj.location = loc",
+            "    rotate_axis(obj, axis)",
             "    assign_mat(obj, material)",
             "    bevel(obj, 0.035, 1)",
             "    return obj",
             "",
             "def add_ring(name, radius, tube_height, loc, vertices, material):",
             "    obj = add_cylinder(name, radius, tube_height, loc, vertices, material)",
+            "    return obj",
+            "",
+            "def add_sphere(name, radius, loc, vertices, material):",
+            "    bpy.ops.mesh.primitive_uv_sphere_add(segments=max(8, int(vertices)), ring_count=max(4, int(vertices // 2)), radius=radius, location=loc)",
+            "    obj = bpy.context.object",
+            "    obj.name = name",
+            "    assign_mat(obj, material)",
+            "    bevel(obj, 0.01, 1)",
             "    return obj",
             "",
             "def add_moulding(name, base_z, profile, loc, vertices, material):",
@@ -741,19 +760,25 @@ class BlenderBackend:
 
         for op in ops:
             if isinstance(op, AddBox):
+                z = op.z + op.height / 2 if op.z_mode == "base" else op.z
                 lines.append(
-                    f"add_box({op.name!r}, {op.width}, {op.depth}, {op.height}, ({op.x}, {op.y}, {op.z}), {op.material!r})"
+                    f"add_box({op.name!r}, {op.width}, {op.depth}, {op.height}, ({op.x}, {op.y}, {z}), {op.material!r})"
                 )
             elif isinstance(op, AddCylinder):
                 top_radius = op.taper_top_radius or op.radius
+                z = op.z + op.height / 2 if op.z_mode == "base" and op.axis == "z" else op.z
                 if op.taper_top_radius is not None or op.entasis:
                     lines.append(
-                        f"obj = add_tapered_cylinder({op.name!r}, {op.radius}, {top_radius}, {op.height}, ({op.x}, {op.y}, {op.z}), {op.vertices}, {op.material!r}, entasis={op.entasis})"
+                        f"obj = add_tapered_cylinder({op.name!r}, {op.radius}, {top_radius}, {op.height}, ({op.x}, {op.y}, {z}), {op.vertices}, {op.material!r}, entasis={op.entasis}, axis={op.axis!r})"
                     )
                 else:
                     lines.append(
-                        f"obj = add_cylinder({op.name!r}, {op.radius}, {op.height}, ({op.x}, {op.y}, {op.z}), {op.vertices}, {op.material!r})"
+                        f"obj = add_cylinder({op.name!r}, {op.radius}, {op.height}, ({op.x}, {op.y}, {z}), {op.vertices}, {op.material!r}, axis={op.axis!r})"
                     )
+            elif isinstance(op, AddSphere):
+                lines.append(
+                    f"add_sphere({op.name!r}, {op.radius}, ({op.x}, {op.y}, {op.z}), {op.vertices}, {op.material!r})"
+                )
             elif isinstance(op, AddRing):
                 radius = op.radius + op.overhang
                 lines.append(
