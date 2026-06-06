@@ -1,0 +1,1721 @@
+{
+  "schema": "humanoid_body_mannequin_rig_recipe_v0",
+  "asset_id": "humanoid_body_mannequin_rig_v0",
+  "asset_family": "character_animation_foundation",
+  "style": "stylized_pixel_body_mannequin",
+  "purpose": "Reusable rigid body mannequin rig for low-compute animation planning, body region fills, pivots, sockets, draw order, and later clothing or equipment overlays.",
+  "source_reference": {
+    "source_bundle": "/Users/kogaryu/gameguy-3d-lab/data/characters/mannequin_rigs/sources/humanoid_body_mannequin_sources_v0.json",
+    "human_profile_source": "/Users/kogaryu/dev/maps/sprite_pipeline/human/figure_profiles.toml",
+    "human_profile_id": "neutral_adult_p50",
+    "region_manifest": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/humanoid_regions.json",
+    "region_image_paths": {
+      "region_id_body": "/Users/kogaryu/font/out_brush_test/mannequin_crop_only_v6/region_id_body.png",
+      "pivot_body": "/Users/kogaryu/font/out_brush_test/mannequin_crop_only_v6/pivot_body.png",
+      "socket_body": "/Users/kogaryu/font/out_brush_test/mannequin_crop_only_v6/socket_body.png",
+      "neutral_body": "/Users/kogaryu/font/out_brush_test/mannequin_crop_only_v6/neutral_body.png"
+    },
+    "reference_role": "compiled from local human profile dimensions and extracted region-map lanes",
+    "not_claimed": [
+      "true anatomical measurement",
+      "final character skin",
+      "facial expression rig",
+      "game engine controller"
+    ]
+  },
+  "working_size_px": [
+    128,
+    128
+  ],
+  "export_size_px_options": [
+    [
+      64,
+      64
+    ],
+    [
+      96,
+      96
+    ]
+  ],
+  "origin": "bottom_center",
+  "view": "three_quarter_front",
+  "coordinate_system": {
+    "space": "local_xyz_m",
+    "unit": "meter",
+    "x": "left/right",
+    "y": "depth; negative y faces camera",
+    "z": "height/up"
+  },
+  "rules": {
+    "body_parts_are_rigid_segments": true,
+    "segment_origins_are_pivots": true,
+    "region_ids_drive_color_masks": true,
+    "overlays_define_appearance": true,
+    "blender_adapter_consumes_this_recipe": true,
+    "blender_adapter_must_not_invent_regions": true
+  },
+  "measurement_profile": {
+    "profile_id": "neutral_adult_p50",
+    "display_name": "Neutral Adult P50",
+    "sex_class": "neutral",
+    "population_basis": "ANSUR II + NASA Anthropometry",
+    "stature_percentile": "50",
+    "body_height_m": 1.78,
+    "scaled_landmarks_m": {
+      "head_center_z_m": 1.609999,
+      "shoulder_half_width_m": 0.239999,
+      "shoulder_z_m": 1.45,
+      "elbow_half_width_m": 0.49,
+      "elbow_z_m": 1.139999,
+      "wrist_half_width_m": 0.719999,
+      "wrist_z_m": 0.94,
+      "pelvis_half_width_m": 0.150001,
+      "hip_z_m": 0.97,
+      "knee_z_m": 0.53,
+      "ankle_z_m": 0.1,
+      "foot_forward_m": 0.150001,
+      "chest_depth_m": 0.200001,
+      "rib_half_width_m": 0.170001,
+      "pelvis_depth_m": 0.140001,
+      "abdomen_depth_m": 0.150001
+    },
+    "source_note": "Used for body-height scale and provenance; extracted image lanes drive stylized silhouette."
+  },
+  "source_projection": {
+    "method": "occupied_bbox_height_maps_to_profile_body_height",
+    "region_manifest_size_px": [
+      268,
+      582
+    ],
+    "occupied_bbox_px": [
+      9,
+      18,
+      267,
+      570
+    ],
+    "center_x_px": 138.0,
+    "bottom_y_px": 570.0,
+    "scale_m_per_px": 0.003218807,
+    "body_height_m": 1.78
+  },
+  "silhouette_strategy": {
+    "method": "source_bbox_contour_extrusion",
+    "measurement_note": "The reference is a 3/4 projected pixel rig. This recipe stores compiled projected silhouettes, not true body-depth measurements.",
+    "symmetry_rule": "Limbs are paired as mirrored silhouette families, then separated by draw order and y-depth offsets for the 3/4 view.",
+    "shared_shape_families": [
+      "upper_arm_pair",
+      "lower_arm_pair",
+      "hand_pair",
+      "upper_leg_pair",
+      "lower_leg_pair",
+      "foot_pair"
+    ],
+    "mirrored_pairs": [
+      [
+        "upper_arm_L",
+        "upper_arm_R"
+      ],
+      [
+        "lower_arm_L",
+        "lower_arm_R"
+      ],
+      [
+        "hand_L",
+        "hand_R"
+      ],
+      [
+        "upper_leg_L",
+        "upper_leg_R"
+      ],
+      [
+        "lower_leg_L",
+        "lower_leg_R"
+      ],
+      [
+        "foot_L",
+        "foot_R"
+      ]
+    ]
+  },
+  "region_palette": [
+    {
+      "region_id": 1,
+      "name": "head",
+      "color_hex": "#de944c"
+    },
+    {
+      "region_id": 2,
+      "name": "neck",
+      "color_hex": "#756caa"
+    },
+    {
+      "region_id": 3,
+      "name": "chest",
+      "color_hex": "#566dab"
+    },
+    {
+      "region_id": 4,
+      "name": "pelvis",
+      "color_hex": "#c85c3d"
+    },
+    {
+      "region_id": 5,
+      "name": "upper_arm_L",
+      "color_hex": "#c48399"
+    },
+    {
+      "region_id": 6,
+      "name": "lower_arm_L",
+      "color_hex": "#c98c47"
+    },
+    {
+      "region_id": 7,
+      "name": "hand_L",
+      "color_hex": "#86ae6b"
+    },
+    {
+      "region_id": 8,
+      "name": "upper_arm_R",
+      "color_hex": "#9dcc8f"
+    },
+    {
+      "region_id": 9,
+      "name": "lower_arm_R",
+      "color_hex": "#a2bd57"
+    },
+    {
+      "region_id": 10,
+      "name": "hand_R",
+      "color_hex": "#83ad9b"
+    },
+    {
+      "region_id": 11,
+      "name": "upper_leg_L",
+      "color_hex": "#c9a653"
+    },
+    {
+      "region_id": 12,
+      "name": "lower_leg_L",
+      "color_hex": "#cbaf4e"
+    },
+    {
+      "region_id": 13,
+      "name": "foot_L",
+      "color_hex": "#8ec286"
+    },
+    {
+      "region_id": 14,
+      "name": "upper_leg_R",
+      "color_hex": "#d5875b"
+    },
+    {
+      "region_id": 15,
+      "name": "lower_leg_R",
+      "color_hex": "#bf6140"
+    },
+    {
+      "region_id": 16,
+      "name": "foot_R",
+      "color_hex": "#9c70b0"
+    }
+  ],
+  "regions": [
+    {
+      "region_id": 1,
+      "name": "head",
+      "parent_region": "neck",
+      "pivot_joint": "head",
+      "draw_layer": "head_neck",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "head_projected_front_three_quarter",
+        "pivot_m": [
+          0.001609,
+          -0.05,
+          1.580434
+        ],
+        "depth_m": 0.048,
+        "bevel_m": 0.006,
+        "outline_m": 0.004,
+        "source_lane": "head",
+        "source_bbox_px": [
+          81,
+          19,
+          196,
+          139
+        ],
+        "source_pixels": 11599,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/head_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/head_cutout.png",
+        "contour_xz_m": [
+          [
+            -0.102036,
+            1.773563
+          ],
+          [
+            0.105255,
+            1.773563
+          ],
+          [
+            0.171884,
+            1.711762
+          ],
+          [
+            0.186691,
+            1.557259
+          ],
+          [
+            0.134868,
+            1.433657
+          ],
+          [
+            0.046029,
+            1.387306
+          ],
+          [
+            -0.072423,
+            1.410481
+          ],
+          [
+            -0.164964,
+            1.510908
+          ],
+          [
+            -0.172367,
+            1.676998
+          ]
+        ]
+      }
+    },
+    {
+      "region_id": 2,
+      "name": "neck",
+      "parent_region": "chest",
+      "pivot_joint": "neck",
+      "draw_layer": "head_neck",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "neck_and_collar_projected",
+        "pivot_m": [
+          0.0,
+          -0.035,
+          1.305226
+        ],
+        "depth_m": 0.044,
+        "bevel_m": 0.006,
+        "outline_m": 0.0035,
+        "source_lane": "neck",
+        "source_bbox_px": [
+          87,
+          140,
+          189,
+          189
+        ],
+        "source_pixels": 4460,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/neck_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/neck_cutout.png",
+        "contour_xz_m": [
+          [
+            -0.105062,
+            1.384087
+          ],
+          [
+            0.105062,
+            1.384087
+          ],
+          [
+            0.164159,
+            1.2863
+          ],
+          [
+            0.065664,
+            1.226365
+          ],
+          [
+            -0.065664,
+            1.226365
+          ],
+          [
+            -0.164159,
+            1.2863
+          ]
+        ]
+      }
+    },
+    {
+      "region_id": 3,
+      "name": "chest",
+      "parent_region": "pelvis",
+      "pivot_joint": "chest",
+      "draw_layer": "torso_back",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "torso_chest_plate_projected",
+        "pivot_m": [
+          0.0,
+          -0.025,
+          1.073472
+        ],
+        "depth_m": 0.056,
+        "bevel_m": 0.008,
+        "outline_m": 0.004,
+        "source_lane": "torso",
+        "source_bbox_px": [
+          87,
+          190,
+          189,
+          283
+        ],
+        "source_pixels": 9042,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/torso_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/torso_cutout.png",
+        "contour_xz_m": [
+          [
+            -0.124761,
+            1.223147
+          ],
+          [
+            0.105062,
+            1.223147
+          ],
+          [
+            0.164159,
+            1.15729
+          ],
+          [
+            0.137894,
+            0.959719
+          ],
+          [
+            0.026265,
+            0.923798
+          ],
+          [
+            -0.105062,
+            0.959719
+          ],
+          [
+            -0.164159,
+            1.139329
+          ]
+        ]
+      }
+    },
+    {
+      "region_id": 4,
+      "name": "pelvis",
+      "parent_region": "root",
+      "pivot_joint": "pelvis",
+      "draw_layer": "pelvis_torso_mid",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "pelvis_shorts_projected",
+        "pivot_m": [
+          0.0,
+          -0.015,
+          0.824015
+        ],
+        "depth_m": 0.0476,
+        "bevel_m": 0.008,
+        "outline_m": 0.004,
+        "source_lane": "pelvis",
+        "source_bbox_px": [
+          87,
+          284,
+          189,
+          344
+        ],
+        "source_pixels": 6158,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/pelvis_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/pelvis_cutout.png",
+        "contour_xz_m": [
+          [
+            -0.137894,
+            0.920579
+          ],
+          [
+            0.14446,
+            0.920579
+          ],
+          [
+            0.124761,
+            0.808564
+          ],
+          [
+            0.039398,
+            0.72745
+          ],
+          [
+            -0.006566,
+            0.769939
+          ],
+          [
+            -0.059097,
+            0.72745
+          ],
+          [
+            -0.157593,
+            0.800839
+          ]
+        ]
+      }
+    },
+    {
+      "region_id": 5,
+      "name": "upper_arm_L",
+      "parent_region": "chest",
+      "pivot_joint": "shoulder_L",
+      "draw_layer": "front_arm_L",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "upper_arm_pair",
+        "pivot_m": [
+          -0.234973,
+          -0.055,
+          1.202224
+        ],
+        "depth_m": 0.044,
+        "bevel_m": 0.006,
+        "outline_m": 0.0035,
+        "source_lane": "upper_arm_left",
+        "source_bbox_px": [
+          44,
+          160,
+          86,
+          233
+        ],
+        "source_pixels": 2040,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/upper_arm_left_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/upper_arm_left_cutout.png",
+        "contour_xz_m": [
+          [
+            -0.272826,
+            1.310312
+          ],
+          [
+            -0.178193,
+            1.291514
+          ],
+          [
+            -0.167378,
+            1.221022
+          ],
+          [
+            -0.205231,
+            1.084738
+          ],
+          [
+            -0.294456,
+            1.117634
+          ],
+          [
+            -0.302568,
+            1.249219
+          ]
+        ],
+        "symmetry_role": "mirrored_from_upper_arm_R_visible_reference"
+      }
+    },
+    {
+      "region_id": 6,
+      "name": "lower_arm_L",
+      "parent_region": "upper_arm_L",
+      "pivot_joint": "elbow_L",
+      "draw_layer": "front_arm_L",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "lower_arm_pair",
+        "pivot_m": [
+          -0.262333,
+          -0.055,
+          0.967252
+        ],
+        "depth_m": 0.044,
+        "bevel_m": 0.006,
+        "outline_m": 0.0035,
+        "source_lane": "lower_arm_left",
+        "source_bbox_px": [
+          27,
+          234,
+          86,
+          305
+        ],
+        "source_pixels": 3150,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/lower_arm_left_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/lower_arm_left_cutout.png",
+        "contour_xz_m": [
+          [
+            -0.323104,
+            1.076948
+          ],
+          [
+            -0.186369,
+            1.067807
+          ],
+          [
+            -0.167378,
+            1.008388
+          ],
+          [
+            -0.20536,
+            0.862125
+          ],
+          [
+            -0.323104,
+            0.852984
+          ],
+          [
+            -0.357288,
+            0.916974
+          ],
+          [
+            -0.353489,
+            1.031241
+          ]
+        ],
+        "symmetry_role": "mirrored_from_lower_arm_R_visible_reference"
+      }
+    },
+    {
+      "region_id": 7,
+      "name": "hand_L",
+      "parent_region": "lower_arm_L",
+      "pivot_joint": "wrist_L",
+      "draw_layer": "hands",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "hand_pair",
+        "pivot_m": [
+          -0.280036,
+          -0.055,
+          0.735497
+        ],
+        "depth_m": 0.044,
+        "bevel_m": 0.006,
+        "outline_m": 0.0035,
+        "source_lane": "hand_left",
+        "source_bbox_px": [
+          11,
+          306,
+          91,
+          377
+        ],
+        "source_pixels": 3661,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/hand_left_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/hand_left_cutout.png",
+        "contour_xz_m": [
+          [
+            -0.362438,
+            0.845194
+          ],
+          [
+            -0.223385,
+            0.849765
+          ],
+          [
+            -0.156434,
+            0.785775
+          ],
+          [
+            -0.177034,
+            0.680649
+          ],
+          [
+            -0.249136,
+            0.62123
+          ],
+          [
+            -0.357288,
+            0.639513
+          ],
+          [
+            -0.408788,
+            0.724071
+          ]
+        ],
+        "symmetry_role": "mirrored_from_hand_R_visible_reference"
+      }
+    },
+    {
+      "region_id": 8,
+      "name": "upper_arm_R",
+      "parent_region": "chest",
+      "pivot_joint": "shoulder_R",
+      "draw_layer": "rear_arm_R",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "upper_arm_pair",
+        "pivot_m": [
+          0.259114,
+          0.03,
+          1.211881
+        ],
+        "depth_m": 0.044,
+        "bevel_m": 0.006,
+        "outline_m": 0.0035,
+        "source_lane": "upper_arm_right",
+        "source_bbox_px": [
+          190,
+          154,
+          247,
+          233
+        ],
+        "source_pixels": 3112,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/upper_arm_right_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/upper_arm_right_cutout.png",
+        "contour_xz_m": [
+          [
+            0.182056,
+            1.318681
+          ],
+          [
+            0.299478,
+            1.339024
+          ],
+          [
+            0.35085,
+            1.262738
+          ],
+          [
+            0.336172,
+            1.140681
+          ],
+          [
+            0.21875,
+            1.084738
+          ],
+          [
+            0.167378,
+            1.232224
+          ]
+        ],
+        "symmetry_role": "visible_reference_side"
+      }
+    },
+    {
+      "region_id": 9,
+      "name": "lower_arm_R",
+      "parent_region": "upper_arm_R",
+      "pivot_joint": "elbow_R",
+      "draw_layer": "rear_arm_R",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "lower_arm_pair",
+        "pivot_m": [
+          0.284864,
+          0.03,
+          0.967252
+        ],
+        "depth_m": 0.044,
+        "bevel_m": 0.006,
+        "outline_m": 0.0035,
+        "source_lane": "lower_arm_right",
+        "source_bbox_px": [
+          196,
+          234,
+          257,
+          305
+        ],
+        "source_pixels": 3133,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/lower_arm_right_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/lower_arm_right_cutout.png",
+        "contour_xz_m": [
+          [
+            0.210252,
+            1.072378
+          ],
+          [
+            0.343769,
+            1.076948
+          ],
+          [
+            0.383038,
+            1.017529
+          ],
+          [
+            0.379111,
+            0.912403
+          ],
+          [
+            0.324134,
+            0.852984
+          ],
+          [
+            0.202399,
+            0.871267
+          ],
+          [
+            0.186691,
+            1.026671
+          ]
+        ],
+        "symmetry_role": "visible_reference_side"
+      }
+    },
+    {
+      "region_id": 10,
+      "name": "hand_R",
+      "parent_region": "lower_arm_R",
+      "pivot_joint": "wrist_R",
+      "draw_layer": "hands",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "hand_pair",
+        "pivot_m": [
+          0.27038,
+          0.03,
+          0.735497
+        ],
+        "depth_m": 0.044,
+        "bevel_m": 0.006,
+        "outline_m": 0.0035,
+        "source_lane": "hand_right",
+        "source_bbox_px": [
+          185,
+          306,
+          259,
+          377
+        ],
+        "source_pixels": 3551,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/hand_right_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/hand_right_cutout.png",
+        "contour_xz_m": [
+          [
+            0.194158,
+            0.845194
+          ],
+          [
+            0.322782,
+            0.849765
+          ],
+          [
+            0.384712,
+            0.785775
+          ],
+          [
+            0.365656,
+            0.680649
+          ],
+          [
+            0.298963,
+            0.62123
+          ],
+          [
+            0.198922,
+            0.639513
+          ],
+          [
+            0.151284,
+            0.724071
+          ]
+        ],
+        "symmetry_role": "visible_reference_side"
+      }
+    },
+    {
+      "region_id": 11,
+      "name": "upper_leg_L",
+      "parent_region": "pelvis",
+      "pivot_joint": "hip_L",
+      "draw_layer": "front_leg_L",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "upper_leg_pair",
+        "pivot_m": [
+          -0.117486,
+          -0.055,
+          0.601917
+        ],
+        "depth_m": 0.044,
+        "bevel_m": 0.006,
+        "outline_m": 0.0035,
+        "source_lane": "upper_leg_left",
+        "source_bbox_px": [
+          66,
+          345,
+          137,
+          421
+        ],
+        "source_pixels": 3557,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/upper_leg_left_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/upper_leg_left_cutout.png",
+        "contour_xz_m": [
+          [
+            -0.190618,
+            0.724232
+          ],
+          [
+            -0.021502,
+            0.709554
+          ],
+          [
+            -0.00779,
+            0.636165
+          ],
+          [
+            -0.067209,
+            0.479602
+          ],
+          [
+            -0.195188,
+            0.504065
+          ],
+          [
+            -0.231754,
+            0.670413
+          ]
+        ],
+        "symmetry_role": "visible_reference_side"
+      }
+    },
+    {
+      "region_id": 12,
+      "name": "lower_leg_L",
+      "parent_region": "upper_leg_L",
+      "pivot_joint": "knee_L",
+      "draw_layer": "front_leg_L",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "lower_leg_pair",
+        "pivot_m": [
+          -0.156112,
+          -0.055,
+          0.352459
+        ],
+        "depth_m": 0.044,
+        "bevel_m": 0.006,
+        "outline_m": 0.0035,
+        "source_lane": "lower_leg_left",
+        "source_bbox_px": [
+          58,
+          422,
+          121,
+          499
+        ],
+        "source_pixels": 3797,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/lower_leg_left_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/lower_leg_left_cutout.png",
+        "contour_xz_m": [
+          [
+            -0.221003,
+            0.476383
+          ],
+          [
+            -0.08311,
+            0.46647
+          ],
+          [
+            -0.058775,
+            0.402029
+          ],
+          [
+            -0.095277,
+            0.233492
+          ],
+          [
+            -0.216948,
+            0.228535
+          ],
+          [
+            -0.253449,
+            0.297933
+          ],
+          [
+            -0.241282,
+            0.421857
+          ]
+        ],
+        "symmetry_role": "visible_reference_side"
+      }
+    },
+    {
+      "region_id": 13,
+      "name": "foot_L",
+      "parent_region": "lower_leg_L",
+      "pivot_joint": "ankle_L",
+      "draw_layer": "feet",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "foot_pair",
+        "pivot_m": [
+          -0.201175,
+          -0.055,
+          0.115877
+        ],
+        "depth_m": 0.056,
+        "bevel_m": 0.008,
+        "outline_m": 0.004,
+        "source_lane": "foot_left",
+        "source_bbox_px": [
+          14,
+          500,
+          137,
+          568
+        ],
+        "source_pixels": 5477,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/foot_left_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/foot_left_cutout.png",
+        "contour_xz_m": [
+          [
+            -0.296195,
+            0.220939
+          ],
+          [
+            -0.082401,
+            0.220939
+          ],
+          [
+            -0.003219,
+            0.14652
+          ],
+          [
+            -0.050728,
+            0.063346
+          ],
+          [
+            -0.232848,
+            0.010815
+          ],
+          [
+            -0.391214,
+            0.045836
+          ],
+          [
+            -0.399132,
+            0.126821
+          ]
+        ],
+        "symmetry_role": "visible_reference_side"
+      }
+    },
+    {
+      "region_id": 14,
+      "name": "upper_leg_R",
+      "parent_region": "pelvis",
+      "pivot_joint": "hip_R",
+      "draw_layer": "rear_leg_R",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "upper_leg_pair",
+        "pivot_m": [
+          0.170597,
+          0.03,
+          0.601917
+        ],
+        "depth_m": 0.044,
+        "bevel_m": 0.006,
+        "outline_m": 0.0035,
+        "source_lane": "upper_leg_right",
+        "source_bbox_px": [
+          138,
+          345,
+          244,
+          421
+        ],
+        "source_pixels": 3925,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/upper_leg_right_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/upper_leg_right_cutout.png",
+        "contour_xz_m": [
+          [
+            0.027295,
+            0.714446
+          ],
+          [
+            0.266131,
+            0.724232
+          ],
+          [
+            0.341194,
+            0.660628
+          ],
+          [
+            0.286603,
+            0.508958
+          ],
+          [
+            0.095534,
+            0.479602
+          ],
+          [
+            0.0,
+            0.636165
+          ]
+        ],
+        "symmetry_role": "mirrored_from_upper_leg_L_visible_reference"
+      }
+    },
+    {
+      "region_id": 15,
+      "name": "lower_leg_R",
+      "parent_region": "upper_leg_R",
+      "pivot_joint": "knee_R",
+      "draw_layer": "rear_leg_R",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "lower_leg_pair",
+        "pivot_m": [
+          0.183472,
+          0.03,
+          0.352459
+        ],
+        "depth_m": 0.044,
+        "bevel_m": 0.006,
+        "outline_m": 0.0035,
+        "source_lane": "lower_leg_right",
+        "source_bbox_px": [
+          160,
+          422,
+          230,
+          499
+        ],
+        "source_pixels": 3740,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/lower_leg_right_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/lower_leg_right_cutout.png",
+        "contour_xz_m": [
+          [
+            0.102358,
+            0.471426
+          ],
+          [
+            0.255573,
+            0.476383
+          ],
+          [
+            0.282611,
+            0.421857
+          ],
+          [
+            0.291624,
+            0.283062
+          ],
+          [
+            0.242054,
+            0.228535
+          ],
+          [
+            0.106864,
+            0.238449
+          ],
+          [
+            0.070814,
+            0.406986
+          ]
+        ],
+        "symmetry_role": "mirrored_from_lower_leg_L_visible_reference"
+      }
+    },
+    {
+      "region_id": 16,
+      "name": "foot_R",
+      "parent_region": "lower_leg_R",
+      "pivot_joint": "ankle_R",
+      "draw_layer": "feet",
+      "shape": {
+        "type": "extruded_contour",
+        "source_shape_family": "foot_pair",
+        "pivot_m": [
+          0.207613,
+          0.03,
+          0.115877
+        ],
+        "depth_m": 0.056,
+        "bevel_m": 0.008,
+        "outline_m": 0.004,
+        "source_lane": "foot_right",
+        "source_bbox_px": [
+          138,
+          500,
+          267,
+          568
+        ],
+        "source_pixels": 4985,
+        "source_mask": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/masks/foot_right_mask.png",
+        "source_cutout": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/cutouts/foot_right_cutout.png",
+        "contour_xz_m": [
+          [
+            0.083045,
+            0.220939
+          ],
+          [
+            0.307267,
+            0.220939
+          ],
+          [
+            0.415226,
+            0.12901
+          ],
+          [
+            0.390313,
+            0.045836
+          ],
+          [
+            0.199309,
+            0.010815
+          ],
+          [
+            0.024914,
+            0.058969
+          ],
+          [
+            0.0,
+            0.150898
+          ]
+        ],
+        "symmetry_role": "mirrored_from_foot_L_visible_reference"
+      }
+    }
+  ],
+  "joints": [
+    {
+      "joint_id": "root",
+      "parent_joint": null,
+      "pivot_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "joint_type": "root",
+      "control": "root_xy"
+    },
+    {
+      "joint_id": "shadow_anchor",
+      "parent_joint": "root",
+      "pivot_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "joint_type": "anchor",
+      "control": "shadow_anchor"
+    },
+    {
+      "joint_id": "pelvis",
+      "parent_joint": "root",
+      "pivot_m": [
+        0.0,
+        -0.015,
+        0.824015
+      ],
+      "joint_type": "hinge",
+      "control": "pelvis_rotate",
+      "range_deg": [
+        -45,
+        45
+      ]
+    },
+    {
+      "joint_id": "chest",
+      "parent_joint": "pelvis",
+      "pivot_m": [
+        0.0,
+        -0.025,
+        1.073472
+      ],
+      "joint_type": "hinge",
+      "control": "torso_rotate",
+      "range_deg": [
+        -60,
+        60
+      ]
+    },
+    {
+      "joint_id": "neck",
+      "parent_joint": "chest",
+      "pivot_m": [
+        0.0,
+        -0.035,
+        1.305226
+      ],
+      "joint_type": "ball_socket",
+      "control": "neck_rotate",
+      "range_deg": [
+        -35,
+        35
+      ]
+    },
+    {
+      "joint_id": "head",
+      "parent_joint": "neck",
+      "pivot_m": [
+        0.001609,
+        -0.05,
+        1.580434
+      ],
+      "joint_type": "ball_socket",
+      "control": "head_rotate",
+      "range_deg": [
+        -45,
+        45
+      ]
+    },
+    {
+      "joint_id": "shoulder_L",
+      "parent_joint": "chest",
+      "pivot_m": [
+        -0.165769,
+        -0.055,
+        1.121754
+      ],
+      "joint_type": "ball_socket",
+      "control": "arm_L_raise",
+      "range_deg": [
+        -90,
+        90
+      ]
+    },
+    {
+      "joint_id": "elbow_L",
+      "parent_joint": "shoulder_L",
+      "pivot_m": [
+        -0.234973,
+        -0.055,
+        1.083129
+      ],
+      "joint_type": "hinge",
+      "control": "arm_L_bend",
+      "range_deg": [
+        0,
+        150
+      ]
+    },
+    {
+      "joint_id": "wrist_L",
+      "parent_joint": "elbow_L",
+      "pivot_m": [
+        -0.262333,
+        -0.06,
+        0.851374
+      ],
+      "joint_type": "hinge",
+      "control": "hand_L_rotate",
+      "range_deg": [
+        -45,
+        45
+      ]
+    },
+    {
+      "joint_id": "shoulder_R",
+      "parent_joint": "chest",
+      "pivot_m": [
+        0.165769,
+        0.03,
+        1.131411
+      ],
+      "joint_type": "ball_socket",
+      "control": "arm_R_raise",
+      "range_deg": [
+        -90,
+        90
+      ]
+    },
+    {
+      "joint_id": "elbow_R",
+      "parent_joint": "shoulder_R",
+      "pivot_m": [
+        0.26877,
+        0.03,
+        1.083129
+      ],
+      "joint_type": "hinge",
+      "control": "arm_R_bend",
+      "range_deg": [
+        0,
+        150
+      ]
+    },
+    {
+      "joint_id": "wrist_R",
+      "parent_joint": "elbow_R",
+      "pivot_m": [
+        0.284864,
+        0.03,
+        0.851374
+      ],
+      "joint_type": "hinge",
+      "control": "hand_R_rotate",
+      "range_deg": [
+        -45,
+        45
+      ]
+    },
+    {
+      "joint_id": "hip_L",
+      "parent_joint": "pelvis",
+      "pivot_m": [
+        -0.083689,
+        -0.035,
+        0.725841
+      ],
+      "joint_type": "ball_socket",
+      "control": "leg_L_raise",
+      "range_deg": [
+        -90,
+        90
+      ]
+    },
+    {
+      "joint_id": "knee_L",
+      "parent_joint": "hip_L",
+      "pivot_m": [
+        -0.143237,
+        -0.035,
+        0.477993
+      ],
+      "joint_type": "hinge",
+      "control": "leg_L_bend",
+      "range_deg": [
+        0,
+        150
+      ]
+    },
+    {
+      "joint_id": "ankle_L",
+      "parent_joint": "knee_L",
+      "pivot_m": [
+        -0.156112,
+        -0.04,
+        0.226926
+      ],
+      "joint_type": "hinge",
+      "control": "foot_L_rotate",
+      "range_deg": [
+        -45,
+        45
+      ]
+    },
+    {
+      "joint_id": "hip_R",
+      "parent_joint": "pelvis",
+      "pivot_m": [
+        0.08208,
+        0.025,
+        0.725841
+      ],
+      "joint_type": "ball_socket",
+      "control": "leg_R_raise",
+      "range_deg": [
+        -90,
+        90
+      ]
+    },
+    {
+      "joint_id": "knee_R",
+      "parent_joint": "hip_R",
+      "pivot_m": [
+        0.183472,
+        0.025,
+        0.477993
+      ],
+      "joint_type": "hinge",
+      "control": "leg_R_bend",
+      "range_deg": [
+        0,
+        150
+      ]
+    },
+    {
+      "joint_id": "ankle_R",
+      "parent_joint": "knee_R",
+      "pivot_m": [
+        0.183472,
+        0.02,
+        0.226926
+      ],
+      "joint_type": "hinge",
+      "control": "foot_R_rotate",
+      "range_deg": [
+        -45,
+        45
+      ]
+    }
+  ],
+  "sockets": [
+    {
+      "socket_id": "head_socket",
+      "joint_id": "head",
+      "position_m": [
+        0.001609,
+        -0.075,
+        1.770434
+      ],
+      "role": "hat_hair_face_overlay"
+    },
+    {
+      "socket_id": "face_socket",
+      "joint_id": "head",
+      "position_m": [
+        -0.023391,
+        -0.09,
+        1.560434
+      ],
+      "role": "face_direction"
+    },
+    {
+      "socket_id": "chest_socket",
+      "joint_id": "chest",
+      "position_m": [
+        0.0,
+        -0.075,
+        1.093472
+      ],
+      "role": "shirt_armor_front"
+    },
+    {
+      "socket_id": "back_socket",
+      "joint_id": "chest",
+      "position_m": [
+        0.0,
+        0.025,
+        1.093472
+      ],
+      "role": "cape_backpack"
+    },
+    {
+      "socket_id": "hand_L_socket",
+      "joint_id": "wrist_L",
+      "position_m": [
+        -0.287333,
+        -0.085,
+        0.801374
+      ],
+      "role": "held_item_left"
+    },
+    {
+      "socket_id": "hand_R_socket",
+      "joint_id": "wrist_R",
+      "position_m": [
+        0.309864,
+        0.005,
+        0.801374
+      ],
+      "role": "held_item_right"
+    },
+    {
+      "socket_id": "hip_socket",
+      "joint_id": "pelvis",
+      "position_m": [
+        0.0,
+        -0.055,
+        0.804015
+      ],
+      "role": "belt_pouch_scabbard"
+    },
+    {
+      "socket_id": "foot_L_socket",
+      "joint_id": "ankle_L",
+      "position_m": [
+        -0.208612,
+        -0.075,
+        0.096926
+      ],
+      "role": "ground_contact_left"
+    },
+    {
+      "socket_id": "foot_R_socket",
+      "joint_id": "ankle_R",
+      "position_m": [
+        0.235972,
+        0.0,
+        0.096926
+      ],
+      "role": "ground_contact_right"
+    }
+  ],
+  "draw_order": [
+    "back_cape_future",
+    "rear_arm_R",
+    "torso_back",
+    "rear_leg_R",
+    "rear_leg_L",
+    "pelvis_torso_mid",
+    "front_arm_L",
+    "front_arm_R",
+    "front_leg_L",
+    "front_leg_R",
+    "head_neck",
+    "hands",
+    "feet",
+    "accessories_future"
+  ],
+  "controls": [
+    {
+      "control": "root_x",
+      "type": "translate_x",
+      "range": [
+        -0.64,
+        0.64
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "root_y",
+      "type": "translate_y",
+      "range": [
+        -0.32,
+        0.32
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "pelvis_rotate",
+      "type": "rotate",
+      "range": [
+        -45,
+        45
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "torso_rotate",
+      "type": "rotate",
+      "range": [
+        -60,
+        60
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "head_rotate",
+      "type": "rotate",
+      "range": [
+        -45,
+        45
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "arm_L_raise",
+      "type": "rotate",
+      "range": [
+        -90,
+        90
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "arm_L_bend",
+      "type": "rotate",
+      "range": [
+        0,
+        150
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "arm_R_raise",
+      "type": "rotate",
+      "range": [
+        -90,
+        90
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "arm_R_bend",
+      "type": "rotate",
+      "range": [
+        0,
+        150
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "leg_L_raise",
+      "type": "rotate",
+      "range": [
+        -90,
+        90
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "leg_L_bend",
+      "type": "rotate",
+      "range": [
+        0,
+        150
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "leg_R_raise",
+      "type": "rotate",
+      "range": [
+        -90,
+        90
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "leg_R_bend",
+      "type": "rotate",
+      "range": [
+        0,
+        150
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "foot_L_rotate",
+      "type": "rotate",
+      "range": [
+        -45,
+        45
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "foot_R_rotate",
+      "type": "rotate",
+      "range": [
+        -45,
+        45
+      ],
+      "default": 0.0
+    },
+    {
+      "control": "body_squash",
+      "type": "scale_y",
+      "range": [
+        0.8,
+        1.2
+      ],
+      "default": 1.0
+    },
+    {
+      "control": "body_stretch",
+      "type": "scale_z",
+      "range": [
+        0.8,
+        1.2
+      ],
+      "default": 1.0
+    }
+  ],
+  "required_pose_sets": [
+    {
+      "pose_set_id": "idle_loop_v0",
+      "frame_count": 6,
+      "purpose": "standing breathing loop"
+    },
+    {
+      "pose_set_id": "walk_loop_v0",
+      "frame_count": 8,
+      "purpose": "reusable walk contact and passing frames"
+    },
+    {
+      "pose_set_id": "hurt_reaction_v0",
+      "frame_count": 3,
+      "purpose": "impact reaction check"
+    }
+  ],
+  "validation_checks": [
+    "feet stay on baseline in neutral pose",
+    "body remains inside frame bounds",
+    "left and right parts do not swap",
+    "pivot positions are stable across poses",
+    "limbs do not collapse or break",
+    "region IDs remain stable across frames",
+    "sockets exist and export correct positions"
+  ]
+}

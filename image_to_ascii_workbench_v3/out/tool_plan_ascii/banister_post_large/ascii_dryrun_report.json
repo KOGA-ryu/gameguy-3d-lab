@@ -1,0 +1,161 @@
+{
+  "schema": "tool_plan_ascii_dryrun_report_v0",
+  "plan_schema": "gameguy_tool_plan_v0",
+  "plan_id": "gothic_stone_banister_post_tool_plan_v0_compiled",
+  "asset_id": "gothic_stone_banister_post_tool_plan_v0",
+  "asset_family": "banister_post",
+  "style": "gothic_stone",
+  "step_count": 32,
+  "dryrun_op_count": 9,
+  "supported_step_count": 9,
+  "approximated_step_count": 0,
+  "skipped_step_count": 23,
+  "supported_steps": [
+    "create_base_foot",
+    "create_base_mid_step",
+    "create_base_top_step",
+    "create_cap_neck",
+    "create_cap_top",
+    "create_post_core",
+    "create_single_rib_source",
+    "create_east_socket_cutter",
+    "create_west_socket_cutter"
+  ],
+  "approximated_steps": [],
+  "skipped_steps": [
+    {
+      "step_id": "duplicate_ribs_radially",
+      "tool_id": "object_duplicate_radial",
+      "reason": "unsupported dry-run tool in v0"
+    },
+    {
+      "step_id": "boolean_cut_rail_sockets",
+      "tool_id": "modifier_boolean",
+      "reason": "non-primitive effect recorded only in v0"
+    },
+    {
+      "step_id": "join_visible_post_parts",
+      "tool_id": "join_objects",
+      "reason": "unsupported dry-run tool in v0"
+    },
+    {
+      "step_id": "add_hard_edge_bevels",
+      "tool_id": "modifier_bevel",
+      "reason": "non-primitive effect recorded only in v0"
+    },
+    {
+      "step_id": "mark_primary_sharp_edges",
+      "tool_id": "mark_sharp",
+      "reason": "unsupported dry-run tool in v0"
+    },
+    {
+      "step_id": "apply_weighted_normals",
+      "tool_id": "modifier_weighted_normal",
+      "reason": "non-primitive effect recorded only in v0"
+    },
+    {
+      "step_id": "add_stone_displacement",
+      "tool_id": "modifier_displace",
+      "reason": "non-primitive effect recorded only in v0"
+    },
+    {
+      "step_id": "weld_close_vertices",
+      "tool_id": "modifier_weld",
+      "reason": "non-primitive effect recorded only in v0"
+    },
+    {
+      "step_id": "limited_dissolve_cleanup",
+      "tool_id": "dissolve_limited",
+      "reason": "unsupported dry-run tool in v0"
+    },
+    {
+      "step_id": "recalculate_normals",
+      "tool_id": "recalc_normals",
+      "reason": "unsupported dry-run tool in v0"
+    },
+    {
+      "step_id": "mark_uv_seams",
+      "tool_id": "mark_seam",
+      "reason": "unsupported dry-run tool in v0"
+    },
+    {
+      "step_id": "smart_project_uvs",
+      "tool_id": "uv_smart_project",
+      "reason": "unsupported dry-run tool in v0"
+    },
+    {
+      "step_id": "pack_uv_islands",
+      "tool_id": "uv_pack_islands",
+      "reason": "unsupported dry-run tool in v0"
+    },
+    {
+      "step_id": "create_stone_material",
+      "tool_id": "material_principled_shader",
+      "reason": "unsupported dry-run tool in v0"
+    },
+    {
+      "step_id": "add_stone_noise_texture",
+      "tool_id": "procedural_noise_texture",
+      "reason": "unsupported dry-run tool in v0"
+    },
+    {
+      "step_id": "add_stone_bump_map",
+      "tool_id": "procedural_bump_map",
+      "reason": "unsupported dry-run tool in v0"
+    },
+    {
+      "step_id": "assign_material_regions",
+      "tool_id": "material_assign_by_part",
+      "reason": "unsupported dry-run tool in v0"
+    },
+    {
+      "step_id": "calculate_asset_bounds",
+      "tool_id": "calculate_bounds",
+      "reason": "non-primitive effect recorded only in v0"
+    },
+    {
+      "step_id": "validate_topology_non_manifold",
+      "tool_id": "validate_non_manifold",
+      "reason": "non-primitive effect recorded only in v0"
+    },
+    {
+      "step_id": "create_simple_collision_proxy",
+      "tool_id": "create_collision_proxy",
+      "reason": "unsupported dry-run tool in v0"
+    },
+    {
+      "step_id": "create_lod1_variant",
+      "tool_id": "create_lod_variant",
+      "reason": "unsupported dry-run tool in v0"
+    },
+    {
+      "step_id": "render_workbench_asset_preview",
+      "tool_id": "render_workbench_preview",
+      "reason": "non-primitive effect recorded only in v0"
+    },
+    {
+      "step_id": "export_game_ready_glb",
+      "tool_id": "export_gltf",
+      "reason": "non-primitive effect recorded only in v0"
+    }
+  ],
+  "rules": {
+    "consumes_gameguy_tool_plan_v0": true,
+    "imports_blender": false,
+    "executes_blender": false,
+    "uses_donated_ascii_backend": true,
+    "renders_supported_primitives_only_in_v0": true
+  },
+  "no_claims": {
+    "final_blender_equivalence": false,
+    "modifier_effects_rendered": false,
+    "mesh_export_created": false,
+    "render_created": false
+  },
+  "outputs": {
+    "operation_stream": "image_to_ascii_workbench_v3/out/tool_plan_ascii/banister_post_large/dryrun_operation_stream.json",
+    "front_preview": "image_to_ascii_workbench_v3/out/tool_plan_ascii/banister_post_large/front_preview.txt",
+    "side_preview": "image_to_ascii_workbench_v3/out/tool_plan_ascii/banister_post_large/side_preview.txt",
+    "top_preview": "image_to_ascii_workbench_v3/out/tool_plan_ascii/banister_post_large/top_preview.txt"
+  }
+}

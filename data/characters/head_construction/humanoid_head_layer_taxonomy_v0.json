@@ -1,0 +1,449 @@
+{
+  "schema": "humanoid_head_layer_taxonomy_v0",
+  "bundle_id": "humanoid_head_layer_taxonomy_v0",
+  "purpose": "Define the source-side vocabulary, measurement anchors, construction layers, shape terms, Blender tool mapping, and quality checks for a low-compute humanoid mannequin head before any Blender adapter generates geometry.",
+  "rules": {
+    "source_recipe_only": true,
+    "no_blender_execution": true,
+    "largest_forms_first": true,
+    "defining_forms_before_detail": true,
+    "measurements_anchor_proportions": true,
+    "style_parameters_handle_art_direction": true,
+    "not_medical_or_safety_guidance": true
+  },
+  "source_support": [
+    {
+      "label": "NIOSH CDC Stacks: Head-and-Face Anthropometric Survey of U.S. Respirator Users",
+      "url": "https://stacks.cdc.gov/view/cdc/181482",
+      "support_summary": "Primary source for measured adult head and face dimensions such as head length, head breadth, cheek width, jaw width, nose dimensions, and lip length."
+    },
+    {
+      "label": "National Academies resource copy of Anthrotech report",
+      "url": "https://nap.nationalacademies.org/resource/11815/Anthrotech_report.pdf",
+      "support_summary": "Accessible report copy used as the source packet for the NIOSH/Anthrotech head and face measurement table."
+    },
+    {
+      "label": "NASA Anthropometric Source Book",
+      "url": "https://ntrs.nasa.gov/search.jsp?R=19790003563",
+      "support_summary": "General anthropometry reference for treating body and head dimensions as named measured fields instead of guessed sculpt proportions."
+    }
+  ],
+  "measurement_profile": {
+    "profile_id": "adult_male_mean_niosh_weighted_v0",
+    "plain_name": "Adult male mean head and face seed",
+    "units": "m",
+    "source_statistic": "weighted sample mean",
+    "source_context": "NIOSH/Anthrotech head-and-face survey table values rounded from millimetres to metres for a neutral mannequin head scaffold.",
+    "dimensions_m": {
+      "head_length": 0.1973,
+      "head_breadth": 0.153,
+      "head_circumference": 0.5755,
+      "bizygomatic_breadth": 0.1435,
+      "bigonial_breadth": 0.1204,
+      "minimum_frontal_breadth": 0.1059,
+      "maximum_frontal_breadth": 0.1125,
+      "interpupillary_distance": 0.0647,
+      "menton_sellion_length": 0.1227,
+      "subnasale_sellion_length": 0.052,
+      "nose_breadth": 0.0364,
+      "nose_protrusion": 0.0211,
+      "lip_length": 0.0514
+    },
+    "derived_ratios": {
+      "head_breadth_to_length": 0.7755,
+      "cheek_width_to_head_breadth": 0.9379,
+      "jaw_width_to_head_breadth": 0.7869,
+      "nose_width_to_cheek_width": 0.2537,
+      "mouth_width_to_cheek_width": 0.3582
+    }
+  },
+  "facial_parts": [
+    {
+      "part_id": "cranium",
+      "plain_name": "cranium",
+      "anatomy_terms": ["cranium", "skull vault"],
+      "construction_role": "Largest upper and rear head mass.",
+      "read_goal": "Head still reads correctly with all facial detail hidden."
+    },
+    {
+      "part_id": "occiput",
+      "plain_name": "back of head",
+      "anatomy_terms": ["occiput", "rear skull"],
+      "construction_role": "Back-skull profile and rounded rear mass.",
+      "read_goal": "Side view does not become a flat mask."
+    },
+    {
+      "part_id": "forehead",
+      "plain_name": "forehead plane",
+      "anatomy_terms": ["frontal bone", "forehead"],
+      "construction_role": "Broad upper face plane above brow.",
+      "read_goal": "Creates a calm plane before the brow breaks forward."
+    },
+    {
+      "part_id": "brow_ridge",
+      "plain_name": "brow ridge",
+      "anatomy_terms": ["supraorbital ridge", "glabella"],
+      "construction_role": "Raised ridge that defines the upper eye sockets.",
+      "read_goal": "Gives the face shadow and direction without drawing eyes."
+    },
+    {
+      "part_id": "eye_sockets",
+      "plain_name": "eye sockets",
+      "anatomy_terms": ["orbital sockets", "orbits"],
+      "construction_role": "Paired recesses under the brow.",
+      "read_goal": "Eyes read as sockets, not painted dots on a flat head."
+    },
+    {
+      "part_id": "nose",
+      "plain_name": "nose wedge",
+      "anatomy_terms": ["nasal bridge", "nasal tip", "nose base"],
+      "construction_role": "Central protruding wedge from sellion to subnasale.",
+      "read_goal": "Front and side views immediately reveal head direction."
+    },
+    {
+      "part_id": "cheeks",
+      "plain_name": "cheek planes",
+      "anatomy_terms": ["zygomatic bones", "midface"],
+      "construction_role": "Raised side planes between sockets, nose, mouth, and side face.",
+      "read_goal": "Breaks the flat mask and catches light on both sides."
+    },
+    {
+      "part_id": "mouth",
+      "plain_name": "mouth and lips",
+      "anatomy_terms": ["mouth crease", "upper lip", "lower lip", "philtrum"],
+      "construction_role": "Small valley and raised relief below the nose.",
+      "read_goal": "Readable expressionless mouth without over-sculpting."
+    },
+    {
+      "part_id": "chin",
+      "plain_name": "chin mass",
+      "anatomy_terms": ["mental eminence", "chin"],
+      "construction_role": "Lower forward protrusion under the mouth.",
+      "read_goal": "Lower face has weight instead of ending as a flat slice."
+    },
+    {
+      "part_id": "jaw",
+      "plain_name": "jaw and side face",
+      "anatomy_terms": ["mandible", "bigonial width", "jaw corner"],
+      "construction_role": "Plane break from front face to side face.",
+      "read_goal": "Front silhouette, lower face, and side planes align."
+    },
+    {
+      "part_id": "ears",
+      "plain_name": "ear anchors",
+      "anatomy_terms": ["ear", "auricle"],
+      "construction_role": "Optional side anchor and scale reference.",
+      "read_goal": "Side of head has attachment landmarks for future hair/helmet work."
+    },
+    {
+      "part_id": "neck_socket",
+      "plain_name": "neck socket",
+      "anatomy_terms": ["neck attachment", "cervical connection"],
+      "construction_role": "Bottom connector into the body mannequin rig.",
+      "read_goal": "Head can attach to the existing neck joint without floating."
+    }
+  ],
+  "shape_terms": [
+    {
+      "shape_term_id": "envelope",
+      "plain_name": "envelope",
+      "meaning": "The largest readable outside mass of a part.",
+      "operation_terms": ["loft_sections", "scale_profile", "bevel_edges"],
+      "blender_tool_ids": ["mesh_from_pydata", "bridge_edge_loops", "modifier_bevel", "modifier_weighted_normal"]
+    },
+    {
+      "shape_term_id": "plane",
+      "plain_name": "plane",
+      "meaning": "A deliberately flat or broad surface that faces a direction.",
+      "operation_terms": ["extrude", "scale_profile", "bevel_edges"],
+      "blender_tool_ids": ["mesh_from_pydata", "extrude_faces", "shade_flat", "modifier_weighted_normal"]
+    },
+    {
+      "shape_term_id": "plane_break",
+      "plain_name": "plane break",
+      "meaning": "A crisp transition where one surface changes angle into another.",
+      "operation_terms": ["profile_operation_stack", "bevel_edges"],
+      "blender_tool_ids": ["loopcut_slide", "mark_sharp", "modifier_bevel", "modifier_weighted_normal"]
+    },
+    {
+      "shape_term_id": "ridge",
+      "plain_name": "ridge",
+      "meaning": "A raised linear or banded form.",
+      "operation_terms": ["relief_stack", "extrude", "bevel_edges"],
+      "blender_tool_ids": ["mesh_from_pydata", "extrude_faces", "modifier_bevel", "modifier_weighted_normal"]
+    },
+    {
+      "shape_term_id": "socket",
+      "plain_name": "socket",
+      "meaning": "A controlled depression with a visible rim.",
+      "operation_terms": ["offset_profile", "boolean_cut", "bevel_edges"],
+      "blender_tool_ids": ["inset_faces", "extrude_faces", "modifier_boolean", "modifier_bevel"]
+    },
+    {
+      "shape_term_id": "wedge",
+      "plain_name": "wedge",
+      "meaning": "A protruding form with tapering side planes.",
+      "operation_terms": ["extrude", "scale_profile", "bevel_edges"],
+      "blender_tool_ids": ["mesh_from_pydata", "extrude_faces", "modifier_bevel", "modifier_weighted_normal"]
+    },
+    {
+      "shape_term_id": "valley",
+      "plain_name": "valley",
+      "meaning": "A narrow recessed groove or crease.",
+      "operation_terms": ["boolean_cut", "offset_profile", "bevel_edges"],
+      "blender_tool_ids": ["knife_project", "inset_faces", "extrude_faces", "sculpt_crease"]
+    },
+    {
+      "shape_term_id": "relief",
+      "plain_name": "relief",
+      "meaning": "Small raised surface detail applied on top of a base plane.",
+      "operation_terms": ["relief_stack", "extrude", "bevel_edges"],
+      "blender_tool_ids": ["mesh_from_pydata", "extrude_faces", "modifier_bevel", "material_assign_by_part"]
+    },
+    {
+      "shape_term_id": "chamfer",
+      "plain_name": "chamfer",
+      "meaning": "A straight angled edge transition, usually one bevel segment.",
+      "operation_terms": ["bevel_edges"],
+      "blender_tool_ids": ["bevel_mesh_edges", "modifier_bevel", "modifier_weighted_normal"]
+    },
+    {
+      "shape_term_id": "bevel",
+      "plain_name": "bevel",
+      "meaning": "A rounded or softened edge transition.",
+      "operation_terms": ["bevel_edges"],
+      "blender_tool_ids": ["bevel_mesh_edges", "modifier_bevel", "modifier_weighted_normal"]
+    }
+  ],
+  "contour_roles": [
+    {
+      "contour_role_id": "silhouette_contour",
+      "plain_name": "silhouette contour",
+      "purpose": "Defines the visible outer boundary of the head from front or side.",
+      "compatible_shape_terms": ["envelope", "plane_break", "bevel"]
+    },
+    {
+      "contour_role_id": "profile_contour",
+      "plain_name": "profile contour",
+      "purpose": "Controls side-view depth for forehead, brow, nose, lips, chin, and back skull.",
+      "compatible_shape_terms": ["envelope", "wedge", "plane_break", "chamfer"]
+    },
+    {
+      "contour_role_id": "ridge_contour",
+      "plain_name": "ridge contour",
+      "purpose": "Marks raised bands such as brow, cheekbone, lip, or chin relief.",
+      "compatible_shape_terms": ["ridge", "relief", "bevel", "chamfer"]
+    },
+    {
+      "contour_role_id": "socket_contour",
+      "plain_name": "socket contour",
+      "purpose": "Marks enclosed depressions such as eye sockets or ear anchors.",
+      "compatible_shape_terms": ["socket", "valley", "bevel"]
+    },
+    {
+      "contour_role_id": "valley_contour",
+      "plain_name": "valley contour",
+      "purpose": "Marks mouth crease, under-lip shadow, and other narrow recesses.",
+      "compatible_shape_terms": ["valley", "socket", "chamfer"]
+    },
+    {
+      "contour_role_id": "plane_break_contour",
+      "plain_name": "plane break contour",
+      "purpose": "Marks transition lines from front face to cheek, jaw, side face, and skull.",
+      "compatible_shape_terms": ["plane_break", "chamfer", "bevel"]
+    },
+    {
+      "contour_role_id": "construction_contour",
+      "plain_name": "construction contour",
+      "purpose": "Guide-only contour used to place landmarks, not necessarily rendered.",
+      "compatible_shape_terms": ["plane", "envelope", "wedge", "socket", "ridge"]
+    }
+  ],
+  "build_order_summary": [
+    "Block the cranium and occiput first so the head reads as a head before facial detail.",
+    "Lay the front face mask planes on top of the skull envelope.",
+    "Add the brow and eye sockets before the nose, because the brow establishes facial direction and shadow.",
+    "Extrude the nose wedge after the sockets so nose depth is judged against the orbit recess.",
+    "Add cheeks, mouth, chin, and jaw as secondary planes and relief.",
+    "Apply final bevel/chamfer/normal rules last so edge language is consistent."
+  ],
+  "construction_layers": [
+    {
+      "sequence": 10,
+      "layer_id": "skull_envelope",
+      "priority": "base_mass",
+      "largest_to_smallest_rank": 1,
+      "facial_parts": ["cranium", "occiput", "neck_socket"],
+      "source_dimensions": ["head_length", "head_breadth", "head_circumference"],
+      "contour_roles": ["silhouette_contour", "profile_contour"],
+      "shape_terms": ["envelope", "bevel"],
+      "operation_terms": ["loft_sections", "scale_profile", "bevel_edges"],
+      "blender_tool_ids": ["mesh_from_pydata", "bridge_edge_loops", "modifier_bevel", "modifier_weighted_normal"],
+      "source_fields_needed": ["front_head_silhouette", "side_head_profile", "neck_socket_position", "skull_roundness_ratio"],
+      "edit_knobs": [
+        {"knob_id": "skull_roundness_ratio", "units": "ratio", "default": 0.72, "allowed_range": [0.35, 1.0], "meaning": "How rounded the upper and rear skull reads."},
+        {"knob_id": "neck_socket_width_m", "units": "m", "default": 0.055, "allowed_range": [0.035, 0.08], "meaning": "Width of the connector into the body rig."}
+      ],
+      "output_contract": ["closed head envelope", "named neck socket", "front and side silhouette remain readable"],
+      "validation_checks": ["Head volume is not a flat mask.", "Head breadth and length match the measurement seed within tolerance.", "Neck socket is centered and below the cranium."]
+    },
+    {
+      "sequence": 20,
+      "layer_id": "face_mask_planes",
+      "priority": "primary_plane_map",
+      "largest_to_smallest_rank": 2,
+      "facial_parts": ["forehead", "jaw"],
+      "source_dimensions": ["minimum_frontal_breadth", "maximum_frontal_breadth", "menton_sellion_length"],
+      "contour_roles": ["construction_contour", "plane_break_contour"],
+      "shape_terms": ["plane", "plane_break", "chamfer"],
+      "operation_terms": ["extrude", "profile_operation_stack", "bevel_edges"],
+      "blender_tool_ids": ["mesh_from_pydata", "extrude_faces", "loopcut_slide", "modifier_bevel", "shade_flat"],
+      "source_fields_needed": ["forehead_plane_contour", "central_face_plane_contour", "lower_face_plane_contour", "face_mask_depth_m"],
+      "edit_knobs": [
+        {"knob_id": "forehead_slope_deg", "units": "deg", "default": -8, "allowed_range": [-18, 4], "meaning": "Back tilt of the forehead plane."},
+        {"knob_id": "mouth_plane_recess_m", "units": "m", "default": -0.006, "allowed_range": [-0.02, 0.002], "meaning": "How far the mouth plane sits behind the brow/nose read."}
+      ],
+      "output_contract": ["forehead plane", "central face plane", "lower face plane", "side plane transition guides"],
+      "validation_checks": ["Face still reads without brow, nose, or mouth details.", "Forehead is broader than nose and narrower than full skull.", "Plane breaks do not overrun the skull envelope."]
+    },
+    {
+      "sequence": 30,
+      "layer_id": "brow_eye_band",
+      "priority": "defining_feature",
+      "largest_to_smallest_rank": 3,
+      "facial_parts": ["brow_ridge", "eye_sockets"],
+      "source_dimensions": ["maximum_frontal_breadth", "interpupillary_distance"],
+      "contour_roles": ["ridge_contour", "socket_contour", "plane_break_contour"],
+      "shape_terms": ["ridge", "socket", "chamfer", "bevel"],
+      "operation_terms": ["relief_stack", "offset_profile", "boolean_cut", "bevel_edges"],
+      "blender_tool_ids": ["mesh_from_pydata", "inset_faces", "extrude_faces", "modifier_boolean", "modifier_bevel", "modifier_weighted_normal"],
+      "source_fields_needed": ["brow_ridge_contour", "left_eye_socket_contour", "right_eye_socket_contour", "eye_socket_center_points", "glabella_point"],
+      "edit_knobs": [
+        {"knob_id": "brow_raise_m", "units": "m", "default": 0.018, "allowed_range": [0.004, 0.04], "meaning": "Forward height of the brow ridge relief."},
+        {"knob_id": "eye_socket_depth_m", "units": "m", "default": -0.014, "allowed_range": [-0.035, -0.004], "meaning": "How far each socket recesses into the face."},
+        {"knob_id": "socket_rim_bevel_m", "units": "m", "default": 0.003, "allowed_range": [0.001, 0.008], "meaning": "Light-catching bevel around socket rims."}
+      ],
+      "output_contract": ["raised brow ridge", "paired recessed sockets", "glabella center transition"],
+      "validation_checks": ["Socket centers match interpupillary distance within tolerance.", "Brow ridge does not hide the nose bridge landing.", "Socket rims remain visible after beveling."]
+    },
+    {
+      "sequence": 40,
+      "layer_id": "nose_wedge",
+      "priority": "defining_feature",
+      "largest_to_smallest_rank": 4,
+      "facial_parts": ["nose"],
+      "source_dimensions": ["subnasale_sellion_length", "nose_breadth", "nose_protrusion"],
+      "contour_roles": ["profile_contour", "construction_contour", "plane_break_contour"],
+      "shape_terms": ["wedge", "plane", "chamfer", "bevel"],
+      "operation_terms": ["extrude", "scale_profile", "bevel_edges"],
+      "blender_tool_ids": ["mesh_from_pydata", "extrude_faces", "modifier_bevel", "modifier_weighted_normal", "shade_flat"],
+      "source_fields_needed": ["nose_bridge_centerline", "nose_base_width_m", "nose_tip_point", "sellion_point", "subnasale_point"],
+      "edit_knobs": [
+        {"knob_id": "nose_tip_forward_m", "units": "m", "default": 0.0211, "allowed_range": [0.006, 0.04], "meaning": "Forward nose protrusion from the face plane."},
+        {"knob_id": "nose_side_chamfer_m", "units": "m", "default": 0.004, "allowed_range": [0.001, 0.012], "meaning": "Width of the angled side planes."}
+      ],
+      "output_contract": ["bridge wedge", "tip point", "base plane", "left and right side chamfers"],
+      "validation_checks": ["Nose does not exceed source protrusion without a style override.", "Nose base width stays below cheek width.", "Side view clearly distinguishes brow, nose, lips, and chin."]
+    },
+    {
+      "sequence": 50,
+      "layer_id": "cheek_midface_planes",
+      "priority": "secondary_plane_map",
+      "largest_to_smallest_rank": 5,
+      "facial_parts": ["cheeks"],
+      "source_dimensions": ["bizygomatic_breadth", "head_breadth", "menton_sellion_length"],
+      "contour_roles": ["ridge_contour", "plane_break_contour"],
+      "shape_terms": ["plane", "ridge", "plane_break", "bevel"],
+      "operation_terms": ["relief_stack", "profile_operation_stack", "bevel_edges"],
+      "blender_tool_ids": ["mesh_from_pydata", "extrude_faces", "loopcut_slide", "modifier_bevel", "modifier_weighted_normal"],
+      "source_fields_needed": ["left_cheekbone_contour", "right_cheekbone_contour", "under_eye_plane_contours", "side_face_transition_contours"],
+      "edit_knobs": [
+        {"knob_id": "cheek_raise_m", "units": "m", "default": 0.01, "allowed_range": [0.002, 0.025], "meaning": "Raised cheekbone relief depth."},
+        {"knob_id": "cheek_to_mouth_slope_ratio", "units": "ratio", "default": 0.55, "allowed_range": [0.1, 1.0], "meaning": "How strongly cheek planes fall toward the mouth plane."}
+      ],
+      "output_contract": ["paired cheek planes", "under-eye slope", "side-face chamfer transition"],
+      "validation_checks": ["Cheek width is tied to bizygomatic breadth.", "Cheeks support the eye sockets instead of covering them.", "Side face transition remains symmetrical unless a pose/view override says otherwise."]
+    },
+    {
+      "sequence": 60,
+      "layer_id": "mouth_lip_zone",
+      "priority": "small_relief_detail",
+      "largest_to_smallest_rank": 6,
+      "facial_parts": ["mouth"],
+      "source_dimensions": ["lip_length", "nose_breadth", "menton_sellion_length"],
+      "contour_roles": ["valley_contour", "ridge_contour", "construction_contour"],
+      "shape_terms": ["valley", "relief", "ridge", "bevel"],
+      "operation_terms": ["boolean_cut", "offset_profile", "relief_stack", "bevel_edges"],
+      "blender_tool_ids": ["knife_project", "inset_faces", "extrude_faces", "sculpt_crease", "modifier_bevel", "material_assign_by_part"],
+      "source_fields_needed": ["mouth_crease_contour", "upper_lip_contour", "lower_lip_contour", "philtrum_guides", "mouth_corner_points"],
+      "edit_knobs": [
+        {"knob_id": "mouth_crease_depth_m", "units": "m", "default": -0.004, "allowed_range": [-0.014, -0.001], "meaning": "Depth of the horizontal mouth valley."},
+        {"knob_id": "lip_relief_raise_m", "units": "m", "default": 0.003, "allowed_range": [0.0, 0.01], "meaning": "Tiny raised lip relief for a mannequin-neutral mouth."}
+      ],
+      "output_contract": ["mouth crease", "upper lip hint", "lower lip hint", "under-lip shadow"],
+      "validation_checks": ["Mouth width follows lip length.", "Mouth remains subtler than brow and nose.", "Lip bevels do not erase the crease."]
+    },
+    {
+      "sequence": 70,
+      "layer_id": "chin_jaw_mass",
+      "priority": "defining_lower_face",
+      "largest_to_smallest_rank": 7,
+      "facial_parts": ["chin", "jaw"],
+      "source_dimensions": ["bigonial_breadth", "menton_sellion_length", "head_breadth"],
+      "contour_roles": ["profile_contour", "plane_break_contour", "ridge_contour"],
+      "shape_terms": ["plane", "ridge", "plane_break", "chamfer", "bevel"],
+      "operation_terms": ["extrude", "profile_operation_stack", "bevel_edges"],
+      "blender_tool_ids": ["mesh_from_pydata", "extrude_faces", "loopcut_slide", "mark_sharp", "modifier_bevel", "modifier_weighted_normal"],
+      "source_fields_needed": ["chin_contour", "jawline_contour", "jaw_corner_points", "lower_face_side_planes"],
+      "edit_knobs": [
+        {"knob_id": "chin_forward_m", "units": "m", "default": 0.008, "allowed_range": [-0.004, 0.024], "meaning": "Forward mass of the chin relative to the mouth plane."},
+        {"knob_id": "jaw_chamfer_m", "units": "m", "default": 0.006, "allowed_range": [0.001, 0.018], "meaning": "Straight angled transition from front jaw to side face."}
+      ],
+      "output_contract": ["chin mass", "mandible plane break", "paired jaw corners"],
+      "validation_checks": ["Jaw width follows bigonial breadth.", "Chin supports the side profile without overpowering the nose.", "Lower face connects cleanly to the neck socket."]
+    },
+    {
+      "sequence": 80,
+      "layer_id": "ear_side_anchor",
+      "priority": "optional_side_anchor",
+      "largest_to_smallest_rank": 8,
+      "facial_parts": ["ears", "occiput"],
+      "source_dimensions": ["head_length", "head_breadth"],
+      "contour_roles": ["socket_contour", "construction_contour"],
+      "shape_terms": ["socket", "relief", "bevel"],
+      "operation_terms": ["offset_profile", "relief_stack", "mirror_axis", "bevel_edges"],
+      "blender_tool_ids": ["mesh_from_pydata", "inset_faces", "extrude_faces", "modifier_bevel", "modifier_mirror"],
+      "source_fields_needed": ["ear_anchor_position", "ear_outer_contour", "ear_inner_relief_contour", "mirror_axis"],
+      "edit_knobs": [
+        {"knob_id": "ear_anchor_depth_m", "units": "m", "default": 0.004, "allowed_range": [-0.006, 0.014], "meaning": "Whether the ear reads as a shallow socket or a raised shell."}
+      ],
+      "output_contract": ["left/right side anchors", "future hair or helmet attachment reference"],
+      "validation_checks": ["Ear anchors do not break the skull silhouette.", "Mirrored anchors remain aligned.", "Layer can be disabled for very low-detail heads."]
+    },
+    {
+      "sequence": 90,
+      "layer_id": "final_edge_language",
+      "priority": "finish_pass",
+      "largest_to_smallest_rank": 9,
+      "facial_parts": ["cranium", "forehead", "brow_ridge", "eye_sockets", "nose", "cheeks", "mouth", "chin", "jaw"],
+      "source_dimensions": ["head_length", "head_breadth"],
+      "contour_roles": ["silhouette_contour", "ridge_contour", "socket_contour", "valley_contour", "plane_break_contour"],
+      "shape_terms": ["chamfer", "bevel", "plane_break"],
+      "operation_terms": ["bevel_edges", "profile_operation_stack"],
+      "blender_tool_ids": ["bevel_mesh_edges", "modifier_bevel", "mark_sharp", "shade_flat", "shade_smooth", "modifier_weighted_normal"],
+      "source_fields_needed": ["edge_weight_policy", "hard_edge_list", "soft_edge_list", "bevel_width_by_feature"],
+      "edit_knobs": [
+        {"knob_id": "global_face_bevel_m", "units": "m", "default": 0.003, "allowed_range": [0.0, 0.01], "meaning": "Default small edge bevel for facial forms."},
+        {"knob_id": "style_faceting_ratio", "units": "ratio", "default": 0.65, "allowed_range": [0.0, 1.0], "meaning": "How much of the head remains intentionally planar."}
+      ],
+      "output_contract": ["consistent bevel widths", "sharp anatomical plane breaks", "soft skull envelope where requested"],
+      "validation_checks": ["Bevels do not erase the mouth crease or socket rims.", "Hard edges are only on intended plane breaks.", "Workbench preview catches light on brow, nose, cheek, and jaw."]
+    }
+  ],
+  "critical_read_layers": ["skull_envelope", "brow_eye_band", "nose_wedge", "chin_jaw_mass"],
+  "future_compiler_contract": {
+    "input": "humanoid_head_layer_taxonomy_v0 plus front/profile contour recipes and style knobs",
+    "output": "deterministic humanoid_head_geometry_v0 JSON with named parts, contours, relief depths, bevel policies, sockets, and validation metadata",
+    "adapter_rule": "Blender consumes compiled JSON and executes mesh operations; source design decisions stay in this taxonomy and future head recipes."
+  }
+}

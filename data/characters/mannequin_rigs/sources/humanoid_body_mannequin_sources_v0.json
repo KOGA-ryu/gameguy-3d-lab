@@ -1,0 +1,45 @@
+{
+  "schema": "humanoid_body_mannequin_source_bundle_v0",
+  "bundle_id": "humanoid_body_mannequin_sources_v0",
+  "target_asset_id": "humanoid_body_mannequin_rig_v0",
+  "purpose": "Source bundle for compiling the stylized humanoid mannequin rig from existing local human proportion profiles and extracted region-map image lanes.",
+  "human_profile_source": {
+    "source_path": "/Users/kogaryu/dev/maps/sprite_pipeline/human/figure_profiles.toml",
+    "profile_id": "neutral_adult_p50",
+    "source_role": "body height, broad anthropometric landmark proportions, and measurement provenance"
+  },
+  "human_dimension_sources": [
+    {
+      "source_path": "/Users/kogaryu/dev/maps/sprite_pipeline/human/region_dimension_bundles.toml",
+      "source_role": "region-specific skull, pelvis, and lower-limb measurement bundles"
+    },
+    {
+      "source_path": "/Users/kogaryu/dev/maps/sprite_pipeline/human/skeleton_canonical_body_frame.toml",
+      "source_role": "canonical skeleton/body-frame terminology and sanity ranges"
+    },
+    {
+      "source_path": "/Users/kogaryu/dev/maps/sprite_pipeline/human/skeleton_relative_proportions.toml",
+      "source_role": "lower-half proportion ranges for feet, pelvis, and leg checks"
+    }
+  ],
+  "region_lane_source": {
+    "manifest_path": "/Users/kogaryu/font/out_brush_test/mannequin_user_sources/02_region_rainbow_body/humanoid_regions/humanoid_regions.json",
+    "source_role": "region-map image lane bboxes, colors, component counts, mask paths, and cutout paths",
+    "image_paths": {
+      "region_id_body": "/Users/kogaryu/font/out_brush_test/mannequin_crop_only_v6/region_id_body.png",
+      "pivot_body": "/Users/kogaryu/font/out_brush_test/mannequin_crop_only_v6/pivot_body.png",
+      "socket_body": "/Users/kogaryu/font/out_brush_test/mannequin_crop_only_v6/socket_body.png",
+      "neutral_body": "/Users/kogaryu/font/out_brush_test/mannequin_crop_only_v6/neutral_body.png"
+    }
+  },
+  "projection": {
+    "method": "occupied_bbox_height_maps_to_profile_body_height",
+    "x_origin": "occupied_bbox_center_x",
+    "z_origin": "occupied_bbox_bottom_y",
+    "y_depth_rule": "three_quarter_view_layer_offsets",
+    "notes": [
+      "The extracted image is a 3/4 projected pixel rig; source bboxes drive the visible silhouette.",
+      "Human profile dimensions are stored as measurement provenance and broad sanity anchors, not forced true-depth geometry."
+    ]
+  }
+}

@@ -172,6 +172,66 @@ python3 scripts/asset_pump_v0.py \
   --out /tmp/gameguy_decorated_balustrade_asset_pump_v0
 ```
 
+The first reusable character animation scaffold is source-owned in `data/characters/mannequin_rigs/humanoid_body_mannequin_rig_v0.json`. It is compiled from `data/characters/mannequin_rigs/sources/humanoid_body_mannequin_sources_v0.json`, which binds the local human figure profile dimensions under `/Users/kogaryu/dev/maps/sprite_pipeline/human/` to extracted mannequin region lanes under `/Users/kogaryu/font/out_brush_test/`. The compiled recipe defines projected 2D body-part contours, stable region IDs, pivots, sockets, draw order, controls, symmetry pairs, source bboxes/masks, and required pose loops before Blender sees the design. Blender extrudes those contours into thin beveled rig plates; it does not invent anatomical blobs.
+
+Compile it from source:
+
+```bash
+python3 scripts/compile_humanoid_mannequin_rig_v0.py \
+  --source-bundle data/characters/mannequin_rigs/sources/humanoid_body_mannequin_sources_v0.json \
+  --out data/characters/mannequin_rigs/humanoid_body_mannequin_rig_v0.json
+```
+
+Validate it without Blender:
+
+```bash
+python3 scripts/export_blender_humanoid_mannequin_rig_v0.py \
+  --recipe data/characters/mannequin_rigs/humanoid_body_mannequin_rig_v0.json \
+  --validate-only
+```
+
+Build the Blender scaffold and workbench proof:
+
+```bash
+/Applications/Blender.app/Contents/MacOS/Blender --background \
+  --python scripts/export_blender_humanoid_mannequin_rig_v0.py -- \
+  --recipe data/characters/mannequin_rigs/humanoid_body_mannequin_rig_v0.json \
+  --out /tmp/gameguy_humanoid_body_mannequin_rig_v0 \
+  --render
+```
+
+The first head-only construction vocabulary is `data/characters/head_construction/humanoid_head_layer_taxonomy_v0.json`, with a human guide at `docs/research/character_head_construction_v0/humanoid_head_layer_taxonomy_v0.md`. It defines measured head/face anchors, facial part names, shape terms, contour roles, and an ordered largest-to-smallest build sequence: skull envelope, face mask planes, brow/eye band, nose wedge, cheek planes, mouth/lips, chin/jaw, optional ears, and final bevel/chamfer edge language. Validate it with:
+
+```bash
+python3 scripts/validate_humanoid_head_layer_taxonomy_v0.py
+```
+
+The first Blender-buildable head chain compiles that taxonomy into deterministic mesh geometry, then lets Blender consume the compiled vertices/faces:
+
+```bash
+python3 scripts/compile_humanoid_head_blockout_v0.py \
+  --taxonomy data/characters/head_construction/humanoid_head_layer_taxonomy_v0.json \
+  --out data/characters/head_construction/humanoid_head_blockout_v0.json
+```
+
+Validate the compiled head geometry without Blender:
+
+```bash
+python3 scripts/export_blender_humanoid_head_blockout_v0.py \
+  --recipe data/characters/head_construction/humanoid_head_blockout_v0.json \
+  --validate-only
+```
+
+Build and render the Blender proof:
+
+```bash
+/Applications/Blender.app/Contents/MacOS/Blender --background \
+  --python scripts/export_blender_humanoid_head_blockout_v0.py -- \
+  --recipe data/characters/head_construction/humanoid_head_blockout_v0.json \
+  --out /tmp/gameguy_humanoid_head_blockout_v0 \
+  --render
+```
+
 Blocky compound columns keep the source simple while generating shape-rich assets from named simple parts:
 
 ```bash
