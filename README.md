@@ -214,7 +214,7 @@ python3 scripts/compile_humanoid_head_blockout_v0.py \
   --out data/characters/head_construction/humanoid_head_blockout_v0.json
 ```
 
-The head compiler now records per-region `bend_field` metadata. Face parts remain separately tunable, but their X/Z contours are bent into Y-depth before Blender sees them, so cheeks, sockets, lips, chin, and jaw are no longer plain flat prisms.
+The head compiler now records per-region `bend_field` metadata. Face parts remain separately tunable, but their X/Z contours are bent into Y-depth before Blender sees them, so cheeks, sockets, lips, chin, and jaw are no longer plain flat prisms. It also emits pre-join `transition_field` bridge surfaces from key face parts back into `face_mask_plane`; these are source-owned blend strips, not Blender-side boolean decisions.
 
 Validate the compiled head geometry without Blender:
 

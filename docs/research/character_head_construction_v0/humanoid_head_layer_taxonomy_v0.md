@@ -140,6 +140,7 @@ The compiler does not treat face regions as flat stickers. Each named face part 
 face part contour
 -> region bend field
 -> bent low-poly surface
+-> transition field back to parent face surface
 -> overlap rule
 -> Blender adapter display/export
 ```
@@ -158,6 +159,17 @@ Examples:
 - `jaw_side_plane_L/R`: chin overlap into mandibular-angle wrap
 
 This is still pre-join construction geometry, but it gives each piece a face-shaped deformation before any Blender join/remesh pass.
+
+The first transition pass adds named bridge surfaces instead of performing a destructive boolean join:
+
+- `brow_glabella_to_face_blend`
+- `brow_wing_L_to_face_blend` / `brow_wing_R_to_face_blend`
+- `cheek_plane_L_to_face_blend` / `cheek_plane_R_to_face_blend`
+- `mouth_crease_to_face_blend`
+- `chin_mass_to_face_blend`
+- `jaw_side_plane_L_to_face_blend` / `jaw_side_plane_R_to_face_blend`
+
+These bridge surfaces are intentionally source-owned. They can be tuned, hidden, replaced, or promoted into a later real join/remesh pass without moving design decisions into Blender.
 
 ### 4. Nose Wedge
 

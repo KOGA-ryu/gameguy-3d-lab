@@ -178,6 +178,80 @@ def bent_prism_from_xz_contour(
     return vertices, faces
 
 
+def transition_ring_surface(
+    contour: list[tuple[float, float]],
+    *,
+    inner_y_for_point: Any,
+    outer_y_for_point: Any,
+    outer_scale: float,
+    outer_z_offset: float = 0.0,
+) -> tuple[list[list[float]], list[list[int]]]:
+    center_x = sum(x for x, _ in contour) / len(contour)
+    center_z = sum(z for _, z in contour) / len(contour)
+    vertices: list[list[float]] = []
+    faces: list[list[int]] = []
+
+    outer_points: list[tuple[float, float]] = []
+    for x, z in contour:
+        vertices.append(point(x, float(inner_y_for_point(x, z)), z))
+        outer_x = center_x + (x - center_x) * outer_scale
+        outer_z = center_z + (z - center_z) * outer_scale + outer_z_offset
+        outer_points.append((outer_x, outer_z))
+    for x, z in outer_points:
+        vertices.append(point(x, float(outer_y_for_point(x, z)), z))
+
+    count = len(contour)
+    for index in range(count):
+        next_index = (index + 1) % count
+        faces.append([index, next_index, next_index + count, index + count])
+    return vertices, faces
+
+
+def surface_grid_from_xz_contour(
+    contour: list[tuple[float, float]],
+    *,
+    y_for_point: Any,
+    rows: int,
+    columns: int,
+) -> tuple[list[list[float]], list[list[int]]]:
+    z_values = [z for _, z in contour]
+    z_min = min(z_values)
+    z_max = max(z_values)
+
+    def x_span_at_z(z: float) -> tuple[float, float]:
+        intersections: list[float] = []
+        for index, (x0, z0) in enumerate(contour):
+            x1, z1 = contour[(index + 1) % len(contour)]
+            if z0 == z1:
+                continue
+            lower = min(z0, z1)
+            upper = max(z0, z1)
+            if lower <= z <= upper:
+                t = (z - z0) / (z1 - z0)
+                intersections.append(x0 + (x1 - x0) * t)
+        if len(intersections) < 2:
+            x_values = [x for x, _ in contour]
+            return min(x_values), max(x_values)
+        intersections.sort()
+        return intersections[0], intersections[-1]
+
+    vertices: list[list[float]] = []
+    faces: list[list[int]] = []
+    for row in range(rows):
+        z_t = row / max(rows - 1, 1)
+        z = z_min + (z_max - z_min) * (0.02 + 0.96 * z_t)
+        x_min, x_max = x_span_at_z(z)
+        for column in range(columns):
+            x_t = column / max(columns - 1, 1)
+            x = x_min + (x_max - x_min) * x_t
+            vertices.append(point(x, float(y_for_point(x, z)), z))
+    for row in range(rows - 1):
+        for column in range(columns - 1):
+            current = row * columns + column
+            faces.append([current, current + 1, current + columns + 1, current + columns])
+    return vertices, faces
+
+
 def box_mesh(*, x0: float, x1: float, y0: float, y1: float, z0: float, z1: float) -> tuple[list[list[float]], list[list[int]]]:
     vertices = [
         point(x0, y0, z0),
@@ -284,6 +358,9 @@ def make_part(
     shade: str,
     purpose: str,
     bend_field: dict[str, Any] | None = None,
+    transition_field: dict[str, Any] | None = None,
+    merge_field: dict[str, Any] | None = None,
+    render_group: str | None = None,
 ) -> dict[str, Any]:
     part = {
         "part_id": part_id,
@@ -304,6 +381,12 @@ def make_part(
     }
     if bend_field is not None:
         part["bend_field"] = bend_field
+    if transition_field is not None:
+        part["transition_field"] = transition_field
+    if merge_field is not None:
+        part["merge_field"] = merge_field
+    if render_group is not None:
+        part["render_group"] = render_group
     return part
 
 
@@ -449,6 +532,65 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
             "controls_used": controls_used,
         }
 
+    def transition_field(
+        field_id: str,
+        *,
+        child_part_id: str,
+        parent_part_id: str,
+        meaning: str,
+        controls_used: list[str],
+    ) -> dict[str, Any]:
+        return {
+            "field_id": field_id,
+            "space": "child_contour_to_parent_face_surface",
+            "child_part_id": child_part_id,
+            "parent_part_id": parent_part_id,
+            "meaning": meaning,
+            "controls_used": controls_used,
+        }
+
+    def add_face_transition_part(
+        *,
+        part_id: str,
+        child_part_id: str,
+        facial_part: str,
+        contour: list[tuple[float, float]],
+        inner_y_for_point: Any,
+        outer_scale: float,
+        outer_z_offset: float,
+        material_id: str = "skin_transition",
+    ) -> None:
+        vertices, faces = transition_ring_surface(
+            contour,
+            inner_y_for_point=inner_y_for_point,
+            outer_y_for_point=face_mask_y_front,
+            outer_scale=outer_scale,
+            outer_z_offset=outer_z_offset,
+        )
+        parts.append(
+            make_part(
+                part_id=part_id,
+                layer_id="face_mask_planes",
+                facial_part=facial_part,
+                shape_terms=["relief", "plane_break", "bevel"],
+                operation_terms=ops_for(face_layer),
+                blender_tool_ids=tools_for(face_layer),
+                vertices=vertices,
+                faces=faces,
+                material_id=material_id,
+                bevel_m=0.0008,
+                shade="flat",
+                purpose=f"pre-join transition surface from {child_part_id} into face_mask_plane",
+                transition_field=transition_field(
+                    f"{part_id}_transition_v0",
+                    child_part_id=child_part_id,
+                    parent_part_id="face_mask_plane",
+                    meaning="Bridge the child contour back into the bent face mask so the blockout reads as one constructed facial surface.",
+                    controls_used=["feature_embed_overlap_m", "forehead_wrap_ratio"],
+                ),
+            )
+        )
+
     skull_layer = layers["skull_envelope"]
     vertices, faces = ellipsoid_mesh(center=skull_center, radii=skull_radii, segments=14, rings=7, front_flatten_ratio=0.72)
     parts.append(
@@ -560,6 +702,15 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
             ),
         )
     )
+    add_face_transition_part(
+        part_id="brow_glabella_to_face_blend",
+        child_part_id="brow_glabella",
+        facial_part="brow_ridge",
+        contour=glabella_contour,
+        inner_y_for_point=glabella_y_front,
+        outer_scale=1.18,
+        outer_z_offset=0.0,
+    )
 
     def brow_wing_contour(sign: float) -> list[tuple[float, float]]:
         return [
@@ -601,6 +752,15 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
                     ["brow_side_wrap_ratio", "socket_under_brow_setback_m", "feature_embed_overlap_m"],
                 ),
             )
+        )
+        add_face_transition_part(
+            part_id=f"brow_wing_{side}_to_face_blend",
+            child_part_id=f"brow_wing_{side}",
+            facial_part="brow_ridge",
+            contour=brow_wing_contour(sign),
+            inner_y_for_point=brow_wing_y_front,
+            outer_scale=1.12,
+            outer_z_offset=0.0,
         )
 
     socket_width = eye_spacing * 0.42
@@ -757,13 +917,27 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
                 ),
             )
         )
+        add_face_transition_part(
+            part_id=f"cheek_plane_{side}_to_face_blend",
+            child_part_id=f"cheek_plane_{side}",
+            facial_part="cheeks",
+            contour=contour,
+            inner_y_for_point=cheek_y_front_for(sign),
+            outer_scale=1.08,
+            outer_z_offset=-head_height * 0.003,
+        )
 
     mouth_layer = layers["mouth_lip_zone"]
     mouth_depth = 0.0032
     mouth_front_y = face_y - 0.003 + feature_embed_overlap_m * 0.2 - mouth_depth / 2.0
+    mouth_contour = capsule_contour(0.0, mouth_z, mouth_width * 0.92, head_height * 0.014)
+
+    def mouth_y_front(x: float, z: float) -> float:
+        return mouth_front_y + head_length * 0.006 * min(1.0, abs(x) / max(mouth_width * 0.46, 1e-6))
+
     mouth_vertices, mouth_faces = bent_prism_from_xz_contour(
-        capsule_contour(0.0, mouth_z, mouth_width * 0.92, head_height * 0.014),
-        y_front_for_point=lambda x, z: mouth_front_y + head_length * 0.006 * min(1.0, abs(x) / max(mouth_width * 0.46, 1e-6)),
+        mouth_contour,
+        y_front_for_point=mouth_y_front,
         center_y_front=mouth_front_y + head_length * 0.012,
         thickness=mouth_depth,
     )
@@ -787,6 +961,16 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
                 ["feature_embed_overlap_m"],
             ),
         )
+    )
+    add_face_transition_part(
+        part_id="mouth_crease_to_face_blend",
+        child_part_id="mouth_crease",
+        facial_part="mouth",
+        contour=mouth_contour,
+        inner_y_for_point=mouth_y_front,
+        outer_scale=1.42,
+        outer_z_offset=0.0,
+        material_id="skin_lip",
     )
     for lip_id, z_offset, scale in (("upper_lip_relief", 0.0024, 0.76), ("lower_lip_relief", -0.0024, 0.70)):
         lip_depth = 0.0036
@@ -868,6 +1052,15 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
             ),
         )
     )
+    add_face_transition_part(
+        part_id="chin_mass_to_face_blend",
+        child_part_id="chin_mass",
+        facial_part="chin",
+        contour=chin_contour,
+        inner_y_for_point=chin_y_front,
+        outer_scale=1.10,
+        outer_z_offset=head_height * 0.002,
+    )
 
     def jaw_y_front_for(sign: float) -> Any:
         def y_front(x: float, z: float) -> float:
@@ -917,6 +1110,15 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
                 ),
             )
         )
+        add_face_transition_part(
+            part_id=f"jaw_side_plane_{side}_to_face_blend",
+            child_part_id=f"jaw_side_plane_{side}",
+            facial_part="jaw",
+            contour=contour,
+            inner_y_for_point=jaw_y_front_for(sign),
+            outer_scale=1.08,
+            outer_z_offset=0.0,
+        )
 
     ear_layer = layers["ear_side_anchor"]
     ear_z = eye_z - head_height * (0.018 + 0.072 * ear_lowering_ratio)
@@ -946,6 +1148,7 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
     material_palette = [
         {"material_id": "skin_base", "color_hex": "#c9ad83", "role": "skull envelope"},
         {"material_id": "skin_plane", "color_hex": "#d1b58c", "role": "face mask planes"},
+        {"material_id": "skin_transition", "color_hex": "#cab08b", "role": "pre-join facial transition surfaces"},
         {"material_id": "skin_ridge", "color_hex": "#b99269", "role": "brow and raised ridges"},
         {"material_id": "socket_rim", "color_hex": "#9f846b", "role": "eye socket rim"},
         {"material_id": "socket_shadow", "color_hex": "#263039", "role": "recessed eye socket"},
@@ -961,21 +1164,30 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
     connection_targets = {
         "face_mask_plane": "skull_envelope",
         "brow_glabella": "face_mask_plane",
+        "brow_glabella_to_face_blend": "face_mask_plane",
         "brow_wing_L": "face_mask_plane",
+        "brow_wing_L_to_face_blend": "face_mask_plane",
         "brow_wing_R": "face_mask_plane",
+        "brow_wing_R_to_face_blend": "face_mask_plane",
         "eye_socket_rim_L": "brow_wing_L",
         "eye_socket_dark_L": "eye_socket_rim_L",
         "eye_socket_rim_R": "brow_wing_R",
         "eye_socket_dark_R": "eye_socket_rim_R",
         "nose_wedge": "face_mask_plane",
         "cheek_plane_L": "face_mask_plane",
+        "cheek_plane_L_to_face_blend": "face_mask_plane",
         "cheek_plane_R": "face_mask_plane",
+        "cheek_plane_R_to_face_blend": "face_mask_plane",
         "mouth_crease": "face_mask_plane",
+        "mouth_crease_to_face_blend": "face_mask_plane",
         "upper_lip_relief": "mouth_crease",
         "lower_lip_relief": "mouth_crease",
         "chin_mass": "face_mask_plane",
+        "chin_mass_to_face_blend": "face_mask_plane",
         "jaw_side_plane_L": "chin_mass",
+        "jaw_side_plane_L_to_face_blend": "face_mask_plane",
         "jaw_side_plane_R": "chin_mass",
+        "jaw_side_plane_R_to_face_blend": "face_mask_plane",
         "ear_anchor_L": "skull_envelope",
         "ear_anchor_R": "skull_envelope",
     }

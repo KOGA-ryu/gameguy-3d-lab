@@ -78,9 +78,9 @@ class HumanoidHeadBlockoutTests(unittest.TestCase):
         self.assertTrue(report["rules"]["records_connection_policy"])
         self.assertTrue(report["rules"]["emits_deterministic_vertices_faces"])
         self.assertFalse(report["rules"]["imports_blender"])
-        self.assertEqual(len(recipe["parts"]), 20)
+        self.assertEqual(len(recipe["parts"]), 29)
         self.assertEqual(len(recipe["shape_refinement_controls"]), 13)
-        self.assertEqual(len(recipe["connection_policy"]["rules"]), 19)
+        self.assertEqual(len(recipe["connection_policy"]["rules"]), 28)
         self.assertIn("nose_wedge", {part["part_id"] for part in recipe["parts"]})
 
     def test_adapter_validates_without_blender(self) -> None:
@@ -108,9 +108,9 @@ class HumanoidHeadBlockoutTests(unittest.TestCase):
         self.assertFalse(report["generated_outputs_created"])
         self.assertFalse(report["rules"]["imports_blender"])
         self.assertFalse(report["rules"]["source_design_logic_in_blender_adapter"])
-        self.assertEqual(report["part_count"], 20)
+        self.assertEqual(report["part_count"], 29)
         self.assertEqual(report["control_count"], 13)
-        self.assertEqual(report["connection_rule_count"], 19)
+        self.assertEqual(report["connection_rule_count"], 28)
         self.assertGreater(report["vertex_count"], 200)
 
     def test_recipe_contains_critical_face_layers(self) -> None:
@@ -228,6 +228,33 @@ class HumanoidHeadBlockoutTests(unittest.TestCase):
                 self.assertIsInstance(bend_field, dict)
                 self.assertEqual(bend_field["space"], "xz_contour_to_y_depth")
                 self.assertGreater(unique_y_count(part), 2)
+
+    def test_face_transition_surfaces_bridge_child_parts_to_face_mask(self) -> None:
+        recipe = load_json(RECIPE)
+        parts = part_index(recipe)
+        transition_part_ids = {
+            "brow_glabella_to_face_blend",
+            "brow_wing_L_to_face_blend",
+            "brow_wing_R_to_face_blend",
+            "cheek_plane_L_to_face_blend",
+            "cheek_plane_R_to_face_blend",
+            "mouth_crease_to_face_blend",
+            "chin_mass_to_face_blend",
+            "jaw_side_plane_L_to_face_blend",
+            "jaw_side_plane_R_to_face_blend",
+        }
+        connected = {rule["part_id"]: rule["connects_to"] for rule in recipe["connection_policy"]["rules"]}
+
+        self.assertEqual(len(transition_part_ids), 9)
+        for part_id in transition_part_ids:
+            with self.subTest(part_id=part_id):
+                part = parts[part_id]
+                field = part.get("transition_field")
+                self.assertIsInstance(field, dict)
+                self.assertEqual(field["space"], "child_contour_to_parent_face_surface")
+                self.assertEqual(field["parent_part_id"], "face_mask_plane")
+                self.assertEqual(connected[part_id], "face_mask_plane")
+                self.assertGreaterEqual(len(part["mesh"]["faces"]), 4)
 
 
 if __name__ == "__main__":
