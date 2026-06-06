@@ -28,6 +28,12 @@
     "joint_loops_are_reserved_for_later_rigging": true,
     "obj_export_is_blender_importable": true
   },
+  "blender_tool_passes": {
+    "bevel_modifier": "Applied to blocky torso, pelvis, hands, feet, and seam plates to keep the low-poly style while removing flat box edges.",
+    "weighted_normals": "Applied after bevels so the faceted model reads as clean planes in Workbench and viewport previews.",
+    "side_depth_adjustment": "Torso and feet are deeper on Y so the side view has usable modeling volume instead of flat plates.",
+    "starter_armature": "Kept as guide bones for rigid-part parenting after proportion review."
+  },
   "materials": [
     {
       "name": "ivory_body",
@@ -103,35 +109,45 @@
       "primitive": "box",
       "material": "ivory_body",
       "center_m": [0.0, 0.0, 1.17],
-      "size_m": [0.36, 0.18, 0.27]
+      "size_m": [0.36, 0.24, 0.27],
+      "bevel_m": 0.035,
+      "weighted_normals": true
     },
     {
       "name": "abdomen",
       "primitive": "box",
       "material": "ivory_body",
       "center_m": [0.0, 0.0, 0.96],
-      "size_m": [0.28, 0.15, 0.18]
+      "size_m": [0.28, 0.2, 0.18],
+      "bevel_m": 0.028,
+      "weighted_normals": true
     },
     {
       "name": "pelvis",
       "primitive": "box",
       "material": "ivory_body",
       "center_m": [0.0, -0.005, 0.77],
-      "size_m": [0.33, 0.16, 0.18]
+      "size_m": [0.33, 0.22, 0.18],
+      "bevel_m": 0.03,
+      "weighted_normals": true
     },
     {
       "name": "chest_center_seam",
       "primitive": "box",
       "material": "joint_shadow",
-      "center_m": [0.0, -0.094, 1.17],
-      "size_m": [0.012, 0.01, 0.23]
+      "center_m": [0.0, -0.124, 1.17],
+      "size_m": [0.012, 0.01, 0.23],
+      "bevel_m": 0.004,
+      "weighted_normals": true
     },
     {
       "name": "abdomen_top_seam",
       "primitive": "box",
       "material": "joint_shadow",
-      "center_m": [0.0, -0.083, 1.055],
-      "size_m": [0.24, 0.01, 0.014]
+      "center_m": [0.0, -0.104, 1.055],
+      "size_m": [0.24, 0.01, 0.014],
+      "bevel_m": 0.004,
+      "weighted_normals": true
     },
     {
       "name": "shoulder_L",
@@ -214,7 +230,7 @@
       "primitive": "ellipsoid",
       "material": "ivory_body",
       "center_m": [-0.51, -0.015, 0.54],
-      "radii_m": [0.065, 0.052, 0.08],
+      "radii_m": [0.065, 0.06, 0.08],
       "segments": 8,
       "rings": 4
     },
@@ -223,7 +239,7 @@
       "primitive": "ellipsoid",
       "material": "ivory_body",
       "center_m": [0.51, -0.015, 0.54],
-      "radii_m": [0.065, 0.052, 0.08],
+      "radii_m": [0.065, 0.06, 0.08],
       "segments": 8,
       "rings": 4
     },
@@ -289,15 +305,19 @@
       "name": "foot_L",
       "primitive": "box",
       "material": "ivory_body",
-      "center_m": [-0.17, -0.055, 0.035],
-      "size_m": [0.17, 0.18, 0.07]
+      "center_m": [-0.17, -0.085, 0.04],
+      "size_m": [0.17, 0.25, 0.08],
+      "bevel_m": 0.022,
+      "weighted_normals": true
     },
     {
       "name": "foot_R",
       "primitive": "box",
       "material": "ivory_body",
-      "center_m": [0.17, -0.055, 0.035],
-      "size_m": [0.17, 0.18, 0.07]
+      "center_m": [0.17, -0.085, 0.04],
+      "size_m": [0.17, 0.25, 0.08],
+      "bevel_m": 0.022,
+      "weighted_normals": true
     }
   ],
   "rigging_notes": {
