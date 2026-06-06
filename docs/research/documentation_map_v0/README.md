@@ -25,8 +25,9 @@ It is not a build queue. It is a subject and documentation-coverage map.
   evaluation, pruning, caching, branch-count validation, and a generator-to-
   adapter boundary.
 - `../ui_recipe_workbench_v0/` defines the first compact human control surface
-  for recipe-owned procedural asset generation, starting with the
-  `AddPetalScroll` ornament recipe.
+  for recipe-owned procedural asset generation, now centered on a blank
+  `gameguy_tool_plan_v0` Blender tool-plan workbench rather than a single
+  ornament recipe.
 
 ## Boundary
 
