@@ -33,9 +33,16 @@ Use these files as the source of truth:
 | Tool-plan compiler | `scripts/compile_blender_tool_plan_v0.py` | Existing asset-family compiler. Useful reference, but not the blank UI. |
 | Execution report validator | `scripts/validate_blender_tool_plan_execution_report_v0.py` | Validates Blender execution reports. |
 | Tool-card docs | `docs/research/asset_readiness_system_v0/blender_tool_cards/` | Human learning cards for a first subset of tools. |
+| UI templates | `data/architecture/asset_mill/blender_tools/blender_tool_ui_templates_v0.json` | Machine-readable controls for the executable tool subset. |
+| UI template validator | `scripts/validate_blender_tool_ui_templates_v0.py` | Verifies template coverage against dictionary and executor support. |
+| Blank plan creator | `scripts/create_blank_tool_plan_v0.py` | Emits a valid empty `gameguy_tool_plan_v0` draft. |
 
 The UI should read the tool catalog and executor support list. Do not hardcode
 only petal-scroll controls.
+
+For actual control rendering, read `blender_tool_ui_templates_v0.json`. The broad
+tool dictionary is not enough because some catalog input names differ from the
+executor's current param names.
 
 ## Existing Tool Coverage
 

@@ -22,6 +22,13 @@ Primary handoff:
 
 - `blank_blender_tool_plan_workbench_handoff_v0.md`
 
+Machine-readable UI contract:
+
+- `blank_tool_plan_ui_template_notes_v0.md`
+- `data/architecture/asset_mill/blender_tools/blender_tool_ui_templates_v0.json`
+- `scripts/validate_blender_tool_ui_templates_v0.py`
+- `scripts/create_blank_tool_plan_v0.py`
+
 Specialized example handoff:
 
 - `petal_scroll_recipe_workbench_handoff_v0.md`
