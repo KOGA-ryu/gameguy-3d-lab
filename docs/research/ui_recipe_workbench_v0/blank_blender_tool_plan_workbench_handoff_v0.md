@@ -36,6 +36,8 @@ Use these files as the source of truth:
 | UI templates | `data/architecture/asset_mill/blender_tools/blender_tool_ui_templates_v0.json` | Machine-readable controls for the executable tool subset. |
 | UI template validator | `scripts/validate_blender_tool_ui_templates_v0.py` | Verifies template coverage against dictionary and executor support. |
 | Blank plan creator | `scripts/create_blank_tool_plan_v0.py` | Emits a valid empty `gameguy_tool_plan_v0` draft. |
+| Step editor | `scripts/add_tool_plan_step_v0.py` | Adds one template-backed tool step, applies optional param overrides, and canonicalizes stage order. |
+| UI plan validator | `scripts/validate_tool_plan_against_ui_templates_v0.py` | Validates a user-edited plan against template controls before ASCII or Blender. |
 
 The UI should read the tool catalog and executor support list. Do not hardcode
 only petal-scroll controls.
@@ -43,6 +45,49 @@ only petal-scroll controls.
 For actual control rendering, read `blender_tool_ui_templates_v0.json`. The broad
 tool dictionary is not enough because some catalog input names differ from the
 executor's current param names.
+
+## Backend Calls For The UI
+
+Create an empty workbench plan:
+
+```bash
+python3 scripts/create_blank_tool_plan_v0.py \
+  --out /tmp/gameguy_tool_plan_ui_editor_v0/plan.json
+```
+
+Append a tool with defaults:
+
+```bash
+python3 scripts/add_tool_plan_step_v0.py \
+  --plan /tmp/gameguy_tool_plan_ui_editor_v0/plan.json \
+  --tool-id primitive_cube_add
+```
+
+Append a tool with edited params:
+
+```bash
+python3 scripts/add_tool_plan_step_v0.py \
+  --plan /tmp/gameguy_tool_plan_ui_editor_v0/plan.json \
+  --tool-id modifier_bevel \
+  --set width_m=0.04 \
+  --set segments=2
+```
+
+Validate the user-edited plan against the UI contract:
+
+```bash
+python3 scripts/validate_tool_plan_against_ui_templates_v0.py \
+  --plan /tmp/gameguy_tool_plan_ui_editor_v0/plan.json \
+  --json-report /tmp/gameguy_tool_plan_ui_editor_v0/ui_validation.json
+```
+
+The step editor sorts by the template stage order and rewrites step orders as
+`10, 20, 30...`. This lets the user click `modifier_bevel` before `join_objects`
+while still saving a valid plan order:
+
+```text
+primitive_cube_add -> join_objects -> modifier_bevel
+```
 
 ## Existing Tool Coverage
 

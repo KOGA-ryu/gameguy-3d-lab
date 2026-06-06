@@ -28,6 +28,8 @@ Machine-readable UI contract:
 - `data/architecture/asset_mill/blender_tools/blender_tool_ui_templates_v0.json`
 - `scripts/validate_blender_tool_ui_templates_v0.py`
 - `scripts/create_blank_tool_plan_v0.py`
+- `scripts/add_tool_plan_step_v0.py`
+- `scripts/validate_tool_plan_against_ui_templates_v0.py`
 
 Specialized example handoff:
 

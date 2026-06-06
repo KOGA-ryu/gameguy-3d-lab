@@ -25,6 +25,8 @@ blender_tool_dictionary_v0.json
 | `data/architecture/asset_mill/blender_tools/blender_tool_ui_templates_v0.json` | Defines compact UI controls for every currently executable tool. |
 | `scripts/validate_blender_tool_ui_templates_v0.py` | Verifies templates match the tool dictionary and executor support list. |
 | `scripts/create_blank_tool_plan_v0.py` | Emits a valid empty `gameguy_tool_plan_v0`. |
+| `scripts/add_tool_plan_step_v0.py` | Appends a template-backed step and rewrites stage-canonical order. |
+| `scripts/validate_tool_plan_against_ui_templates_v0.py` | Validates a hand-edited plan against UI control types, ranges, enums, and dependencies. |
 | `scripts/execute_blender_tool_plan_v0.py` | Existing validate-only and Blender execution adapter. |
 | `scripts/render_tool_plan_ascii_dryrun_v0.py` | Existing cheap ASCII dry-run adapter. |
 
@@ -95,6 +97,32 @@ Create a blank plan:
 ```bash
 python3 scripts/create_blank_tool_plan_v0.py \
   --out /tmp/gameguy_blank_tool_plan_workbench_v0/blank_tool_plan_v0.json
+```
+
+Add a tool step from the template catalog:
+
+```bash
+python3 scripts/add_tool_plan_step_v0.py \
+  --plan /tmp/gameguy_blank_tool_plan_workbench_v0/blank_tool_plan_v0.json \
+  --tool-id primitive_cube_add
+```
+
+Add a tool step with param overrides:
+
+```bash
+python3 scripts/add_tool_plan_step_v0.py \
+  --plan /tmp/gameguy_blank_tool_plan_workbench_v0/blank_tool_plan_v0.json \
+  --tool-id modifier_bevel \
+  --set width_m=0.04 \
+  --set segments=2
+```
+
+Validate a hand-edited plan against UI controls:
+
+```bash
+python3 scripts/validate_tool_plan_against_ui_templates_v0.py \
+  --plan /tmp/gameguy_blank_tool_plan_workbench_v0/blank_tool_plan_v0.json \
+  --json-report /tmp/gameguy_blank_tool_plan_workbench_v0/ui_validation_report.json
 ```
 
 Validate that blank plan without Blender:
