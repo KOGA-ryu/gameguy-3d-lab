@@ -151,6 +151,10 @@ def validate_refinement_controls(controls: list[Any], layer_ids: set[str]) -> di
     for required_control in (
         "brow_arc_ratio",
         "eye_socket_slant_ratio",
+        "brow_forward_offset_m",
+        "socket_under_brow_setback_m",
+        "glabella_peak_ratio",
+        "brow_side_wrap_ratio",
         "nose_bridge_blend_ratio",
         "cheek_wrap_ratio",
         "jaw_taper_ratio",

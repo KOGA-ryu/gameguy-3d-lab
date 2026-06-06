@@ -1,0 +1,239 @@
+{
+  "schema": "humanoid_brow_eye_region_review_source_v0",
+  "bundle_id": "humanoid_brow_eye_region_review_v0",
+  "region_id": "brow_eye_band",
+  "plain_name": "brow ridge and eye socket band",
+  "purpose": "Create a compact human-readable working surface for tuning only the brow ridge and eye sockets against measured skull slice evidence before editing the full head compiler.",
+  "rules": {
+    "region_only": true,
+    "no_full_head_blockout_json_read": true,
+    "no_raw_contour_points_in_report": true,
+    "no_blender_execution": true,
+    "no_join_pass": true,
+    "source_decisions_stay_out_of_blender": true
+  },
+  "source_paths": {
+    "taxonomy": "data/characters/head_construction/humanoid_head_layer_taxonomy_v0.json",
+    "skull_measurement_stack_source": "data/characters/head_construction/humanoid_skull_measurement_stack_v0.json"
+  },
+  "taxonomy_refs": {
+    "required_layer_ids": [
+      "face_mask_planes",
+      "brow_eye_band"
+    ],
+    "required_facial_part_ids": [
+      "forehead",
+      "brow_ridge",
+      "eye_sockets",
+      "nose"
+    ],
+    "required_shape_terms": [
+      "ridge",
+      "socket",
+      "chamfer",
+      "bevel",
+      "plane_break"
+    ]
+  },
+  "region_components": [
+    {
+      "component_id": "forehead_break",
+      "plain_name": "forehead to brow break",
+      "role": "Controls the transition from calm forehead plane into the raised brow."
+    },
+    {
+      "component_id": "glabella_peak",
+      "plain_name": "glabella center",
+      "role": "Center brow knot where the brow, nose bridge, and socket shadows meet."
+    },
+    {
+      "component_id": "brow_wing_L",
+      "plain_name": "left brow wing",
+      "role": "Left supraorbital ridge span and side wrap."
+    },
+    {
+      "component_id": "brow_wing_R",
+      "plain_name": "right brow wing",
+      "role": "Right supraorbital ridge span and side wrap."
+    },
+    {
+      "component_id": "upper_socket_rim_L",
+      "plain_name": "left upper socket rim",
+      "role": "Raised rim that casts the left eye recess."
+    },
+    {
+      "component_id": "upper_socket_rim_R",
+      "plain_name": "right upper socket rim",
+      "role": "Raised rim that casts the right eye recess."
+    },
+    {
+      "component_id": "socket_shadow_pair",
+      "plain_name": "paired socket shadow",
+      "role": "Recessed area under the brow; should read as depth, not paint."
+    },
+    {
+      "component_id": "nose_bridge_landing",
+      "plain_name": "nose bridge landing",
+      "role": "Reserved center slot where the later nose wedge emerges from the brow."
+    }
+  ],
+  "skull_evidence_slices": [
+    {
+      "slice_id": "xy_brow_band",
+      "use": "Main brow width/depth footprint and upper-orbit band."
+    },
+    {
+      "slice_id": "yz_center_profile",
+      "use": "Side silhouette for forehead break, brow projection, socket recess, and occiput context."
+    },
+    {
+      "slice_id": "xz_front_face_surface",
+      "use": "Front face surface width/height trace for socket placement and brow-to-face relation."
+    },
+    {
+      "slice_id": "xy_zygoma_orbit",
+      "use": "Lower orbit and cheekbone support; used only as the lower boundary for this region."
+    }
+  ],
+  "existing_taxonomy_controls": [
+    {
+      "control_id": "forehead_wrap_ratio",
+      "use": "Wrap the brow and upper face around the skull side instead of leaving a flat brow slab."
+    },
+    {
+      "control_id": "brow_arc_ratio",
+      "use": "Shape the brow as a glabella-centered arc instead of a straight strip."
+    },
+    {
+      "control_id": "eye_socket_slant_ratio",
+      "use": "Control almond socket tilt while keeping left and right sockets mirrored."
+    },
+    {
+      "control_id": "nose_bridge_blend_ratio",
+      "use": "Reserve and widen the center brow slot where the later nose wedge will land."
+    },
+    {
+      "control_id": "feature_embed_overlap_m",
+      "use": "Sink brow/socket pieces into the face mask before any join pass."
+    }
+  ],
+  "existing_layer_knobs": [
+    {
+      "knob_id": "brow_raise_m",
+      "layer_id": "brow_eye_band",
+      "use": "Raised brow relief amount."
+    },
+    {
+      "knob_id": "eye_socket_depth_m",
+      "layer_id": "brow_eye_band",
+      "use": "Socket recess depth under the brow."
+    },
+    {
+      "knob_id": "socket_rim_bevel_m",
+      "layer_id": "brow_eye_band",
+      "use": "Light-catching bevel around each socket rim."
+    }
+  ],
+  "proposed_region_controls": [
+    {
+      "control_id": "brow_forward_offset_m",
+      "units": "m",
+      "default": 0.008,
+      "allowed_range": [
+        0.001,
+        0.02
+      ],
+      "reason": "Separate forward projection from vertical brow shape so the brow can be pushed in side view without changing the arc."
+    },
+    {
+      "control_id": "socket_under_brow_setback_m",
+      "units": "m",
+      "default": 0.009,
+      "allowed_range": [
+        0.003,
+        0.024
+      ],
+      "reason": "Guarantee the socket shadow sits behind the brow instead of on the same flat plane."
+    },
+    {
+      "control_id": "glabella_peak_ratio",
+      "units": "ratio",
+      "default": 0.55,
+      "allowed_range": [
+        0.0,
+        1.0
+      ],
+      "reason": "Control the center knot between brows and nose bridge independently from the side brow wings."
+    },
+    {
+      "control_id": "brow_side_wrap_ratio",
+      "units": "ratio",
+      "default": 0.7,
+      "allowed_range": [
+        0.0,
+        1.0
+      ],
+      "reason": "Let brow wings roll around the side face without forcing the full forehead to wrap equally."
+    }
+  ],
+  "operation_sequence": [
+    {
+      "step": 1,
+      "operation": "sample_skull_slices",
+      "blender_tool_ids_later": [],
+      "meaning": "Use measured skull slices as evidence only; do not edit geometry yet."
+    },
+    {
+      "step": 2,
+      "operation": "place_forehead_break",
+      "blender_tool_ids_later": [
+        "mesh_from_pydata",
+        "shade_flat",
+        "mark_sharp"
+      ],
+      "meaning": "Define the upper plane break before raising the brow."
+    },
+    {
+      "step": 3,
+      "operation": "split_wrapped_brow_band",
+      "blender_tool_ids_later": [
+        "mesh_from_pydata",
+        "extrude_faces",
+        "modifier_bevel"
+      ],
+      "meaning": "Build separate glabella and left/right brow wing meshes so the center can project while the wings wrap toward the temples."
+    },
+    {
+      "step": 4,
+      "operation": "recess_eye_sockets",
+      "blender_tool_ids_later": [
+        "inset_faces",
+        "extrude_faces",
+        "modifier_boolean"
+      ],
+      "meaning": "Push the sockets behind the brow so they read as shadowed cavities."
+    },
+    {
+      "step": 5,
+      "operation": "bevel_socket_rims",
+      "blender_tool_ids_later": [
+        "modifier_bevel",
+        "modifier_weighted_normal"
+      ],
+      "meaning": "Add a small rim bevel so the sockets catch light without becoming decorative eyes."
+    }
+  ],
+  "manual_review_questions": [
+    "Does the brow read as a continuous supraorbital band rather than a loose plate?",
+    "Can the sockets be seen as recesses before any eyeballs are added?",
+    "Does the side view show brow projection and socket setback?",
+    "Is the glabella center strong enough to receive the future nose bridge?",
+    "Do the brow wings wrap toward the sides without turning the whole forehead into a tube?"
+  ],
+  "blocked_scope": [
+    "Do not tune cheeks except as the lower orbit boundary.",
+    "Do not sculpt the nose beyond reserving the bridge landing.",
+    "Do not inspect or edit generated full-head blockout output for this review.",
+    "Do not join or remesh the head."
+  ]
+}

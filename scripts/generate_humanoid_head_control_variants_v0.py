@@ -324,7 +324,7 @@ def variant_qc(recipe: dict[str, Any]) -> dict[str, Any]:
         and 0.17 <= size["z"] <= 0.32
     )
     passed = (
-        len(parts) == 18
+        len(parts) == 20
         and symmetry["all_pairs_symmetric"]
         and connections["all_non_base_parts_have_rules"]
         and connections["all_connection_aabb_contact_or_overlap"]

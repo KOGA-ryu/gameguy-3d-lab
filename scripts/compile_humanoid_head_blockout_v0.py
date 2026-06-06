@@ -143,6 +143,41 @@ def curved_prism_from_xz_contour(
     return vertices, faces
 
 
+def bent_prism_from_xz_contour(
+    contour: list[tuple[float, float]],
+    *,
+    y_front_for_point: Any,
+    thickness: float,
+    center_y_front: float | None = None,
+) -> tuple[list[list[float]], list[list[int]]]:
+    center_x = sum(x for x, _ in contour) / len(contour)
+    center_z = sum(z for _, z in contour) / len(contour)
+    front_y_values = [float(y_front_for_point(x, z)) for x, z in contour]
+    if center_y_front is None:
+        center_y_front = float(y_front_for_point(center_x, center_z))
+
+    vertices: list[list[float]] = []
+    faces: list[list[int]] = []
+    for (x, z), y_front in zip(contour, front_y_values):
+        vertices.append(point(x, y_front, z))
+    front_center_index = len(vertices)
+    vertices.append(point(center_x, center_y_front, center_z))
+
+    back_offset = len(vertices)
+    for (x, z), y_front in zip(contour, front_y_values):
+        vertices.append(point(x, y_front + thickness, z))
+    back_center_index = len(vertices)
+    vertices.append(point(center_x, center_y_front + thickness, center_z))
+
+    count = len(contour)
+    for index in range(count):
+        next_index = (index + 1) % count
+        faces.append([front_center_index, index, next_index])
+        faces.append([back_center_index, next_index + back_offset, index + back_offset])
+        faces.append([index, index + back_offset, next_index + back_offset, next_index])
+    return vertices, faces
+
+
 def box_mesh(*, x0: float, x1: float, y0: float, y1: float, z0: float, z1: float) -> tuple[list[list[float]], list[list[int]]]:
     vertices = [
         point(x0, y0, z0),
@@ -248,8 +283,9 @@ def make_part(
     bevel_m: float,
     shade: str,
     purpose: str,
+    bend_field: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    return {
+    part = {
         "part_id": part_id,
         "layer_id": layer_id,
         "facial_part": facial_part,
@@ -266,6 +302,9 @@ def make_part(
             "faces": faces,
         },
     }
+    if bend_field is not None:
+        part["bend_field"] = bend_field
+    return part
 
 
 def layer_by_id(taxonomy: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -372,6 +411,10 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
     forehead_wrap_ratio = control_value(controls, "forehead_wrap_ratio")
     brow_arc_ratio = control_value(controls, "brow_arc_ratio")
     eye_socket_slant_ratio = control_value(controls, "eye_socket_slant_ratio")
+    brow_forward_offset_m = control_value(controls, "brow_forward_offset_m")
+    socket_under_brow_setback_m = control_value(controls, "socket_under_brow_setback_m")
+    glabella_peak_ratio = control_value(controls, "glabella_peak_ratio")
+    brow_side_wrap_ratio = control_value(controls, "brow_side_wrap_ratio")
     nose_bridge_blend_ratio = control_value(controls, "nose_bridge_blend_ratio")
     nose_base_blend_ratio = control_value(controls, "nose_base_blend_ratio")
     cheek_wrap_ratio = control_value(controls, "cheek_wrap_ratio")
@@ -390,12 +433,21 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
     skull_center = (0.0, 0.0, skull_center_z)
     skull_radii = (head_breadth / 2.0, head_length / 2.0, head_height / 2.0)
     face_y = rounded(-head_length * 0.37)
-    raised_y = rounded(face_y - 0.012 - feature_embed_overlap_m * 0.35)
-    socket_y = rounded(face_y - 0.004 + feature_embed_overlap_m * 0.45)
+    brow_base_y = rounded(face_y - 0.004 - brow_forward_offset_m - feature_embed_overlap_m * 0.35)
+    socket_rim_y = rounded(brow_base_y + socket_under_brow_setback_m * 0.32)
+    socket_shadow_y = rounded(brow_base_y + socket_under_brow_setback_m * 0.62)
     nose_tip_y = rounded(face_y - nose_protrusion)
 
     layers = layer_by_id(taxonomy)
     parts: list[dict[str, Any]] = []
+
+    def bend_field(field_id: str, meaning: str, controls_used: list[str]) -> dict[str, Any]:
+        return {
+            "field_id": field_id,
+            "space": "xz_contour_to_y_depth",
+            "meaning": meaning,
+            "controls_used": controls_used,
+        }
 
     skull_layer = layers["skull_envelope"]
     vertices, faces = ellipsoid_mesh(center=skull_center, radii=skull_radii, segments=14, rings=7, front_flatten_ratio=0.72)
@@ -432,9 +484,16 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
         (-cheek_width * 0.44, mouth_z + head_height * 0.12),
         (-cheek_width * 0.50, eye_z - head_height * 0.02),
     ]
-    vertices, faces = curved_prism_from_xz_contour(
+    def face_mask_y_front(x: float, z: float) -> float:
+        side_wrap = wrap_y(face_y - 0.002, x, cheek_width, forehead_wrap_ratio, head_length * 0.082)
+        midface_ratio = max(0.0, 1.0 - abs(z - (eye_z - head_height * 0.09)) / max(head_height * 0.20, 1e-6))
+        center_ratio = max(0.0, 1.0 - abs(x) / max(cheek_width * 0.42, 1e-6))
+        lower_retreat = max(0.0, 1.0 - abs(z - (chin_z + head_height * 0.05)) / max(head_height * 0.12, 1e-6))
+        return side_wrap - head_length * 0.010 * center_ratio * midface_ratio + head_length * 0.012 * lower_retreat
+
+    vertices, faces = bent_prism_from_xz_contour(
         face_contour,
-        y_front_for_point=lambda x, z: wrap_y(face_y - 0.002, x, cheek_width, forehead_wrap_ratio, head_length * 0.082),
+        y_front_for_point=face_mask_y_front,
         thickness=0.006 + feature_embed_overlap_m,
     )
     parts.append(
@@ -451,37 +510,41 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
             bevel_m=0.0018,
             shade="flat",
             purpose="front face mask plane sitting on the skull envelope",
+            bend_field=bend_field(
+                "face_mask_side_wrap_and_lower_retreat_v0",
+                "Wrap the face mask around the skull sides while letting the lower face retreat from the midface.",
+                ["forehead_wrap_ratio", "feature_embed_overlap_m"],
+            ),
         )
     )
 
     brow_layer = layers["brow_eye_band"]
-    brow_contour = [
-        (-brow_width * 0.52, brow_z + head_height * 0.018),
-        (-eye_spacing * 0.48, brow_z + head_height * (0.024 + 0.012 * brow_arc_ratio)),
-        (-nose_width * 0.34, brow_z + head_height * (0.012 + 0.01 * brow_arc_ratio)),
-        (0.0, brow_z + head_height * 0.022),
-        (nose_width * 0.34, brow_z + head_height * (0.012 + 0.01 * brow_arc_ratio)),
-        (eye_spacing * 0.48, brow_z + head_height * (0.024 + 0.012 * brow_arc_ratio)),
-        (brow_width * 0.52, brow_z + head_height * 0.018),
-        (brow_width * 0.46, brow_z - head_height * 0.010),
-        (eye_spacing * 0.24, brow_z - head_height * 0.020),
-        (nose_width * 0.18, brow_z - head_height * 0.004),
-        (0.0, brow_z - head_height * 0.014),
-        (-nose_width * 0.18, brow_z - head_height * 0.004),
-        (-eye_spacing * 0.24, brow_z - head_height * 0.020),
-        (-brow_width * 0.46, brow_z - head_height * 0.010),
+    glabella_width = max(nose_width * (0.62 + 0.24 * nose_bridge_blend_ratio), brow_width * 0.18)
+    glabella_contour = [
+        (-glabella_width * 0.40, brow_z + head_height * (0.012 + 0.006 * brow_arc_ratio)),
+        (0.0, brow_z + head_height * (0.025 + 0.016 * glabella_peak_ratio)),
+        (glabella_width * 0.40, brow_z + head_height * (0.012 + 0.006 * brow_arc_ratio)),
+        (glabella_width * 0.34, brow_z - head_height * (0.006 + 0.006 * glabella_peak_ratio)),
+        (0.0, brow_z - head_height * (0.022 + 0.016 * glabella_peak_ratio)),
+        (-glabella_width * 0.34, brow_z - head_height * (0.006 + 0.006 * glabella_peak_ratio)),
     ]
-    vertices, faces = curved_prism_from_xz_contour(
-        brow_contour,
-        y_front_for_point=lambda x, z: wrap_y(raised_y, x, brow_width, forehead_wrap_ratio, head_length * 0.052),
-        thickness=0.010 + feature_embed_overlap_m,
+
+    def glabella_y_front(x: float, z: float) -> float:
+        center_ratio = max(0.0, 1.0 - abs(x) / max(glabella_width * 0.50, 1e-6))
+        center_push = brow_forward_offset_m * (0.36 + 0.22 * glabella_peak_ratio) * (center_ratio**1.7)
+        return brow_base_y - center_push
+
+    vertices, faces = bent_prism_from_xz_contour(
+        glabella_contour,
+        y_front_for_point=glabella_y_front,
+        thickness=0.011 + feature_embed_overlap_m,
     )
     parts.append(
         make_part(
-            part_id="brow_ridge",
+            part_id="brow_glabella",
             layer_id="brow_eye_band",
             facial_part="brow_ridge",
-            shape_terms=["ridge", "chamfer", "bevel"],
+            shape_terms=["ridge", "plane_break", "chamfer", "bevel"],
             operation_terms=ops_for(brow_layer),
             blender_tool_ids=tools_for(brow_layer),
             vertices=vertices,
@@ -489,18 +552,72 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
             material_id="skin_ridge",
             bevel_m=0.003,
             shade="flat",
-            purpose="raised brow ridge and glabella band",
+            purpose="projecting center glabella knot that receives the nose bridge",
+            bend_field=bend_field(
+                "glabella_center_peak_v0",
+                "Push the center brow knot forward while its side edges sink back toward the brow wings.",
+                ["brow_forward_offset_m", "glabella_peak_ratio", "feature_embed_overlap_m"],
+            ),
         )
     )
 
+    def brow_wing_contour(sign: float) -> list[tuple[float, float]]:
+        return [
+            (sign * nose_width * 0.16, brow_z + head_height * (0.005 + 0.006 * brow_arc_ratio)),
+            (sign * eye_spacing * 0.28, brow_z + head_height * (0.025 + 0.012 * brow_arc_ratio)),
+            (sign * brow_width * 0.52, brow_z + head_height * 0.017),
+            (sign * brow_width * 0.49, brow_z - head_height * 0.006),
+            (sign * eye_spacing * 0.24, brow_z - head_height * (0.017 + 0.006 * brow_arc_ratio)),
+            (sign * nose_width * 0.14, brow_z - head_height * (0.006 + 0.004 * glabella_peak_ratio)),
+        ]
+
+    def brow_wing_y_front(x: float, z: float) -> float:
+        wing_base_y = brow_base_y + socket_under_brow_setback_m * 0.08
+        return wrap_y(wing_base_y, x, brow_width, brow_side_wrap_ratio, head_length * 0.070)
+
+    for side, sign in (("L", -1.0), ("R", 1.0)):
+        vertices, faces = bent_prism_from_xz_contour(
+            brow_wing_contour(sign),
+            y_front_for_point=brow_wing_y_front,
+            thickness=0.010 + feature_embed_overlap_m,
+        )
+        parts.append(
+            make_part(
+                part_id=f"brow_wing_{side}",
+                layer_id="brow_eye_band",
+                facial_part="brow_ridge",
+                shape_terms=["ridge", "plane_break", "chamfer", "bevel"],
+                operation_terms=ops_for(brow_layer),
+                blender_tool_ids=tools_for(brow_layer),
+                vertices=vertices,
+                faces=faces,
+                material_id="skin_ridge",
+                bevel_m=0.0028,
+                shade="flat",
+                purpose=f"{side} wrapped brow wing over the socket recess",
+                bend_field=bend_field(
+                    f"brow_wing_{side}_side_wrap_v0",
+                    "Bend the brow wing backward toward the temple while keeping its inner edge near the glabella.",
+                    ["brow_side_wrap_ratio", "socket_under_brow_setback_m", "feature_embed_overlap_m"],
+                ),
+            )
+        )
+
     socket_width = eye_spacing * 0.42
     socket_height = head_height * 0.082
+
+    def socket_y_front(base_y: float) -> Any:
+        return lambda x, z: wrap_y(base_y, x, brow_width, brow_side_wrap_ratio, head_length * 0.036)
+
     for side, sign in (("L", -1.0), ("R", 1.0)):
         eye_x = sign * eye_spacing / 2.0
-        rim_vertices, rim_faces = prism_from_xz_contour(
+        rim_depth = 0.0035 + feature_embed_overlap_m * 0.35
+        rim_front_y = socket_rim_y - rim_depth / 2.0
+        rim_vertices, rim_faces = bent_prism_from_xz_contour(
             almond_contour(eye_x, eye_z, socket_width * 1.32, socket_height * 1.36, slant_ratio=eye_socket_slant_ratio * sign),
-            y_center=face_y - 0.014 + feature_embed_overlap_m * 0.12,
-            depth=0.0035 + feature_embed_overlap_m * 0.35,
+            y_front_for_point=socket_y_front(rim_front_y),
+            center_y_front=rim_front_y + socket_under_brow_setback_m * 0.18,
+            thickness=rim_depth,
         )
         parts.append(
             make_part(
@@ -516,12 +633,20 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
                 bevel_m=0.0015,
                 shade="flat",
                 purpose=f"{side} socket bevel rim proxy",
+                bend_field=bend_field(
+                    f"eye_socket_rim_{side}_shallow_dish_v0",
+                    "Bend the socket rim into a shallow dish so the eye area starts recessing under the brow wing.",
+                    ["eye_socket_slant_ratio", "socket_under_brow_setback_m", "brow_side_wrap_ratio"],
+                ),
             )
         )
-        dark_vertices, dark_faces = prism_from_xz_contour(
+        shadow_depth = 0.0024 + feature_embed_overlap_m * 0.2
+        shadow_front_y = socket_shadow_y - shadow_depth / 2.0
+        dark_vertices, dark_faces = bent_prism_from_xz_contour(
             almond_contour(eye_x, eye_z, socket_width * 1.02, socket_height * 1.04, slant_ratio=eye_socket_slant_ratio * sign),
-            y_center=face_y - 0.016 + feature_embed_overlap_m * 0.08,
-            depth=0.002,
+            y_front_for_point=socket_y_front(shadow_front_y),
+            center_y_front=shadow_front_y + socket_under_brow_setback_m * 0.22,
+            thickness=shadow_depth,
         )
         parts.append(
             make_part(
@@ -537,6 +662,11 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
                 bevel_m=0.0008,
                 shade="flat",
                 purpose=f"{side} recessed socket read",
+                bend_field=bend_field(
+                    f"eye_socket_dark_{side}_deep_dish_v0",
+                    "Bend the socket shadow farther back than the rim center so it reads as cavity depth, not paint.",
+                    ["eye_socket_slant_ratio", "socket_under_brow_setback_m", "brow_side_wrap_ratio"],
+                ),
             )
         )
 
@@ -564,10 +694,32 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
             bevel_m=0.0024,
             shade="flat",
             purpose="central nose bridge, tip, base, and side planes",
+            bend_field=bend_field(
+                "nose_wedge_native_bridge_tip_base_planes_v0",
+                "Use wedge planes as the nose bend field: bridge, tip, base, and side planes already carry different depths.",
+                ["nose_bridge_blend_ratio", "nose_base_blend_ratio"],
+            ),
         )
     )
 
     cheek_layer = layers["cheek_midface_planes"]
+
+    def cheek_y_front_for(sign: float) -> Any:
+        def y_front(x: float, z: float) -> float:
+            base = wrap_y(face_y - 0.010, x, cheek_width, cheek_wrap_ratio, head_length * 0.072)
+            cheekbone_x = sign * cheek_width * 0.34
+            cheekbone_z = eye_z - head_height * 0.004
+            cheekbone = max(
+                0.0,
+                1.0
+                - (abs(x - cheekbone_x) / max(cheek_width * 0.28, 1e-6)) ** 2
+                - (abs(z - cheekbone_z) / max(head_height * 0.10, 1e-6)) ** 2,
+            )
+            mouth_retreat = max(0.0, 1.0 - abs(z - (mouth_z + head_height * 0.035)) / max(head_height * 0.08, 1e-6))
+            return base - head_length * 0.020 * cheekbone + head_length * 0.010 * mouth_retreat
+
+        return y_front
+
     for side, sign in (("L", -1.0), ("R", 1.0)):
         x0 = sign * nose_width * (0.54 + 0.10 * nose_base_blend_ratio)
         x1 = sign * cheek_width * 0.52
@@ -579,9 +731,9 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
             (sign * cheek_width * 0.34, mouth_z + head_height * 0.045),
             (sign * nose_width * 0.86, mouth_z + head_height * 0.030),
         ]
-        vertices, faces = curved_prism_from_xz_contour(
+        vertices, faces = bent_prism_from_xz_contour(
             contour,
-            y_front_for_point=lambda x, z: wrap_y(face_y - 0.010, x, cheek_width, cheek_wrap_ratio, head_length * 0.072),
+            y_front_for_point=cheek_y_front_for(sign),
             thickness=0.006 + feature_embed_overlap_m,
         )
         parts.append(
@@ -598,14 +750,22 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
                 bevel_m=0.0018,
                 shade="flat",
                 purpose=f"{side} cheekbone and midface plane",
+                bend_field=bend_field(
+                    f"cheek_plane_{side}_cheekbone_to_mouth_retreat_v0",
+                    "Push the cheekbone high point forward while the lower cheek retreats toward the mouth plane.",
+                    ["cheek_wrap_ratio", "nose_base_blend_ratio", "feature_embed_overlap_m"],
+                ),
             )
         )
 
     mouth_layer = layers["mouth_lip_zone"]
-    mouth_vertices, mouth_faces = prism_from_xz_contour(
+    mouth_depth = 0.0032
+    mouth_front_y = face_y - 0.003 + feature_embed_overlap_m * 0.2 - mouth_depth / 2.0
+    mouth_vertices, mouth_faces = bent_prism_from_xz_contour(
         capsule_contour(0.0, mouth_z, mouth_width * 0.92, head_height * 0.014),
-        y_center=face_y - 0.003 + feature_embed_overlap_m * 0.2,
-        depth=0.0032,
+        y_front_for_point=lambda x, z: mouth_front_y + head_length * 0.006 * min(1.0, abs(x) / max(mouth_width * 0.46, 1e-6)),
+        center_y_front=mouth_front_y + head_length * 0.012,
+        thickness=mouth_depth,
     )
     parts.append(
         make_part(
@@ -621,13 +781,23 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
             bevel_m=0.0008,
             shade="flat",
             purpose="neutral horizontal mouth valley",
+            bend_field=bend_field(
+                "mouth_crease_center_valley_v0",
+                "Sink the center of the mouth crease behind its corners so it reads as a valley in the face.",
+                ["feature_embed_overlap_m"],
+            ),
         )
     )
     for lip_id, z_offset, scale in (("upper_lip_relief", 0.0024, 0.76), ("lower_lip_relief", -0.0024, 0.70)):
-        vertices, faces = prism_from_xz_contour(
-            capsule_contour(0.0, mouth_z + z_offset, mouth_width * scale, head_height * 0.010),
-            y_center=face_y - 0.0032 + feature_embed_overlap_m * 0.12,
-            depth=0.0036,
+        lip_depth = 0.0036
+        lip_front_y = face_y - 0.0032 + feature_embed_overlap_m * 0.12 - lip_depth / 2.0
+        lip_contour = capsule_contour(0.0, mouth_z + z_offset, mouth_width * scale, head_height * 0.010)
+        vertices, faces = bent_prism_from_xz_contour(
+            lip_contour,
+            y_front_for_point=lambda x, z, lip_front_y=lip_front_y, scale=scale: lip_front_y
+            + head_length * 0.004 * min(1.0, abs(x) / max(mouth_width * scale * 0.50, 1e-6)),
+            center_y_front=lip_front_y - head_length * 0.005,
+            thickness=lip_depth,
         )
         parts.append(
             make_part(
@@ -643,6 +813,11 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
                 bevel_m=0.0012,
                 shade="flat",
                 purpose=f"{lip_id.replace('_', ' ')}",
+                bend_field=bend_field(
+                    f"{lip_id}_bowed_relief_v0",
+                    "Bow the lip relief forward at the center while the corners tuck back into the mouth crease.",
+                    ["feature_embed_overlap_m"],
+                ),
             )
         )
 
@@ -656,9 +831,20 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
         (0.0, chin_z - head_height * 0.045),
         (-jaw_width * (0.20 - jaw_taper_ratio * 0.03), chin_z - head_height * 0.026),
     ]
-    vertices, faces = curved_prism_from_xz_contour(
+    def chin_y_front(x: float, z: float) -> float:
+        base = wrap_y(face_y - 0.008, x, jaw_width, jaw_taper_ratio, head_length * 0.030)
+        chin_center = max(
+            0.0,
+            1.0
+            - (abs(x) / max(jaw_width * 0.22, 1e-6)) ** 2
+            - (abs(z - (chin_z + head_height * 0.055)) / max(head_height * 0.10, 1e-6)) ** 2,
+        )
+        jaw_edge_retreat = min(1.0, abs(x) / max(jaw_width * 0.34, 1e-6))
+        return base - head_length * 0.014 * chin_center + head_length * 0.006 * jaw_edge_retreat
+
+    vertices, faces = bent_prism_from_xz_contour(
         chin_contour,
-        y_front_for_point=lambda x, z: wrap_y(face_y - 0.008, x, jaw_width, jaw_taper_ratio, head_length * 0.030),
+        y_front_for_point=chin_y_front,
         thickness=0.007 + feature_embed_overlap_m,
     )
     parts.append(
@@ -675,8 +861,28 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
             bevel_m=0.002,
             shade="flat",
             purpose="lower chin protrusion and lower-face anchor",
+            bend_field=bend_field(
+                "chin_mass_center_push_side_retreat_v0",
+                "Push the center chin forward while the edges retreat into the jaw side planes.",
+                ["jaw_taper_ratio", "feature_embed_overlap_m"],
+            ),
         )
     )
+
+    def jaw_y_front_for(sign: float) -> Any:
+        def y_front(x: float, z: float) -> float:
+            base = wrap_y(face_y - 0.006, x, jaw_width, jaw_taper_ratio, head_length * 0.060)
+            mandibular_angle = max(
+                0.0,
+                1.0
+                - (abs(x - sign * jaw_width * 0.48) / max(jaw_width * 0.18, 1e-6)) ** 2
+                - (abs(z - (chin_z + head_height * 0.075)) / max(head_height * 0.10, 1e-6)) ** 2,
+            )
+            chin_overlap = max(0.0, 1.0 - abs(x - sign * jaw_width * 0.24) / max(jaw_width * 0.20, 1e-6))
+            return base + head_length * 0.010 * mandibular_angle - head_length * 0.006 * chin_overlap
+
+        return y_front
+
     for side, sign in (("L", -1.0), ("R", 1.0)):
         contour = [
             (sign * jaw_width * 0.30, chin_z + head_height * 0.116),
@@ -685,9 +891,9 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
             (sign * jaw_width * 0.34, chin_z - head_height * 0.010),
             (sign * jaw_width * 0.22, chin_z + head_height * 0.020),
         ]
-        vertices, faces = curved_prism_from_xz_contour(
+        vertices, faces = bent_prism_from_xz_contour(
             contour,
-            y_front_for_point=lambda x, z: wrap_y(face_y - 0.006, x, jaw_width, jaw_taper_ratio, head_length * 0.060),
+            y_front_for_point=jaw_y_front_for(sign),
             thickness=0.006 + feature_embed_overlap_m,
         )
         parts.append(
@@ -704,6 +910,11 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
                 bevel_m=0.0015,
                 shade="flat",
                 purpose=f"{side} jaw chamfer into side face",
+                bend_field=bend_field(
+                    f"jaw_side_plane_{side}_mandibular_angle_wrap_v0",
+                    "Bend the side jaw from the chin overlap into a rearward mandibular angle.",
+                    ["jaw_taper_ratio", "feature_embed_overlap_m"],
+                ),
             )
         )
 
@@ -749,10 +960,12 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
     ]
     connection_targets = {
         "face_mask_plane": "skull_envelope",
-        "brow_ridge": "face_mask_plane",
-        "eye_socket_rim_L": "brow_ridge",
+        "brow_glabella": "face_mask_plane",
+        "brow_wing_L": "face_mask_plane",
+        "brow_wing_R": "face_mask_plane",
+        "eye_socket_rim_L": "brow_wing_L",
         "eye_socket_dark_L": "eye_socket_rim_L",
-        "eye_socket_rim_R": "brow_ridge",
+        "eye_socket_rim_R": "brow_wing_R",
         "eye_socket_dark_R": "eye_socket_rim_R",
         "nose_wedge": "face_mask_plane",
         "cheek_plane_L": "face_mask_plane",
@@ -821,6 +1034,9 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
                 "eye_z": eye_z,
                 "mouth_z": mouth_z,
                 "face_y": face_y,
+                "brow_base_y": brow_base_y,
+                "socket_rim_y": socket_rim_y,
+                "socket_shadow_y": socket_shadow_y,
                 "nose_tip_y": nose_tip_y,
             },
         },
@@ -864,6 +1080,7 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
             "uses_head_layer_taxonomy": True,
             "uses_measured_anchors": True,
             "uses_shape_refinement_controls": True,
+            "uses_brow_eye_region_controls": True,
             "records_connection_policy": True,
             "emits_deterministic_vertices_faces": True,
             "imports_blender": False,

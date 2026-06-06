@@ -59,6 +59,10 @@ The first controls are source-owned approximations of a character-creator face p
 | `forehead_wrap_ratio` | face/brow | Wraps upper face and brow around skull sides instead of leaving a flat slab. |
 | `brow_arc_ratio` | brow/eyes | Turns the brow ridge into a glabella-centered arc over the sockets. |
 | `eye_socket_slant_ratio` | brow/eyes | Slants the paired almond socket contours. |
+| `brow_forward_offset_m` | brow/eyes | Pushes brow projection in side view without changing the arc. |
+| `socket_under_brow_setback_m` | brow/eyes | Sets socket shadow behind the brow so sockets read as recesses. |
+| `glabella_peak_ratio` | brow/nose | Strengthens the center brow knot where the nose bridge will land. |
+| `brow_side_wrap_ratio` | brow/eyes | Wraps brow wings around the side face independent of full forehead wrap. |
 | `nose_bridge_blend_ratio` | nose/brow | Broadens the nose bridge where it leaves the brow. |
 | `nose_base_blend_ratio` | nose/cheeks | Broadens the lower nose into the midface. |
 | `cheek_wrap_ratio` | cheeks | Wraps cheek planes toward the side face. |
@@ -124,9 +128,36 @@ Main operations: `extrude`, `profile_operation_stack`, `bevel_edges`.
 
 ### 3. Brow / Eye Band
 
-Raise the brow ridge and recess the eye sockets. This is the first defining facial layer. If this layer works, the face reads before the nose or mouth exists.
+Split the brow into a projecting glabella and two side-wrapped brow wings, then recess the eye socket rims and shadows under those wings. This is the first defining facial layer. If this layer works, the face reads before the nose or mouth exists.
 
 Main operations: `relief_stack`, `offset_profile`, `boolean_cut`, `bevel_edges`.
+
+## Face-Part Bend Fields
+
+The compiler does not treat face regions as flat stickers. Each named face part owns a source-side bend field that maps its 2D X/Z contour into Y-depth:
+
+```text
+face part contour
+-> region bend field
+-> bent low-poly surface
+-> overlap rule
+-> Blender adapter display/export
+```
+
+Examples:
+
+- `face_mask_plane`: side wrap plus lower-face retreat
+- `brow_glabella`: center brow peak
+- `brow_wing_L/R`: side wrap toward the temples
+- `eye_socket_rim_L/R`: shallow socket dish
+- `eye_socket_dark_L/R`: deeper socket dish
+- `cheek_plane_L/R`: cheekbone push with mouth-side retreat
+- `mouth_crease`: center valley
+- `upper_lip_relief` / `lower_lip_relief`: bowed relief
+- `chin_mass`: center push with side retreat
+- `jaw_side_plane_L/R`: chin overlap into mandibular-angle wrap
+
+This is still pre-join construction geometry, but it gives each piece a face-shaped deformation before any Blender join/remesh pass.
 
 ### 4. Nose Wedge
 
@@ -255,6 +286,33 @@ The output is not a flat picture. It is a stack of measured 2D contours in 3D sp
 - `xz_at_y`: front/mid/rear depth slices for face and cranium volume
 
 Each contour point stores `[x, y, z]`, with the slice plane coordinate retained. That gives the compiler width, depth, height, and side-profile evidence without needing Blender.
+
+## Single-Region Brow/Eye Review
+
+The first single-region review source is:
+
+```text
+data/characters/head_construction/humanoid_brow_eye_region_review_v0.json
+```
+
+Compiler:
+
+```bash
+python3 scripts/compile_humanoid_brow_eye_region_review_v0.py
+```
+
+This pass focuses only on:
+
+```text
+forehead break
+glabella center
+brow wings
+upper socket rims
+socket shadows
+nose bridge landing
+```
+
+It deliberately does not read generated full-head blockout output. It summarizes the skull slices `xy_brow_band`, `yz_center_profile`, `xz_front_face_surface`, and `xy_zygoma_orbit`, then maps them to the existing controls and promoted brow-region controls used by the compiler.
 
 ## Variant Proof Chain
 

@@ -200,7 +200,7 @@ Build the Blender scaffold and workbench proof:
   --render
 ```
 
-The first head-only construction vocabulary is `data/characters/head_construction/humanoid_head_layer_taxonomy_v0.json`, with a human guide at `docs/research/character_head_construction_v0/humanoid_head_layer_taxonomy_v0.md`. It defines measured head/face anchors, facial part names, shape terms, contour roles, and an ordered largest-to-smallest build sequence: skull envelope, face mask planes, brow/eye band, nose wedge, cheek planes, mouth/lips, chin/jaw, optional ears, and final bevel/chamfer edge language. It also records first-pass face shaping controls such as forehead wrap, brow arc, eye socket slant, nose bridge/base blend, cheek wrap, jaw taper, ear lowering, and feature embed overlap. Validate it with:
+The first head-only construction vocabulary is `data/characters/head_construction/humanoid_head_layer_taxonomy_v0.json`, with a human guide at `docs/research/character_head_construction_v0/humanoid_head_layer_taxonomy_v0.md`. It defines measured head/face anchors, facial part names, shape terms, contour roles, and an ordered largest-to-smallest build sequence: skull envelope, face mask planes, brow/eye band, nose wedge, cheek planes, mouth/lips, chin/jaw, optional ears, and final bevel/chamfer edge language. It also records first-pass face shaping controls such as forehead wrap, brow arc, brow forward projection, socket setback, glabella peak, brow side wrap, eye socket slant, nose bridge/base blend, cheek wrap, jaw taper, ear lowering, and feature embed overlap. Validate it with:
 
 ```bash
 python3 scripts/validate_humanoid_head_layer_taxonomy_v0.py
@@ -213,6 +213,8 @@ python3 scripts/compile_humanoid_head_blockout_v0.py \
   --taxonomy data/characters/head_construction/humanoid_head_layer_taxonomy_v0.json \
   --out data/characters/head_construction/humanoid_head_blockout_v0.json
 ```
+
+The head compiler now records per-region `bend_field` metadata. Face parts remain separately tunable, but their X/Z contours are bent into Y-depth before Blender sees them, so cheeks, sockets, lips, chin, and jaw are no longer plain flat prisms.
 
 Validate the compiled head geometry without Blender:
 
@@ -266,6 +268,12 @@ The skull measurement-stack source is `data/characters/head_construction/humanoi
 
 ```bash
 python3 scripts/measure_humanoid_skull_reference_v0.py
+```
+
+The first single-region head review is the brow/eye socket band. It intentionally avoids the generated full-head blockout JSON and emits a compact human report from the taxonomy plus skull slice summaries. The current compiler uses that review to split the old one-piece brow into `brow_glabella`, `brow_wing_L`, and `brow_wing_R`, then places each socket rim/shadow under its side wing:
+
+```bash
+python3 scripts/compile_humanoid_brow_eye_region_review_v0.py
 ```
 
 Render skull-ghost overlays for every head variant across front, 3/4 front, left profile, and right profile:

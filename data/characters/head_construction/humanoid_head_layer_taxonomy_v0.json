@@ -296,6 +296,42 @@
       "source_field_mapping": ["left_eye_socket_contour", "right_eye_socket_contour"]
     },
     {
+      "control_id": "brow_forward_offset_m",
+      "plain_name": "brow forward offset",
+      "target_layers": ["brow_eye_band"],
+      "default": 0.008,
+      "allowed_range": [0.001, 0.02],
+      "meaning": "How far the brow ridge projects forward from the face mask in side view without changing the brow arc.",
+      "source_field_mapping": ["brow_ridge_contour", "side_profile_contour", "xy_brow_band"]
+    },
+    {
+      "control_id": "socket_under_brow_setback_m",
+      "plain_name": "socket under-brow setback",
+      "target_layers": ["brow_eye_band"],
+      "default": 0.009,
+      "allowed_range": [0.003, 0.024],
+      "meaning": "How far the socket shadow sits behind the brow ridge so the eye area reads as a recess instead of paint.",
+      "source_field_mapping": ["left_eye_socket_contour", "right_eye_socket_contour", "yz_center_profile"]
+    },
+    {
+      "control_id": "glabella_peak_ratio",
+      "plain_name": "glabella peak",
+      "target_layers": ["brow_eye_band", "nose_wedge"],
+      "default": 0.55,
+      "allowed_range": [0.0, 1.0],
+      "meaning": "How strongly the center brow knot projects and drops toward the future nose bridge landing.",
+      "source_field_mapping": ["glabella_point", "nose_bridge_centerline", "xy_brow_band"]
+    },
+    {
+      "control_id": "brow_side_wrap_ratio",
+      "plain_name": "brow side wrap",
+      "target_layers": ["brow_eye_band"],
+      "default": 0.7,
+      "allowed_range": [0.0, 1.0],
+      "meaning": "How much the outer brow wings roll back around the skull sides independently from the full forehead wrap.",
+      "source_field_mapping": ["brow_ridge_contour", "side_face_transition_contours", "xy_brow_band"]
+    },
+    {
       "control_id": "nose_bridge_blend_ratio",
       "plain_name": "nose bridge blend",
       "target_layers": ["nose_wedge", "brow_eye_band"],
@@ -406,8 +442,8 @@
         {"knob_id": "eye_socket_depth_m", "units": "m", "default": -0.014, "allowed_range": [-0.035, -0.004], "meaning": "How far each socket recesses into the face."},
         {"knob_id": "socket_rim_bevel_m", "units": "m", "default": 0.003, "allowed_range": [0.001, 0.008], "meaning": "Light-catching bevel around socket rims."}
       ],
-      "output_contract": ["raised brow ridge", "paired recessed sockets", "glabella center transition"],
-      "validation_checks": ["Socket centers match interpupillary distance within tolerance.", "Brow ridge does not hide the nose bridge landing.", "Socket rims remain visible after beveling."]
+      "output_contract": ["projecting glabella", "left/right wrapped brow wings", "paired recessed sockets", "glabella center transition"],
+      "validation_checks": ["Socket centers match interpupillary distance within tolerance.", "Brow wings overlap their socket rims before any join pass.", "Brow ridge does not hide the nose bridge landing.", "Socket rims remain visible after beveling."]
     },
     {
       "sequence": 40,
