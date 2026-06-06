@@ -19,6 +19,7 @@ ASSET_CONTRACT = ROOT / "contracts" / "gameguy_asset_v0.json"
 MEASURED_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "measured_components_v0.json"
 SECTION_STACK_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "section_stack_assets_v0.json"
 RADIAL_STACK_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "radial_stack_assets_v0.json"
+PROFILE_REVOLVE_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "profile_revolve_assets_v0.json"
 DECORATED_BALUSTRADE_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "decorated_balustrade_assets_v0.json"
 BLOCKY_COLUMN_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "blocky_column_assets_v0.json"
 BLOCKY_SHAPE_BUNDLE = ROOT / "data" / "architecture" / "asset_mill" / "recipes" / "blocky_shape_grammar_assets_v0.json"
@@ -63,6 +64,16 @@ def run_section_stack_pump(out_root: Path) -> None:
 def run_radial_stack_pump(out_root: Path) -> None:
     subprocess.run(
         [sys.executable, str(PUMP), "--bundle", str(RADIAL_STACK_BUNDLE), "--out", str(out_root)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
+def run_profile_revolve_pump(out_root: Path) -> None:
+    subprocess.run(
+        [sys.executable, str(PUMP), "--bundle", str(PROFILE_REVOLVE_BUNDLE), "--out", str(out_root)],
         cwd=ROOT,
         check=True,
         capture_output=True,
@@ -423,6 +434,50 @@ class AssetPumpTests(unittest.TestCase):
         self.assertEqual(post["validation_expectations"]["rib_count"], 24)
         self.assert_mesh_is_well_formed(post)
 
+    def test_profile_revolve_bundle_generates_lathed_calibration_shaft(self) -> None:
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            out_root = Path(tmp) / "pump"
+            run_profile_revolve_pump(out_root)
+            manifest = load_json(out_root / "manifest.json")
+            shaft = load_json(out_root / "assets" / "gothic_calibration_revolved_shaft_v0.json")
+
+        self.assertEqual(manifest["source_bundle_schema"], "asset_mill_profile_revolve_bundle_v0")
+        self.assertEqual(manifest["asset_count"], 1)
+        self.assertEqual(shaft["schema"], "gameguy_asset_v0")
+        self.assertEqual(shaft["source_schema"], "asset_mill_profile_revolve_bundle_v0")
+        self.assertEqual(shaft["source_operation"], "profile_revolve")
+        self.assertEqual(shaft["asset_kind"], "profile_revolve_shaft")
+        self.assertEqual(shaft["dimensions_m"], {"width": 0.72, "depth": 0.72, "height": 1.8})
+        self.assertEqual(len(shaft["mesh"]["vertices"]), 362)
+        self.assertEqual(len(shaft["mesh"]["faces"]), 384)
+        self.assertEqual(shaft["mesh"]["parts"], [
+            {
+                "part_id": "profile_revolve_body",
+                "source_primitive": "profile_revolve",
+                "vertex_range": [0, 361],
+                "face_range": [0, 383],
+                "material_role": "stone_shaft",
+            }
+        ])
+        metadata = shaft["mesh"]["profile_revolve"]
+        self.assertEqual(metadata["grammar"], "profile_revolve_v0")
+        self.assertEqual(metadata["source_math"], "surface_of_revolution")
+        self.assertEqual(metadata["axis"], "z")
+        self.assertEqual(metadata["segments"], 24)
+        self.assertEqual(metadata["profile_point_count"], 15)
+        self.assertEqual(metadata["side_profile"][0]["point_id"], "foot_bottom")
+        self.assertEqual(metadata["side_profile"][7]["point_id"], "belly_max")
+        self.assertEqual(metadata["side_profile"][-1]["vertex_range"], [336, 359])
+        self.assertEqual(metadata["bottom_center_vertex"], 360)
+        self.assertEqual(metadata["top_center_vertex"], 361)
+        self.assertEqual(sum(1 for face in shaft["mesh"]["faces"] if len(face) == 3), 48)
+        self.assertEqual(sum(1 for face in shaft["mesh"]["faces"] if len(face) == 4), 336)
+        self.assertEqual(shaft["source_terms"]["profiles"], ["circle"])
+        self.assertEqual(shaft["source_terms"]["operators"], ["profile_revolve", "loft_sections"])
+        self.assertTrue(shaft["validation_expectations"]["surface_of_revolution"])
+        self.assertTrue(shaft["validation_expectations"]["entasis"])
+        self.assert_mesh_is_well_formed(shaft)
+
     def test_decorated_balustrade_bundle_generates_named_ornament_parts(self) -> None:
         with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
             out_root = Path(tmp) / "pump"
@@ -648,6 +703,20 @@ class AssetPumpTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("radial_stack.segments must be >= 8", result.stderr)
+        self.assertFalse((out_root / "manifest.json").exists())
+
+    def test_profile_revolve_rejects_non_increasing_side_profile_before_output(self) -> None:
+        source_bundle = load_json(PROFILE_REVOLVE_BUNDLE)
+        source_bundle["assets"][0]["profile_revolve"]["side_profile"][1]["at"] = 0.0
+
+        with tempfile.TemporaryDirectory(dir="/tmp") as tmp:
+            bundle_path = Path(tmp) / "bad_profile_revolve_bundle.json"
+            out_root = Path(tmp) / "pump"
+            bundle_path.write_text(json.dumps(source_bundle, indent=2) + "\n", encoding="utf-8")
+            result = run_pump_with_bundle(bundle_path, out_root)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("profile_revolve.side_profile[1].at must increase", result.stderr)
         self.assertFalse((out_root / "manifest.json").exists())
 
     def test_blocky_column_rejects_non_positive_rib_depth_before_output(self) -> None:

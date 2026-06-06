@@ -1,0 +1,177 @@
+{
+  "schema": "asset_mill_profile_revolve_bundle_v0",
+  "bundle_id": "profile_revolve_assets_v0",
+  "purpose": "Profile-revolve source asset bundle for deterministic lathed shaft geometry generated from side-profile radius points.",
+  "units": "abstract_meter",
+  "rules": {
+    "source_lane": true,
+    "deterministic_output": true,
+    "no_blender_logic": true,
+    "no_generated_outputs": true,
+    "no_wall_clock_fields": true
+  },
+  "asset_count": 1,
+  "assets": [
+    {
+      "asset_id": "gothic_calibration_revolved_shaft_v0",
+      "asset_kind": "profile_revolve_shaft",
+      "operation": "profile_revolve",
+      "architectural_role": "lathed_calibration_shaft_with_entasis_and_stepped_molding_lips",
+      "generation_use": [
+        "banister_post",
+        "column_prototype",
+        "tool_plan_calibration",
+        "profile_revolve_proof"
+      ],
+      "semantic_tags": [
+        "support",
+        "barrier",
+        "collision_proxy",
+        "decorative_only"
+      ],
+      "connectors": [
+        "floor",
+        "ceiling",
+        "radial"
+      ],
+      "child_slots": [
+        "square_plinth",
+        "lower_collar",
+        "entasis_shaft",
+        "upper_collar",
+        "square_cap"
+      ],
+      "geometry_terms_used": [
+        "profile_revolve",
+        "loft_sections",
+        "circle",
+        "floor",
+        "ceiling",
+        "radial",
+        "support",
+        "barrier",
+        "collision_proxy",
+        "decorative_only"
+      ],
+      "profile_terms": [
+        "circle"
+      ],
+      "operations": [
+        "profile_revolve",
+        "loft_sections"
+      ],
+      "profile_revolve": {
+        "axis": "z",
+        "segments": 24,
+        "material_role": "stone_shaft",
+        "side_profile": [
+          {
+            "point_id": "foot_bottom",
+            "at": 0.0,
+            "radius_m": 0.3,
+            "material_role": "foot"
+          },
+          {
+            "point_id": "foot_lip_out",
+            "at": 0.06,
+            "radius_m": 0.36,
+            "material_role": "foot_lip"
+          },
+          {
+            "point_id": "foot_lip_flat",
+            "at": 0.11,
+            "radius_m": 0.36,
+            "material_role": "foot_lip"
+          },
+          {
+            "point_id": "lower_shadow_cut",
+            "at": 0.14,
+            "radius_m": 0.26,
+            "material_role": "shadow_cut"
+          },
+          {
+            "point_id": "lower_neck",
+            "at": 0.2,
+            "radius_m": 0.26,
+            "material_role": "neck"
+          },
+          {
+            "point_id": "shaft_start",
+            "at": 0.25,
+            "radius_m": 0.24,
+            "material_role": "shaft"
+          },
+          {
+            "point_id": "lower_entasis",
+            "at": 0.55,
+            "radius_m": 0.255,
+            "material_role": "shaft"
+          },
+          {
+            "point_id": "belly_max",
+            "at": 0.9,
+            "radius_m": 0.275,
+            "material_role": "entasis_belly"
+          },
+          {
+            "point_id": "upper_taper",
+            "at": 1.18,
+            "radius_m": 0.245,
+            "material_role": "shaft"
+          },
+          {
+            "point_id": "upper_neck_in",
+            "at": 1.4,
+            "radius_m": 0.215,
+            "material_role": "neck"
+          },
+          {
+            "point_id": "necking_bead",
+            "at": 1.52,
+            "radius_m": 0.25,
+            "material_role": "bead"
+          },
+          {
+            "point_id": "upper_collar_out",
+            "at": 1.58,
+            "radius_m": 0.31,
+            "material_role": "upper_collar"
+          },
+          {
+            "point_id": "upper_collar_flat",
+            "at": 1.65,
+            "radius_m": 0.31,
+            "material_role": "upper_collar"
+          },
+          {
+            "point_id": "cap_neck_in",
+            "at": 1.72,
+            "radius_m": 0.24,
+            "material_role": "cap_neck"
+          },
+          {
+            "point_id": "shaft_top",
+            "at": 1.8,
+            "radius_m": 0.24,
+            "material_role": "cap_neck"
+          }
+        ]
+      },
+      "validation_expectations": {
+        "profile_point_count": 15,
+        "segments": 24,
+        "surface_of_revolution": true,
+        "entasis": true,
+        "molding_lips": true,
+        "nonzero_bounds": true,
+        "known_geometry_terms": true
+      },
+      "no_claims": {
+        "production_approval": false,
+        "structural_safety": false,
+        "fabrication_ready": false,
+        "gym_museum_approval": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "term_id": "profile_revolve",
+  "category": "mesh_operation",
+  "plain_name": "Profile Revolve",
+  "description": "Builds a deterministic mesh by rotating a 2D side profile of axis-position/radius points around an axis.",
+  "required_inputs": {
+    "axis": "x | y | z",
+    "segments": "int",
+    "side_profile": "profile_revolve_point[]"
+  },
+  "outputs": {
+    "type": "mesh"
+  },
+  "constraints": {
+    "axis": "x_y_z",
+    "segments": ">= 8",
+    "min_profile_points": 2,
+    "profile_positions_must_increase": true,
+    "radii_must_be_positive": true
+  },
+  "common_uses": [
+    "lathed column shaft",
+    "tapered baluster",
+    "turned rail",
+    "finial",
+    "molding stack"
+  ],
+  "blender_method": "adapter consumes generated mesh vertices and faces; Blender does not decide the revolved silhouette",
+  "validation": [
+    "manifold_mesh",
+    "outward_normals",
+    "scale_within_bounds"
+  ]
+}

@@ -39,8 +39,8 @@ class AssetGenerationRegistryValidatorTests(unittest.TestCase):
 
         self.assertIn("PASS asset generation registry validation", result.stdout)
         self.assertEqual(report["schema"], "asset_generation_registry_validation_result_v0")
-        self.assertEqual(report["canonical_geometry_bundle_count"], 7)
-        self.assertEqual(report["canonical_geometry_asset_count"], 44)
+        self.assertEqual(report["canonical_geometry_bundle_count"], 8)
+        self.assertEqual(report["canonical_geometry_asset_count"], 45)
         self.assertEqual(report["canonical_tool_plan_bundle"]["asset_family_policy_count"], 9)
         self.assertEqual(report["canonical_tool_plan_bundle"]["default_plan_count"], 10)
         self.assertEqual(report["canonical_tool_plan_bundle"]["geometry_dictionary"], "geometry_dictionary")

@@ -29,6 +29,7 @@ SIMPLE_BUNDLE_SCHEMA = "asset_mill_recipe_bundle_v0"
 MEASURED_BUNDLE_SCHEMA = "asset_mill_measured_component_bundle_v0"
 SECTION_STACK_BUNDLE_SCHEMA = "asset_mill_section_stack_bundle_v0"
 RADIAL_STACK_BUNDLE_SCHEMA = "asset_mill_radial_stack_bundle_v0"
+PROFILE_REVOLVE_BUNDLE_SCHEMA = "asset_mill_profile_revolve_bundle_v0"
 BLOCKY_COLUMN_BUNDLE_SCHEMA = "asset_mill_blocky_column_bundle_v0"
 BLOCKY_SHAPE_BUNDLE_SCHEMA = "asset_mill_blocky_shape_grammar_bundle_v0"
 DECORATED_BALUSTRADE_BUNDLE_SCHEMA = "asset_mill_decorated_balustrade_bundle_v0"
@@ -426,6 +427,89 @@ def validate_radial_stack_source(value: Any, field: str) -> None:
         if part_id in seen_part_ids:
             fail(f"{field} duplicate expanded part_id: {part_id}")
         seen_part_ids.add(part_id)
+
+
+def profile_revolve_to_radial_stack(value: Any, field: str) -> dict[str, Any]:
+    source = require_object(value, field)
+    axis = require_string(source.get("axis"), f"{field}.axis")
+    if axis not in {"x", "y", "z"}:
+        fail(f"{field}.axis must be x, y, or z")
+    segments = integer_at_least(source.get("segments"), 8, f"{field}.segments")
+    side_profile = require_list(source.get("side_profile"), f"{field}.side_profile")
+    if len(side_profile) < 2:
+        fail(f"{field}.side_profile requires at least two profile points")
+
+    rings: list[dict[str, Any]] = []
+    seen_point_ids: set[str] = set()
+    previous_at: float | None = None
+    for point_index, item in enumerate(side_profile):
+        point = require_object(item, f"{field}.side_profile[{point_index}]")
+        point_id = require_string(point.get("point_id"), f"{field}.side_profile[{point_index}].point_id")
+        if point_id in seen_point_ids:
+            fail(f"{field}.side_profile duplicate point_id: {point_id}")
+        seen_point_ids.add(point_id)
+        at = finite_float(point.get("at"), f"{field}.side_profile[{point_index}].at")
+        if previous_at is not None and at <= previous_at:
+            fail(f"{field}.side_profile[{point_index}].at must increase")
+        previous_at = at
+        ring: dict[str, Any] = {
+            "ring_id": point_id,
+            "at": at,
+            "radius_m": positive_float(point.get("radius_m"), f"{field}.side_profile[{point_index}].radius_m"),
+        }
+        if "material_role" in point:
+            ring["material_role"] = require_string(point.get("material_role"), f"{field}.side_profile[{point_index}].material_role")
+        rings.append(ring)
+
+    return {
+        "axis": axis,
+        "segments": segments,
+        "material_role": source.get("material_role", "body"),
+        "rings": rings,
+        "radial_details": require_list(source.get("radial_details", []), f"{field}.radial_details"),
+        "attachments": require_list(source.get("attachments", []), f"{field}.attachments"),
+    }
+
+
+def validate_profile_revolve_source(value: Any, field: str) -> None:
+    stack = profile_revolve_to_radial_stack(value, field)
+    validate_radial_stack_source(stack, field)
+
+
+def validate_profile_revolve_bundle_terms(bundle: dict[str, Any], terms: dict[str, set[str]]) -> None:
+    assets = require_list(bundle.get("assets"), "assets")
+    if not assets:
+        fail("bundle assets must not be empty")
+    if bundle.get("asset_count") != len(assets):
+        fail("bundle asset_count must match assets length")
+    known_terms = all_terms(terms)
+    seen_asset_ids: set[str] = set()
+    for asset_index, item in enumerate(assets):
+        asset = require_object(item, f"assets[{asset_index}]")
+        asset_id = require_string(asset.get("asset_id"), f"assets[{asset_index}].asset_id")
+        if asset_id in seen_asset_ids:
+            fail(f"duplicate asset_id: {asset_id}")
+        seen_asset_ids.add(asset_id)
+        operation = require_string(asset.get("operation"), f"{asset_id}.operation")
+        if operation != "profile_revolve":
+            fail(f"{asset_id}.operation must be profile_revolve")
+        if operation not in operation_terms(terms):
+            fail(f"{asset_id}.operation uses unknown geometry dictionary operation `{operation}`")
+        validate_profile_revolve_source(asset.get("profile_revolve"), f"{asset_id}.profile_revolve")
+        require_known_terms(asset.get("geometry_terms_used"), known_terms, f"{asset_id}.geometry_terms_used")
+        require_known_terms(asset.get("profile_terms"), terms["profile_primitive"], f"{asset_id}.profile_terms")
+        require_known_terms(asset.get("operations"), operation_terms(terms), f"{asset_id}.operations")
+        for connector_index, connector in enumerate(require_list(asset.get("connectors"), f"{asset_id}.connectors")):
+            connector_id = require_string(connector, f"{asset_id}.connectors[{connector_index}]")
+            if connector_id not in terms["connector"]:
+                fail(f"{asset_id}.connectors[{connector_index}] uses unknown geometry dictionary connector `{connector_id}`")
+        for tag_index, tag in enumerate(require_list(asset.get("semantic_tags"), f"{asset_id}.semantic_tags")):
+            semantic_tag = require_string(tag, f"{asset_id}.semantic_tags[{tag_index}]")
+            if semantic_tag not in terms["semantic_geometry"]:
+                fail(f"{asset_id}.semantic_tags[{tag_index}] uses unknown geometry dictionary semantic tag `{semantic_tag}`")
+        for slot_index, slot in enumerate(require_list(asset.get("child_slots"), f"{asset_id}.child_slots")):
+            require_string(slot, f"{asset_id}.child_slots[{slot_index}]")
+        validate_claims(asset)
 
 
 def validate_radial_stack_bundle_terms(bundle: dict[str, Any], terms: dict[str, set[str]]) -> None:
@@ -1294,6 +1378,37 @@ def radial_stack_mesh(stack: dict[str, Any]) -> tuple[Mesh, dict[str, Any], list
     return merged_mesh(parts_mesh), metadata, mesh_parts
 
 
+def profile_revolve_mesh(source: dict[str, Any]) -> tuple[Mesh, dict[str, Any], list[dict[str, Any]]]:
+    stack = profile_revolve_to_radial_stack(source, "profile_revolve")
+    mesh, stack_metadata, mesh_parts = radial_stack_mesh(stack)
+    for part in mesh_parts:
+        if part.get("part_id") == "radial_stack_body":
+            part["part_id"] = "profile_revolve_body"
+            part["source_primitive"] = "profile_revolve"
+    profile_points_metadata = []
+    for point, ring in zip(require_list(source.get("side_profile"), "profile_revolve.side_profile"), stack_metadata["rings"], strict=True):
+        point_obj = require_object(point, "profile_revolve.side_profile[]")
+        profile_points_metadata.append(
+            {
+                "point_id": require_string(point_obj.get("point_id"), "profile_revolve.side_profile[].point_id"),
+                "at": ring["at"],
+                "radius_m": ring["radius_m"],
+                "vertex_range": ring["vertex_range"],
+            }
+        )
+    metadata = {
+        **stack_metadata,
+        "grammar": "profile_revolve_v0",
+        "source_math": "surface_of_revolution",
+        "side_profile_coordinate_model": "axis_position_and_radius_m",
+        "profile_point_count": len(profile_points_metadata),
+        "side_profile": profile_points_metadata,
+        "body_part_id": "profile_revolve_body",
+        "radial_stack_compatible": True,
+    }
+    return mesh, metadata, mesh_parts
+
+
 def append_decorated_radial_stack_part(parts_mesh: list[Mesh], mesh_parts: list[dict[str, Any]], part_id: str, stack: dict[str, Any], center: list[float], material_role: Any) -> None:
     mesh, _, _ = radial_stack_mesh(stack)
     append_mesh_part(parts_mesh, mesh_parts, part_id, "radial_stack", material_role, mesh.translated(center))
@@ -1807,6 +1922,8 @@ def source_profile_terms(asset: dict[str, Any]) -> list[str]:
         return terms
     if operation == "radial_stack":
         return ["circle", "rectangle"]
+    if operation == "profile_revolve":
+        return ["circle"]
     if operation == "decorated_balustrade":
         return ["circle", "pointed_arch_profile", "rectangle", "custom_polygon"]
     if operation == "blocky_column":
@@ -1960,6 +2077,9 @@ def compile_asset(asset: dict[str, Any], compiled: dict[str, dict[str, Any]], so
     elif operation == "radial_stack":
         mesh, stack_metadata, mesh_parts = radial_stack_mesh(require_object(asset.get("radial_stack"), f"{asset_id}.radial_stack"))
         mesh_extra["radial_stack"] = stack_metadata
+    elif operation == "profile_revolve":
+        mesh, revolve_metadata, mesh_parts = profile_revolve_mesh(require_object(asset.get("profile_revolve"), f"{asset_id}.profile_revolve"))
+        mesh_extra["profile_revolve"] = revolve_metadata
     elif operation == "decorated_balustrade":
         mesh, balustrade_metadata, mesh_parts = decorated_balustrade_mesh(require_object(asset.get("decorated_balustrade"), f"{asset_id}.decorated_balustrade"))
         mesh_extra["decorated_balustrade"] = balustrade_metadata
@@ -2102,6 +2222,7 @@ def load_bundle(path: Path) -> dict[str, Any]:
         MEASURED_BUNDLE_SCHEMA,
         SECTION_STACK_BUNDLE_SCHEMA,
         RADIAL_STACK_BUNDLE_SCHEMA,
+        PROFILE_REVOLVE_BUNDLE_SCHEMA,
         DECORATED_BALUSTRADE_BUNDLE_SCHEMA,
         BLOCKY_COLUMN_BUNDLE_SCHEMA,
         BLOCKY_SHAPE_BUNDLE_SCHEMA,
@@ -2189,6 +2310,8 @@ def main() -> None:
         validate_section_stack_bundle_terms(bundle, geometry_terms)
     elif source_schema == RADIAL_STACK_BUNDLE_SCHEMA:
         validate_radial_stack_bundle_terms(bundle, geometry_terms)
+    elif source_schema == PROFILE_REVOLVE_BUNDLE_SCHEMA:
+        validate_profile_revolve_bundle_terms(bundle, geometry_terms)
     elif source_schema == DECORATED_BALUSTRADE_BUNDLE_SCHEMA:
         validate_decorated_balustrade_bundle_terms(bundle, geometry_terms)
     elif source_schema == BLOCKY_COLUMN_BUNDLE_SCHEMA:
@@ -2209,6 +2332,7 @@ def main() -> None:
             SIMPLE_BUNDLE_SCHEMA,
             SECTION_STACK_BUNDLE_SCHEMA,
             RADIAL_STACK_BUNDLE_SCHEMA,
+            PROFILE_REVOLVE_BUNDLE_SCHEMA,
             DECORATED_BALUSTRADE_BUNDLE_SCHEMA,
             BLOCKY_COLUMN_BUNDLE_SCHEMA,
             BLOCKY_SHAPE_BUNDLE_SCHEMA,

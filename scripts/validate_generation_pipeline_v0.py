@@ -35,6 +35,7 @@ SIMPLE_ASSET_OUT = Path("/tmp/gameguy_asset_pump_v0")
 MEASURED_ASSET_OUT = Path("/tmp/gameguy_measured_asset_pump_v0")
 SECTION_STACK_ASSET_OUT = Path("/tmp/gameguy_section_stack_asset_pump_v0")
 RADIAL_STACK_ASSET_OUT = Path("/tmp/gameguy_radial_stack_asset_pump_v0")
+PROFILE_REVOLVE_ASSET_OUT = Path("/tmp/gameguy_profile_revolve_asset_pump_v0")
 DECORATED_BALUSTRADE_ASSET_OUT = Path("/tmp/gameguy_decorated_balustrade_asset_pump_v0")
 BLOCKY_COLUMN_ASSET_OUT = Path("/tmp/gameguy_blocky_column_asset_pump_v0")
 BLOCKY_SHAPE_ASSET_OUT = Path("/tmp/gameguy_blocky_shape_grammar_asset_pump_v0")
@@ -440,6 +441,22 @@ def build_command_steps(*, include_blender: bool, skip_unit_tests: bool, blender
             CommandStep(
                 "radial_stack_asset_adapter_validate",
                 python_script("scripts/export_blender_asset_preview_v0.py", "--manifest", RADIAL_STACK_ASSET_OUT / "manifest.json", "--validate-only"),
+            ),
+            CommandStep(
+                "profile_revolve_asset_pump",
+                python_script(
+                    "scripts/asset_pump_v0.py",
+                    "--bundle",
+                    "data/architecture/asset_mill/recipes/profile_revolve_assets_v0.json",
+                    "--clean",
+                    "--out",
+                    PROFILE_REVOLVE_ASSET_OUT,
+                ),
+            ),
+            CommandStep("profile_revolve_asset_validate", python_script("scripts/validate_gameguy_asset_v0.py", "--manifest", PROFILE_REVOLVE_ASSET_OUT / "manifest.json")),
+            CommandStep(
+                "profile_revolve_asset_adapter_validate",
+                python_script("scripts/export_blender_asset_preview_v0.py", "--manifest", PROFILE_REVOLVE_ASSET_OUT / "manifest.json", "--validate-only"),
             ),
             CommandStep(
                 "decorated_balustrade_asset_pump",
