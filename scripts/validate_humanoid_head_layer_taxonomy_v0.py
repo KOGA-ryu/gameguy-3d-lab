@@ -121,6 +121,46 @@ def validate_knobs(layer_id: str, knobs: list[Any]) -> None:
             fail(f"{layer_id}.{knob_id}.default must sit inside allowed_range")
 
 
+def validate_refinement_controls(controls: list[Any], layer_ids: set[str]) -> dict[str, dict[str, Any]]:
+    result: dict[str, dict[str, Any]] = {}
+    for control in controls:
+        if not isinstance(control, dict):
+            fail("shape_refinement_controls entries must be objects")
+        control_id = require_string(control, "shape_refinement_controls", "control_id")
+        if control_id in result:
+            fail(f"duplicate shape_refinement_controls.control_id: {control_id}")
+        require_string(control, control_id, "plain_name")
+        require_string(control, control_id, "meaning")
+        target_layers = require_list(control, control_id, "target_layers")
+        validate_refs(control_id, "target_layers", target_layers, layer_ids)
+        source_field_mapping = require_list(control, control_id, "source_field_mapping")
+        if not all(isinstance(value, str) and value for value in source_field_mapping):
+            fail(f"{control_id}.source_field_mapping must contain non-empty strings")
+        value = control.get("default")
+        allowed_range = control.get("allowed_range")
+        if not isinstance(value, (int, float)) or isinstance(value, bool):
+            fail(f"{control_id}.default must be numeric")
+        if not isinstance(allowed_range, list) or len(allowed_range) != 2:
+            fail(f"{control_id}.allowed_range must be [min, max]")
+        lower, upper = allowed_range
+        if not isinstance(lower, (int, float)) or not isinstance(upper, (int, float)) or lower >= upper:
+            fail(f"{control_id}.allowed_range must be ascending numbers")
+        if not lower <= value <= upper:
+            fail(f"{control_id}.default must sit inside allowed_range")
+        result[control_id] = control
+    for required_control in (
+        "brow_arc_ratio",
+        "eye_socket_slant_ratio",
+        "nose_bridge_blend_ratio",
+        "cheek_wrap_ratio",
+        "jaw_taper_ratio",
+        "feature_embed_overlap_m",
+    ):
+        if required_control not in result:
+            fail(f"shape_refinement_controls must include {required_control}")
+    return result
+
+
 def main() -> int:
     taxonomy = load_json(TAXONOMY_PATH)
     tool_dictionary = load_json(TOOL_DICTIONARY_PATH)
@@ -166,6 +206,10 @@ def main() -> int:
 
     layers = require_list(taxonomy, "taxonomy", "construction_layers")
     layer_rows = validate_unique_rows(layers, "construction_layers", "layer_id")
+    refinement_controls = validate_refinement_controls(
+        require_list(taxonomy, "taxonomy", "shape_refinement_controls"),
+        set(layer_rows),
+    )
     previous_sequence = -1
     for layer_id, layer in layer_rows.items():
         sequence = layer.get("sequence")
@@ -202,7 +246,7 @@ def main() -> int:
     print(
         "PASS humanoid head layer taxonomy validation: "
         f"parts={len(facial_parts)} shape_terms={len(shape_terms)} contour_roles={len(contour_roles)} "
-        f"layers={len(layer_rows)} dimensions={len(dimension_ids)} tools={len(known_tool_ids)}"
+        f"layers={len(layer_rows)} controls={len(refinement_controls)} dimensions={len(dimension_ids)} tools={len(known_tool_ids)}"
     )
     return 0
 

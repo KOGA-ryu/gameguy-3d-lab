@@ -53,9 +53,13 @@ class HumanoidHeadBlockoutTests(unittest.TestCase):
         self.assertEqual(recipe["schema"], "humanoid_head_geometry_v0")
         self.assertEqual(report["schema"], "humanoid_head_blockout_compiler_report_v0")
         self.assertTrue(report["rules"]["uses_head_layer_taxonomy"])
+        self.assertTrue(report["rules"]["uses_shape_refinement_controls"])
+        self.assertTrue(report["rules"]["records_connection_policy"])
         self.assertTrue(report["rules"]["emits_deterministic_vertices_faces"])
         self.assertFalse(report["rules"]["imports_blender"])
         self.assertEqual(len(recipe["parts"]), 18)
+        self.assertEqual(len(recipe["shape_refinement_controls"]), 9)
+        self.assertEqual(len(recipe["connection_policy"]["rules"]), 17)
         self.assertIn("nose_wedge", {part["part_id"] for part in recipe["parts"]})
 
     def test_adapter_validates_without_blender(self) -> None:
@@ -84,6 +88,8 @@ class HumanoidHeadBlockoutTests(unittest.TestCase):
         self.assertFalse(report["rules"]["imports_blender"])
         self.assertFalse(report["rules"]["source_design_logic_in_blender_adapter"])
         self.assertEqual(report["part_count"], 18)
+        self.assertEqual(report["control_count"], 9)
+        self.assertEqual(report["connection_rule_count"], 17)
         self.assertGreater(report["vertex_count"], 200)
 
     def test_recipe_contains_critical_face_layers(self) -> None:
@@ -97,10 +103,17 @@ class HumanoidHeadBlockoutTests(unittest.TestCase):
         self.assertIn("chin_jaw_mass", layer_ids)
         self.assertIn("socket_shadow", material_ids)
         self.assertIn("mouth_shadow", material_ids)
+        control_ids = {control["control_id"] for control in recipe["shape_refinement_controls"]}
+        self.assertIn("brow_arc_ratio", control_ids)
+        self.assertIn("feature_embed_overlap_m", control_ids)
+        connected_part_ids = {rule["part_id"] for rule in recipe["connection_policy"]["rules"]}
+        self.assertNotIn("skull_envelope", connected_part_ids)
         for part in recipe["parts"]:
             self.assertEqual(part["mesh"]["type"], "mesh_from_pydata")
             self.assertGreaterEqual(len(part["mesh"]["vertices_m"]), 3)
             self.assertGreaterEqual(len(part["mesh"]["faces"]), 1)
+            if part["part_id"] != "skull_envelope":
+                self.assertIn(part["part_id"], connected_part_ids)
 
 
 if __name__ == "__main__":

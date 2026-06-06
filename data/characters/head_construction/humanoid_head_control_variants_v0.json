@@ -1,0 +1,117 @@
+{
+  "schema": "humanoid_head_control_variants_v0",
+  "bundle_id": "humanoid_head_control_variants_v0",
+  "purpose": "Define a small source-side variant set for proving that humanoid head shape controls produce different compiled geometry before any join or watertight mesh pass.",
+  "base_taxonomy": "data/characters/head_construction/humanoid_head_layer_taxonomy_v0.json",
+  "rules": {
+    "source_variants_only": true,
+    "compiler_applies_overrides": true,
+    "blender_adapter_consumes_compiled_geometry": true,
+    "no_join_pass": true,
+    "variant_qc_required": true
+  },
+  "variant_count": 5,
+  "variants": [
+    {
+      "variant_id": "neutral_mannequin_head_v0",
+      "plain_name": "neutral mannequin head",
+      "style": "low_compute_neutral_mannequin_head",
+      "purpose": "Baseline measured head using the taxonomy defaults.",
+      "control_overrides": {},
+      "measurement_overrides_m": {},
+      "read_goal": "Keeps the current neutral scaffold as the comparison target."
+    },
+    {
+      "variant_id": "strong_brow_deep_socket_head_v0",
+      "plain_name": "strong brow and deeper sockets",
+      "style": "low_compute_strong_brow_deep_socket_head",
+      "purpose": "Push brow arc, socket slant, face wrap, and embed overlap so the face reads with heavier shadow structure.",
+      "control_overrides": {
+        "forehead_wrap_ratio": 0.78,
+        "brow_arc_ratio": 0.92,
+        "eye_socket_slant_ratio": 0.48,
+        "nose_bridge_blend_ratio": 0.68,
+        "cheek_wrap_ratio": 0.76,
+        "feature_embed_overlap_m": 0.0055
+      },
+      "measurement_overrides_m": {},
+      "read_goal": "Brow and orbital band should visibly dominate without changing the whole head profile."
+    },
+    {
+      "variant_id": "soft_face_small_nose_head_v0",
+      "plain_name": "soft face and smaller nose",
+      "style": "low_compute_soft_face_small_nose_head",
+      "purpose": "Reduce ridge strength and nose mass for a softer flatter mannequin face.",
+      "control_overrides": {
+        "forehead_wrap_ratio": 0.46,
+        "brow_arc_ratio": 0.22,
+        "eye_socket_slant_ratio": 0.08,
+        "nose_bridge_blend_ratio": 0.18,
+        "nose_base_blend_ratio": 0.2,
+        "cheek_wrap_ratio": 0.36,
+        "jaw_taper_ratio": 0.62,
+        "feature_embed_overlap_m": 0.0025
+      },
+      "measurement_overrides_m": {
+        "nose_breadth": 0.031,
+        "nose_protrusion": 0.014
+      },
+      "read_goal": "Face should read calmer, with smaller nose and weaker shadow cuts."
+    },
+    {
+      "variant_id": "heavy_jaw_strong_chin_head_v0",
+      "plain_name": "heavy jaw and stronger chin",
+      "style": "low_compute_heavy_jaw_strong_chin_head",
+      "purpose": "Widen the lower face and reduce taper so the jaw and chin carry more weight.",
+      "control_overrides": {
+        "brow_arc_ratio": 0.48,
+        "nose_base_blend_ratio": 0.6,
+        "cheek_wrap_ratio": 0.64,
+        "jaw_taper_ratio": 0.12,
+        "feature_embed_overlap_m": 0.0045
+      },
+      "measurement_overrides_m": {
+        "bigonial_breadth": 0.14,
+        "lip_length": 0.055
+      },
+      "read_goal": "Lower face should read heavier while the skull remains close to the baseline."
+    },
+    {
+      "variant_id": "narrow_long_face_head_v0",
+      "plain_name": "narrow skull and longer face",
+      "style": "low_compute_narrow_long_face_head",
+      "purpose": "Narrow the breadth measurements while increasing face length to prove measured anchors can participate in variant generation.",
+      "control_overrides": {
+        "forehead_wrap_ratio": 0.84,
+        "brow_arc_ratio": 0.5,
+        "eye_socket_slant_ratio": 0.28,
+        "nose_bridge_blend_ratio": 0.46,
+        "nose_base_blend_ratio": 0.42,
+        "cheek_wrap_ratio": 0.82,
+        "jaw_taper_ratio": 0.78,
+        "ear_lowering_ratio": 0.52,
+        "feature_embed_overlap_m": 0.004
+      },
+      "measurement_overrides_m": {
+        "head_length": 0.207,
+        "head_breadth": 0.138,
+        "bizygomatic_breadth": 0.128,
+        "bigonial_breadth": 0.108,
+        "minimum_frontal_breadth": 0.096,
+        "maximum_frontal_breadth": 0.101,
+        "menton_sellion_length": 0.136
+      },
+      "read_goal": "Silhouette should become taller and narrower without breaking symmetry or overlaps."
+    }
+  ],
+  "quality_checks": [
+    "variant count matches variant_count",
+    "all control overrides reference existing taxonomy controls",
+    "all control override values sit inside allowed_range",
+    "all measurement overrides reference existing measured dimensions",
+    "each compiled variant has a unique geometry signature",
+    "all mirrored L/R parts stay symmetric",
+    "all non-base parts keep connection rules and AABB contact with their parent",
+    "global bounds remain in the expected humanoid head range"
+  ]
+}

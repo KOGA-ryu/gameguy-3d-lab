@@ -1,0 +1,119 @@
+{
+  "schema": "humanoid_head_skull_reference_conform_v0",
+  "bundle_id": "humanoid_head_skull_reference_conform_v0",
+  "purpose": "Use the external human-skull source as a reference/projection target for correcting humanoid head face plates before any join or watertight mesh pass.",
+  "rules": {
+    "reference_only": true,
+    "external_asset_not_copied": true,
+    "source_provenance_required": true,
+    "compiler_emits_conform_recommendations": true,
+    "blender_overlay_consumes_compiled_geometry": true,
+    "no_join_pass": true,
+    "no_skull_as_final_skin": true
+  },
+  "external_skull_source": {
+    "source_id": "human_skull_source_v1_full_skull_truth",
+    "plain_name": "Human Skull Source v1",
+    "phase_role": "source_of_truth",
+    "active_seam_id": "full_skull_truth",
+    "source_root": "/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source",
+    "blend_path": "/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source/human-skull-source.blend",
+    "gltf_path": "/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source/human-skull-source.gltf",
+    "bin_path": "/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source/human-skull-source.bin",
+    "build_report_path": "/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source/build_report.json",
+    "registry_path": "/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source/human_skull_source_registry.json",
+    "approval_path": "/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source/model_approval.md",
+    "contact_sheet_path": "/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source/contact-sheet.png",
+    "upstream_vendor_obj": "/Users/kogaryu/dev/maps/sprite_pipeline/vendor/open3dmodel/overview-colored-skull.obj",
+    "upstream_license_note": "Vendor README records Open 3D Model / anatomytool.org source and CC BY-SA note. Keep provenance with any derived usage.",
+    "approved_review_views": [
+      "front",
+      "side",
+      "perspective",
+      "skull-anchor",
+      "clay"
+    ]
+  },
+  "head_variant_source": "data/characters/head_construction/humanoid_head_control_variants_v0.json",
+  "multiview_review_source": "data/characters/head_construction/humanoid_head_multiview_review_v0.json",
+  "reference_alignment_policy": {
+    "policy_id": "bbox_height_fit_centered_v0",
+    "meaning": "Scale the skull reference uniformly to each compiled head variant height, then center the skull bounds inside the variant bounds for comparison and overlay rendering.",
+    "reference_axes": {
+      "x": "left/right",
+      "y": "front/back depth",
+      "z": "height/up"
+    },
+    "limits": [
+      "This is a reference overlay, not a shrinkwrap operation.",
+      "Landmarks are coarse skull-reference anchors until a real landmark extractor exists.",
+      "The skull is understructure; final stylized skin/face volume is still owned by the humanoid head taxonomy and compiler."
+    ]
+  },
+  "coarse_landmark_targets": [
+    {
+      "landmark_id": "cranial_vault_top",
+      "source": "skull bbox max z",
+      "target_layer": "skull_envelope",
+      "conform_use": "Check top and rear skull envelope scale."
+    },
+    {
+      "landmark_id": "occiput_back",
+      "source": "skull bbox back depth",
+      "target_layer": "skull_envelope",
+      "conform_use": "Check rear cranium depth in side view."
+    },
+    {
+      "landmark_id": "brow_orbit_band",
+      "source": "skull dimension bundle brow/orbit spans",
+      "target_layer": "brow_eye_band",
+      "conform_use": "Guide brow ridge height and eye socket placement."
+    },
+    {
+      "landmark_id": "nasal_aperture",
+      "source": "skull dimension bundle nasal bridge width",
+      "target_layer": "nose_wedge",
+      "conform_use": "Guide nose bridge width and nose root placement."
+    },
+    {
+      "landmark_id": "zygoma",
+      "source": "skull dimension bundle zygoma width",
+      "target_layer": "cheek_midface_planes",
+      "conform_use": "Guide cheek plane width and side wrap."
+    },
+    {
+      "landmark_id": "mandible",
+      "source": "skull dimension bundle jaw width and jaw height",
+      "target_layer": "chin_jaw_mass",
+      "conform_use": "Guide jaw/chin side profile and lower-face weight."
+    }
+  ],
+  "overlay_views": [
+    "front",
+    "three_quarter_front",
+    "left_profile",
+    "right_profile"
+  ],
+  "conform_recommendation_targets": [
+    "face_mask_plane",
+    "brow_ridge",
+    "eye_socket_rim_L",
+    "eye_socket_rim_R",
+    "nose_wedge",
+    "cheek_plane_L",
+    "cheek_plane_R",
+    "mouth_crease",
+    "chin_mass",
+    "jaw_side_plane_L",
+    "jaw_side_plane_R"
+  ],
+  "quality_checks": [
+    "external skull files exist",
+    "skull source build report declares source_of_truth",
+    "skull source approval includes front and side views",
+    "compiled variants still pass numeric QC",
+    "every conform target part exists in every compiled variant",
+    "overlay renderer consumes compiled variant JSON and external GLTF only",
+    "no join pass is performed"
+  ]
+}

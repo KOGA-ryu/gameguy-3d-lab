@@ -267,6 +267,89 @@
     "Add cheeks, mouth, chin, and jaw as secondary planes and relief.",
     "Apply final bevel/chamfer/normal rules last so edge language is consistent."
   ],
+  "shape_refinement_controls": [
+    {
+      "control_id": "forehead_wrap_ratio",
+      "plain_name": "forehead wrap",
+      "target_layers": ["face_mask_planes", "brow_eye_band"],
+      "default": 0.62,
+      "allowed_range": [0.0, 1.0],
+      "meaning": "How much the upper face and brow taper around the skull sides instead of staying as a rectangular slab.",
+      "source_field_mapping": ["forehead_plane_contour", "brow_ridge_contour"]
+    },
+    {
+      "control_id": "brow_arc_ratio",
+      "plain_name": "brow arc",
+      "target_layers": ["brow_eye_band"],
+      "default": 0.58,
+      "allowed_range": [0.0, 1.0],
+      "meaning": "How strongly the brow ridge forms a glabella-centered arc over the eye sockets.",
+      "source_field_mapping": ["brow_ridge_contour", "glabella_point"]
+    },
+    {
+      "control_id": "eye_socket_slant_ratio",
+      "plain_name": "eye socket slant",
+      "target_layers": ["brow_eye_band"],
+      "default": 0.32,
+      "allowed_range": [-1.0, 1.0],
+      "meaning": "Negative or positive slant applied to paired almond socket contours.",
+      "source_field_mapping": ["left_eye_socket_contour", "right_eye_socket_contour"]
+    },
+    {
+      "control_id": "nose_bridge_blend_ratio",
+      "plain_name": "nose bridge blend",
+      "target_layers": ["nose_wedge", "brow_eye_band"],
+      "default": 0.54,
+      "allowed_range": [0.0, 1.0],
+      "meaning": "How broad the nose bridge is where it emerges from the brow and glabella.",
+      "source_field_mapping": ["nose_bridge_centerline", "sellion_point"]
+    },
+    {
+      "control_id": "nose_base_blend_ratio",
+      "plain_name": "nose base blend",
+      "target_layers": ["nose_wedge", "cheek_midface_planes"],
+      "default": 0.48,
+      "allowed_range": [0.0, 1.0],
+      "meaning": "How much the lower nose widens into the midface instead of ending as a sharp triangle.",
+      "source_field_mapping": ["nose_base_width_m", "subnasale_point"]
+    },
+    {
+      "control_id": "cheek_wrap_ratio",
+      "plain_name": "cheek wrap",
+      "target_layers": ["cheek_midface_planes"],
+      "default": 0.7,
+      "allowed_range": [0.0, 1.0],
+      "meaning": "How much cheek planes wrap toward the side face and jaw instead of staying flat on the front.",
+      "source_field_mapping": ["side_face_transition_contours", "left_cheekbone_contour", "right_cheekbone_contour"]
+    },
+    {
+      "control_id": "jaw_taper_ratio",
+      "plain_name": "jaw taper",
+      "target_layers": ["chin_jaw_mass"],
+      "default": 0.46,
+      "allowed_range": [0.0, 1.0],
+      "meaning": "How much the jaw narrows from cheek width toward the chin.",
+      "source_field_mapping": ["jawline_contour", "jaw_corner_points"]
+    },
+    {
+      "control_id": "ear_lowering_ratio",
+      "plain_name": "ear lowering",
+      "target_layers": ["ear_side_anchor"],
+      "default": 0.36,
+      "allowed_range": [0.0, 1.0],
+      "meaning": "Moves ear anchors down toward the eye-to-nose band where they read less like side tabs.",
+      "source_field_mapping": ["ear_anchor_position"]
+    },
+    {
+      "control_id": "feature_embed_overlap_m",
+      "plain_name": "feature embed overlap",
+      "target_layers": ["face_mask_planes", "brow_eye_band", "nose_wedge", "cheek_midface_planes", "mouth_lip_zone", "chin_jaw_mass", "ear_side_anchor"],
+      "default": 0.0035,
+      "allowed_range": [0.0, 0.012],
+      "meaning": "Small source-owned overlap used before any join pass so facial plates visually sink into the base.",
+      "source_field_mapping": ["connection_policy", "overlap_m"]
+    }
+  ],
   "construction_layers": [
     {
       "sequence": 10,

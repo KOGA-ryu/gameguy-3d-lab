@@ -21,6 +21,38 @@ DEFAULT_RECIPE = ROOT / "data/characters/head_construction/humanoid_head_blockou
 DEFAULT_OUT = Path("/tmp/gameguy_humanoid_head_blockout_v0")
 EXPECTED_SCHEMA = "humanoid_head_geometry_v0"
 CRITICAL_LAYERS = {"skull_envelope", "brow_eye_band", "nose_wedge", "chin_jaw_mass"}
+VIEW_SPECS = {
+    "front": {
+        "camera_location": (0.0, -0.72, 0.13),
+        "look_at": (0.0, 0.0, 0.13),
+        "ortho_scale": 0.36,
+        "role": "front facial read",
+    },
+    "three_quarter_front": {
+        "camera_location": (-0.46, -0.62, 0.14),
+        "look_at": (0.0, 0.0, 0.13),
+        "ortho_scale": 0.36,
+        "role": "front-to-side transition read",
+    },
+    "left_profile": {
+        "camera_location": (-0.72, 0.0, 0.13),
+        "look_at": (0.0, 0.0, 0.13),
+        "ortho_scale": 0.34,
+        "role": "left side silhouette read",
+    },
+    "right_profile": {
+        "camera_location": (0.72, 0.0, 0.13),
+        "look_at": (0.0, 0.0, 0.13),
+        "ortho_scale": 0.34,
+        "role": "right side silhouette read",
+    },
+    "top_construction": {
+        "camera_location": (0.0, -0.22, 0.74),
+        "look_at": (0.0, 0.0, 0.12),
+        "ortho_scale": 0.32,
+        "role": "top-ish construction placement read",
+    },
+}
 
 
 def fail(message: str) -> None:
@@ -182,11 +214,57 @@ def validate_recipe(recipe: dict[str, Any], recipe_path: Path) -> dict[str, Any]
     if missing_critical:
         fail(f"parts missing critical construction layers: {missing_critical}")
 
+    controls = require_list(recipe.get("shape_refinement_controls"), "shape_refinement_controls")
+    control_ids: set[str] = set()
+    for index, control in enumerate(controls):
+        row = require_object(control, f"shape_refinement_controls[{index}]")
+        control_id = require_string(row.get("control_id"), f"shape_refinement_controls[{index}].control_id")
+        if control_id in control_ids:
+            fail(f"duplicate shape_refinement_controls control_id {control_id}")
+        control_ids.add(control_id)
+        require_string(row.get("plain_name"), f"{control_id}.plain_name")
+        require_number(row.get("value"), f"{control_id}.value")
+        allowed_range = require_list(row.get("allowed_range"), f"{control_id}.allowed_range")
+        if len(allowed_range) != 2:
+            fail(f"{control_id}.allowed_range must be [min, max]")
+        lower = require_number(allowed_range[0], f"{control_id}.allowed_range[0]")
+        upper = require_number(allowed_range[1], f"{control_id}.allowed_range[1]")
+        value = float(row["value"])
+        if lower >= upper or not lower <= value <= upper:
+            fail(f"{control_id}.value must sit inside ascending allowed_range")
+
+    connection_policy = require_object(recipe.get("connection_policy"), "connection_policy")
+    if connection_policy.get("mode") != "refined_overlap_before_join_v0":
+        fail("connection_policy.mode must be refined_overlap_before_join_v0")
+    connection_rules = require_list(connection_policy.get("rules"), "connection_policy.rules")
+    rules_by_part: dict[str, dict[str, Any]] = {}
+    for index, rule in enumerate(connection_rules):
+        row = require_object(rule, f"connection_policy.rules[{index}]")
+        part_id = require_string(row.get("part_id"), f"connection_policy.rules[{index}].part_id")
+        if part_id in rules_by_part:
+            fail(f"duplicate connection rule for {part_id}")
+        if part_id not in part_ids:
+            fail(f"connection rule references unknown part {part_id}")
+        connects_to = require_string(row.get("connects_to"), f"{part_id}.connects_to")
+        if connects_to not in part_ids:
+            fail(f"{part_id}.connects_to references unknown part {connects_to}")
+        if part_id == connects_to:
+            fail(f"{part_id}.connects_to must not reference itself")
+        if row.get("method") != "embed_overlap":
+            fail(f"{part_id}.method must be embed_overlap")
+        require_number(row.get("overlap_m"), f"{part_id}.overlap_m", minimum=0.0001)
+        rules_by_part[part_id] = row
+    missing_connection_rules = sorted(part_ids - {"skull_envelope"} - set(rules_by_part))
+    if missing_connection_rules:
+        fail(f"missing connection rules for non-base parts: {missing_connection_rules}")
+
     return {
         "asset_id": asset_id,
         "part_count": len(parts),
         "layer_count": len(layer_ids),
         "material_count": len(material_ids),
+        "control_count": len(control_ids),
+        "connection_rule_count": len(connection_rules),
         "vertex_count": vertex_count,
         "face_count": face_count,
     }
@@ -204,6 +282,8 @@ def make_report(recipe_path: Path, recipe: dict[str, Any], validation: dict[str,
         "part_count": validation["part_count"],
         "layer_count": validation["layer_count"],
         "material_count": validation["material_count"],
+        "control_count": validation["control_count"],
+        "connection_rule_count": validation["connection_rule_count"],
         "vertex_count": validation["vertex_count"],
         "face_count": validation["face_count"],
         "generated_outputs_created": generated,
@@ -227,7 +307,15 @@ def hex_to_rgba(hex_color: str, alpha: float = 1.0) -> tuple[float, float, float
     )
 
 
-def run_blender_export(recipe: dict[str, Any], recipe_path: Path, validation: dict[str, Any], out_root: Path, render: bool, json_report: Path | None) -> None:
+def run_blender_export(
+    recipe: dict[str, Any],
+    recipe_path: Path,
+    validation: dict[str, Any],
+    out_root: Path,
+    render: bool,
+    json_report: Path | None,
+    view_id: str | None,
+) -> None:
     try:
         import bpy  # type: ignore
         import mathutils  # type: ignore
@@ -249,7 +337,7 @@ def run_blender_export(recipe: dict[str, Any], recipe_path: Path, validation: di
         objects.append(obj)
     create_measurement_guides(bpy, mathutils, recipe, materials, collections["guides"])
     create_title_label(bpy, recipe, materials, collections["guides"])
-    add_scene_context(bpy, mathutils)
+    add_scene_context(bpy, mathutils, view_id)
 
     blend_path = out_root / "humanoid_head_blockout_v0.blend"
     report_path = json_report if json_report is not None else out_root / "humanoid_head_blockout_v0_report.json"
@@ -259,11 +347,18 @@ def run_blender_export(recipe: dict[str, Any], recipe_path: Path, validation: di
             "blend_path": str(blend_path),
             "object_count": len(bpy.context.scene.objects),
             "mesh_object_count": len(objects),
+            "view_id": view_id or "front",
+            "view_role": VIEW_SPECS[view_id or "front"]["role"],
         }
     )
     bpy.ops.wm.save_as_mainfile(filepath=str(blend_path))
     if render:
-        render_path = out_root / "humanoid_head_blockout_v0_workbench.png"
+        render_name = (
+            "humanoid_head_blockout_v0_workbench.png"
+            if view_id is None
+            else f"humanoid_head_blockout_v0_{view_id}_workbench.png"
+        )
+        render_path = out_root / render_name
         bpy.context.scene.render.filepath = str(render_path)
         bpy.ops.render.render(write_still=True)
         report["render_path"] = str(render_path)
@@ -396,18 +491,26 @@ def create_title_label(bpy: Any, recipe: dict[str, Any], materials: dict[str, An
     link_to_collection(obj, collection)
 
 
-def add_scene_context(bpy: Any, mathutils: Any) -> None:
+def add_scene_context(bpy: Any, mathutils: Any, view_id: str | None = None) -> None:
+    selected_view_id = view_id or "front"
+    if selected_view_id not in VIEW_SPECS:
+        fail(f"unknown view: {selected_view_id}")
+    view = VIEW_SPECS[selected_view_id]
     bpy.ops.object.light_add(type="AREA", location=(-0.35, -0.75, 0.62))
     key = bpy.context.object
     key.name = "key_area_light"
     key.data.energy = 520
     key.data.size = 0.5
-    bpy.ops.object.camera_add(location=(0.0, -0.72, 0.13), rotation=(math.radians(90), 0.0, 0.0))
+    camera_location = mathutils.Vector(view["camera_location"])
+    look_at = mathutils.Vector(view["look_at"])
+    direction = look_at - camera_location
+    rotation = direction.to_track_quat("-Z", "Y").to_euler()
+    bpy.ops.object.camera_add(location=camera_location, rotation=rotation)
     camera = bpy.context.object
     bpy.context.scene.camera = camera
-    camera.name = "camera__front_low_compute_head"
+    camera.name = f"camera__{selected_view_id}_low_compute_head"
     camera.data.type = "ORTHO"
-    camera.data.ortho_scale = 0.36
+    camera.data.ortho_scale = float(view["ortho_scale"])
     camera.data.dof.use_dof = False
 
     bpy.context.scene.render.engine = "BLENDER_WORKBENCH"
@@ -427,6 +530,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--json-report", type=Path, default=None, help="Optional report path")
     parser.add_argument("--validate-only", action="store_true", help="Validate recipe without importing Blender")
     parser.add_argument("--render", action="store_true", help="Render a workbench PNG after building the scene")
+    parser.add_argument("--view", choices=sorted(VIEW_SPECS), default=None, help="Optional named review camera angle")
     return parser.parse_args(argv)
 
 
@@ -446,7 +550,7 @@ def main(argv: list[str] | None = None) -> int:
             f"parts={validation['part_count']} vertices={validation['vertex_count']} faces={validation['face_count']}"
         )
         return 0
-    run_blender_export(recipe, args.recipe, validation, args.out, args.render, args.json_report)
+    run_blender_export(recipe, args.recipe, validation, args.out, args.render, args.json_report, args.view)
     return 0
 
 

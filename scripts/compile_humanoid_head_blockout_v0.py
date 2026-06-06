@@ -121,6 +121,28 @@ def prism_from_xz_contour(contour: list[tuple[float, float]], *, y_center: float
     return vertices, faces
 
 
+def curved_prism_from_xz_contour(
+    contour: list[tuple[float, float]],
+    *,
+    y_front_for_point: Any,
+    thickness: float,
+) -> tuple[list[list[float]], list[list[int]]]:
+    vertices: list[list[float]] = []
+    faces: list[list[int]] = []
+    front_y_values = [float(y_front_for_point(x, z)) for x, z in contour]
+    for (x, z), y_front in zip(contour, front_y_values):
+        vertices.append(point(x, y_front, z))
+    for (x, z), y_front in zip(contour, front_y_values):
+        vertices.append(point(x, y_front + thickness, z))
+    count = len(contour)
+    faces.append(list(range(count)))
+    faces.append(list(range((count * 2) - 1, count - 1, -1)))
+    for index in range(count):
+        next_index = (index + 1) % count
+        faces.append([index, next_index, next_index + count, index + count])
+    return vertices, faces
+
+
 def box_mesh(*, x0: float, x1: float, y0: float, y1: float, z0: float, z1: float) -> tuple[list[list[float]], list[list[int]]]:
     vertices = [
         point(x0, y0, z0),
@@ -136,14 +158,34 @@ def box_mesh(*, x0: float, x1: float, y0: float, y1: float, z0: float, z1: float
     return vertices, faces
 
 
-def almond_contour(cx: float, cz: float, width: float, height: float) -> list[tuple[float, float]]:
-    return [
+def almond_contour(cx: float, cz: float, width: float, height: float, slant_ratio: float = 0.0) -> list[tuple[float, float]]:
+    base = [
         (cx - width * 0.50, cz),
         (cx - width * 0.23, cz + height * 0.45),
         (cx + width * 0.23, cz + height * 0.45),
         (cx + width * 0.50, cz),
         (cx + width * 0.23, cz - height * 0.45),
         (cx - width * 0.23, cz - height * 0.45),
+    ]
+    return [(x, z + ((x - cx) / max(width, 1e-6)) * height * slant_ratio) for x, z in base]
+
+
+def capsule_contour(cx: float, cz: float, width: float, height: float) -> list[tuple[float, float]]:
+    radius = height / 2.0
+    straight = max(0.0, width - height)
+    left = cx - straight / 2.0
+    right = cx + straight / 2.0
+    return [
+        (left, cz + radius),
+        (right, cz + radius),
+        (right + radius * 0.72, cz + radius * 0.55),
+        (right + radius, cz),
+        (right + radius * 0.72, cz - radius * 0.55),
+        (right, cz - radius),
+        (left, cz - radius),
+        (left - radius * 0.72, cz - radius * 0.55),
+        (left - radius, cz),
+        (left - radius * 0.72, cz + radius * 0.55),
     ]
 
 
@@ -161,24 +203,33 @@ def nose_wedge_mesh(
     sellion_z: float,
     subnasale_z: float,
     nose_width: float,
+    bridge_blend_ratio: float,
+    base_blend_ratio: float,
 ) -> tuple[list[list[float]], list[list[int]]]:
-    bridge_width = nose_width * 0.34
+    bridge_width = nose_width * (0.34 + 0.28 * bridge_blend_ratio)
+    base_width = nose_width * (0.92 + 0.32 * base_blend_ratio)
+    middle_width = (bridge_width + base_width) * 0.5
     mid_z = (sellion_z + subnasale_z) / 2.0
     vertices = [
         point(-bridge_width / 2.0, face_y, sellion_z),
         point(bridge_width / 2.0, face_y, sellion_z),
-        point(-nose_width / 2.0, face_y, subnasale_z),
-        point(nose_width / 2.0, face_y, subnasale_z),
+        point(-middle_width / 2.0, face_y + (nose_tip_y - face_y) * 0.35, mid_z),
+        point(middle_width / 2.0, face_y + (nose_tip_y - face_y) * 0.35, mid_z),
+        point(-base_width / 2.0, face_y - 0.002, subnasale_z),
+        point(base_width / 2.0, face_y - 0.002, subnasale_z),
         point(0.0, nose_tip_y, mid_z + 0.008),
         point(0.0, nose_tip_y * 0.94 + face_y * 0.06, subnasale_z - 0.006),
     ]
     faces = [
-        [0, 1, 4],
-        [2, 5, 3],
-        [0, 4, 5, 2],
-        [1, 3, 5, 4],
-        [0, 2, 3, 1],
-        [4, 1, 3, 5],
+        [0, 1, 6],
+        [0, 6, 2],
+        [1, 3, 6],
+        [2, 6, 7, 4],
+        [3, 5, 7, 6],
+        [4, 7, 5],
+        [0, 2, 4],
+        [1, 5, 3],
+        [0, 4, 5, 1],
     ]
     return vertices, faces
 
@@ -244,6 +295,57 @@ def ops_for(layer: dict[str, Any]) -> list[str]:
     return values
 
 
+def controls_by_id(taxonomy: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    controls = taxonomy.get("shape_refinement_controls")
+    if not isinstance(controls, list):
+        fail("taxonomy.shape_refinement_controls must be a list")
+    result: dict[str, dict[str, Any]] = {}
+    for control in controls:
+        if not isinstance(control, dict):
+            fail("shape_refinement_controls entries must be objects")
+        control_id = require_string(control.get("control_id"), "shape_refinement_controls.control_id")
+        if control_id in result:
+            fail(f"duplicate shape_refinement_controls.control_id {control_id}")
+        default = require_number(control.get("default"), f"{control_id}.default")
+        allowed_range = control.get("allowed_range")
+        if not isinstance(allowed_range, list) or len(allowed_range) != 2:
+            fail(f"{control_id}.allowed_range must be [min, max]")
+        lower = require_number(allowed_range[0], f"{control_id}.allowed_range[0]")
+        upper = require_number(allowed_range[1], f"{control_id}.allowed_range[1]")
+        if lower >= upper or not lower <= default <= upper:
+            fail(f"{control_id}.default must sit inside an ascending allowed_range")
+        result[control_id] = control
+    return result
+
+
+def control_value(controls: dict[str, dict[str, Any]], control_id: str) -> float:
+    if control_id not in controls:
+        fail(f"missing shape_refinement_controls.{control_id}")
+    return float(controls[control_id]["default"])
+
+
+def control_rows(controls: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    rows = []
+    for control_id in sorted(controls):
+        control = controls[control_id]
+        rows.append(
+            {
+                "control_id": control_id,
+                "plain_name": control.get("plain_name", control_id),
+                "value": control["default"],
+                "allowed_range": control["allowed_range"],
+                "target_layers": control.get("target_layers", []),
+                "source_field_mapping": control.get("source_field_mapping", []),
+            }
+        )
+    return rows
+
+
+def wrap_y(base_y: float, x: float, max_width: float, wrap_ratio: float, amount: float) -> float:
+    side = min(1.0, abs(x) / max(max_width / 2.0, 1e-6))
+    return base_y + amount * wrap_ratio * (side**1.45)
+
+
 def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     if taxonomy.get("schema") != SOURCE_SCHEMA:
         fail(f"taxonomy schema must be {SOURCE_SCHEMA}")
@@ -266,6 +368,16 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
     nose_width = require_number(dimensions.get("nose_breadth"), "dimensions_m.nose_breadth", minimum=0.001)
     nose_protrusion = require_number(dimensions.get("nose_protrusion"), "dimensions_m.nose_protrusion", minimum=0.001)
     mouth_width = require_number(dimensions.get("lip_length"), "dimensions_m.lip_length", minimum=0.001)
+    controls = controls_by_id(taxonomy)
+    forehead_wrap_ratio = control_value(controls, "forehead_wrap_ratio")
+    brow_arc_ratio = control_value(controls, "brow_arc_ratio")
+    eye_socket_slant_ratio = control_value(controls, "eye_socket_slant_ratio")
+    nose_bridge_blend_ratio = control_value(controls, "nose_bridge_blend_ratio")
+    nose_base_blend_ratio = control_value(controls, "nose_base_blend_ratio")
+    cheek_wrap_ratio = control_value(controls, "cheek_wrap_ratio")
+    jaw_taper_ratio = control_value(controls, "jaw_taper_ratio")
+    ear_lowering_ratio = control_value(controls, "ear_lowering_ratio")
+    feature_embed_overlap_m = control_value(controls, "feature_embed_overlap_m")
 
     head_height = rounded(head_length * 1.16)
     chin_z = rounded(head_height * 0.105)
@@ -278,8 +390,8 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
     skull_center = (0.0, 0.0, skull_center_z)
     skull_radii = (head_breadth / 2.0, head_length / 2.0, head_height / 2.0)
     face_y = rounded(-head_length * 0.37)
-    raised_y = rounded(face_y - 0.012)
-    socket_y = rounded(face_y - 0.004)
+    raised_y = rounded(face_y - 0.012 - feature_embed_overlap_m * 0.35)
+    socket_y = rounded(face_y - 0.004 + feature_embed_overlap_m * 0.45)
     nose_tip_y = rounded(face_y - nose_protrusion)
 
     layers = layer_by_id(taxonomy)
@@ -306,16 +418,25 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
 
     face_layer = layers["face_mask_planes"]
     face_contour = [
-        (-forehead_width / 2.0, head_height * 0.82),
-        (forehead_width / 2.0, head_height * 0.82),
-        (cheek_width / 2.0, head_height * 0.57),
-        (jaw_width / 2.0, chin_z + head_height * 0.12),
-        (jaw_width * 0.24, chin_z - head_height * 0.03),
-        (-jaw_width * 0.24, chin_z - head_height * 0.03),
-        (-jaw_width / 2.0, chin_z + head_height * 0.12),
-        (-cheek_width / 2.0, head_height * 0.57),
+        (-forehead_width * 0.48, head_height * 0.805),
+        (-forehead_width * 0.16, head_height * 0.84),
+        (forehead_width * 0.16, head_height * 0.84),
+        (forehead_width * 0.48, head_height * 0.805),
+        (cheek_width * 0.50, eye_z - head_height * 0.02),
+        (cheek_width * 0.44, mouth_z + head_height * 0.12),
+        (jaw_width * 0.43, chin_z + head_height * 0.09),
+        (jaw_width * (0.25 - jaw_taper_ratio * 0.05), chin_z - head_height * 0.022),
+        (0.0, chin_z - head_height * 0.035),
+        (-jaw_width * (0.25 - jaw_taper_ratio * 0.05), chin_z - head_height * 0.022),
+        (-jaw_width * 0.43, chin_z + head_height * 0.09),
+        (-cheek_width * 0.44, mouth_z + head_height * 0.12),
+        (-cheek_width * 0.50, eye_z - head_height * 0.02),
     ]
-    vertices, faces = prism_from_xz_contour(face_contour, y_center=face_y, depth=0.004)
+    vertices, faces = curved_prism_from_xz_contour(
+        face_contour,
+        y_front_for_point=lambda x, z: wrap_y(face_y - 0.002, x, cheek_width, forehead_wrap_ratio, head_length * 0.082),
+        thickness=0.006 + feature_embed_overlap_m,
+    )
     parts.append(
         make_part(
             part_id="face_mask_plane",
@@ -335,15 +456,26 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
 
     brow_layer = layers["brow_eye_band"]
     brow_contour = [
-        (-brow_width / 2.0, brow_z + 0.012),
-        (brow_width / 2.0, brow_z + 0.012),
-        (brow_width * 0.47, brow_z - 0.008),
-        (nose_width * 0.25, brow_z - 0.014),
-        (0.0, brow_z - 0.006),
-        (-nose_width * 0.25, brow_z - 0.014),
-        (-brow_width * 0.47, brow_z - 0.008),
+        (-brow_width * 0.52, brow_z + head_height * 0.018),
+        (-eye_spacing * 0.48, brow_z + head_height * (0.024 + 0.012 * brow_arc_ratio)),
+        (-nose_width * 0.34, brow_z + head_height * (0.012 + 0.01 * brow_arc_ratio)),
+        (0.0, brow_z + head_height * 0.022),
+        (nose_width * 0.34, brow_z + head_height * (0.012 + 0.01 * brow_arc_ratio)),
+        (eye_spacing * 0.48, brow_z + head_height * (0.024 + 0.012 * brow_arc_ratio)),
+        (brow_width * 0.52, brow_z + head_height * 0.018),
+        (brow_width * 0.46, brow_z - head_height * 0.010),
+        (eye_spacing * 0.24, brow_z - head_height * 0.020),
+        (nose_width * 0.18, brow_z - head_height * 0.004),
+        (0.0, brow_z - head_height * 0.014),
+        (-nose_width * 0.18, brow_z - head_height * 0.004),
+        (-eye_spacing * 0.24, brow_z - head_height * 0.020),
+        (-brow_width * 0.46, brow_z - head_height * 0.010),
     ]
-    vertices, faces = prism_from_xz_contour(brow_contour, y_center=raised_y, depth=0.011)
+    vertices, faces = curved_prism_from_xz_contour(
+        brow_contour,
+        y_front_for_point=lambda x, z: wrap_y(raised_y, x, brow_width, forehead_wrap_ratio, head_length * 0.052),
+        thickness=0.010 + feature_embed_overlap_m,
+    )
     parts.append(
         make_part(
             part_id="brow_ridge",
@@ -366,9 +498,9 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
     for side, sign in (("L", -1.0), ("R", 1.0)):
         eye_x = sign * eye_spacing / 2.0
         rim_vertices, rim_faces = prism_from_xz_contour(
-            almond_contour(eye_x, eye_z, socket_width * 1.24, socket_height * 1.26),
-            y_center=socket_y - 0.001,
-            depth=0.003,
+            almond_contour(eye_x, eye_z, socket_width * 1.32, socket_height * 1.36, slant_ratio=eye_socket_slant_ratio * sign),
+            y_center=face_y - 0.014 + feature_embed_overlap_m * 0.12,
+            depth=0.0035 + feature_embed_overlap_m * 0.35,
         )
         parts.append(
             make_part(
@@ -387,8 +519,8 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
             )
         )
         dark_vertices, dark_faces = prism_from_xz_contour(
-            almond_contour(eye_x, eye_z, socket_width, socket_height),
-            y_center=socket_y - 0.0035,
+            almond_contour(eye_x, eye_z, socket_width * 1.02, socket_height * 1.04, slant_ratio=eye_socket_slant_ratio * sign),
+            y_center=face_y - 0.016 + feature_embed_overlap_m * 0.08,
             depth=0.002,
         )
         parts.append(
@@ -409,7 +541,15 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
         )
 
     nose_layer = layers["nose_wedge"]
-    vertices, faces = nose_wedge_mesh(face_y=face_y - 0.002, nose_tip_y=nose_tip_y, sellion_z=sellion_z, subnasale_z=subnasale_z, nose_width=nose_width)
+    vertices, faces = nose_wedge_mesh(
+        face_y=face_y - 0.002 + feature_embed_overlap_m * 0.18,
+        nose_tip_y=nose_tip_y,
+        sellion_z=sellion_z,
+        subnasale_z=subnasale_z,
+        nose_width=nose_width,
+        bridge_blend_ratio=nose_bridge_blend_ratio,
+        base_blend_ratio=nose_base_blend_ratio,
+    )
     parts.append(
         make_part(
             part_id="nose_wedge",
@@ -429,15 +569,21 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
 
     cheek_layer = layers["cheek_midface_planes"]
     for side, sign in (("L", -1.0), ("R", 1.0)):
-        x0 = sign * nose_width * 0.56
-        x1 = sign * cheek_width * 0.48
+        x0 = sign * nose_width * (0.54 + 0.10 * nose_base_blend_ratio)
+        x1 = sign * cheek_width * 0.52
         contour = [
-            (x0, eye_z - 0.018),
-            (x1, eye_z - 0.006),
-            (sign * cheek_width * 0.43, mouth_z + 0.031),
-            (sign * nose_width * 0.72, mouth_z + 0.017),
+            (x0, eye_z - head_height * 0.040),
+            (sign * cheek_width * 0.28, eye_z - head_height * 0.010),
+            (x1, eye_z - head_height * 0.032),
+            (sign * cheek_width * 0.49, mouth_z + head_height * 0.120),
+            (sign * cheek_width * 0.34, mouth_z + head_height * 0.045),
+            (sign * nose_width * 0.86, mouth_z + head_height * 0.030),
         ]
-        vertices, faces = prism_from_xz_contour(contour, y_center=face_y - 0.009, depth=0.005)
+        vertices, faces = curved_prism_from_xz_contour(
+            contour,
+            y_front_for_point=lambda x, z: wrap_y(face_y - 0.010, x, cheek_width, cheek_wrap_ratio, head_length * 0.072),
+            thickness=0.006 + feature_embed_overlap_m,
+        )
         parts.append(
             make_part(
                 part_id=f"cheek_plane_{side}",
@@ -456,13 +602,10 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
         )
 
     mouth_layer = layers["mouth_lip_zone"]
-    mouth_vertices, mouth_faces = box_mesh(
-        x0=-mouth_width / 2.0,
-        x1=mouth_width / 2.0,
-        y0=face_y - 0.014,
-        y1=face_y - 0.010,
-        z0=mouth_z - 0.002,
-        z1=mouth_z + 0.002,
+    mouth_vertices, mouth_faces = prism_from_xz_contour(
+        capsule_contour(0.0, mouth_z, mouth_width * 0.92, head_height * 0.014),
+        y_center=face_y - 0.003 + feature_embed_overlap_m * 0.2,
+        depth=0.0032,
     )
     parts.append(
         make_part(
@@ -480,14 +623,11 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
             purpose="neutral horizontal mouth valley",
         )
     )
-    for lip_id, z_offset in (("upper_lip_relief", 0.006), ("lower_lip_relief", -0.006)):
-        vertices, faces = box_mesh(
-            x0=-mouth_width * 0.43,
-            x1=mouth_width * 0.43,
-            y0=face_y - 0.013,
-            y1=face_y - 0.008,
-            z0=mouth_z + z_offset - 0.0015,
-            z1=mouth_z + z_offset + 0.0015,
+    for lip_id, z_offset, scale in (("upper_lip_relief", 0.0024, 0.76), ("lower_lip_relief", -0.0024, 0.70)):
+        vertices, faces = prism_from_xz_contour(
+            capsule_contour(0.0, mouth_z + z_offset, mouth_width * scale, head_height * 0.010),
+            y_center=face_y - 0.0032 + feature_embed_overlap_m * 0.12,
+            depth=0.0036,
         )
         parts.append(
             make_part(
@@ -508,13 +648,19 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
 
     jaw_layer = layers["chin_jaw_mass"]
     chin_contour = [
-        (-jaw_width * 0.25, chin_z + 0.022),
-        (jaw_width * 0.25, chin_z + 0.022),
-        (jaw_width * 0.19, chin_z - 0.014),
-        (0.0, chin_z - 0.025),
-        (-jaw_width * 0.19, chin_z - 0.014),
+        (-jaw_width * (0.28 - jaw_taper_ratio * 0.05), chin_z + head_height * 0.108),
+        (-jaw_width * 0.09, chin_z + head_height * 0.126),
+        (jaw_width * 0.09, chin_z + head_height * 0.126),
+        (jaw_width * (0.28 - jaw_taper_ratio * 0.05), chin_z + head_height * 0.108),
+        (jaw_width * (0.20 - jaw_taper_ratio * 0.03), chin_z - head_height * 0.026),
+        (0.0, chin_z - head_height * 0.045),
+        (-jaw_width * (0.20 - jaw_taper_ratio * 0.03), chin_z - head_height * 0.026),
     ]
-    vertices, faces = prism_from_xz_contour(chin_contour, y_center=face_y - 0.008, depth=0.008)
+    vertices, faces = curved_prism_from_xz_contour(
+        chin_contour,
+        y_front_for_point=lambda x, z: wrap_y(face_y - 0.008, x, jaw_width, jaw_taper_ratio, head_length * 0.030),
+        thickness=0.007 + feature_embed_overlap_m,
+    )
     parts.append(
         make_part(
             part_id="chin_mass",
@@ -533,12 +679,17 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
     )
     for side, sign in (("L", -1.0), ("R", 1.0)):
         contour = [
-            (sign * jaw_width * 0.28, chin_z + 0.028),
-            (sign * jaw_width * 0.50, chin_z + 0.053),
-            (sign * jaw_width * 0.50, chin_z + 0.015),
-            (sign * jaw_width * 0.30, chin_z - 0.009),
+            (sign * jaw_width * 0.30, chin_z + head_height * 0.116),
+            (sign * jaw_width * 0.52, chin_z + head_height * 0.145),
+            (sign * jaw_width * 0.50, chin_z + head_height * 0.050),
+            (sign * jaw_width * 0.34, chin_z - head_height * 0.010),
+            (sign * jaw_width * 0.22, chin_z + head_height * 0.020),
         ]
-        vertices, faces = prism_from_xz_contour(contour, y_center=face_y - 0.004, depth=0.005)
+        vertices, faces = curved_prism_from_xz_contour(
+            contour,
+            y_front_for_point=lambda x, z: wrap_y(face_y - 0.006, x, jaw_width, jaw_taper_ratio, head_length * 0.060),
+            thickness=0.006 + feature_embed_overlap_m,
+        )
         parts.append(
             make_part(
                 part_id=f"jaw_side_plane_{side}",
@@ -557,11 +708,12 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
         )
 
     ear_layer = layers["ear_side_anchor"]
+    ear_z = eye_z - head_height * (0.018 + 0.072 * ear_lowering_ratio)
     for side, sign in (("L", -1.0), ("R", 1.0)):
         vertices, faces = prism_from_xz_contour(
-            oval_contour(sign * head_breadth * 0.53, eye_z - 0.002, 0.022, 0.046, 10),
-            y_center=-0.004,
-            depth=0.01,
+            oval_contour(sign * head_breadth * 0.515, ear_z, 0.020, 0.040, 10),
+            y_center=0.002 + feature_embed_overlap_m * 0.4,
+            depth=0.012,
         )
         parts.append(
             make_part(
@@ -595,6 +747,39 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
         {"material_id": "skin_ear", "color_hex": "#bd956f", "role": "ear anchors"},
         {"material_id": "guide_blue", "color_hex": "#4a6f9e", "role": "measurement guide"},
     ]
+    connection_targets = {
+        "face_mask_plane": "skull_envelope",
+        "brow_ridge": "face_mask_plane",
+        "eye_socket_rim_L": "brow_ridge",
+        "eye_socket_dark_L": "eye_socket_rim_L",
+        "eye_socket_rim_R": "brow_ridge",
+        "eye_socket_dark_R": "eye_socket_rim_R",
+        "nose_wedge": "face_mask_plane",
+        "cheek_plane_L": "face_mask_plane",
+        "cheek_plane_R": "face_mask_plane",
+        "mouth_crease": "face_mask_plane",
+        "upper_lip_relief": "mouth_crease",
+        "lower_lip_relief": "mouth_crease",
+        "chin_mass": "face_mask_plane",
+        "jaw_side_plane_L": "chin_mass",
+        "jaw_side_plane_R": "chin_mass",
+        "ear_anchor_L": "skull_envelope",
+        "ear_anchor_R": "skull_envelope",
+    }
+    connection_policy = {
+        "mode": "refined_overlap_before_join_v0",
+        "purpose": "Keep construction layers separate for tuning while sinking each non-base feature into its parent enough to avoid a floating-plate read.",
+        "rules": [
+            {
+                "part_id": part["part_id"],
+                "connects_to": connection_targets[part["part_id"]],
+                "method": "embed_overlap",
+                "overlap_m": rounded(feature_embed_overlap_m),
+            }
+            for part in parts
+            if part["part_id"] != "skull_envelope"
+        ],
+    }
 
     geometry = {
         "schema": GEOMETRY_SCHEMA,
@@ -639,6 +824,8 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
                 "nose_tip_y": nose_tip_y,
             },
         },
+        "shape_refinement_controls": control_rows(controls),
+        "connection_policy": connection_policy,
         "build_chain": [
             "validate_humanoid_head_layer_taxonomy_v0",
             "compile_humanoid_head_blockout_v0",
@@ -658,6 +845,7 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
         "validation_checks": [
             "skull envelope exists and is the largest mesh",
             "brow/eye band, nose wedge, and chin/jaw are present as critical read layers",
+            "every non-base part has a positive source-owned connection overlap",
             "all mesh parts have vertices, faces, material IDs, and source layer IDs",
             "measurement anchors are preserved in the recipe for future tuning",
             "Blender adapter can validate without importing Blender",
@@ -675,6 +863,8 @@ def compile_geometry(taxonomy: dict[str, Any], source_path: Path) -> tuple[dict[
         "rules": {
             "uses_head_layer_taxonomy": True,
             "uses_measured_anchors": True,
+            "uses_shape_refinement_controls": True,
+            "records_connection_policy": True,
             "emits_deterministic_vertices_faces": True,
             "imports_blender": False,
             "manual_blender_design_logic": False,

@@ -200,13 +200,13 @@ Build the Blender scaffold and workbench proof:
   --render
 ```
 
-The first head-only construction vocabulary is `data/characters/head_construction/humanoid_head_layer_taxonomy_v0.json`, with a human guide at `docs/research/character_head_construction_v0/humanoid_head_layer_taxonomy_v0.md`. It defines measured head/face anchors, facial part names, shape terms, contour roles, and an ordered largest-to-smallest build sequence: skull envelope, face mask planes, brow/eye band, nose wedge, cheek planes, mouth/lips, chin/jaw, optional ears, and final bevel/chamfer edge language. Validate it with:
+The first head-only construction vocabulary is `data/characters/head_construction/humanoid_head_layer_taxonomy_v0.json`, with a human guide at `docs/research/character_head_construction_v0/humanoid_head_layer_taxonomy_v0.md`. It defines measured head/face anchors, facial part names, shape terms, contour roles, and an ordered largest-to-smallest build sequence: skull envelope, face mask planes, brow/eye band, nose wedge, cheek planes, mouth/lips, chin/jaw, optional ears, and final bevel/chamfer edge language. It also records first-pass face shaping controls such as forehead wrap, brow arc, eye socket slant, nose bridge/base blend, cheek wrap, jaw taper, ear lowering, and feature embed overlap. Validate it with:
 
 ```bash
 python3 scripts/validate_humanoid_head_layer_taxonomy_v0.py
 ```
 
-The first Blender-buildable head chain compiles that taxonomy into deterministic mesh geometry, then lets Blender consume the compiled vertices/faces:
+The first Blender-buildable head chain compiles that taxonomy into deterministic mesh geometry, then lets Blender consume the compiled vertices/faces. The compiled recipe keeps named parts separate for tuning but includes `refined_overlap_before_join_v0` connection rules so every non-base feature has an intended parent and positive overlap before a future join pass:
 
 ```bash
 python3 scripts/compile_humanoid_head_blockout_v0.py \
@@ -230,6 +230,48 @@ Build and render the Blender proof:
   --recipe data/characters/head_construction/humanoid_head_blockout_v0.json \
   --out /tmp/gameguy_humanoid_head_blockout_v0 \
   --render
+```
+
+The first head control-variant proof lives at `data/characters/head_construction/humanoid_head_control_variants_v0.json`. It compiles five pre-join variants from the same taxonomy: neutral, strong brow/deep sockets, soft face/small nose, heavy jaw/strong chin, and narrow long face. The generator writes compiled recipes and QC reports under `/tmp`, proving that the source controls change geometry while symmetry, connection contact, and bounds stay valid:
+
+```bash
+python3 scripts/generate_humanoid_head_control_variants_v0.py
+```
+
+Render all five variants through the Blender adapter:
+
+```bash
+python3 scripts/generate_humanoid_head_control_variants_v0.py --render
+```
+
+The multi-view review source is `data/characters/head_construction/humanoid_head_multiview_review_v0.json`. It renders or plans the five head variants from front, 3/4 front, left profile, right profile, and top-ish construction views before any join pass:
+
+```bash
+python3 scripts/render_humanoid_head_variant_multiview_review_v0.py
+```
+
+Render the full 25-image review set:
+
+```bash
+python3 scripts/render_humanoid_head_variant_multiview_review_v0.py --render
+```
+
+The skull-reference conform source is `data/characters/head_construction/humanoid_head_skull_reference_conform_v0.json`. It uses the external approved skull source at `/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source` as a reference/projection target without copying the mesh into this repo. Compile the comparison report and conform recommendations:
+
+```bash
+python3 scripts/compile_humanoid_head_skull_reference_conform_v0.py
+```
+
+The skull measurement-stack source is `data/characters/head_construction/humanoid_skull_measurement_stack_v0.json`. It parses the external skull GLTF/bin directly, applies the repo axis map, verifies the computed bounding box against the approved build report, and emits real 3D slice contours for horizontal, side-profile, and front/rear planes. This is the non-Blender evidence pass for the question "is this actually 3D, or only a 2D outline?":
+
+```bash
+python3 scripts/measure_humanoid_skull_reference_v0.py
+```
+
+Render skull-ghost overlays for every head variant across front, 3/4 front, left profile, and right profile:
+
+```bash
+python3 scripts/render_humanoid_head_skull_reference_conform_v0.py --render
 ```
 
 Blocky compound columns keep the source simple while generating shape-rich assets from named simple parts:

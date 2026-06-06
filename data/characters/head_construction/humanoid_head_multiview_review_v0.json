@@ -1,0 +1,60 @@
+{
+  "schema": "humanoid_head_multiview_review_v0",
+  "bundle_id": "humanoid_head_multiview_review_v0",
+  "purpose": "Define the review camera angles and pre-join acceptance language for humanoid head control variants.",
+  "variant_source": "data/characters/head_construction/humanoid_head_control_variants_v0.json",
+  "rules": {
+    "review_only": true,
+    "no_geometry_design_decisions": true,
+    "no_join_pass": true,
+    "renders_consume_compiled_variant_recipes": true,
+    "human_visual_review_still_required": true
+  },
+  "view_count": 5,
+  "views": [
+    {
+      "view_id": "front",
+      "plain_name": "front",
+      "review_role": "Checks brow, sockets, nose, mouth, jaw, and symmetry from the most readable character view.",
+      "adapter_view_id": "front"
+    },
+    {
+      "view_id": "three_quarter_front",
+      "plain_name": "3/4 front",
+      "review_role": "Checks whether face plates wrap around the skull instead of reading as a flat mask.",
+      "adapter_view_id": "three_quarter_front"
+    },
+    {
+      "view_id": "left_profile",
+      "plain_name": "left profile",
+      "review_role": "Checks skull, brow, nose, lips, chin, jaw, and ear side silhouette.",
+      "adapter_view_id": "left_profile"
+    },
+    {
+      "view_id": "right_profile",
+      "plain_name": "right profile",
+      "review_role": "Mirrors the side-read check and catches accidental asymmetry.",
+      "adapter_view_id": "right_profile"
+    },
+    {
+      "view_id": "top_construction",
+      "plain_name": "top-ish construction",
+      "review_role": "Checks whether separate plates are embedded around the head volume before any join pass.",
+      "adapter_view_id": "top_construction"
+    }
+  ],
+  "review_fields": [
+    "changed_controls",
+    "changed_measurements",
+    "bounds_size_m",
+    "max_symmetry_error_m",
+    "max_connection_gap_m",
+    "front_read_status",
+    "profile_read_status",
+    "join_readiness_status"
+  ],
+  "join_readiness_language": {
+    "numeric_precheck_passed": "QC passed and all requested views rendered, but visual approval is still required before head_join_strategy_v0.",
+    "needs_fix_before_join": "Do not join yet; fix controls, measurements, or compiler placement first."
+  }
+}

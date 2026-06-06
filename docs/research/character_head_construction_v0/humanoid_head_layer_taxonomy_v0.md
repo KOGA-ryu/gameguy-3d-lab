@@ -50,6 +50,22 @@ The v0 source profile uses NIOSH/Anthrotech head-and-face survey values as a mea
 
 These fields define where the head features start. Style knobs decide how faceted, soft, severe, cute, old, noble, monstrous, or mannequin-like the final result becomes.
 
+## Shape Refinement Controls
+
+The first controls are source-owned approximations of a character-creator face panel. They are not Blender UI yet, but they are shaped so a UI can expose them directly later.
+
+| Control | Layer Target | What It Changes |
+|---|---|---|
+| `forehead_wrap_ratio` | face/brow | Wraps upper face and brow around skull sides instead of leaving a flat slab. |
+| `brow_arc_ratio` | brow/eyes | Turns the brow ridge into a glabella-centered arc over the sockets. |
+| `eye_socket_slant_ratio` | brow/eyes | Slants the paired almond socket contours. |
+| `nose_bridge_blend_ratio` | nose/brow | Broadens the nose bridge where it leaves the brow. |
+| `nose_base_blend_ratio` | nose/cheeks | Broadens the lower nose into the midface. |
+| `cheek_wrap_ratio` | cheeks | Wraps cheek planes toward the side face. |
+| `jaw_taper_ratio` | chin/jaw | Narrows the jaw toward the chin. |
+| `ear_lowering_ratio` | ears | Moves ears down from side tabs into a more believable anchor band. |
+| `feature_embed_overlap_m` | all features | Sinks loose layers into their parent enough to avoid a floating-plate read before a join pass exists. |
+
 ## Shape Terms
 
 `envelope`
@@ -178,17 +194,14 @@ make the face less flat from side view
 
 Each correction maps to a source field, not a vague Blender edit.
 
-## Compiler Direction
+## Compiler Chain
 
-The future compiler should consume:
+The current compiler consumes:
 
 ```text
 head measurement profile
-front silhouette contour
-side profile contour
-feature contours
 construction layer stack
-style knobs
+shape refinement controls
 ```
 
 And emit:
@@ -197,4 +210,158 @@ And emit:
 deterministic humanoid_head_geometry_v0 JSON
 ```
 
-The Blender script should only consume that JSON and execute the tool plan. If the Blender adapter has facial design decisions inside it, those decisions belong in this taxonomy or in a future source recipe.
+The compiled geometry includes named mesh parts, vertices, faces, material IDs, layer IDs, shape terms, Blender tool IDs, source controls, and a connection policy. The connection policy currently uses `refined_overlap_before_join_v0`: every non-base part points to a parent part and has a small positive overlap value, while the parts remain separate for tuning.
+
+The Blender script only consumes that JSON and executes the preview/export pass. If the Blender adapter has facial design decisions inside it, those decisions belong in this taxonomy or in a future source recipe.
+
+Current chain:
+
+```bash
+python3 scripts/validate_humanoid_head_layer_taxonomy_v0.py
+python3 scripts/compile_humanoid_head_blockout_v0.py
+python3 scripts/export_blender_humanoid_head_blockout_v0.py --validate-only
+```
+
+## Skull Measurement Stack
+
+The skull-reference conform pass now has a stronger source lane:
+
+```text
+external skull GLTF/bin
+-> repo coordinate map
+-> bbox proof against approved build report
+-> 3D slice stack
+-> future head conform controls
+```
+
+Source:
+
+```text
+data/characters/head_construction/humanoid_skull_measurement_stack_v0.json
+```
+
+Compiler:
+
+```bash
+python3 scripts/measure_humanoid_skull_reference_v0.py
+```
+
+This does not copy the skull mesh into the repo. It reads the external GLTF positions and indices, applies the axis map `x = gltf_x`, `y = -(gltf_z + node_translation_z)`, `z = gltf_y + node_translation_y`, and checks that the computed bounds match the approved skull build report.
+
+The output is not a flat picture. It is a stack of measured 2D contours in 3D space:
+
+- `xy_at_z`: horizontal jaw, mouth, nasal, cheek/orbit, brow, forehead, and cranial-vault slices
+- `yz_at_x`: side/profile slices through left offset, center, and right offset planes
+- `xz_at_y`: front/mid/rear depth slices for face and cranium volume
+
+Each contour point stores `[x, y, z]`, with the slice plane coordinate retained. That gives the compiler width, depth, height, and side-profile evidence without needing Blender.
+
+## Variant Proof Chain
+
+The first control-variant source is:
+
+```text
+data/characters/head_construction/humanoid_head_control_variants_v0.json
+```
+
+It defines five pre-join head variants:
+
+- neutral mannequin head
+- strong brow and deeper sockets
+- soft face and smaller nose
+- heavy jaw and stronger chin
+- narrow skull and longer face
+
+The generator applies only source-owned control and measurement overrides, then
+calls the existing compiler. It writes compiled recipes, compiler reports,
+adapter validate reports, and QC reports under `/tmp` by default:
+
+```bash
+python3 scripts/generate_humanoid_head_control_variants_v0.py
+```
+
+The QC report checks that the variants are not duplicate geometry, mirrored
+left/right parts still match, every non-base part keeps a connection rule, all
+connection rules have AABB contact/overlap with their parent, and the global
+head bounds remain reasonable.
+
+Render every variant through the Blender adapter:
+
+```bash
+python3 scripts/generate_humanoid_head_control_variants_v0.py --render
+```
+
+This is still intentionally before `head_join_strategy_v0`. If a head variant
+looks wrong, fix the control source or compiler geometry while the plates are
+still separate and easy to tune.
+
+## Multi-View Variant Review
+
+The multi-view review source is:
+
+```text
+data/characters/head_construction/humanoid_head_multiview_review_v0.json
+```
+
+It requires five views for every head variant:
+
+- front
+- 3/4 front
+- left profile
+- right profile
+- top-ish construction
+
+Generate the review matrix without Blender renders:
+
+```bash
+python3 scripts/render_humanoid_head_variant_multiview_review_v0.py
+```
+
+Render all five variants from all five views:
+
+```bash
+python3 scripts/render_humanoid_head_variant_multiview_review_v0.py --render
+```
+
+The report records changed controls, changed measurements, bounds, symmetry
+error, connection gap, per-view render paths, and a join-readiness status. A
+`numeric_precheck_passed_visual_review_required` status means the recipe passed
+geometry checks and the view renders exist; it is not aesthetic approval. The
+human still has to inspect the front and profile reads before
+`head_join_strategy_v0`.
+
+## Skull Reference Conform Pass
+
+The first skull-reference conform source is:
+
+```text
+data/characters/head_construction/humanoid_head_skull_reference_conform_v0.json
+```
+
+It references the external approved skull source lane:
+
+```text
+/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source
+```
+
+The repo does not copy that skull mesh. The source records the local `.blend`,
+`.gltf`, `.bin`, build report, registry, approval note, contact sheet, and the
+upstream Open 3D Model / CC BY-SA provenance note.
+
+Compile skull-reference comparisons and conform recommendations:
+
+```bash
+python3 scripts/compile_humanoid_head_skull_reference_conform_v0.py
+```
+
+Render the skull ghost over every head variant in the configured overlay views:
+
+```bash
+python3 scripts/render_humanoid_head_skull_reference_conform_v0.py --render
+```
+
+This pass uses the skull as understructure and projection truth, not final skin.
+Current output deliberately blocks `head_join_strategy_v0` with
+`blocked_until_skull_conform_visual_review`, because the skull overlay shows
+where the face mask, brow/orbit band, cheek planes, nose root, mouth, chin, and
+jaw plates need to be projected, sunk, or curved before any weld/remesh attempt.

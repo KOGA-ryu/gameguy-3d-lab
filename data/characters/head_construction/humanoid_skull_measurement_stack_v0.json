@@ -1,0 +1,197 @@
+{
+  "schema": "humanoid_skull_measurement_stack_source_v0",
+  "bundle_id": "humanoid_skull_measurement_stack_v0",
+  "purpose": "Extract deterministic 3D measurement contours from the external approved skull GLTF so humanoid head blockouts can be checked against real skull depth, width, and height evidence before any join pass.",
+  "rules": {
+    "reference_only": true,
+    "external_asset_not_copied": true,
+    "source_provenance_required": true,
+    "compiler_reads_gltf_positions": true,
+    "compiler_emits_3d_slice_stack": true,
+    "blender_not_required": true,
+    "no_join_pass": true,
+    "no_skull_as_final_skin": true
+  },
+  "external_skull_source": {
+    "source_id": "human_skull_source_v1_full_skull_truth",
+    "plain_name": "Human Skull Source v1",
+    "phase_role": "source_of_truth",
+    "active_seam_id": "full_skull_truth",
+    "source_root": "/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source",
+    "gltf_path": "/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source/human-skull-source.gltf",
+    "bin_path": "/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source/human-skull-source.bin",
+    "build_report_path": "/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source/build_report.json",
+    "registry_path": "/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source/human_skull_source_registry.json",
+    "approval_path": "/Users/kogaryu/dev/maps/sprite_pipeline/runs/human-skull-source-v1/skull_source/model_approval.md",
+    "upstream_vendor_obj": "/Users/kogaryu/dev/maps/sprite_pipeline/vendor/open3dmodel/overview-colored-skull.obj",
+    "upstream_license_note": "Vendor README records Open 3D Model / anatomytool.org source and CC BY-SA note. Keep provenance with any derived usage."
+  },
+  "coordinate_map": {
+    "map_id": "gltf_to_gameguy_skull_axes_v0",
+    "source_axes": {
+      "gltf_x": "left/right",
+      "gltf_y": "height/up before node translation",
+      "gltf_z": "front/back before sign flip"
+    },
+    "project_axes": {
+      "x": "gltf_x + node_translation_x",
+      "y": "-(gltf_z + node_translation_z)",
+      "z": "gltf_y + node_translation_y"
+    },
+    "target_axes": {
+      "x": "left/right width",
+      "y": "front/back depth; negative is front, positive is rear",
+      "z": "height/up"
+    },
+    "bbox_match_source": "build_report.truth_object_metadata[0].bbox",
+    "bbox_match_tolerance_m": 0.000001
+  },
+  "mesh_read": {
+    "mesh_index": 0,
+    "primitive_index": 0,
+    "position_semantic": "POSITION",
+    "supported_primitive_mode": "TRIANGLES",
+    "required_index_component_types": [
+      5121,
+      5123,
+      5125
+    ],
+    "required_position_component_type": 5126
+  },
+  "slice_plan": {
+    "method": "vertex_band_radial_contour_v0",
+    "meaning": "Each contour is a real 3D slice: a 2D outline sampled from source vertices near a plane while keeping the fixed x, y, or z coordinate.",
+    "band_width_m": 0.003,
+    "max_band_width_m": 0.012,
+    "minimum_source_vertices_per_slice": 80,
+    "angular_bin_count": 64,
+    "families": [
+      {
+        "family_id": "xy_at_z",
+        "fixed_axis": "z",
+        "project_axes": [
+          "x",
+          "y"
+        ],
+        "levels": [
+          {
+            "slice_id": "xy_mandible_low",
+            "height_fraction": 0.08,
+            "anatomy_role": "lowest jaw and chin footprint"
+          },
+          {
+            "slice_id": "xy_jaw_arc",
+            "height_fraction": 0.18,
+            "anatomy_role": "mandible width and lower jaw arc"
+          },
+          {
+            "slice_id": "xy_mouth_teeth",
+            "height_fraction": 0.30,
+            "anatomy_role": "mouth, teeth, and lower maxilla depth"
+          },
+          {
+            "slice_id": "xy_nasal_aperture",
+            "height_fraction": 0.42,
+            "anatomy_role": "nose aperture and midface bridge"
+          },
+          {
+            "slice_id": "xy_zygoma_orbit",
+            "height_fraction": 0.56,
+            "anatomy_role": "cheekbone width and lower orbit mass"
+          },
+          {
+            "slice_id": "xy_brow_band",
+            "height_fraction": 0.68,
+            "anatomy_role": "brow ridge and upper orbit band"
+          },
+          {
+            "slice_id": "xy_frontal_bone",
+            "height_fraction": 0.80,
+            "anatomy_role": "forehead and frontal cranium"
+          },
+          {
+            "slice_id": "xy_cranial_vault",
+            "height_fraction": 0.92,
+            "anatomy_role": "upper skull vault"
+          }
+        ]
+      },
+      {
+        "family_id": "yz_at_x",
+        "fixed_axis": "x",
+        "project_axes": [
+          "y",
+          "z"
+        ],
+        "levels": [
+          {
+            "slice_id": "yz_left_mid_offset",
+            "plane_m": -0.026,
+            "anatomy_role": "left cheek and temporal side-depth profile"
+          },
+          {
+            "slice_id": "yz_center_profile",
+            "plane_m": 0.0,
+            "anatomy_role": "centerline side profile from jaw through forehead and occiput"
+          },
+          {
+            "slice_id": "yz_right_mid_offset",
+            "plane_m": 0.026,
+            "anatomy_role": "right cheek and temporal side-depth profile"
+          }
+        ]
+      },
+      {
+        "family_id": "xz_at_y",
+        "fixed_axis": "y",
+        "project_axes": [
+          "x",
+          "z"
+        ],
+        "levels": [
+          {
+            "slice_id": "xz_front_face_surface",
+            "depth_fraction": 0.12,
+            "anatomy_role": "front face surface width/height trace"
+          },
+          {
+            "slice_id": "xz_midface",
+            "depth_fraction": 0.32,
+            "anatomy_role": "midface and orbit mass cross section"
+          },
+          {
+            "slice_id": "xz_skull_mid",
+            "depth_fraction": 0.50,
+            "anatomy_role": "middle skull volume cross section"
+          },
+          {
+            "slice_id": "xz_rear_cranium",
+            "depth_fraction": 0.80,
+            "anatomy_role": "rear skull and occiput cross section"
+          }
+        ]
+      }
+    ]
+  },
+  "output_contract": {
+    "schema": "humanoid_skull_measurement_stack_v0",
+    "contains_full_mesh": false,
+    "contains_counts_and_bbox": true,
+    "contains_landmarks": true,
+    "contains_3d_contour_points": true,
+    "intended_consumers": [
+      "humanoid head conform compiler",
+      "future character creator head controls",
+      "future Blender overlay adapter"
+    ]
+  },
+  "quality_checks": [
+    "external skull files exist",
+    "GLTF position accessor and index accessor are readable",
+    "coordinate map recreates approved build-report bbox within tolerance",
+    "index count is divisible by 3",
+    "each planned slice emits enough source vertices and contour points",
+    "output stores 3D points, not flat image pixels",
+    "no skull mesh is copied into the repo"
+  ]
+}
